@@ -35,7 +35,8 @@ typedef struct _fk_server {
 	int listen_fd;
 	int max_conn;//max connections
 	int conn_cnt;//connection count
-	time_t start;
+	time_t start_time;
+	int stop;
 	//int daemon;//1: run as daemon 0: not daemon
 	fk_ioev *listen_ev;
 	fk_tmev *svr_timer;
@@ -62,9 +63,11 @@ static int fk_svr_timer_cb(int interval, unsigned char type, void *arg);
 static int fk_svr_listen_cb(int listen_fd, unsigned char type, void *arg);
 static void fk_svr_db_load(fk_str *db_path);
 static void fk_svr_db_save();
+static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
 static void fk_dict_obj_free(void *elt);
+static void fk_proto_init();
 
 //all the proto handlers
 static int fk_on_set(fk_conn *conn);
@@ -72,7 +75,6 @@ static int fk_on_get(fk_conn *conn);
 static int fk_on_hset(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
 static int fk_on_zadd(fk_conn *conn);
-
 
 //global variable
 static fk_server server;
@@ -86,12 +88,12 @@ static fk_elt_op dbeop = {
 
 //all proto to deal
 static fk_proto protos[] = {
-	{"SET", FK_PROTO_WRITE, 3, fk_on_set},
-	{"GET", FK_PROTO_READ, 2, fk_on_get},
-	{"HSET", FK_PROTO_WRITE, 4, fk_on_hset},
-	{"HGET", FK_PROTO_READ, 4, fk_on_hget},
-	{"ZADD", FK_PROTO_WRITE, 4, fk_on_zadd},
-	{NULL, FK_PROTO_INVALID, 0, NULL}
+	{"SET", 	FK_PROTO_WRITE, 	3, 	fk_on_set},
+	{"GET", 	FK_PROTO_READ, 		2, 	fk_on_get},
+	{"HSET", 	FK_PROTO_WRITE, 	4, 	fk_on_hset},
+	{"HGET", 	FK_PROTO_READ, 		4, 	fk_on_hget},
+	{"ZADD", 	FK_PROTO_WRITE, 	4, 	fk_on_zadd},
+	{NULL, 		FK_PROTO_INVALID, 	0, 	NULL}
 };
 
 static fk_dict *pdct = NULL;
@@ -285,6 +287,7 @@ int fk_svr_timer_cb(int interval, unsigned char type, void *arg)
 	return 0;
 }
 
+#ifdef FK_DEBUG
 int fk_svr_timer_cb2(int interval, unsigned char type, void *arg)
 {
 	fk_tmev *tmev;
@@ -296,15 +299,7 @@ int fk_svr_timer_cb2(int interval, unsigned char type, void *arg)
 
 	return -1;//do not cycle once more
 }
-
-int fk_svr_timer_cb3(int interval, unsigned char type, void *arg)
-{
-	fk_tmev *tmev;
-
-	tmev = (fk_tmev *)arg;
-	fk_log_info("[timer callback 3] idx: %d\n", tmev->idx);
-	return 0;
-}
+#endif
 
 /*
 static void fk_daemon_run_old()
@@ -393,7 +388,8 @@ void fk_svr_init()
 	server.addr = fk_str_clone(setting.addr);
 
 	//create global environment
-	server.start = time(NULL);
+	server.start_time = time(NULL);
+	server.stop = 0;
 	server.conn_cnt = 0;
 	server.all_conns = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * (server.max_conn + FK_SAVED_FD));
 	server.listen_fd = fk_sock_create_listen(FK_STR_RAW(server.addr), server.port);
@@ -403,8 +399,10 @@ void fk_svr_init()
 
 	server.svr_timer = fk_ev_tmev_create(3000, FK_EV_CYCLE, NULL, fk_svr_timer_cb);
 	fk_ev_tmev_add(server.svr_timer);
+#ifdef FK_DEBUG
 	//server.svr_timer2 = fk_ev_tmev_create(4000, FK_EV_CYCLE, NULL, fk_svr_timer_cb2);
 	//fk_ev_tmev_add(server.svr_timer2);
+#endif
 
 	server.db = (fk_dict **)fk_mem_alloc(sizeof(fk_dict *) * server.dbcnt);
 	if (server.all_conns == NULL
@@ -476,7 +474,7 @@ void fk_setrlimit()
 void fk_sigint(int sig)
 {
 	fk_log_info("to exit by sigint\n");
-	exit(EXIT_SUCCESS);
+	server.stop = 1;
 }
 
 void fk_sigchld(int sig)
@@ -573,7 +571,7 @@ void fk_main_init(char *conf_path)
 
 void fk_main_loop()
 {
-	for (;;) {
+	while (!server.stop) {
 		fk_ev_dispatch();
 	}
 }
