@@ -21,11 +21,17 @@ fk_buf *fk_buf_stretch(fk_buf *buf);
 fk_buf *fk_buf_shrink(fk_buf *buf);
 int fk_buf_shift(fk_buf *buf);
 
+#define FK_BUF_DATA(buf) ((buf)->data)
+
 #define FK_BUF_TOTAL_LEN(buf)	(buf)->len
 
-#define FK_BUF_IS_FULL(buf) 	((buf)->high == (buf)->len ? 1 : 0)
+#define FK_BUF_FREE_LEN(buf) 	((buf)->len - (buf)->high)
 
-#define FK_BUF_IS_EMPTY(buf)	((buf)->low == (buf)->high ? 1 : 0)
+#define FK_BUF_VALID_LEN(buf)	((buf)->high - (buf)->low)
+
+#define FK_BUF_FREE_START(buf) 	((buf)->data + (buf)->high)
+
+#define FK_BUF_VALID_START(buf) ((buf)->data + (buf)->low)
 
 #define FK_BUF_HIGH_INC(buf, offset)	{	\
 	(buf)->high += (offset);				\
@@ -40,15 +46,5 @@ int fk_buf_shift(fk_buf *buf);
 		(buf)->low = (buf)->high;			\
 	}										\
 }
-
-#define FK_BUF_DATA(buf) ((buf)->data)
-
-#define FK_BUF_FREE_LEN(buf) 	((buf)->len - (buf)->high)
-
-#define FK_BUF_VALID_LEN(buf)	((buf)->high - (buf)->low)
-
-#define FK_BUF_FREE_START(buf) 	((buf)->data + (buf)->high)
-
-#define FK_BUF_VALID_START(buf) ((buf)->data + (buf)->low)
 
 #endif
