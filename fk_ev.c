@@ -32,7 +32,7 @@ static int fk_ev_tmev_cmp(void *tmev1, void *tmev2);
 
 static fk_evmgr evmgr;
 
-static fk_leaf_op tmev_func = {
+static fk_leaf_op tmev_op = {
 	fk_ev_tmev_cmp
 };
 
@@ -42,7 +42,7 @@ void fk_ev_init()
 
 	max_fds = setting.max_conn + 1 + FK_SAVED_FD;
 	evmgr.timer_list = fk_list_create(NULL);
-	evmgr.timer_heap = fk_heap_create(&tmev_func);
+	evmgr.timer_heap = fk_heap_create(&tmev_op);
 	//use macro to initialize this two member
 	evmgr.exp_tmev = FK_EV_LIST_CREATE(fk_tmev_list, evmgr.exp_tmev);
 	evmgr.act_ioev = FK_EV_LIST_CREATE(fk_ioev_list, evmgr.act_ioev);
