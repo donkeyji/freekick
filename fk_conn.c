@@ -87,7 +87,9 @@ int fk_conn_data_recv(fk_conn *conn)
 	if (FK_BUF_FREE_LEN(conn->rbuf) <= conn->rbuf->len / 4) {
 		fk_buf_shift(conn->rbuf);
 	}
-	if (FK_BUF_FREE_LEN(conn->rbuf) == 0) {
+	if (FK_BUF_FREE_LEN(conn->rbuf) == 0
+		&& FK_BUF_TOTAL_LEN(conn->rbuf) < FK_BUF_HIGHWAT) 
+	{
 		//fk_log_debug("before stretch rbuf\n");
 		conn->rbuf = fk_buf_stretch(conn->rbuf);
 		//fk_log_debug("after stretch rbuf\n");
@@ -98,6 +100,10 @@ int fk_conn_data_recv(fk_conn *conn)
 
 	free_buf = FK_BUF_FREE_START(conn->rbuf);
 	free_len = FK_BUF_FREE_LEN(conn->rbuf);
+	if (free_len == 0) {
+		fk_log_info("beyond max buf len\n");
+		return -1;//need to close this connection
+	}
 
 	recv_len = fk_sock_recv(conn->fd, free_buf, free_len, 0);
 #ifdef FK_DEBUG
@@ -279,8 +285,14 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	if (FK_BUF_FREE_LEN(conn->wbuf) <= conn->wbuf->len / 4) {
 		fk_buf_shift(conn->wbuf);
 	}
-	if (FK_BUF_FREE_LEN(conn->wbuf) == 0) {
+	if (FK_BUF_FREE_LEN(conn->wbuf) == 0
+		&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
+	{
 		conn->wbuf = fk_buf_stretch(conn->wbuf);
+	}
+	if (FK_BUF_FREE_LEN(conn->wbuf) == 0) {
+		fk_log_info("wbuf beyond max len\n");
+		return -1;//need to close this connection
 	}
 #ifdef FK_DEBUG
 	fk_log_debug("[after adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);

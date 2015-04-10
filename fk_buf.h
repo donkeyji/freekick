@@ -14,18 +14,14 @@ typedef struct _fk_buf {
 } fk_buf;
 
 fk_buf *fk_buf_create();
-
 void fk_buf_destroy(fk_buf *buf);
-
 void fk_buf_print(fk_buf *buf);
-
 void fk_buf_adjust(fk_buf *buf);
-
 fk_buf *fk_buf_stretch(fk_buf *buf);
-
 fk_buf *fk_buf_shrink(fk_buf *buf);
-
 int fk_buf_shift(fk_buf *buf);
+
+#define FK_BUF_TOTAL_LEN(buf)	(buf)->len
 
 #define FK_BUF_IS_FULL(buf) 	((buf)->high == (buf)->len ? 1 : 0)
 
