@@ -88,7 +88,9 @@ int fk_conn_data_recv(fk_conn *conn)
 	char *free_buf;
 	int free_len, recv_len;
 
+#ifdef FK_DEBUG
 	fk_log_debug("[before rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
+#endif
 	conn->rbuf = fk_buf_shrink(conn->rbuf);
 	if (FK_BUF_FREE_LEN(conn->rbuf) <= conn->rbuf->len / 4) {
 		fk_buf_shift(conn->rbuf);
@@ -98,13 +100,17 @@ int fk_conn_data_recv(fk_conn *conn)
 		conn->rbuf = fk_buf_stretch(conn->rbuf);
 		//fk_log_debug("after stretch rbuf\n");
 	}
+#ifdef FK_DEBUG
 	fk_log_debug("[after rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
+#endif
 
 	free_buf = FK_BUF_FREE_START(conn->rbuf);
 	free_len = FK_BUF_FREE_LEN(conn->rbuf);
 
 	recv_len = fk_sock_recv(conn->fd, free_buf, free_len, 0);
+#ifdef FK_DEBUG
 	fk_log_debug("free len: %d, recv_len: %d\n", free_len, recv_len);
+#endif
 	conn->last_recv = time(NULL);
 
 	if (recv_len == 0) {//conn disconnected
@@ -118,9 +124,13 @@ int fk_conn_data_recv(fk_conn *conn)
 			return 0;
 		}
 	} else {//succeed
+#ifdef FK_DEBUG
 		fk_log_debug("[conn data] fd: %d, recv_len: %d, data: %s\n", conn->fd, recv_len, free_buf);
+#endif
 		FK_BUF_HIGH_INC(conn->rbuf, recv_len);
+#ifdef FK_DEBUG
 		fk_log_debug("[after recv]rbuf->low: %d, rbuf->high: %d\n", conn->rbuf->low, conn->rbuf->high);
+#endif
 		return 0;
 	}
 	return 0;
@@ -134,7 +144,9 @@ int fk_conn_req_parse(fk_conn *conn)
 
 	rbuf = conn->rbuf;
 
+#ifdef FK_DEBUG
 	fk_log_debug("[before parsing] low: %d, high: %d\n", rbuf->low, rbuf->high);
+#endif
 
 	if (conn->arg_cnt == 0) {
 		if (FK_BUF_VALID_LEN(rbuf) > 0) {
@@ -161,7 +173,9 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
+#ifdef FK_DEBUG
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
+#endif
 			FK_BUF_LOW_INC(rbuf, end - start + 1);
 		}
 	}
@@ -206,7 +220,9 @@ int fk_conn_req_parse(fk_conn *conn)
 		}
 	}
 
+#ifdef FK_DEBUG
 	fk_log_debug("[after parsing] low: %d, high: %d\n", rbuf->low, rbuf->high);
+#endif
 
 	return 0;
 }
@@ -248,7 +264,9 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	fk_proto *pto;
 
 	if (conn->parse_done == 0) {
+#ifdef FK_DEBUG
 		fk_log_debug("parse not completed yet\n");
+#endif
 		return 0;
 	}
 	fk_str_2upper(conn->args[0]);
@@ -263,14 +281,18 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		fk_conn_args_free(conn);
 		return -1;
 	}
+#ifdef FK_DEBUG
 	fk_log_debug("[before adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
+#endif
 	if (FK_BUF_FREE_LEN(conn->wbuf) <= conn->wbuf->len / 4) {
 		fk_buf_shift(conn->wbuf);
 	}
 	if (FK_BUF_FREE_LEN(conn->wbuf) == 0) {
 		conn->wbuf = fk_buf_stretch(conn->wbuf);
 	}
+#ifdef FK_DEBUG
 	fk_log_debug("[after adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
+#endif
 	rt = pto->handler(conn);
 	if (rt < 0) {
 		fk_conn_args_free(conn);
@@ -302,7 +324,6 @@ int fk_conn_read_cb(int fd, unsigned char type, void *ext)
 	int rt;
 	fk_conn *conn;
 
-	fk_log_debug("read cb\n");
 	FK_UNUSE(fd);
 	FK_UNUSE(type);
 
@@ -334,7 +355,6 @@ int fk_conn_write_cb(int fd, unsigned char type, void *ext)
 {
 	int rt, len;
 	char *buf;
-	fk_buf *wbuf;
 	fk_conn *conn;
 
 	FK_UNUSE(type);
@@ -343,7 +363,9 @@ int fk_conn_write_cb(int fd, unsigned char type, void *ext)
 	buf = FK_BUF_VALID_START(conn->wbuf);
 	len = FK_BUF_VALID_LEN(conn->wbuf);
 
+#ifdef FK_DEBUG
 	fk_log_debug("write callback]wbuf  buf: %s, valid len: %d, low: %d, high: %d\n", buf, len, conn->wbuf->low, conn->wbuf->high);
+#endif
 	rt = fk_sock_send(fd, buf, len, 0);
 	if (rt < 0) {
 		fk_log_error("send error\n");
@@ -368,7 +390,9 @@ int fk_conn_rsp_send(fk_conn *conn)
 	fk_buf *wbuf;
 
 	wbuf = conn->wbuf;
+#ifdef FK_DEBUG
 	fk_log_debug("[wbuf data]: %s\n", FK_BUF_VALID_START(wbuf));
+#endif
 	//if any data in write buf and never add write ioev yet
 	if (FK_BUF_VALID_LEN(wbuf) > 0 && conn->write_added == 0) {
 		fk_ev_ioev_add(conn->write_ev);

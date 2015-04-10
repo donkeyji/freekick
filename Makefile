@@ -5,7 +5,7 @@ SRCDIRS := .
 
 SRCEXTS := .c
 
-CFLAGS := -std=gnu11 -Wall -g
+CFLAGS := -std=gnu11 -Wall -g -D FK_DEBUG
 CFLAGS += -I .
 
 LDFLAGS := 
