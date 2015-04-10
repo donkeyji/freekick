@@ -1,0 +1,2 @@
+to do:
+1. to implement a better pool algrithm.现有的算法有问题，当分配的次数增大到一定程度时，还不如直接malloc/free来的快。
