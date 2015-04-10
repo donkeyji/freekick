@@ -143,10 +143,12 @@ int fk_on_set(fk_conn *conn)
 	fk_str *key;
 	fk_obj *value;
 
+#ifdef FK_DEBUG
 	fk_log_debug("[fk_on_set]parsed arg_cnt: %d\n", conn->arg_cnt);
 	for (i = 0; i < conn->arg_cnt; i++) {
 		fk_log_debug("[fk_on_set]idx: %d, len: %d, arg: %s\n", i, conn->args_len[i], conn->args[i]->data);
 	}
+#endif
 
 	key = conn->args[1];
 	value = fk_obj_create(FK_OBJ_STR, conn->args[2]);
@@ -253,9 +255,13 @@ void fk_svr_conn_remove(fk_conn *conn)
 {
 	server.all_conns[conn->fd] = NULL;
 	server.conn_cnt -= 1;
+#ifdef FK_DEBUG
 	fk_log_debug("before free conn: %d\n", conn->fd);
+#endif
 	fk_conn_destroy(conn);
+#ifdef FK_DEBUG
 	fk_log_debug("after free conn\n");
+#endif
 }
 
 int fk_svr_listen_cb(int listen_fd, unsigned char type, void *arg)
@@ -443,7 +449,9 @@ void fk_setrlimit()
 	if (max_files > lmt.rlim_max) {
 		euid = geteuid();
 		if (euid == 0) {//root
+#ifdef FK_DEBUG
 			fk_log_debug("running as root\n");
+#endif
 			lmt.rlim_max = max_files;
 			lmt.rlim_cur = max_files;
 			rt = setrlimit(RLIMIT_NOFILE, &lmt);
@@ -453,7 +461,9 @@ void fk_setrlimit()
 			}
 			fk_log_info("new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
 		} else {//non-root
+#ifdef FK_DEBUG
 			fk_log_debug("running as non-root\n");
+#endif
 			max_files = lmt.rlim_max;//open as many as possible files
 			lmt.rlim_cur = lmt.rlim_max;
 			rt = setrlimit(RLIMIT_NOFILE, &lmt);
