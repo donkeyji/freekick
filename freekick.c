@@ -53,7 +53,6 @@ typedef struct _fk_server {
 
 static void fk_main_init(char *conf_path);
 static void fk_main_end();
-static void fk_sys_init();
 static void fk_setrlimit();
 static void fk_daemon_run();
 static void fk_write_pid_file();
@@ -519,17 +518,6 @@ void fk_signal_reg()
 	}
 }
 
-void fk_sys_init()
-{
-	fk_setrlimit();
-
-	fk_daemon_run();
-
-	fk_write_pid_file();
-
-	//fk_signal_reg();
-}
-
 void fk_svr_db_save()
 {
 	int rt;
@@ -564,7 +552,13 @@ void fk_main_init(char *conf_path)
 	//the second to init, so that all the ther module can call fk_log_xxx()
 	fk_log_init();
 
-	fk_sys_init();
+	fk_setrlimit();
+
+	fk_daemon_run();
+
+	fk_write_pid_file();
+
+	fk_signal_reg();
 
 	fk_list_init();
 
