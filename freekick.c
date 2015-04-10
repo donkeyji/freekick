@@ -146,7 +146,9 @@ int fk_on_set(fk_conn *conn)
 
 	reply = "+OK\r\n";
 	len = strlen(reply);
-	if (FK_BUF_FREE_LEN(conn->wbuf) < len) {
+	if (FK_BUF_FREE_LEN(conn->wbuf) < len
+		&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
+	{
 		conn->wbuf = fk_buf_stretch(conn->wbuf);
 	}
 	memcpy(FK_BUF_FREE_START(conn->wbuf), reply, len);
@@ -165,7 +167,9 @@ int fk_on_get(fk_conn *conn)
 	obj = fk_dict_get(server.db[conn->db_idx], key);
 	if (obj == NULL) {
 		pto_len = 5;
-		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len
+			&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
+		{
 			conn->wbuf = fk_buf_stretch(conn->wbuf);
 		}
 		sprintf(FK_BUF_FREE_START(conn->wbuf), "%s", "$-1\r\n");
@@ -174,7 +178,9 @@ int fk_on_get(fk_conn *conn)
 		slen = value->len - 1;
 		FK_UTIL_INT_LEN(slen, sslen);
 		pto_len = value->len - 1 + 5 + sslen;
-		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len
+			&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
+		{
 			conn->wbuf = fk_buf_stretch(conn->wbuf);
 		}
 		sprintf(FK_BUF_FREE_START(conn->wbuf), "$%d\r\n%s\r\n", value->len - 1, value->data);
