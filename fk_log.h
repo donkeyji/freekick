@@ -13,7 +13,6 @@ typedef struct _fk_log {
 } fk_log;
 
 void fk_log_init();
-
 void fk_log_error(const char *fmt, ...);
 void fk_log_warning(const char *fmt, ...);
 void fk_log_info(const char *fmt, ...);

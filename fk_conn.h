@@ -29,7 +29,6 @@ typedef struct _fk_conn {
 } fk_conn;
 
 fk_conn *fk_conn_create(int fd);
-
 void fk_conn_destroy(fk_conn *conn);
 
 #endif
