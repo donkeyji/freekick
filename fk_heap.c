@@ -9,11 +9,11 @@
 #define FK_HEAP_INIT_SIZE 65
 #define FK_HEAP_INC_SIZE 64
 
+static void fk_heap_extend(fk_heap *hp);
+
 fk_leaf_op dft_leaf_op = {
 	NULL
 };
-
-static void fk_heap_extend(fk_heap *hp);
 
 fk_heap *fk_heap_create(fk_leaf_op *func)
 {

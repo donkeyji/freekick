@@ -29,15 +29,10 @@ typedef struct _fk_itv {//instructive
 } fk_itv;
 
 static int fk_conf_parse_file(char *conf_path);
-
 static int fk_conf_line_read(fk_line *line, FILE *fp);
-
 static int fk_conf_line_parse(fk_line *line);
-
 static int fk_conf_line_proc(fk_line *line);
-
 static void fk_conf_line_reset(fk_line *line);
-
 static fk_itv *fk_conf_search(fk_str *name);
 
 static int fk_conf_handle_port(fk_line *line);

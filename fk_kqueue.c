@@ -9,11 +9,8 @@ typedef struct _fk_kqueue {
 } fk_kqueue;
 
 static void *fk_kqueue_create(int max_fds);
-
 static int fk_kqueue_add(void *ev_iompx, int fd, unsigned char type);
-
 static int fk_kqueue_remove(void *ev_iompx, int fd, unsigned char type);
-
 static int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout);
 
 fk_mpxop kqueue_op = {

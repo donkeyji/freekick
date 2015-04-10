@@ -11,21 +11,13 @@
 #include <freekick.h>//it's OK to do so
 
 static int fk_conn_read_cb(int fd, unsigned char type, void *ext);
-
 static int fk_conn_write_cb(int fd, unsigned char type, void *ext);
-
 static int fk_conn_timer_cb(int interval, unsigned char type, void *ext);
-
 static void fk_conn_args_consume(fk_conn *conn);
-
 static void fk_conn_args_free(fk_conn *conn);
-
 static int fk_conn_req_parse(fk_conn *conn);
-
 static int fk_conn_data_recv(fk_conn *conn);
-
 static int fk_conn_cmd_proc(fk_conn *conn);
-
 static int fk_conn_rsp_send(fk_conn *conn);
 
 fk_conn *fk_conn_create(int fd)

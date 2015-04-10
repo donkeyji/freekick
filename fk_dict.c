@@ -31,8 +31,8 @@
 }
 
 static int fk_dict_hash(fk_str *key);
-
 static int fk_dict_stretch(fk_dict *dct);
+static fk_node *fk_dict_search(fk_dict *dct, fk_str *key);
 
 static fk_elt_op default_eop = {
 	NULL,
@@ -40,8 +40,6 @@ static fk_elt_op default_eop = {
 	NULL,
 	NULL
 };
-
-static fk_node *fk_dict_search(fk_dict *dct, fk_str *key);
 
 fk_dict *fk_dict_create(fk_elt_op *eop)
 {

@@ -4,6 +4,9 @@
 #include <fk_list.h>
 #include <fk_mem.h>
 
+static fk_node *fk_list_free_node_get();
+static void fk_list_free_node_put(fk_node *nd);
+
 fk_node_op default_func = {
 	NULL,
 	NULL,
@@ -12,10 +15,6 @@ fk_node_op default_func = {
 
 //save free node
 static fk_list *free_nodes = NULL;
-
-static fk_node *fk_list_free_node_get();
-
-static void fk_list_free_node_put(fk_node *nd);
 
 fk_list *fk_list_create(fk_node_op *func)
 {

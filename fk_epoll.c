@@ -9,11 +9,8 @@ typedef struct _fk_epoll {
 } fk_epoll;
 
 static void *fk_epoll_create(int max_fds);
-
 static int fk_epoll_add(void *ev_iompx, int fd, unsigned char type);
-
 static int fk_epoll_remove(void *ev_iompx, int fd, unsigned char type);
-
 static int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout);
 
 fk_mpxop epoll_op = {

@@ -52,29 +52,20 @@ typedef struct _fk_server {
 } fk_server;
 
 static void fk_main_init(char *conf_path);
-
 static void fk_main_end();
-
 static void fk_sys_init();
-
 static void fk_setrlimit();
-
 static void fk_daemon_run();
-
 static void fk_write_pid_file();
-
 static void fk_main_loop();
-
 static void fk_svr_init();
-
 static int fk_svr_timer_cb(int interval, unsigned char type, void *arg);
-
 static int fk_svr_listen_cb(int listen_fd, unsigned char type, void *arg);
-
 static void fk_svr_db_load(fk_str *db_path);
 static void fk_svr_db_save();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
+static void fk_dict_obj_free(void *elt);
 
 //all the proto handlers
 static int fk_on_set(fk_conn *conn);
@@ -83,7 +74,6 @@ static int fk_on_hset(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
 static int fk_on_zadd(fk_conn *conn);
 
-static void fk_dict_obj_free(void *elt);
 
 //global variable
 static fk_server server;

@@ -31,10 +31,9 @@
 	fk_log_fprint_str(level, log_buff);			\
 }
 
+static void fk_log_fprint_str(unsigned int level, const char *data);
 
 fk_log logger;
-
-static void fk_log_fprint_str(unsigned int level, const char *data);
 
 void fk_log_init()
 {

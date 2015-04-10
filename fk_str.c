@@ -5,7 +5,6 @@
 #include <fk_str.h>
 #include <fk_mem.h>
 
-
 // copy memory from src
 // len: not including '\0'
 fk_str *fk_str_create(char *src, int len)
