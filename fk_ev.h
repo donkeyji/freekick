@@ -6,12 +6,12 @@
 #include <fk_heap.h>
 
 //for file ev
-#define FK_EV_READ 	0x01
+#define FK_EV_READ 		0x01
 #define FK_EV_WRITE 	0x02
 
 //for timer ev
-#define FK_EV_CYCLE 	0x01
-#define FK_EV_DELAY 	0x02
+#define FK_EV_CYCLE 	1
+#define FK_EV_DELAY 	2
 
 typedef int (*file_ev_cb) (int, unsigned char, void *);
 typedef int (*timer_ev_cb) (int, unsigned char, void *);
@@ -40,7 +40,7 @@ typedef struct _fk_tmev {
 } fk_tmev;
 
 #define DEF_LIST(type, name)	\
-typedef struct {			\
+typedef struct {				\
 	type *head;					\
 	type *tail;					\
 	int len;					\
