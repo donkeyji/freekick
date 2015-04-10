@@ -1,7 +1,7 @@
 #include <sys/event.h>
 
 typedef struct _fk_kqueue {
-	int kq;
+	int kfd;
 	int max_evs;
 	struct kevent kev;
 	struct kevent *evlist;
@@ -22,17 +22,17 @@ fk_mpxop kqueue_op = {
 
 void *fk_kqueue_create(int max_fds)
 {
-	int kq;
+	int kfd;
 	fk_kqueue *iompx;
 
-	kq = kqueue();
-	if (kq < 0) {
+	kfd = kqueue();
+	if (kfd < 0) {
 		exit(0);
 	}
 
 	iompx = (fk_kqueue *)fk_mem_alloc(sizeof(fk_kqueue));
 	iompx->max_evs = max_fds * 2;//read config from global setting
-	iompx->kq = kq;
+	iompx->kfd = kfd;
 	iompx->evlist = (struct kevent *)fk_mem_alloc(sizeof(struct kevent) * iompx->max_evs);
 	iompx->emask = (unsigned char *)fk_mem_alloc(sizeof(unsigned char *) * max_fds);
 	bzero(iompx->emask, sizeof(unsigned char *) * max_fds);
@@ -55,7 +55,7 @@ int fk_kqueue_add(void *ev_iompx, int fd, unsigned char type)
 
 	if (type & FK_EV_READ) {
 		EV_SET(&(iompx->kev), fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL );
-		rt = kevent(iompx->kq, &(iompx->kev), 1, NULL, 0, NULL);
+		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent add read failed: %s\n", strerror(errno));
 			return -1;
@@ -65,7 +65,7 @@ int fk_kqueue_add(void *ev_iompx, int fd, unsigned char type)
 
 	if (type & FK_EV_WRITE) {//both read & write
 		EV_SET(&(iompx->kev), fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL );
-		rt = kevent(iompx->kq, &(iompx->kev), 1, NULL, 0, NULL);
+		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent add write failed: %s\n", strerror(errno));
 			return -1;
@@ -92,7 +92,7 @@ int fk_kqueue_remove(void *ev_iompx, int fd, unsigned char type)
 
 	if (type & FK_EV_READ) {
 		EV_SET(&(iompx->kev), fd, EVFILT_READ, EV_DELETE, 0, 0, NULL );
-		rt = kevent(iompx->kq, &(iompx->kev), 1, NULL, 0, NULL);
+		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent delete read failed: %s\n", strerror(errno));
 			return -1;
@@ -101,7 +101,7 @@ int fk_kqueue_remove(void *ev_iompx, int fd, unsigned char type)
 	}
 	if (type & FK_EV_WRITE) {//both read & write
 		EV_SET(&(iompx->kev), fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL );
-		rt = kevent(iompx->kq, &(iompx->kev), 1, NULL, 0, NULL);
+		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent delete write failed: %s\n", strerror(errno));
 			return -1;
@@ -129,7 +129,7 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 	}
 
 	//fk_log_debug("kevent to wait\n");
-	nfds = kevent(iompx->kq, NULL, 0, iompx->evlist, iompx->max_evs, pt);
+	nfds = kevent(iompx->kfd, NULL, 0, iompx->evlist, iompx->max_evs, pt);
 	if (nfds < 0) { }
 
 	//fk_log_debug("kevent return\n");
