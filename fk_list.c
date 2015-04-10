@@ -7,7 +7,7 @@
 static fk_node *fk_list_free_node_get();
 static void fk_list_free_node_put(fk_node *nd);
 
-fk_node_op default_func = {
+static fk_node_op default_op = {
 	NULL,
 	NULL,
 	NULL
@@ -26,7 +26,7 @@ fk_list *fk_list_create(fk_node_op *func)
 	lst->tail = NULL;
 	lst->len = 0;
 	if (func == NULL) {
-		lst->method = &default_func;
+		lst->method = &default_op;
 	} else {
 		lst->method = func;
 	}
