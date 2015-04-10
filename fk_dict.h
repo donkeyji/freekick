@@ -27,14 +27,10 @@ typedef struct _fk_dict {
 } fk_dict;
 
 fk_dict *fk_dict_create();
-
 void fk_dict_destroy(fk_dict *dct);
-
 void fk_dict_add(fk_dict *dct, fk_str *key, void *value);
-
 int fk_dict_remove(fk_dict *dct, fk_str *key);
-
 void fk_dict_print(fk_dict *dct);
-
 void *fk_dict_get(fk_dict *dct, fk_str *key);
+
 #endif

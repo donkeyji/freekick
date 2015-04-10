@@ -23,13 +23,9 @@ typedef struct _fk_heap {
 } fk_heap;
 
 fk_heap *fk_heap_create(fk_leaf_op *func);
-
 fk_leaf *fk_heap_pop(fk_heap *hp);
-
 void fk_heap_push(fk_heap *hp, fk_leaf *data);
-
 fk_leaf *fk_heap_root(fk_heap *hp);
-
 void fk_heap_remove(fk_heap *hp, fk_leaf *leaf);
 
 #endif
