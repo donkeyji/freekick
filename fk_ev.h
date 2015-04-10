@@ -49,7 +49,7 @@ typedef struct {			\
 DEF_LIST(fk_ioev, fk_ioev_list);
 DEF_LIST(fk_tmev, fk_tmev_list);
 
-#define fk_ev_list_insert(lst, nd) {	\
+#define FK_EV_LIST_INSERT(lst, nd) {	\
     if (lst->head == NULL) {			\
         nd->next = NULL;				\
         nd->prev = NULL;				\
@@ -62,7 +62,7 @@ DEF_LIST(fk_tmev, fk_tmev_list);
     lst->len++;							\
 }
 
-#define fk_ev_list_remove(lst, nd) {		\
+#define FK_EV_LIST_REMOVE(lst, nd) {		\
     if (lst->len > 0) {						\
 		if (lst->len == 1) {				\
 			lst->head = NULL;				\
@@ -83,7 +83,7 @@ DEF_LIST(fk_tmev, fk_tmev_list);
 	}										\
 }
 
-#define fk_ev_list_create(type, lst)	\
+#define FK_EV_LIST_CREATE(type, lst)	\
 	(type *)fk_mem_alloc(sizeof(type));\
 	lst->head = NULL;					\
 	lst->tail = NULL;					\

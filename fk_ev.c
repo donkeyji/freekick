@@ -44,8 +44,8 @@ void fk_ev_init()
 	evmgr.timer_list = fk_list_create(NULL);
 	evmgr.timer_heap = fk_heap_create(&tmev_func);
 	//use macro to initialize this two member
-	evmgr.exp_tmev = fk_ev_list_create(fk_tmev_list, evmgr.exp_tmev);
-	evmgr.act_ioev = fk_ev_list_create(fk_ioev_list, evmgr.act_ioev);
+	evmgr.exp_tmev = FK_EV_LIST_CREATE(fk_tmev_list, evmgr.exp_tmev);
+	evmgr.act_ioev = FK_EV_LIST_CREATE(fk_ioev_list, evmgr.act_ioev);
 	evmgr.read_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * max_fds);
 	evmgr.write_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * max_fds);
 
@@ -145,7 +145,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 
 	//maybe this ioev in active list
 	if (ioev->prev != NULL || ioev->next != NULL || evmgr.act_ioev->head == ioev) {
-		fk_ev_list_remove(evmgr.act_ioev, ioev);
+		FK_EV_LIST_REMOVE(evmgr.act_ioev, ioev);
 	}
 	return 0;
 }
@@ -213,7 +213,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 
 	//maybe this tmev in expired list
 	if (tmev->prev != NULL || tmev->next != NULL || evmgr.exp_tmev->head == tmev) {
-		fk_ev_list_remove(evmgr.exp_tmev, tmev);
+		FK_EV_LIST_REMOVE(evmgr.exp_tmev, tmev);
 	}
 
 	return 0;
@@ -254,7 +254,7 @@ int fk_ev_pending_tmev_update()
 		cmp = FK_UTIL_TMVAL_CMP(&now, &(tmev->expire));
 		if (cmp >= 0) {
 			fk_heap_pop(evmgr.timer_heap);//pop root from the heap
-			fk_ev_list_insert(evmgr.exp_tmev, tmev);//add to the exp list
+			FK_EV_LIST_INSERT(evmgr.exp_tmev, tmev);//add to the exp list
 			root = fk_heap_root(evmgr.timer_heap);//get new root
 		} else {//break directly
 			break;
@@ -283,7 +283,7 @@ int fk_ev_tmev_update_old()
             fk_list_remove(evmgr.timer_list, cur);
             //insert: do not copy tmev obj
             //tmev is always what it is
-            fk_ev_list_insert(evmgr.exp_tmev, tmev);
+            FK_EV_LIST_INSERT(evmgr.exp_tmev, tmev);
         }
         cur = fk_list_iter_next(evmgr.timer_list);//get next positon
     }
@@ -319,7 +319,7 @@ int fk_ev_expired_tmev_proc_old()
         if (type == FK_EV_CYCLE) {
             fk_util_cal_expire(&(tmev->expire), interval);//calculate the expire time again
             fk_heap_push(evmgr.timer_heap, tmev);
-            //fk_ev_list_insert(evmgr.timer_list, tmev);
+            //FK_EV_LIST_INSERT(evmgr.timer_list, tmev);
         } //else {//FK_EV_SINGLE
         //do free the tmev obj, it is not needed any more
         //	fk_ev_tmev_destroy(tmev);
@@ -347,7 +347,7 @@ int fk_ev_expired_tmev_proc()
 		cur = tmev;//save current position
 		tmev = tmev->next;//go to the next position
 		//step 1: remove the expired tmev from the expired list first!!!!
-		fk_ev_list_remove(evmgr.exp_tmev, cur);//remove current from the expired list
+		FK_EV_LIST_REMOVE(evmgr.exp_tmev, cur);//remove current from the expired list
 		//step 2: call the callback of the expired tmev
 		rt = tmcb(interval, type, arg);
 		//step 3: how to handle the return value of the callback???
@@ -381,7 +381,7 @@ int fk_ev_active_ioev_proc()
 		ioev = ioev->next;//go to the next positon
 
 		//step 1: remove the active ioev from the active list first!!!!
-		fk_ev_list_remove(evmgr.act_ioev, cur);
+		FK_EV_LIST_REMOVE(evmgr.act_ioev, cur);
 		//step 2: call the callback of the active ioev
 		rt = iocb(fd, type, arg);
 		//step 3: how to process the return value of the callback????
@@ -469,7 +469,7 @@ int fk_ev_ioev_activate(int fd, unsigned char type)
 	if (type & FK_EV_WRITE) {
 		ioev = evmgr.write_ev[fd];
 	}
-	fk_ev_list_insert(evmgr.act_ioev, ioev);
+	FK_EV_LIST_INSERT(evmgr.act_ioev, ioev);
 	return 0;
 }
 
