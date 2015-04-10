@@ -263,72 +263,6 @@ int fk_ev_pending_tmev_update()
 	return 0;
 }
 
-/*
-//process timeout timer
-int fk_ev_tmev_update_old()
-{
-    int cmp;
-    fk_node *cur;
-    fk_tmev *tmev;
-    struct timeval now;
-
-    gettimeofday(&now, NULL);
-
-    cur = fk_list_iter_new(evmgr.timer_list, FORWARD);
-    while (cur != NULL) {
-        tmev = (fk_tmev *)(FK_NODE_DATA(cur));
-        cmp = FK_UTIL_TMVAL_CMP(&now, &(tmev->expire));
-        if (cmp >= 0) {//expired
-            //remove: do not free tmev obj
-            fk_list_remove(evmgr.timer_list, cur);
-            //insert: do not copy tmev obj
-            //tmev is always what it is
-            FK_EV_LIST_INSERT(evmgr.exp_tmev, tmev);
-        }
-        cur = fk_list_iter_next(evmgr.timer_list);//get next positon
-    }
-    return 0;
-}
-*/
-
-/*
-int fk_ev_expired_tmev_proc_old()
-{
-    void *arg;
-    int interval;
-    fk_tmev *tmev;
-    timer_ev_cb tmcb;
-    fk_node *tmp, *cur;
-    unsigned char type;
-
-    cur = fk_list_iter_new(evmgr.exp_tmev, FORWARD);
-
-    while (cur != NULL) {
-        tmev = (fk_tmev *)(FK_NODE_DATA(cur));
-        arg = tmev->arg;
-        tmcb = tmev->tmcb;
-        type = tmev->type;
-        interval = tmev->interval;
-        tmcb(interval, type, arg);
-
-        tmp = cur;//save cur positon
-        cur = fk_list_iter_next(evmgr.exp_tmev);//get next positon
-
-        fk_list_remove(evmgr.exp_tmev, tmp);//delte tmp from exp_tmev
-
-        if (type == FK_EV_CYCLE) {
-            fk_util_cal_expire(&(tmev->expire), interval);//calculate the expire time again
-            fk_heap_push(evmgr.timer_heap, tmev);
-            //FK_EV_LIST_INSERT(evmgr.timer_list, tmev);
-        } //else {//FK_EV_SINGLE
-        //do free the tmev obj, it is not needed any more
-        //	fk_ev_tmev_destroy(tmev);
-        //}
-    }
-    return 0;
-}
-*/
-
 int fk_ev_expired_tmev_proc()
 {
 	void *arg;
@@ -392,35 +326,6 @@ int fk_ev_active_ioev_proc()
 	return 0;
 }
 
-/*
-int fk_ev_ioev_actived_proc_old()
-{
-    int fd;
-    void *arg;
-    fk_ioev *ioev;
-    file_ev_cb iocb;
-    unsigned char type;
-    fk_node *tmp, *cur;
-
-    cur = fk_list_iter_new(evmgr.act_ioev, FORWARD);
-
-    while (cur != NULL) {
-        ioev = (fk_ioev *)(FK_NODE_DATA(cur));
-        fd = ioev->fd;
-        arg = ioev->arg;
-        iocb = ioev->iocb;
-        type = ioev->type;
-        iocb(fd, type, arg);
-
-        tmp = cur;//save cur positon
-        cur = fk_list_iter_next(evmgr.act_ioev);//get next positon
-        //fk_ev_ioev_destroy(cur->data);//free file ioev
-        fk_list_remove(evmgr.act_ioev, tmp);//delte tmp
-    }
-    return 0;
-}
-*/
-
 fk_tmev *fk_ev_nearest_tmev_get()
 {
 	void *root;
@@ -430,34 +335,6 @@ fk_tmev *fk_ev_nearest_tmev_get()
 	tmev = (fk_tmev *)root;
 	return tmev;
 }
-
-
-/*
-fk_tmev *fk_ev_tmev_nearest_old()
-{
-    int cmp;
-    fk_node *cur;
-    fk_tmev *nearest, *tmev;
-
-    nearest = NULL;
-
-    cur = fk_list_iter_new(evmgr.timer_list, FORWARD);
-    while (cur != NULL) {
-        if (nearest == NULL) {//the first node
-            nearest = (fk_tmev *)(FK_NODE_DATA(cur));
-        } else {//must compare with nearest
-            tmev = (fk_tmev *)(FK_NODE_DATA(cur));
-            cmp = FK_UTIL_TMVAL_CMP(&(nearest->expire), &(tmev->expire));
-            if (cmp > 0) {
-                nearest = tmev;
-            }
-        }
-
-        cur = fk_list_iter_next(evmgr.timer_list);//get next positon
-    }
-    return nearest;
-}
-*/
 
 int fk_ev_ioev_activate(int fd, unsigned char type)
 {
@@ -481,4 +358,3 @@ int fk_ev_tmev_cmp(void *tmev1, void *tmev2)
 	t2 = (fk_tmev *)tmev2;
 	return FK_UTIL_TMVAL_CMP(&(t1->expire), &(t2->expire));
 }
-
