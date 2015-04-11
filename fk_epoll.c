@@ -52,40 +52,39 @@ int fk_epoll_add(void *ev_iompx, int fd, unsigned char type)
 {
 	int rt, op;
 	fk_epoll *iompx;
-	int32_t omk, nmk;
-	unsigned char otyp;
+	int32_t oev, nev;
+	unsigned char otp;
 
 	iompx = (fk_epoll *)ev_iompx;
 
-	otyp = iompx->emask[fd];
-	if (type & otyp) {
+	otp = iompx->emask[fd];
+	if (type & otp) {
 		fk_log_error("try to add existing ev\n");
 		return -1;
 	}
 
-	omk = 0x0000;
-	if (otyp & FK_EV_READ) {
-		omk |= EPOLLIN;
+	oev = 0x0000;
+	if (otp & FK_EV_READ) {
+		oev |= EPOLLIN;
 	}
-	if (otyp & FK_EV_WRITE) {
-		omk |= EPOLLOUT;
+	if (otp & FK_EV_WRITE) {
+		oev |= EPOLLOUT;
 	}
 
-	nmk = 0x0000;
+	nev = 0x0000;
 	if (type & FK_EV_READ) {
-		nmk |= EPOLLIN;
+		nev |= EPOLLIN;
 	}
 	if (type & FK_EV_WRITE) {
-		nmk |= EPOLLOUT;
+		nev |= EPOLLOUT;
 	}
 
-	if (omk == 0x0000) {
+	if (oev == 0x0000) {
 		op = EPOLL_CTL_ADD;
-		iompx->ev.events = nmk;
 	} else {
 		op = EPOLL_CTL_MOD;
-		iompx->ev.events = omk | nmk;
 	}
+	iompx->ev.events = oev | nev;
 	iompx->ev.data.fd = fd;
 
 	rt = epoll_ctl(iompx->efd, op, fd, &(iompx->ev));
@@ -95,11 +94,7 @@ int fk_epoll_add(void *ev_iompx, int fd, unsigned char type)
 	}
 
 	//if succeed, save emask
-	if (omk == 0x0000) {
-		iompx->emask[fd] = type;
-	} else {
-		iompx->emask[fd] = otyp | type;
-	}
+	iompx->emask[fd] = otp | type;
 	return 0;
 }
 
@@ -107,42 +102,39 @@ int fk_epoll_remove(void *ev_iompx, int fd, unsigned char type)
 {
 	int rt, op;
 	fk_epoll *iompx;
-	int32_t omk, nmk;
-	unsigned char otyp;
-
-	FK_UNUSE(type);
+	int32_t oev, nev;
+	unsigned char otp;
 
 	iompx = (fk_epoll *)ev_iompx;
 
-	otyp = iompx->emask[fd];
-	if (!(type & otyp)) {
+	otp = iompx->emask[fd];
+	if (!(type & otp)) {
 		fk_log_error("try to remove a non-existing ev\n");
 		return -1;
 	}
 
-	omk = 0x0000;
-	if (otyp & FK_EV_READ) {
-		omk |= EPOLLIN;
+	oev = 0x0000;
+	if (otp & FK_EV_READ) {
+		oev |= EPOLLIN;
 	}
-	if (otyp & FK_EV_WRITE) {
-		omk |= EPOLLOUT;
+	if (otp & FK_EV_WRITE) {
+		oev |= EPOLLOUT;
 	}
 
-	nmk = 0x0000;
+	nev = 0x0000;
 	if (type & FK_EV_READ) {
-		nmk |= EPOLLIN;
+		nev |= EPOLLIN;
 	}
 	if (type & FK_EV_WRITE) {
-		nmk |= EPOLLOUT;
+		nev |= EPOLLOUT;
 	}
 
-	if (omk == nmk) {
+	if (oev == nev) {
 		op = EPOLL_CTL_DEL;
-		iompx->ev.events = nmk;
 	} else {
 		op = EPOLL_CTL_MOD;
-		iompx->ev.events = omk & (~nmk);
 	}
+	iompx->ev.events = oev & (~nev);
 	iompx->ev.data.fd = fd;
 
 	rt = epoll_ctl(iompx->efd, op, fd, &(iompx->ev));
@@ -152,11 +144,7 @@ int fk_epoll_remove(void *ev_iompx, int fd, unsigned char type)
 	}
 
 	//if succeed, remove from the emask
-	if (omk == nmk) {
-		iompx->emask[fd] = 0x00;
-	} else {
-		iompx->emask[fd] = otyp & (~type);//my clever!!!!!!
-	}
+	iompx->emask[fd] = otp & (~type);//my clever!!!!!!
 	return 0;
 }
 
