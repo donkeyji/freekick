@@ -85,7 +85,7 @@ int fk_conn_data_recv(fk_conn *conn)
 #endif
 	conn->rbuf = fk_buf_shrink(conn->rbuf);
 	if (FK_BUF_FREE_LEN(conn->rbuf) <= conn->rbuf->len / 4) {
-		fk_buf_shift(conn->rbuf);
+		FK_BUF_SHIFT(conn->rbuf);
 	}
 	if (FK_BUF_FREE_LEN(conn->rbuf) == 0
 		&& FK_BUF_TOTAL_LEN(conn->rbuf) < FK_BUF_HIGHWAT) 
@@ -284,7 +284,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	fk_log_debug("[before adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
 #endif
 	if (FK_BUF_FREE_LEN(conn->wbuf) <= conn->wbuf->len / 4) {
-		fk_buf_shift(conn->wbuf);
+		FK_BUF_SHIFT(conn->wbuf);
 	}
 	if (FK_BUF_FREE_LEN(conn->wbuf) == 0
 		&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 

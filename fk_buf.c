@@ -61,7 +61,8 @@ fk_buf *fk_buf_shrink(fk_buf *buf)
 	return buf;
 }
 
-int fk_buf_shift(fk_buf *buf)
+/*
+int FK_BUF_SHIFT(fk_buf *buf)
 {
 	if (buf->low > 0) {
 		memmove(buf->data, 
@@ -75,6 +76,7 @@ int fk_buf_shift(fk_buf *buf)
 	}
 	return -1;
 }
+*/
 
 void fk_buf_adjust(fk_buf *buf)
 {

@@ -19,7 +19,7 @@ void fk_buf_print(fk_buf *buf);
 void fk_buf_adjust(fk_buf *buf);
 //fk_buf *FK_BUF_STRETCH(fk_buf *buf);
 fk_buf *fk_buf_shrink(fk_buf *buf);
-int fk_buf_shift(fk_buf *buf);
+//int FK_BUF_SHIFT(fk_buf *buf);
 
 #define FK_BUF_DATA(buf) ((buf)->data)
 
@@ -52,6 +52,17 @@ int fk_buf_shift(fk_buf *buf);
 		(buf) = fk_mem_realloc((buf), sizeof(fk_buf) + (buf)->len * 2);	\
 		(buf)->len *= 2;												\
 	}																	\
+}
+
+#define FK_BUF_SHIFT(buf) 	{		\
+	if ((buf)->low > 0) {				\
+		memmove((buf)->data, 			\
+			(buf)->data + (buf)->low, 	\
+			(buf)->high - (buf)->low	\
+		);							\
+		(buf)->high -= (buf)->low;		\
+		(buf)->low = 0;				\
+	}								\
 }
 
 #endif
