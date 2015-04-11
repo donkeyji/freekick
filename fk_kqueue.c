@@ -5,7 +5,7 @@ typedef struct _fk_kqueue {
 	int max_evs;
 	struct kevent kev;
 	struct kevent *evlist;
-	unsigned char *emask;
+	//unsigned char *emask;
 } fk_kqueue;
 
 static void *fk_kqueue_create(int max_fds);
@@ -34,8 +34,8 @@ void *fk_kqueue_create(int max_fds)
 	iompx->max_evs = max_fds * 2;//read config from global setting
 	iompx->kfd = kfd;
 	iompx->evlist = (struct kevent *)fk_mem_alloc(sizeof(struct kevent) * iompx->max_evs);
-	iompx->emask = (unsigned char *)fk_mem_alloc(sizeof(unsigned char *) * max_fds);
-	bzero(iompx->emask, sizeof(unsigned char *) * max_fds);
+	//iompx->emask = (unsigned char *)fk_mem_alloc(sizeof(unsigned char *) * max_fds);
+	//bzero(iompx->emask, sizeof(unsigned char *) * max_fds);
 
 	return iompx;
 }
@@ -44,14 +44,14 @@ int fk_kqueue_add(void *ev_iompx, int fd, unsigned char type)
 {
 	int rt;
 	fk_kqueue *iompx;
-	unsigned char otyp;
+	//unsigned char otyp;
 
 	iompx = (fk_kqueue *)(ev_iompx);
 
-	otyp = iompx->emask[fd];
-	if (otyp & type) {
-		return -1;
-	}
+	//otyp = iompx->emask[fd];
+	//if (otyp & type) {
+		//return -1;
+	//}
 
 	if (type & FK_EV_READ) {
 		EV_SET(&(iompx->kev), fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL );
@@ -60,7 +60,7 @@ int fk_kqueue_add(void *ev_iompx, int fd, unsigned char type)
 			fk_log_error("kevent add read failed: %s\n", strerror(errno));
 			return -1;
 		}
-		iompx->emask[fd] |= FK_EV_READ;
+		//iompx->emask[fd] |= FK_EV_READ;
 	}
 
 	if (type & FK_EV_WRITE) {//both read & write
@@ -70,7 +70,7 @@ int fk_kqueue_add(void *ev_iompx, int fd, unsigned char type)
 			fk_log_error("kevent add write failed: %s\n", strerror(errno));
 			return -1;
 		}
-		iompx->emask[fd] |= FK_EV_WRITE;
+		//iompx->emask[fd] |= FK_EV_WRITE;
 	}
 
 	return 0;
@@ -80,15 +80,15 @@ int fk_kqueue_remove(void *ev_iompx, int fd, unsigned char type)
 {
 	int rt;
 	fk_kqueue *iompx;
-	unsigned char otyp;
+	//unsigned char otyp;
 
 	iompx = (fk_kqueue *)ev_iompx;
 
-	otyp = iompx->emask[fd];
+	//otyp = iompx->emask[fd];
 
-	if (type & (~otyp)) {
-		return -1;
-	}
+	//if (type & (~otyp)) {
+		//return -1;
+	//}
 
 	if (type & FK_EV_READ) {
 		EV_SET(&(iompx->kev), fd, EVFILT_READ, EV_DELETE, 0, 0, NULL );
@@ -97,7 +97,7 @@ int fk_kqueue_remove(void *ev_iompx, int fd, unsigned char type)
 			fk_log_error("kevent delete read failed: %s\n", strerror(errno));
 			return -1;
 		}
-		iompx->emask[fd] &= (~FK_EV_READ);
+		//iompx->emask[fd] &= (~FK_EV_READ);
 	}
 	if (type & FK_EV_WRITE) {//both read & write
 		EV_SET(&(iompx->kev), fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL );
@@ -106,7 +106,7 @@ int fk_kqueue_remove(void *ev_iompx, int fd, unsigned char type)
 			fk_log_error("kevent delete write failed: %s\n", strerror(errno));
 			return -1;
 		}
-		iompx->emask[fd] &= (~FK_EV_WRITE);
+		//iompx->emask[fd] &= (~FK_EV_WRITE);
 	}
 
 	return 0;
