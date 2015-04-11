@@ -1,11 +1,17 @@
 #include <sys/event.h>
 
+/*
+ * no need to keep tracking the existing ev associated to fd, 
+ * which should be done in epoll. If an existing/non-existing 
+ * ev is added/removed, just return -1 to the caller
+ */
+
 typedef struct _fk_kqueue {
 	int kfd;
 	int max_evs;
 	struct kevent kev;
 	struct kevent *evlist;
-	//unsigned char *emask;
+	//unsigned char *emask;//no need for kqueue
 } fk_kqueue;
 
 static void *fk_kqueue_create(int max_fds);
@@ -27,7 +33,7 @@ void *fk_kqueue_create(int max_fds)
 
 	kfd = kqueue();
 	if (kfd < 0) {
-		exit(0);
+		return NULL;
 	}
 
 	iompx = (fk_kqueue *)fk_mem_alloc(sizeof(fk_kqueue));
