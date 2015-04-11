@@ -292,14 +292,14 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	fk_log_debug("[after adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
 #endif
 	rt = pto->handler(conn);
-	if (rt < 0) {//args are not consumed
+	if (rt < 0) {//args are not consumed, free all the args
 		fk_conn_args_free(conn);
 		return -1;
 	}
 	if (pto->type == FK_PROTO_READ) {//any arg is not saved into the dict
-		fk_conn_args_free(conn);
+		fk_conn_args_free(conn);//free all the args
 	} else {//args are saved into the dict expect args[0]
-		fk_conn_args_consume(conn);
+		fk_conn_args_consume(conn);//free args[0]
 	}
 	return 0;
 }

@@ -74,7 +74,6 @@ static int fk_on_set(fk_conn *conn);
 static int fk_on_get(fk_conn *conn);
 static int fk_on_hset(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
-static int fk_on_zadd(fk_conn *conn);
 
 //global variable
 static fk_server server;
@@ -92,7 +91,6 @@ static fk_proto protos[] = {
 	{"GET", 	FK_PROTO_READ, 		2, 	fk_on_get},
 	{"HSET", 	FK_PROTO_WRITE, 	4, 	fk_on_hset},
 	{"HGET", 	FK_PROTO_READ, 		4, 	fk_on_hget},
-	{"ZADD", 	FK_PROTO_WRITE, 	4, 	fk_on_zadd},
 	{NULL, 		FK_PROTO_INVALID, 	0, 	NULL}
 };
 
@@ -129,7 +127,7 @@ fk_proto *fk_proto_search(fk_str *name)
 
 int fk_on_set(fk_conn *conn)
 {
-	int i, len;
+	int i, len, rt;
 	char *reply;
 	fk_str *key;
 	fk_obj *value;
@@ -143,7 +141,12 @@ int fk_on_set(fk_conn *conn)
 
 	key = conn->args[1];
 	value = fk_obj_create(FK_OBJ_STR, conn->args[2]);
-	fk_dict_add(server.db[conn->db_idx], key, value);
+	rt = fk_dict_add(server.db[conn->db_idx], key, value);
+	if (rt < 0) {
+		fk_obj_destroy(value);//destroy this fk_obj
+		fk_log_error("failed to add to the dict\n");
+		return -1;
+	}
 
 	reply = "+OK\r\n";
 	len = strlen(reply);
@@ -225,11 +228,6 @@ int fk_on_hset(fk_conn *conn)
 }
 
 int fk_on_hget(fk_conn *conn)
-{
-	return 0;
-}
-
-int fk_on_zadd(fk_conn *conn)
 {
 	return 0;
 }

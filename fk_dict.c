@@ -115,7 +115,7 @@ int fk_dict_hash(fk_str *key)
 	return hash;
 }
 
-void fk_dict_add(fk_dict *dct, fk_str *key, void *value)
+int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 {
 	fk_node *nd;
 	fk_elt *elt;
@@ -138,7 +138,7 @@ void fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 		fk_dict_elt_create(elt, key, value, dct->eop);
 		fk_list_insert(lst, elt);
 		dct->used++;
-		return;
+		return 0;
 	}
 
 	//update the old value of the element
@@ -150,7 +150,7 @@ void fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 	if (dct->eop->val_free != NULL) {
 		dct->eop->val_free(old_val);
 	}
-	return;
+	return 0;
 }
 
 int fk_dict_remove(fk_dict *dct, fk_str *key)
@@ -177,6 +177,7 @@ int fk_dict_remove(fk_dict *dct, fk_str *key)
 	return 0;
 }
 
+#ifdef FK_DEBUG
 void fk_dict_print(fk_dict *dct)
 {
 	int i;
@@ -193,6 +194,7 @@ void fk_dict_print(fk_dict *dct)
 		}
 	}
 }
+#endif
 
 int fk_dict_stretch(fk_dict *dct)
 {
