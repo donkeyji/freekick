@@ -83,7 +83,8 @@ int fk_conn_data_recv(fk_conn *conn)
 #ifdef FK_DEBUG
 	fk_log_debug("[before rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
 #endif
-	conn->rbuf = fk_buf_shrink(conn->rbuf);
+	//conn->rbuf = FK_BUF_SHRINK(conn->rbuf);
+	FK_BUF_SHRINK(conn->rbuf);
 	if (FK_BUF_FREE_LEN(conn->rbuf) <= conn->rbuf->len / 4) {
 		FK_BUF_SHIFT(conn->rbuf);
 	}
@@ -380,7 +381,8 @@ int fk_conn_write_cb(int fd, unsigned char type, void *ext)
 
 	FK_BUF_LOW_INC(conn->wbuf, rt);
 
-	conn->wbuf = fk_buf_shrink(conn->wbuf);
+	//conn->wbuf = FK_BUF_SHRINK(conn->wbuf);
+	FK_BUF_SHRINK(conn->wbuf);
 
 	//if all the data in wbuf is sent, remove the write ioev
 	//but donot destroy the write ioev

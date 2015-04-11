@@ -8,8 +8,8 @@ fk_buf *fk_buf_create()
 {
 	fk_buf *buf;
 
-	buf = (fk_buf *)fk_mem_alloc(sizeof(fk_buf) + FK_BUF_LEN);
-	buf->len = FK_BUF_LEN;
+	buf = (fk_buf *)fk_mem_alloc(sizeof(fk_buf) + FK_BUF_INIT_LEN);
+	buf->len = FK_BUF_INIT_LEN;
 	buf->low = 0;
 	buf->high = 0;
 	return buf;
@@ -43,10 +43,11 @@ fk_buf *FK_BUF_STRETCH(fk_buf *buf)
 }
 */
 
-fk_buf *fk_buf_shrink(fk_buf *buf)
+/*
+fk_buf *FK_BUF_SHRINK(fk_buf *buf)
 {
 	if (buf->len >= FK_BUF_HIGHWAT
-		&& buf->high - buf->low < FK_BUF_LEN) 
+		&& buf->high - buf->low < FK_BUF_INIT_LEN) 
 	{
 		memmove(buf->data, 
 			buf->data + buf->low, 
@@ -54,12 +55,13 @@ fk_buf *fk_buf_shrink(fk_buf *buf)
 		);
 		buf->high -= buf->low;
 		buf->low = 0;
-		buf = fk_mem_realloc(buf, sizeof(fk_buf) + FK_BUF_LEN);
-		buf->len = FK_BUF_LEN;
+		buf = fk_mem_realloc(buf, sizeof(fk_buf) + FK_BUF_INIT_LEN);
+		buf->len = FK_BUF_INIT_LEN;
 		fk_log_debug("shrink\n");
 	}
 	return buf;
 }
+*/
 
 /*
 int FK_BUF_SHIFT(fk_buf *buf)
@@ -105,7 +107,7 @@ void fk_buf_adjust(fk_buf *buf)
 
 	//need to shrink
 	if (buf->len >= FK_BUF_HIGHWAT
-		&& buf->high - buf->low < FK_BUF_LEN) 
+		&& buf->high - buf->low < FK_BUF_INIT_LEN) 
 	{
 		memmove(buf->data, 
 			buf->data + buf->low, 
@@ -113,8 +115,8 @@ void fk_buf_adjust(fk_buf *buf)
 		);
 		buf->high -= buf->low;
 		buf->low = 0;
-		buf = fk_mem_realloc(buf, sizeof(fk_buf) + FK_BUF_LEN);
-		buf->len = FK_BUF_LEN;
+		buf = fk_mem_realloc(buf, sizeof(fk_buf) + FK_BUF_INIT_LEN);
+		buf->len = FK_BUF_INIT_LEN;
 		fk_log_debug("shrink\n");
 	}
 }
