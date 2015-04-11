@@ -72,10 +72,10 @@ void fk_dict_destroy(fk_dict *dct)
 		if (lst == NULL) {
 			continue;
 		}
-		nd = lst->head;
-		while (nd != NULL) {
+		nd = fk_list_iter_begin(lst, FK_ITER_FORWARD);
+		while (!fk_list_iter_end(lst)) {
 			elt = (fk_elt *)nd->data;		
-			nxt = nd->next;
+			nxt = fk_list_iter_next(lst);
 			fk_list_remove(lst, nd);//do not free nd->data
 			fk_dict_elt_destroy(elt, dct->eop);//free nd->data
 			nd = nxt;
@@ -242,7 +242,7 @@ int fk_dict_stretch(fk_dict *dct)
 			continue;
 		}
 		nd = fk_list_iter_begin(lst, FK_ITER_FORWARD);
-		while (nd != fk_list_iter_end(lst)) {
+		while (!fk_list_iter_end(lst)) {
 			nxt = fk_list_iter_next(lst);
 			fk_list_remove_only(lst, nd);//remove first
 			key = ((fk_elt *)nd->data)->key;

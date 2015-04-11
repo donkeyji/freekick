@@ -119,6 +119,7 @@ fk_node *fk_list_iter_begin(fk_list *lst, int dir)
 	if (dir == FK_ITER_FORWARD) {
 		lst->iter.cur = lst->head;
 	}
+	lst->iter.end = NULL;
 	return lst->iter.cur;
 }
 
@@ -131,6 +132,14 @@ fk_node *fk_list_iter_next(fk_list *lst)
 		lst->iter.cur = lst->iter.cur->next;
 	}
 	return lst->iter.cur;
+}
+
+int fk_list_iter_end(fk_list *lst)
+{
+	if (lst->iter.cur == lst->iter.end) {
+		return 1;
+	}
+	return 0;
 }
 
 void fk_list_insert(fk_list *lst, void *val)

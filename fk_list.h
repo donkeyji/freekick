@@ -5,7 +5,6 @@
 #define FK_ITER_BACKWARD 0
 
 #define FK_NODE_DATA(nd) (nd->data)
-#define fk_list_iter_end(lst) NULL
 
 typedef struct _fk_node {
 	struct _fk_node *prev;
@@ -15,6 +14,7 @@ typedef struct _fk_node {
 
 typedef struct _fk_iter {
 	fk_node *cur;
+	fk_node *end;
 	int dir;//0, 1
 } fk_iter;
 
@@ -40,6 +40,7 @@ void fk_list_destroy(fk_list *lst);
 void fk_list_insert(fk_list *lst, void *val);
 fk_node *fk_list_iter_next(fk_list *lst);
 fk_node *fk_list_iter_begin(fk_list *lst, int dir);
+int fk_list_iter_end(fk_list *lst);
 void fk_list_remove(fk_list *lst, fk_node *nd);
 void fk_list_init();
 void fk_list_free_display();
