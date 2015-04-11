@@ -83,17 +83,12 @@ int fk_conn_data_recv(fk_conn *conn)
 #ifdef FK_DEBUG
 	fk_log_debug("[before rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
 #endif
-	//conn->rbuf = FK_BUF_SHRINK(conn->rbuf);
 	FK_BUF_SHRINK(conn->rbuf);
 	if (FK_BUF_FREE_LEN(conn->rbuf) <= conn->rbuf->len / 4) {
 		FK_BUF_SHIFT(conn->rbuf);
 	}
-	if (FK_BUF_FREE_LEN(conn->rbuf) == 0
-		&& FK_BUF_TOTAL_LEN(conn->rbuf) < FK_BUF_HIGHWAT) 
-	{
-		//fk_log_debug("before stretch rbuf\n");
+	if (FK_BUF_FREE_LEN(conn->rbuf) == 0) {
 		FK_BUF_STRETCH(conn->rbuf);
-		//fk_log_debug("after stretch rbuf\n");
 	}
 #ifdef FK_DEBUG
 	fk_log_debug("[after rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
@@ -286,9 +281,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	if (FK_BUF_FREE_LEN(conn->wbuf) <= conn->wbuf->len / 4) {
 		FK_BUF_SHIFT(conn->wbuf);
 	}
-	if (FK_BUF_FREE_LEN(conn->wbuf) == 0
-		&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
-	{
+	if (FK_BUF_FREE_LEN(conn->wbuf) == 0) {
 		FK_BUF_STRETCH(conn->wbuf);
 	}
 	if (FK_BUF_FREE_LEN(conn->wbuf) == 0) {
@@ -393,7 +386,6 @@ int fk_conn_write_cb(int fd, unsigned char type, void *ext)
 
 	FK_BUF_LOW_INC(conn->wbuf, rt);
 
-	//conn->wbuf = FK_BUF_SHRINK(conn->wbuf);
 	FK_BUF_SHRINK(conn->wbuf);
 
 	//if all the data in wbuf is sent, remove the write ioev
