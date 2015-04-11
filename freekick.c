@@ -90,7 +90,7 @@ static fk_proto protos[] = {
 	{"SET", 	FK_PROTO_WRITE, 	3, 	fk_on_set},
 	{"GET", 	FK_PROTO_READ, 		2, 	fk_on_get},
 	{"HSET", 	FK_PROTO_WRITE, 	4, 	fk_on_hset},
-	{"HGET", 	FK_PROTO_READ, 		4, 	fk_on_hget},
+	{"HGET", 	FK_PROTO_READ, 		3, 	fk_on_hget},
 	{NULL, 		FK_PROTO_INVALID, 	0, 	NULL}
 };
 
@@ -147,8 +147,8 @@ int fk_on_set(fk_conn *conn)
 		fk_log_error("failed to add to the dict\n");
 		return -1;
 	}
-	conn->args[1] = NULL;
-	conn->args[2] = NULL;
+	FK_CONN_ARG_CONSUME(conn->args[1]);
+	FK_CONN_ARG_CONSUME(conn->args[2]);
 
 	reply = "+OK\r\n";
 	len = strlen(reply);
@@ -167,36 +167,42 @@ int fk_on_set(fk_conn *conn)
 
 int fk_on_get(fk_conn *conn)
 {
-	int pto_len, slen, sslen;
 	fk_obj *obj;
+	char *fmt, *rsp;
 	fk_str *key, *value;
+	int pto_len, slen, sslen, empty, rsp_len;
 
 	key = conn->args[1];
 	obj = fk_dict_get(server.db[conn->db_idx], key);
+	empty = 1;
 	if (obj == NULL) {
 		pto_len = 5;
-		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-			FK_BUF_STRETCH(conn->wbuf);
-		}
-		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-			fk_log_warn("wbuf beyond max\n");
-			return -1;
-		}
-		sprintf(FK_BUF_FREE_START(conn->wbuf), "%s", "$-1\r\n");
+		fmt = "%s";
+		rsp = "$-1\r\n";
 	} else {
 		value = (fk_str *)obj->data;
 		slen = value->len - 1;
 		FK_UTIL_INT_LEN(slen, sslen);
 		pto_len = value->len - 1 + 5 + sslen;
-		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-			FK_BUF_STRETCH(conn->wbuf);
-		}
-		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-			fk_log_warn("wbuf beyond max\n");
-			return -1;
-		}
-		sprintf(FK_BUF_FREE_START(conn->wbuf), "$%d\r\n%s\r\n", value->len - 1, value->data);
+		fmt = "$%d\r\n%s\r\n"; 
+		rsp = value->data;
+		rsp_len = value->len -  1;
+		empty = 0;
 	}
+	if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+		FK_BUF_STRETCH(conn->wbuf);
+	}
+	if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+		fk_log_warn("wbuf beyond max\n");
+		return -1;
+	}
+
+	if (empty == 1) {
+		sprintf(FK_BUF_FREE_START(conn->wbuf), fmt, rsp);
+	} else {
+		sprintf(FK_BUF_FREE_START(conn->wbuf), fmt, rsp_len, rsp);
+	}
+
 	FK_BUF_HIGH_INC(conn->wbuf, pto_len);
 
 	return 0;
@@ -219,16 +225,16 @@ int fk_on_hset(fk_conn *conn)
 		hobj = fk_obj_create(FK_OBJ_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hobj);
 		//consume all the args, except args[0]
-		conn->args[1] = NULL;
-		conn->args[2] = NULL;
-		conn->args[3] = NULL;
+		FK_CONN_ARG_CONSUME(conn->args[1]);
+		FK_CONN_ARG_CONSUME(conn->args[2]);
+		FK_CONN_ARG_CONSUME(conn->args[3]);
 	} else {
 		dct = (fk_dict *)(hobj->data);
 		obj = fk_obj_create(FK_OBJ_STR, conn->args[3]);
 		fk_dict_add(dct, key, obj);
 		//conn->args[1] is not consumed
-		conn->args[2] = NULL;
-		conn->args[3] = NULL;
+		FK_CONN_ARG_CONSUME(conn->args[2]);
+		FK_CONN_ARG_CONSUME(conn->args[3]);
 	}
 	reply = "+OK\r\n";
 	memcpy(conn->wbuf->data + conn->wbuf->low, reply, 5);
@@ -239,52 +245,53 @@ int fk_on_hset(fk_conn *conn)
 int fk_on_hget(fk_conn *conn)
 {
 	fk_dict *dct;
+	char *fmt, *rsp;
 	fk_obj *hobj, *obj;
-	int pto_len, slen, sslen;
+	int pto_len, slen, sslen, empty, rsp_len;
 	fk_str *hkey, *key, *value;
 
 	hkey = conn->args[1];
 	key = conn->args[2];
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
+	empty = 1;
 	if (hobj == NULL) {
 		pto_len = 5;
-		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-			FK_BUF_STRETCH(conn->wbuf);
-		}
-		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-			fk_log_warn("wbuf beyond max\n");
-			return -1;
-		}
-		sprintf(FK_BUF_FREE_START(conn->wbuf), "%s", "$-1\r\n");
+		fmt = "%s";
+		rsp = "$-1\r\n";
 	} else {
 		dct = (fk_dict *)(hobj->data);
-		obj = fk_dict_get(server.db[conn->db_idx], key);
+		obj = fk_dict_get(dct, key);
 		if (obj == NULL) {
 			pto_len = 5;
-			if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-				FK_BUF_STRETCH(conn->wbuf);
-			}
-			if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-				fk_log_warn("wbuf beyond max\n");
-				return -1;
-			}
-			sprintf(FK_BUF_FREE_START(conn->wbuf), "%s", "$-1\r\n");
+			fmt = "%s";
+			rsp = "$-1\r\n";
 		} else {
 			value = (fk_str *)obj->data;
 			slen = value->len - 1;
 			FK_UTIL_INT_LEN(slen, sslen);
 			pto_len = value->len - 1 + 5 + sslen;
-			if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-				FK_BUF_STRETCH(conn->wbuf);
-			}
-			if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-				fk_log_warn("wbuf beyond max\n");
-				return -1;
-			}
-			sprintf(FK_BUF_FREE_START(conn->wbuf), "$%d\r\n%s\r\n", value->len - 1, value->data);
+			fmt = "$%d\r\n%s\r\n"; 
+			rsp = value->data;
+			rsp_len = value->len - 1;
+			empty = 0;
 		}
 	}
+	if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+		FK_BUF_STRETCH(conn->wbuf);
+	}
+	if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+		fk_log_warn("wbuf beyond max\n");
+		return -1;
+	}
+
+	if (empty == 1) {
+		sprintf(FK_BUF_FREE_START(conn->wbuf), fmt, rsp);
+	} else {
+		sprintf(FK_BUF_FREE_START(conn->wbuf), fmt, rsp_len, rsp);
+	}
+
 	FK_BUF_HIGH_INC(conn->wbuf, pto_len);
+
 	return 0;
 }
 
