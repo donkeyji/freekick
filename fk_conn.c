@@ -302,7 +302,9 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #endif
 	rt = pto->handler(conn);
 	if (rt < 0) {
+		fk_log_debug("to free args\n");
 		fk_conn_args_free(conn);
+		fk_log_debug("after free args\n");
 		return -1;
 	}
 	fk_conn_args_consume(conn);
@@ -345,13 +347,17 @@ int fk_conn_read_cb(int fd, unsigned char type, void *ext)
 	}
 
 	rt = fk_conn_req_parse(conn);
-	if (rt == -1) {//error when parsing
+	if (rt < 0) {//error when parsing
 		fk_log_error("error when parsing\n");
 		fk_svr_conn_remove(conn);
 		return 0;
 	}
 
-	fk_conn_cmd_proc(conn);
+	rt = fk_conn_cmd_proc(conn);
+	if (rt < 0) {
+		fk_log_error("error when cmd proc\n");
+		fk_svr_conn_remove(conn);
+	}
 
 	fk_conn_rsp_send(conn);
 
@@ -399,7 +405,7 @@ int fk_conn_rsp_send(fk_conn *conn)
 
 	wbuf = conn->wbuf;
 #ifdef FK_DEBUG
-	fk_log_debug("[wbuf data]: %s\n", FK_BUF_VALID_START(wbuf));
+	//fk_log_debug("[wbuf data]: %s\n", FK_BUF_VALID_START(wbuf));
 #endif
 	//if any data in write buf and never add write ioev yet
 	if (FK_BUF_VALID_LEN(wbuf) > 0 && conn->write_added == 0) {

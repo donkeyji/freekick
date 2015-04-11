@@ -172,8 +172,11 @@ int fk_on_get(fk_conn *conn)
 		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len
 			&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
 		{
-			//conn->wbuf = FK_BUF_STRETCH(conn->wbuf);
 			FK_BUF_STRETCH(conn->wbuf);
+		}
+		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+			fk_log_warning("wbuf beyond max\n");
+			return -1;
 		}
 		sprintf(FK_BUF_FREE_START(conn->wbuf), "%s", "$-1\r\n");
 	} else {
@@ -184,8 +187,11 @@ int fk_on_get(fk_conn *conn)
 		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len
 			&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
 		{
-			//conn->wbuf = FK_BUF_STRETCH(conn->wbuf);
 			FK_BUF_STRETCH(conn->wbuf);
+		}
+		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+			fk_log_warning("wbuf beyond max\n");
+			return -1;
 		}
 		sprintf(FK_BUF_FREE_START(conn->wbuf), "$%d\r\n%s\r\n", value->len - 1, value->data);
 	}
