@@ -62,6 +62,27 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 
 void fk_dict_destroy(fk_dict *dct)
 {
+	int i;
+	fk_node *nd, *nxt;
+	fk_elt *elt;
+	fk_list *lst;
+
+	for (i = 0; i < dct->size; i++) {
+		lst = dct->buckets[i];
+		if (lst == NULL) {
+			continue;
+		}
+		nd = lst->head;
+		while (nd != NULL) {
+			elt = (fk_elt *)nd->data;		
+			nxt = nd->next;
+			fk_list_remove(lst, nd);//do not free nd->data
+			fk_dict_elt_destroy(elt, dct->eop);//free nd->data
+			nd = nxt;
+		}
+		fk_mem_free(lst);
+	}
+	fk_mem_free(dct);
 }
 
 void *fk_dict_get(fk_dict *dct, fk_str *key)

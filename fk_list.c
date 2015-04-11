@@ -202,4 +202,5 @@ void fk_list_destroy(fk_list *lst)
 	while (nd != NULL) {
 		fk_list_remove(lst, nd);
 	}
+	fk_mem_free(lst);
 }
