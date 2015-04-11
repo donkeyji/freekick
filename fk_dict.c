@@ -63,9 +63,9 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 void fk_dict_destroy(fk_dict *dct)
 {
 	int i;
-	fk_node *nd, *nxt;
 	fk_elt *elt;
 	fk_list *lst;
+	fk_node *nd, *nxt;
 
 	for (i = 0; i < dct->size; i++) {
 		lst = dct->buckets[i];
@@ -80,9 +80,9 @@ void fk_dict_destroy(fk_dict *dct)
 			fk_dict_elt_destroy(elt, dct->eop);//free nd->data
 			nd = nxt;
 		}
-		fk_mem_free(lst);
+		fk_mem_free(lst);//free the empty list
 	}
-	fk_mem_free(dct);
+	fk_mem_free(dct);//free the empty dict
 }
 
 void *fk_dict_get(fk_dict *dct, fk_str *key)
@@ -191,8 +191,8 @@ int fk_dict_remove(fk_dict *dct, fk_str *key)
 	lst = dct->buckets[idx];
 	elt = nd->data;
 
-	fk_list_remove(lst, nd);
-	fk_dict_elt_destroy(elt, dct->eop);
+	fk_list_remove(lst, nd);//do not free elt
+	fk_dict_elt_destroy(elt, dct->eop);//free the elt
 	dct->used--;
 
 	return 0;
