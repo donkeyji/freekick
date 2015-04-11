@@ -1,8 +1,8 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <strings.h>
 #include <errno.h>
+#include <strings.h>
 
 #include <fk_conf.h>
 #include <fk_ev.h>
@@ -20,14 +20,14 @@ static int fk_ev_expired_tmev_proc();
 static int fk_ev_tmev_cmp(void *tmev1, void *tmev2);
 
 #if defined(__linux__)
-#include <fk_epoll.c>
-	fk_mpxop *mpxop = &epoll_op;
+	#include <fk_epoll.c>
+	static fk_mpxop *mpxop = &epoll_op;
 #elif defined(__FreeBSD__) || defined(__APPLE__)
-#include <fk_kqueue.c>
-	fk_mpxop *mpxop = &kqueue_op;
+	#include <fk_kqueue.c>
+	static fk_mpxop *mpxop = &kqueue_op;
 #else
-#include <fk_poll.c>
-	fk_mpxop *mpxop = &poll_op;
+	#include <fk_poll.c>
+	static fk_mpxop *mpxop = &poll_op;
 #endif
 
 static fk_evmgr evmgr;
