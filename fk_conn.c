@@ -92,7 +92,6 @@ int fk_conn_data_recv(fk_conn *conn)
 		&& FK_BUF_TOTAL_LEN(conn->rbuf) < FK_BUF_HIGHWAT) 
 	{
 		//fk_log_debug("before stretch rbuf\n");
-		//conn->rbuf = FK_BUF_STRETCH(conn->rbuf);
 		FK_BUF_STRETCH(conn->rbuf);
 		//fk_log_debug("after stretch rbuf\n");
 	}
