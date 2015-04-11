@@ -53,7 +53,7 @@ int fk_epoll_add(void *ev_iompx, int fd, unsigned char type)
 
 	otyp = iompx->emask[fd];
 	if (type & otyp) {
-		fk_log_error("try to add duplicated ev\n");
+		fk_log_error("try to add existing ev\n");
 		return -1;
 	}
 
@@ -110,7 +110,7 @@ int fk_epoll_remove(void *ev_iompx, int fd, unsigned char type)
 
 	otyp = iompx->emask[fd];
 	if (!(type & otyp)) {
-		fk_log_error("try to remove a non-exist ev\n");
+		fk_log_error("try to remove a non-existing ev\n");
 		return -1;
 	}
 
