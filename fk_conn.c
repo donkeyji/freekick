@@ -91,7 +91,8 @@ int fk_conn_data_recv(fk_conn *conn)
 		&& FK_BUF_TOTAL_LEN(conn->rbuf) < FK_BUF_HIGHWAT) 
 	{
 		//fk_log_debug("before stretch rbuf\n");
-		conn->rbuf = fk_buf_stretch(conn->rbuf);
+		//conn->rbuf = FK_BUF_STRETCH(conn->rbuf);
+		FK_BUF_STRETCH(conn->rbuf);
 		//fk_log_debug("after stretch rbuf\n");
 	}
 #ifdef FK_DEBUG
@@ -288,7 +289,8 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	if (FK_BUF_FREE_LEN(conn->wbuf) == 0
 		&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
 	{
-		conn->wbuf = fk_buf_stretch(conn->wbuf);
+		//conn->wbuf = FK_BUF_STRETCH(conn->wbuf);
+		FK_BUF_STRETCH(conn->wbuf);
 	}
 	if (FK_BUF_FREE_LEN(conn->wbuf) == 0) {
 		fk_log_info("wbuf beyond max len\n");

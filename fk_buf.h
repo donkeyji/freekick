@@ -17,7 +17,7 @@ fk_buf *fk_buf_create();
 void fk_buf_destroy(fk_buf *buf);
 void fk_buf_print(fk_buf *buf);
 void fk_buf_adjust(fk_buf *buf);
-fk_buf *fk_buf_stretch(fk_buf *buf);
+//fk_buf *FK_BUF_STRETCH(fk_buf *buf);
 fk_buf *fk_buf_shrink(fk_buf *buf);
 int fk_buf_shift(fk_buf *buf);
 
@@ -45,6 +45,13 @@ int fk_buf_shift(fk_buf *buf);
 	if ((buf)->low > (buf)->high) {			\
 		(buf)->low = (buf)->high;			\
 	}										\
+}
+
+#define FK_BUF_STRETCH(buf)		{										\
+	if ((buf)->len < FK_BUF_HIGHWAT) {									\
+		(buf) = fk_mem_realloc((buf), sizeof(fk_buf) + (buf)->len * 2);	\
+		(buf)->len *= 2;												\
+	}																	\
 }
 
 #endif

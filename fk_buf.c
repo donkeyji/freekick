@@ -31,7 +31,8 @@ void fk_buf_print(fk_buf *buf)
 	printf("%s\n", ps);
 }
 
-fk_buf *fk_buf_stretch(fk_buf *buf)
+/*
+fk_buf *FK_BUF_STRETCH(fk_buf *buf)
 {
 	if (buf->len < FK_BUF_HIGHWAT) {
 		buf = fk_mem_realloc(buf, sizeof(fk_buf) + buf->len * 2);
@@ -40,6 +41,7 @@ fk_buf *fk_buf_stretch(fk_buf *buf)
 	}
 	return buf;
 }
+*/
 
 fk_buf *fk_buf_shrink(fk_buf *buf)
 {
