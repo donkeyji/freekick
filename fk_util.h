@@ -31,7 +31,9 @@ void fk_util_cal_expire(struct timeval *tv, int interval);
 // 0: t1=t2
 //----------------
 #define FK_UTIL_TMVAL_CMP(t1, t2)	\
-	((t1)->tv_sec * FK_MILLION + (t1)->tv_usec) - ((t2)->tv_sec * FK_MILLION + (t2)->tv_usec)
+	(t1)->tv_sec == (t2)->tv_sec ? (t1)->tv_usec - (t2)->tv_usec : (t1)->tv_sec - (t2)->tv_sec
+
+	////((t1)->tv_sec * FK_MILLION + (t1)->tv_usec) - ((t2)->tv_sec * FK_MILLION + (t2)->tv_usec)
 
 #define FK_UTIL_TMVAL_SUB(a, b, result)				\
   do {									      			\
