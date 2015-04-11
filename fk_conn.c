@@ -290,7 +290,6 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	if (FK_BUF_FREE_LEN(conn->wbuf) == 0
 		&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
 	{
-		//conn->wbuf = FK_BUF_STRETCH(conn->wbuf);
 		FK_BUF_STRETCH(conn->wbuf);
 	}
 	if (FK_BUF_FREE_LEN(conn->wbuf) == 0) {
@@ -301,13 +300,15 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	fk_log_debug("[after adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
 #endif
 	rt = pto->handler(conn);
-	if (rt < 0) {
-		fk_log_debug("to free args\n");
+	if (rt < 0) {//args are not consumed
 		fk_conn_args_free(conn);
-		fk_log_debug("after free args\n");
 		return -1;
 	}
-	fk_conn_args_consume(conn);
+	if (pto->type == FK_PROTO_READ) {//any arg is not saved into the dict
+		fk_conn_args_free(conn);
+	} else {//args are saved into the dict expect args[0]
+		fk_conn_args_consume(conn);
+	}
 	return 0;
 }
 
@@ -357,9 +358,15 @@ int fk_conn_read_cb(int fd, unsigned char type, void *ext)
 	if (rt < 0) {
 		fk_log_error("error when cmd proc\n");
 		fk_svr_conn_remove(conn);
+		return 0;
 	}
 
-	fk_conn_rsp_send(conn);
+	rt = fk_conn_rsp_send(conn);
+	if (rt < 0) {
+		fk_log_error("error when rsp send\n");
+		fk_svr_conn_remove(conn);
+		return 0;
+	}
 
 	return 0;
 }

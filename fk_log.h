@@ -14,7 +14,7 @@ typedef struct _fk_log {
 
 void fk_log_init();
 void fk_log_error(const char *fmt, ...);
-void fk_log_warning(const char *fmt, ...);
+void fk_log_warn(const char *fmt, ...);
 void fk_log_info(const char *fmt, ...);
 void fk_log_debug(const char *fmt, ...);
 

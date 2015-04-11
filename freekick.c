@@ -150,8 +150,11 @@ int fk_on_set(fk_conn *conn)
 	if (FK_BUF_FREE_LEN(conn->wbuf) < len
 		&& FK_BUF_TOTAL_LEN(conn->wbuf) < FK_BUF_HIGHWAT) 
 	{
-		//conn->wbuf = FK_BUF_STRETCH(conn->wbuf);
 		FK_BUF_STRETCH(conn->wbuf);
+	}
+	if (FK_BUF_FREE_LEN(conn->wbuf) < len) {
+		fk_log_info("reply to long\n");
+		return -1;
 	}
 	memcpy(FK_BUF_FREE_START(conn->wbuf), reply, len);
 	FK_BUF_HIGH_INC(conn->wbuf, len);
@@ -175,7 +178,7 @@ int fk_on_get(fk_conn *conn)
 			FK_BUF_STRETCH(conn->wbuf);
 		}
 		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-			fk_log_warning("wbuf beyond max\n");
+			fk_log_warn("wbuf beyond max\n");
 			return -1;
 		}
 		sprintf(FK_BUF_FREE_START(conn->wbuf), "%s", "$-1\r\n");
@@ -190,7 +193,7 @@ int fk_on_get(fk_conn *conn)
 			FK_BUF_STRETCH(conn->wbuf);
 		}
 		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
-			fk_log_warning("wbuf beyond max\n");
+			fk_log_warn("wbuf beyond max\n");
 			return -1;
 		}
 		sprintf(FK_BUF_FREE_START(conn->wbuf), "$%d\r\n%s\r\n", value->len - 1, value->data);

@@ -389,7 +389,7 @@ int fk_conf_handle_loglevel(fk_line *line)
 	} else if (strcmp(level, "info") == 0) {
 		setting.log_level = FK_LOG_INFO;
 	} else if (strcmp(level, "warnning") == 0) {
-		setting.log_level = FK_LOG_WARNING;
+		setting.log_level = FK_LOG_WARN;
 	} else if (strcmp(level, "error") == 0) {
 		setting.log_level = FK_LOG_ERROR;
 	} else {

@@ -53,9 +53,9 @@ void fk_log_error(const char *fmt, ...)
 	FK_LOG_WRITE(FK_LOG_ERROR);
 }
 
-void fk_log_warning(const char *fmt, ...)
+void fk_log_warn(const char *fmt, ...)
 {
-	FK_LOG_WRITE(FK_LOG_WARNING);
+	FK_LOG_WRITE(FK_LOG_WARN);
 }
 
 void fk_log_info(const char *fmt, ...)
@@ -79,8 +79,8 @@ void fk_log_fprint_str(unsigned int level, const char *data)
 	case FK_LOG_ERROR:
 		level_name = "ERROR";
 		break;
-	case FK_LOG_WARNING:
-		level_name = "WARNING";
+	case FK_LOG_WARN:
+		level_name = "WARN";
 		break;
 	case FK_LOG_INFO:
 		level_name = "INFO";
