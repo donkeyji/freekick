@@ -125,6 +125,10 @@ fk_proto *fk_proto_search(fk_str *name)
 	return pto;
 }
 
+static char *OK = "+OK\r\n";
+static char *NIL = "$-1\r\n";
+static char *ONELINE = "$%d\r\n%s\r\n"; 
+
 int fk_on_set(fk_conn *conn)
 {
 	int i, len, rt;
