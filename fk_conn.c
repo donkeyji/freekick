@@ -13,7 +13,6 @@
 static int fk_conn_read_cb(int fd, unsigned char type, void *ext);
 static int fk_conn_write_cb(int fd, unsigned char type, void *ext);
 static int fk_conn_timer_cb(int interval, unsigned char type, void *ext);
-static void fk_conn_args_consume(fk_conn *conn);
 static void fk_conn_args_free(fk_conn *conn);
 static int fk_conn_req_parse(fk_conn *conn);
 static int fk_conn_data_recv(fk_conn *conn);
@@ -237,21 +236,6 @@ static void fk_conn_args_free(fk_conn *conn)
 	conn->arg_idx = 0;
 }
 
-void fk_conn_args_consume(fk_conn *conn)
-{
-	int i;
-
-	fk_str_destroy(conn->args[0]);//free the cmd arg
-	conn->args[0] = NULL;
-	for (i = 1; i < conn->arg_cnt; i++) {
-		conn->args[i] = NULL;
-		conn->args_len[i] = 0;
-	}
-	conn->arg_cnt = 0;
-	conn->parse_done = 0;
-	conn->arg_idx = 0;
-}
-
 int fk_conn_cmd_proc(fk_conn *conn)
 {
 	int rt;
@@ -296,11 +280,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		fk_conn_args_free(conn);
 		return -1;
 	}
-	if (pto->type == FK_PROTO_READ) {//any arg is not saved into the dict
-		fk_conn_args_free(conn);//free all the args
-	} else {//args are saved into the dict expect args[0]
-		fk_conn_args_consume(conn);//free args[0]
-	}
+	fk_conn_args_free(conn);
 	return 0;
 }
 

@@ -147,6 +147,8 @@ int fk_on_set(fk_conn *conn)
 		fk_log_error("failed to add to the dict\n");
 		return -1;
 	}
+	conn->args[1] = NULL;
+	conn->args[2] = NULL;
 
 	reply = "+OK\r\n";
 	len = strlen(reply);
@@ -216,10 +218,17 @@ int fk_on_hset(fk_conn *conn)
 		fk_dict_add(dct, key, obj);
 		hobj = fk_obj_create(FK_OBJ_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hobj);
+		//consume all the args, except args[0]
+		conn->args[1] = NULL;
+		conn->args[2] = NULL;
+		conn->args[3] = NULL;
 	} else {
 		dct = (fk_dict *)(hobj->data);
 		obj = fk_obj_create(FK_OBJ_STR, conn->args[3]);
 		fk_dict_add(dct, key, obj);
+		//conn->args[1] is not consumed
+		conn->args[2] = NULL;
+		conn->args[3] = NULL;
 	}
 	reply = "+OK\r\n";
 	memcpy(conn->wbuf->data + conn->wbuf->low, reply, 5);
@@ -229,6 +238,53 @@ int fk_on_hset(fk_conn *conn)
 
 int fk_on_hget(fk_conn *conn)
 {
+	fk_dict *dct;
+	fk_obj *hobj, *obj;
+	int pto_len, slen, sslen;
+	fk_str *hkey, *key, *value;
+
+	hkey = conn->args[1];
+	key = conn->args[2];
+	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
+	if (hobj == NULL) {
+		pto_len = 5;
+		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+			FK_BUF_STRETCH(conn->wbuf);
+		}
+		if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+			fk_log_warn("wbuf beyond max\n");
+			return -1;
+		}
+		sprintf(FK_BUF_FREE_START(conn->wbuf), "%s", "$-1\r\n");
+	} else {
+		dct = (fk_dict *)(hobj->data);
+		obj = fk_dict_get(server.db[conn->db_idx], key);
+		if (obj == NULL) {
+			pto_len = 5;
+			if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+				FK_BUF_STRETCH(conn->wbuf);
+			}
+			if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+				fk_log_warn("wbuf beyond max\n");
+				return -1;
+			}
+			sprintf(FK_BUF_FREE_START(conn->wbuf), "%s", "$-1\r\n");
+		} else {
+			value = (fk_str *)obj->data;
+			slen = value->len - 1;
+			FK_UTIL_INT_LEN(slen, sslen);
+			pto_len = value->len - 1 + 5 + sslen;
+			if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+				FK_BUF_STRETCH(conn->wbuf);
+			}
+			if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
+				fk_log_warn("wbuf beyond max\n");
+				return -1;
+			}
+			sprintf(FK_BUF_FREE_START(conn->wbuf), "$%d\r\n%s\r\n", value->len - 1, value->data);
+		}
+	}
+	FK_BUF_HIGH_INC(conn->wbuf, pto_len);
 	return 0;
 }
 
