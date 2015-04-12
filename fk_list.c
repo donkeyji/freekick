@@ -9,7 +9,7 @@ static void fk_list_free_node_put(fk_node *nd);
 static void fk_list_insert_head_only(fk_list *lst, fk_node *nd);
 static void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd);
 
-static fk_node_op default_op = {
+static fk_node_op default_nop = {
 	NULL,
 	NULL,
 	NULL
@@ -28,7 +28,7 @@ fk_list *fk_list_create(fk_node_op *func)
 	lst->tail = NULL;
 	lst->len = 0;
 	if (func == NULL) {
-		lst->method = &default_op;
+		lst->method = &default_nop;
 	} else {
 		lst->method = func;
 	}

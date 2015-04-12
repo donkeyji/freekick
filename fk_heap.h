@@ -19,7 +19,7 @@ typedef struct _fk_heap {
 	int max;//the total length of the array
 	int last;//current the last item index
 	fk_leaf **array;//can save any type of obj
-	fk_leaf_op *func;
+	fk_leaf_op *lop;
 } fk_heap;
 
 fk_heap *fk_heap_create(fk_leaf_op *func);
