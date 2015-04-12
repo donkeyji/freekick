@@ -600,6 +600,11 @@ void fk_signal_reg()
 	}
 }
 
+int fk_svr_db_save_exec()
+{
+	return 0;
+}
+
 void fk_svr_db_save()
 {
 	int rt;
@@ -617,6 +622,7 @@ void fk_svr_db_save()
 		return;
 	} else {
 		sleep(6);
+		rt = fk_svr_db_save_exec();
 		exit(EXIT_SUCCESS);
 	}
 }
@@ -662,8 +668,14 @@ void fk_main_loop()
 
 void fk_main_end()
 {
+	int rt;
+
 	//to do: free resource
-	wait(NULL);
+	while (server.save_done == 0) {
+		sleep(1);
+	}
+	//save db once more
+	rt = fk_svr_db_save_exec();
 }
 
 int main(int argc, char **argv)
