@@ -154,6 +154,7 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 			continue;
 		}
 		fk_ev_ioev_activate(fd, type);
+		pfd->revents = 0x0000;//reset revents
 		cnt++;
 		if (cnt == nfds) {
 			break;
