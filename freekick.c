@@ -233,12 +233,25 @@ int fk_on_hset(fk_conn *conn)
 		FK_CONN_ARG_CONSUME(conn->args[2]);
 		FK_CONN_ARG_CONSUME(conn->args[3]);
 	} else {
-		dct = (fk_dict *)(hobj->data);
-		obj = fk_obj_create(FK_OBJ_STR, conn->args[3]);
-		fk_dict_add(dct, key, obj);
-		//conn->args[1] is not consumed
-		FK_CONN_ARG_CONSUME(conn->args[2]);
-		FK_CONN_ARG_CONSUME(conn->args[3]);
+		if (hobj->type == FK_OBJ_DICT) {
+			dct = (fk_dict *)(hobj->data);
+			obj = fk_obj_create(FK_OBJ_STR, conn->args[3]);
+			fk_dict_add(dct, key, obj);
+			//conn->args[1] is not consumed
+			FK_CONN_ARG_CONSUME(conn->args[2]);
+			FK_CONN_ARG_CONSUME(conn->args[3]);
+		} else {
+			fk_dict_remove(server.db[conn->db_idx], hkey);
+			dct = fk_dict_create(&dbeop);
+			obj = fk_obj_create(FK_OBJ_STR, conn->args[3]);
+			fk_dict_add(dct, key, obj);
+			hobj = fk_obj_create(FK_OBJ_DICT, dct);
+			fk_dict_add(server.db[conn->db_idx], hkey, hobj);
+			//consume all the args, except args[0]
+			FK_CONN_ARG_CONSUME(conn->args[1]);
+			FK_CONN_ARG_CONSUME(conn->args[2]);
+			FK_CONN_ARG_CONSUME(conn->args[3]);
+		}
 	}
 	reply = "+OK\r\n";
 	memcpy(conn->wbuf->data + conn->wbuf->low, reply, 5);
