@@ -146,7 +146,11 @@ void fk_list_insert(fk_list *lst, void *val)
 {
 	fk_node *nd;
 
-	nd = fk_list_free_node_get();
+	//nd = fk_list_free_node_get();
+	nd = (fk_node *)fk_mem_alloc(sizeof(fk_node));
+	if (nd == NULL) {
+		return;
+	}
 
 	//initialize the node->data
 	if (lst->method->data_copy != NULL) {
@@ -167,7 +171,8 @@ void fk_list_remove(fk_list *lst, fk_node *nd)
 	if (lst->method->data_free != NULL) {
 		lst->method->data_free(nd->data);//free node->data
 	}
-	fk_list_free_node_put(nd);
+	//fk_list_free_node_put(nd);
+	fk_mem_free(nd);
 }
 
 //remove the head from the list, and return the head
