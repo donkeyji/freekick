@@ -316,7 +316,7 @@ int fk_conn_read_cb(int fd, unsigned char type, void *ext)
 		fk_svr_conn_remove(conn);
 		return 0;
 	} else if (rt == -2) {//how to handle read error?????
-		return -2;
+		return 0;
 	}
 
 	rt = fk_conn_req_parse(conn);

@@ -320,6 +320,7 @@ int fk_ev_active_ioev_proc()
 		rt = iocb(fd, type, arg);
 		//step 3: how to process the return value of the callback????
 		if (rt < 0) {
+			fk_log_error("error occurs when callback. fd: %d, type: %d\n", fd, type);
 		}
 	}
 
