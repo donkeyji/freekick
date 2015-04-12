@@ -150,7 +150,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	return 0;
 }
 
-fk_ioev *fk_ev_ioev_create(int fd, unsigned char type, void *arg, file_ev_cb iocb)
+fk_ioev *fk_ev_ioev_create(int fd, unsigned char type, void *arg, fk_ioev_cb iocb)
 {
 	fk_ioev *ioev;
 
@@ -173,7 +173,7 @@ void fk_ev_ioev_destroy(fk_ioev *ioev)
 /* no need to delete timer
  * so fk_ev_timer_del not supplied
  */
-fk_tmev *fk_ev_tmev_create(int interval, unsigned char type, void *arg, timer_ev_cb tmcb)
+fk_tmev *fk_ev_tmev_create(int interval, unsigned char type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev *tmev;
 
@@ -224,7 +224,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 //instead, evmgr own this tmev,
 //and create/destroy this tmev itself
 //---------------------------
-int fk_ev_tmev_reg(int interval, unsigned char type, void *arg, timer_ev_cb tmcb)
+int fk_ev_tmev_reg(int interval, unsigned char type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev *tmev;
 
@@ -268,7 +268,7 @@ int fk_ev_expired_tmev_proc()
 	void *arg;
 	int interval, rt;
 	fk_tmev *tmev, *cur;
-	timer_ev_cb tmcb;
+	fk_tmev_cb tmcb;
 	unsigned char type;
 
 	tmev = evmgr.exp_tmev->head;
@@ -300,7 +300,7 @@ int fk_ev_active_ioev_proc()
 {
 	int fd, rt;
 	void *arg;
-	file_ev_cb iocb;
+	fk_ioev_cb iocb;
 	unsigned char type;
 	fk_ioev *ioev, *cur;
 

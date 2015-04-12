@@ -13,14 +13,14 @@
 #define FK_EV_CYCLE 	1
 #define FK_EV_DELAY 	2
 
-typedef int (*file_ev_cb) (int, unsigned char, void *);
-typedef int (*timer_ev_cb) (int, unsigned char, void *);
+typedef int (*fk_ioev_cb) (int, unsigned char, void *);
+typedef int (*fk_tmev_cb) (int, unsigned char, void *);
 
 typedef struct _fk_ioev {
 	unsigned char type;//FK_EV_READ|FK_EV_WRITE
 	int fd;
 	void *arg;
-	file_ev_cb iocb;
+	fk_ioev_cb iocb;
 
 	struct _fk_ioev *prev;
 	struct _fk_ioev *next;
@@ -33,7 +33,7 @@ typedef struct _fk_tmev {
 	int interval;//milliseconds
 	struct timeval expire;//save the trigger time: now + timeout
 	void *arg;//ext arg
-	timer_ev_cb tmcb;
+	fk_tmev_cb tmcb;
 
 	struct _fk_tmev *prev;
 	struct _fk_tmev *next;
@@ -117,14 +117,14 @@ typedef struct _fk_evmgr {
 void fk_ev_init();
 void fk_ev_end();
 int fk_ev_dispatch();
-fk_ioev *fk_ev_ioev_create(int fd, unsigned char type, void *arg, file_ev_cb iocb);
+fk_ioev *fk_ev_ioev_create(int fd, unsigned char type, void *arg, fk_ioev_cb iocb);
 void fk_ev_ioev_destroy(fk_ioev *ioev);
 int fk_ev_ioev_add(fk_ioev *ioev);
 int fk_ev_ioev_remove(fk_ioev *ioev);
-fk_tmev *fk_ev_tmev_create(int timeout, unsigned char type, void *arg, timer_ev_cb tmcb);
+fk_tmev *fk_ev_tmev_create(int timeout, unsigned char type, void *arg, fk_tmev_cb tmcb);
 void fk_ev_tmev_destroy(fk_tmev *tmev);
 int fk_ev_tmev_add(fk_tmev *tmev);
 int fk_ev_tmev_remove(fk_tmev *tmev);
-int fk_ev_tmev_reg(int interval, unsigned char type, void *arg, timer_ev_cb tmcb);
+int fk_ev_tmev_reg(int interval, unsigned char type, void *arg, fk_tmev_cb tmcb);
 
 #endif
