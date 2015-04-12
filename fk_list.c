@@ -6,6 +6,8 @@
 
 static fk_node *fk_list_free_node_get();
 static void fk_list_free_node_put(fk_node *nd);
+static void fk_list_insert_head_only(fk_list *lst, fk_node *nd);
+static void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd);
 
 static fk_node_op default_op = {
 	NULL,
@@ -44,8 +46,12 @@ void fk_list_free_display()
 	printf("free_nodes len: %d\n", free_nodes->len);
 }
 
+void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
+{
+}
+
 //do not change node->data
-void fk_list_insert_only(fk_list *lst, fk_node *nd)
+void fk_list_insert_head_only(fk_list *lst, fk_node *nd)
 {
 	if (lst->head == NULL) {//empty list
 		nd->next = NULL;
@@ -57,6 +63,15 @@ void fk_list_insert_only(fk_list *lst, fk_node *nd)
 	}
 	lst->head = nd;//new head of this list
 	lst->len++;
+}
+
+void fk_list_insert_only(fk_list *lst, fk_node *nd)
+{
+	if (lst->method->data_cmp == NULL) {
+		fk_list_insert_head_only(lst, nd);
+	} else {
+		fk_list_inser_sorted_only(lst, nd);
+	}
 }
 
 void fk_list_remove_only(fk_list *lst, fk_node *nd)
