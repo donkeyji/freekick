@@ -3,10 +3,10 @@
 typedef struct _fk_poll {
 	struct pollfd *evlist;
 	int last;
-	int *pidx;
+	int *fd2idx;
 } fk_poll;
 
-static void *fk_poll_create(int max_conn);
+static void *fk_poll_create(int max_fds);
 static int fk_poll_add(void *ev_iompx, int fd, unsigned char type);
 static int fk_poll_remove(void *ev_iompx, int fd, unsigned char type);
 static int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout);
@@ -18,16 +18,20 @@ fk_mpxop poll_op = {
 	fk_poll_dispatch
 };
 
-void *fk_poll_create(int max_conn)
+void *fk_poll_create(int max_fds)
 {
+	int i;
 	fk_poll *iompx;
 
 	iompx = (fk_poll *)fk_mem_alloc(sizeof(fk_poll));
-	iompx->evlist = (struct pollfd *)fk_mem_alloc(sizeof(struct pollfd) * (max_conn + 1 + FK_SAVED_FD));
-	bzero(iompx->evlist, sizeof(struct pollfd) * (max_conn + 1 + FK_SAVED_FD));
+	iompx->evlist = (struct pollfd *)fk_mem_alloc(sizeof(struct pollfd) * max_fds);
+	bzero(iompx->evlist, sizeof(struct pollfd) * max_fds);
 	iompx->last = 0;
-	iompx->pidx = (int *)fk_mem_alloc(sizeof(int) * (max_conn + 1 + FK_SAVED_FD));
-	memset(iompx->pidx, -1, sizeof(int));//initialize to -1
+	iompx->fd2idx = (int *)fk_mem_alloc(sizeof(int) * max_fds);
+	for (i = 0; i < max_fds; i++) {
+		iompx->evlist[i].fd = -1;
+		iompx->fd2idx[i] = -1;
+	}
 
 	return iompx;
 }
@@ -35,28 +39,36 @@ void *fk_poll_create(int max_conn)
 int fk_poll_add(void *ev_iompx, int fd, unsigned char type)
 {
 	int idx;
-	short ev;
+	short nev, oev;
 	fk_poll *iompx;
 	struct pollfd *pfd;
 
 	iompx = (fk_poll *)ev_iompx;
 
-	idx = iompx->pidx[fd];
+	idx = iompx->fd2idx[fd];
 	if (idx == -1) {//never add this fd
 		idx =  iompx->last;
 	}
 	pfd = iompx->evlist + idx;
+	oev = pfd->events;
 
-	ev = 0x0000;
+	nev = 0x0000;
 	if (type & FK_EV_READ) {
-		ev |= POLLIN;
+		nev |= POLLIN;
 	}
 	if (type & FK_EV_WRITE) {
-		ev |= POLLOUT;
+		nev |= POLLOUT;
 	}
-	pfd->events |= ev;
+
+	if (oev & nev) {
+		fk_log_error("try to add an existing ev\n");
+		return -1;
+	}
+
+	pfd->events = oev | nev;
 	pfd->fd = fd;
-	iompx->pidx[fd] = idx;
+	iompx->fd2idx[fd] = idx;
+
 	if (idx == iompx->last) {//a new fd
 		iompx->last++;
 		fk_log_debug("after add: last %d\n", iompx->last);
@@ -68,32 +80,37 @@ int fk_poll_add(void *ev_iompx, int fd, unsigned char type)
 int fk_poll_remove(void *ev_iompx, int fd, unsigned char type)
 {
 	int idx;
-	short ev;
+	short nev, oev;
 	fk_poll *iompx;
-	struct pollfd *pfd;
+	struct pollfd *pfd, *tail;
 
 	iompx = (fk_poll *)ev_iompx;
 
-	idx = iompx->pidx[fd];
-	if (idx == -1) {//never add this fd
-		fk_log_warn("try to remove a non-existing ev\n");
-		return -1;
-	}
+	idx = iompx->fd2idx[fd];
 	pfd = iompx->evlist + idx;
+	oev = pfd->events;
 
-	ev = 0x000;
+	nev = 0x000;
 	if (type & FK_EV_READ) {
-		ev |= POLLIN;
+		nev |= POLLIN;
 	}
 	if (type & FK_EV_WRITE) {
-		ev |= POLLOUT;
+		nev |= POLLOUT;
 	}
-	pfd->events &= (~ev);
-	if (pfd->events == 0x000) {//need to delete
-		pfd->fd = 0;
-		pfd->revents = 0;
-		memcpy(pfd, iompx->evlist + iompx->last - 1, sizeof(struct pollfd));
-		bzero(iompx->evlist + iompx->last - 1, sizeof(struct pollfd));
+
+	if (nev & (~oev)) {
+		fk_log_error("try to remove a non-existing ev\n");
+		return -1;
+	}
+
+	pfd->events = oev & (~nev);
+
+	if (pfd->events == 0x0000) {//need to delete
+		tail = iompx->evlist + iompx->last -1;
+		memcpy(pfd, tail, sizeof(struct pollfd));
+		tail->fd = -1;
+		tail->events = 0x0000;
+		tail->revents = 0x0000;
 		iompx->last--;
 	}
 
@@ -111,18 +128,18 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 	if (timeout != NULL) {
 		ms_timeout = FK_UTIL_TV2MS(timeout);
 	}
-	fk_log_debug("timeout: %d\n", ms_timeout);
 
 	iompx = (fk_poll *)ev_iompx;
 
-	fk_log_debug("to poll\n");
-	fk_log_debug("---last: %d\n", iompx->last);
 	nfds = poll(iompx->evlist, iompx->last, ms_timeout);
 	if (nfds < 0) {
-		fk_log_debug("poll return: %s\n", strerror(errno));
+		fk_log_debug("poll failed: %s\n", strerror(errno));
 		return -1;
 	}
-	for (i = 0; i < nfds; i++) {
+	if (nfds == 0) {
+		return 0;
+	}
+	for (i = 0; i < iompx->last; i++) {
 		pfd = iompx->evlist + i;
 		fd = pfd->fd;
 		type = 0x00;
@@ -131,6 +148,9 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 		}
 		if (pfd->revents & POLLOUT) {
 			type |= FK_EV_WRITE;
+		}
+		if (type == 0x00) {
+			continue;
 		}
 		fk_ev_ioev_activate(fd, type);
 	}
