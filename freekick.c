@@ -663,6 +663,7 @@ void fk_main_loop()
 void fk_main_end()
 {
 	//to do: free resource
+	wait(NULL);
 }
 
 int main(int argc, char **argv)
