@@ -122,7 +122,7 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 	fk_poll *iompx;
 	struct pollfd *pfd;
 	unsigned char type;
-	int i, nfds, ms_timeout, fd;
+	int i, nfds, ms_timeout, fd, cnt;
 
 	ms_timeout = -1;
 	if (timeout != NULL) {
@@ -139,6 +139,7 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 	if (nfds == 0) {
 		return 0;
 	}
+	cnt = 0;
 	for (i = 0; i < iompx->last; i++) {
 		pfd = iompx->evlist + i;
 		fd = pfd->fd;
@@ -153,6 +154,10 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 			continue;
 		}
 		fk_ev_ioev_activate(fd, type);
+		cnt++;
+		if (cnt == nfds) {
+			break;
+		}
 	}
 	return 0;
 }
