@@ -11,6 +11,10 @@ void fk_util_cal_expire(struct timeval *tv, int interval);
 #define FK_UTIL_TV2MS(tv) 						\
 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
+#define FK_UTIL_MS2TV(ms, tv)								\
+	(tv)->tv_sec = (ms) / 1000;								\
+	(tv)->tv_usec = ((ms) - (tv)->tv_sec * 1000) * 1000;
+
 #define FK_UTIL_TV2TS(tv, ts)	TIMEVAL_TO_TIMESPEC((tv), (ts))
 
 #define FK_UTIL_TS2TV(tv, ts)	TIMESPEC_TO_TIMEVAL((tv), (ts))
@@ -33,17 +37,25 @@ void fk_util_cal_expire(struct timeval *tv, int interval);
 #define FK_UTIL_TMVAL_CMP(t1, t2)	\
 	(t1)->tv_sec == (t2)->tv_sec ? (t1)->tv_usec - (t2)->tv_usec : (t1)->tv_sec - (t2)->tv_sec
 
-	////((t1)->tv_sec * FK_MILLION + (t1)->tv_usec) - ((t2)->tv_sec * FK_MILLION + (t2)->tv_usec)
+#define FK_UTIL_TMVAL_ADD(a, b, result)						\
+	do {                                					\
+		(result)->tv_sec = (a)->tv_sec + (b)->tv_sec;      	\
+		(result)->tv_usec = (a)->tv_usec + (b)->tv_usec;   	\
+		if ((result)->tv_usec >= 1000000) {            		\
+			(result)->tv_sec++;                				\
+			(result)->tv_usec -= 1000000;          			\
+		}                           						\
+	} while (0)
 
-#define FK_UTIL_TMVAL_SUB(a, b, result)				\
-  do {									      			\
-    (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;	    \
-    (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;    \
-    if ((result)->tv_usec < 0) {					    \
-      --(result)->tv_sec;						      	\
-      (result)->tv_usec += 1000000;					    \
-    }									      			\
-  } while (0)
+#define FK_UTIL_TMVAL_SUB(a, b, result)						\
+	do {									      			\
+		(result)->tv_sec = (a)->tv_sec - (b)->tv_sec;	    \
+		(result)->tv_usec = (a)->tv_usec - (b)->tv_usec;    \
+		if ((result)->tv_usec < 0) {					    \
+			--(result)->tv_sec;						      	\
+			(result)->tv_usec += 1000000;				    \
+		}									      			\
+	} while (0)
 
 #define FK_UTIL_INT_LEN(num, len)	\
 	len = 0;						\
