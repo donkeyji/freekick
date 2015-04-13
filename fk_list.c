@@ -18,7 +18,7 @@ static fk_node_op default_nop = {
 //save free node
 static fk_list *free_nodes = NULL;
 
-fk_list *fk_list_create(fk_node_op *func)
+fk_list *fk_list_create(fk_node_op *nop)
 {
 	fk_list *lst;
 
@@ -27,10 +27,10 @@ fk_list *fk_list_create(fk_node_op *func)
 	lst->head = NULL;
 	lst->tail = NULL;
 	lst->len = 0;
-	if (func == NULL) {
+	if (nop == NULL) {
 		lst->nop = &default_nop;
 	} else {
-		lst->nop = func;
+		lst->nop = nop;
 	}
 
 	return lst;

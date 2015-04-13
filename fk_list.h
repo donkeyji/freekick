@@ -20,8 +20,8 @@ typedef struct _fk_iter {
 
 typedef struct _fk_node_op {
 	// method specified
-	void (*data_free)(void *);
 	void *(*data_copy)(void *);
+	void (*data_free)(void *);
 	int (*data_cmp)(void *, void *);
 } fk_node_op;
 
@@ -35,7 +35,7 @@ typedef struct _fk_list {
 	fk_node_op *nop;
 } fk_list;
 
-fk_list *fk_list_create(fk_node_op *func);
+fk_list *fk_list_create(fk_node_op *nop);
 void fk_list_destroy(fk_list *lst);
 void fk_list_insert(fk_list *lst, void *val);
 fk_node *fk_list_iter_next(fk_list *lst);

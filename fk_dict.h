@@ -21,7 +21,6 @@ typedef struct _fk_dict {
 	int size;
 	int used;
 	int limit;
-	fk_node_op *lf;
 	fk_list **buckets;
 	fk_elt_op *eop;
 } fk_dict;
