@@ -18,7 +18,6 @@ typedef struct {
 
 #define LEN 1024*1024*5
 
-/*
 void t_pool()
 {
     int i;
@@ -56,9 +55,7 @@ void t_pool()
     t2 = clock();
     printf("time used for free: %lu\n", t2 - t1);
 }
-*/
 
-/*
 void t_dict()
 {
 	fk_dict *dd = fk_dict_create();
@@ -71,10 +68,7 @@ void t_dict()
 	printf("yyyyyyyyyy\n");
 
 	fk_dict_add(dd, ss, oo);
-
-	fk_dict_print(dd);
 }
-*/
 
 int int_cmp(void *a, void *b)
 {

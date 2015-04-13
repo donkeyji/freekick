@@ -1,9 +1,5 @@
 TMODBIN := tmod
 
-SRCDIRS := .
-
-SRCEXTS := .c
-
 CFLAGS := -std=c99 -Wall -g
 CFLAGS += -I ../
 
@@ -12,12 +8,11 @@ LDFLAGS +=
 
 CC = gcc 
 
-TMODSRCS = ../fk_buf.c ../fk_conf.c ../fk_ev.c ../fk_list.c ../fk_log.c ../fk_mem.c ../fk_sig.c ../fk_sock.c ../fk_str.c ../fk_util.c ../fk_heap.c ../fk_obj.c ../fk_pool.c ../fk_dict.c ./tmod.c
+TMODOBJS = ../fk_buf.o ../fk_conf.o ../fk_ev.o ../fk_list.o ../fk_log.o ../fk_mem.o  ../fk_sock.o ../fk_str.o ../fk_util.o ../fk_heap.o ../fk_obj.o ../fk_pool.o ../fk_dict.o ./tmod.o
 
-TMODOBJS = $(foreach x,$(SRCEXTS), $(patsubst %$(x),%.o,$(filter %$(x),$(TMODSRCS)))) 
 TMODDEPS = $(patsubst %.o,%.d,$(TMODOBJS)) 
 
-.PHONY : all clean cleanall rebuild
+.PHONY : all clean
 
 all : $(TMODBIN)
 
@@ -29,10 +24,5 @@ $(TMODBIN) : $(TMODOBJS)
 
 -include $(TMODDEPS)
 
-rebuild: clean all
-
 clean :
-	@$(RM) *.o *.d
-
-cleanall: clean
-	@$(RM) $(TMODBIN)
+	@$(RM) $(TMODOBJS) $(TMODDEPS) $(TMODBIN)
