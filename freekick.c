@@ -74,6 +74,7 @@ static int fk_on_set(fk_conn *conn);
 static int fk_on_get(fk_conn *conn);
 static int fk_on_hset(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
+static int fk_on_zadd(fk_conn *conn);
 
 //global variable
 static fk_server server;
@@ -87,11 +88,12 @@ static fk_elt_op dbeop = {
 
 //all proto to deal
 static fk_proto protos[] = {
-	{"SET", 	FK_PROTO_WRITE, 	3, 	fk_on_set},
-	{"GET", 	FK_PROTO_READ, 		2, 	fk_on_get},
-	{"HSET", 	FK_PROTO_WRITE, 	4, 	fk_on_hset},
-	{"HGET", 	FK_PROTO_READ, 		3, 	fk_on_hget},
-	{NULL, 		FK_PROTO_INVALID, 	0, 	NULL}
+	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_on_set},
+	{"GET", 	FK_PROTO_READ, 		2, 					fk_on_get},
+	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_on_hset},
+	{"HGET", 	FK_PROTO_READ, 		3, 					fk_on_hget},
+	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_zadd},
+	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
 static fk_dict *pdct = NULL;
@@ -309,6 +311,11 @@ int fk_on_hget(fk_conn *conn)
 
 	FK_BUF_HIGH_INC(conn->wbuf, pto_len);
 
+	return 0;
+}
+
+int fk_on_zadd(fk_conn *conn)
+{
 	return 0;
 }
 

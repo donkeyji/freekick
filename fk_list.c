@@ -61,6 +61,7 @@ void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
 	}
 
 	//low--> <--high
+	pos = low;//necessary???
 	while (low != NULL && high != NULL) {
 		if (lst->nop->data_cmp(low->data, nd->data) >= 0) {
 			pos = low;//should before low
@@ -89,7 +90,6 @@ void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
 			nd->prev = low->prev;
 			nd->next = low;
 		}
-		return;
 	}
 
 	if (pos == high) {
@@ -103,8 +103,8 @@ void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
 			nd->next = high->next;
 			nd->prev = high;
 		}
-		return;
 	}
+	lst->len++;
 
 	return;
 }

@@ -254,7 +254,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		fk_conn_args_free(conn);
 		return -1;
 	}
-	if (pto->arg_cnt != conn->arg_cnt) {
+	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_args_free(conn);
 		return -1;
