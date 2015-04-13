@@ -86,6 +86,13 @@ static fk_elt_op dbeop = {
 	fk_dict_obj_free
 };
 
+static fk_elt_op seteop = {
+	NULL,
+	fk_str_destroy,
+	NULL,
+	NULL
+};
+
 //all proto to deal
 static fk_proto protos[] = {
 	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_on_set},
