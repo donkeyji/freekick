@@ -48,61 +48,57 @@ void fk_list_free_display()
 
 void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
 {
-	fk_node *low, *high, *pos;
+	int pos;
+	fk_node *low, *high;
 
 	low = lst->head;
 	high = lst->tail;
 
 	if (low == NULL && high == NULL) {//empty list
-		lst->head = lst->tail = nd;
-		nd->prev = nd->next = NULL;
+		lst->head = nd;
+		lst->tail = nd;
+		nd->prev = NULL;
+		nd->next = NULL;
 		lst->len++;
 		return;
 	}
 
-	//low--> <--high
-	pos = low;//necessary???
-	while (low != NULL && high != NULL) {
+	pos = 0;//low
+	//while (low != NULL && high != NULL) {
+	//while (high != NULL) {
+	while (low != NULL) {
 		if (lst->nop->data_cmp(low->data, nd->data) >= 0) {
-			pos = low;//should before low
+			pos = 0;//use low as position
 			break;
 		}
 		if (lst->nop->data_cmp(high->data, nd->data) <= 0) {
-			pos = high;//should behind high
+			pos = 1;//use high as position
 			break;
 		}
-		if (lst->nop->data_cmp(low->data, nd->data) < 0) {
-			low = low->next;
-		}
-		if (lst->nop->data_cmp(nd->data, high->data) > 0) {
-			high = high->prev;
-		}
+		low = low->next;
+		high = high->prev;
 	}
 
-	if (pos == low) {
-		if (pos == lst->head) {
-			nd->prev = NULL;
-			nd->next = low;
-			low->prev = nd;
+	if (pos == 0) {//use low: before low
+		if (low == lst->head) {
 			lst->head = nd;
+			nd->prev = NULL;
 		} else {
 			low->prev->next = nd;
 			nd->prev = low->prev;
-			nd->next = low;
 		}
-	}
-
-	if (pos == high) {
-		if (pos == lst->tail) {
-			nd->prev = high;
-			nd->next = NULL;
-			high->next = nd;
+		low->prev = nd;
+		nd->next = low;
+	} else {//use high: behind high
+		if (high == lst->tail) {
 			lst->tail = nd;
+			nd->next = NULL;
 		} else {
 			high->next->prev = nd;
 			nd->next = high->next;
-			nd->prev = high;
 		}
+		nd->prev = high;
+		high->next = nd;
 	}
 	lst->len++;
 

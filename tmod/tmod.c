@@ -93,15 +93,19 @@ void t_list()
 {
 	int i;
 	fk_node *nd;
-	int x[6] = {5, 3, 1, 1, 9, 2};
+	int x[10] = {5, 1, 4, 2, 5, 3, 1, 1, 9, 2};
 	fk_list *ll = fk_list_create(&oopp);
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < 10; i++) {
+		//printf("i: %d\n", i);
 		fk_list_insert(ll, x+i);
+		//printf("%d\n", *(int *)(ll->head->data));
 	}
+	printf("len: %d\n", ll->len);
 	nd = ll->head; 
-	while (nd!=NULL) { 
+	while (nd != NULL) { 
 		printf("%d\n", *(int*)(nd->data));
 		nd = nd->next;
+		//printf("nd: %p\n", nd);
 	}
 }
 
