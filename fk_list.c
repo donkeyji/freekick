@@ -28,9 +28,9 @@ fk_list *fk_list_create(fk_node_op *func)
 	lst->tail = NULL;
 	lst->len = 0;
 	if (func == NULL) {
-		lst->method = &default_nop;
+		lst->nop = &default_nop;
 	} else {
-		lst->method = func;
+		lst->nop = func;
 	}
 
 	return lst;
@@ -48,6 +48,65 @@ void fk_list_free_display()
 
 void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
 {
+	fk_node *low, *high, *pos;
+
+	low = lst->head;
+	high = lst->tail;
+
+	if (low == NULL && high == NULL) {//empty list
+		lst->head = lst->tail = nd;
+		nd->prev = nd->next = NULL;
+		lst->len++;
+		return;
+	}
+
+	//low--> <--high
+	while (low != NULL && high != NULL) {
+		if (lst->nop->data_cmp(low->data, nd->data) >= 0) {
+			pos = low;//should before low
+			break;
+		}
+		if (lst->nop->data_cmp(high->data, nd->data) <= 0) {
+			pos = high;//should behind high
+			break;
+		}
+		if (lst->nop->data_cmp(low->data, nd->data) < 0) {
+			low = low->next;
+		}
+		if (lst->nop->data_cmp(nd->data, high->data) > 0) {
+			high = high->prev;
+		}
+	}
+
+	if (pos == low) {
+		if (pos == lst->head) {
+			nd->prev = NULL;
+			nd->next = low;
+			low->prev = nd;
+			lst->head = nd;
+		} else {
+			low->prev->next = nd;
+			nd->prev = low->prev;
+			nd->next = low;
+		}
+		return;
+	}
+
+	if (pos == high) {
+		if (pos == lst->tail) {
+			nd->prev = high;
+			nd->next = NULL;
+			high->next = nd;
+			lst->tail = nd;
+		} else {
+			high->next->prev = nd;
+			nd->next = high->next;
+			nd->prev = high;
+		}
+		return;
+	}
+
+	return;
 }
 
 //do not change node->data
@@ -67,7 +126,7 @@ void fk_list_insert_head_only(fk_list *lst, fk_node *nd)
 
 void fk_list_insert_only(fk_list *lst, fk_node *nd)
 {
-	if (lst->method->data_cmp == NULL) {
+	if (lst->nop->data_cmp == NULL) {
 		fk_list_insert_head_only(lst, nd);
 	} else {
 		fk_list_inser_sorted_only(lst, nd);
@@ -168,8 +227,8 @@ void fk_list_insert(fk_list *lst, void *val)
 	}
 
 	//initialize the node->data
-	if (lst->method->data_copy != NULL) {
-		nd->data = lst->method->data_copy(val);//do copy val memory
+	if (lst->nop->data_copy != NULL) {
+		nd->data = lst->nop->data_copy(val);//do copy val memory
 	} else {
 		nd->data = val;//do not copy val memory
 	}
@@ -183,8 +242,8 @@ void fk_list_remove(fk_list *lst, fk_node *nd)
 	fk_list_remove_only(lst, nd);
 
 	//whether to free the node->data
-	if (lst->method->data_free != NULL) {
-		lst->method->data_free(nd->data);//free node->data
+	if (lst->nop->data_free != NULL) {
+		lst->nop->data_free(nd->data);//free node->data
 	}
 	//fk_list_free_node_put(nd);
 	fk_mem_free(nd);
@@ -210,8 +269,8 @@ fk_node *fk_list_search(fk_list *lst, void *key)
 
 	nd = lst->head;
 	while (nd != NULL) {
-		if (lst->method->data_cmp != NULL) {
-			cmp = lst->method->data_cmp(nd->data, key);
+		if (lst->nop->data_cmp != NULL) {
+			cmp = lst->nop->data_cmp(nd->data, key);
 		} else {
 			cmp = nd->data - key;//compare the address
 		}

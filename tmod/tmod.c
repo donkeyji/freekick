@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <fk_mem.h>
 #include <fk_pool.h>
 #include <fk_dict.h>
@@ -57,6 +58,7 @@ void t_pool()
 }
 */
 
+/*
 void t_dict()
 {
 	fk_dict *dd = fk_dict_create();
@@ -72,10 +74,41 @@ void t_dict()
 
 	fk_dict_print(dd);
 }
+*/
+
+int int_cmp(void *a, void *b)
+{
+	int x = *((int*)a);
+	int y = *((int*)b);
+	return x - y;
+}
+
+fk_node_op oopp = {
+	NULL,
+	NULL,
+	int_cmp
+};
+
+void t_list()
+{
+	int i;
+	fk_node *nd;
+	int x[6] = {5, 3, 1, 1, 9, 2};
+	fk_list *ll = fk_list_create(&oopp);
+	for (i = 0; i < 6; i++) {
+		fk_list_insert(ll, x+i);
+	}
+	nd = ll->head; 
+	while (nd!=NULL) { 
+		printf("%d\n", *(int*)(nd->data));
+		nd = nd->next;
+	}
+}
 
 int main()
 {
 	fk_list_init();
-	t_dict();	
+	//t_dict();	
+	t_list();
     return 0;
 }

@@ -32,7 +32,7 @@ typedef struct _fk_list {
 	//
 	fk_iter iter;
 
-	fk_node_op *method;
+	fk_node_op *nop;
 } fk_list;
 
 fk_list *fk_list_create(fk_node_op *func);
