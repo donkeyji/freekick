@@ -32,7 +32,7 @@
 
 static int fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
-static fk_node *fk_dict_search(fk_dict *dct, fk_str *key);
+static fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
 
 static fk_elt_op default_eop = {
 	NULL,
@@ -89,7 +89,7 @@ void *fk_dict_get(fk_dict *dct, fk_str *key)
 {
 	fk_node *nd;
 	fk_elt *elt;
-	nd = fk_dict_search(dct, key);
+	nd = fk_dict_search(dct, key, NULL);
 	if (nd == NULL) {
 		return NULL;
 	}
@@ -97,7 +97,7 @@ void *fk_dict_get(fk_dict *dct, fk_str *key)
 	return elt->value;
 }
 
-fk_node *fk_dict_search(fk_dict *dct, fk_str *key)
+fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 {
 	fk_node *nd;
 	fk_elt *elt;
@@ -106,6 +106,9 @@ fk_node *fk_dict_search(fk_dict *dct, fk_str *key)
 
 	hash = fk_dict_hash(key);
 	idx = hash & (dct->size - 1);
+	if (bidx != NULL) {
+		*bidx = idx;
+	}
 	lst = dct->buckets[idx];
 	if (lst == NULL) {
 		return NULL;
@@ -142,15 +145,13 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 	fk_elt *elt;
 	void *old_val;
 	fk_list *lst;
-	int hash, idx;
+	int idx;
 
-	nd = fk_dict_search(dct, key);
+	nd = fk_dict_search(dct, key, &idx);
 	if (nd == NULL) {
 		if (dct->used == dct->limit) {
 			fk_dict_stretch(dct);//whether need to extend
 		}
-		hash = fk_dict_hash(key);
-		idx = hash & (dct->size - 1);
 		lst = dct->buckets[idx];
 		if (lst == NULL) {//need to
 			dct->buckets[idx] = fk_list_create(NULL);
@@ -179,15 +180,13 @@ int fk_dict_remove(fk_dict *dct, fk_str *key)
 	fk_node *nd;
 	fk_list *lst;
 	fk_elt *elt;
-	int hash, idx;
+	int idx;
 
-	nd = fk_dict_search(dct, key);
+	nd = fk_dict_search(dct, key, &idx);
 	if (nd == NULL) {
 		return -1;
 	}
 
-	hash = fk_dict_hash(key);
-	idx = hash & (dct->size - 1);
 	lst = dct->buckets[idx];
 	elt = nd->data;
 
