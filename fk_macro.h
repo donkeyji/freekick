@@ -28,6 +28,6 @@
 #define FK_DB_CNT 8
 
 /*timeout of conn, unit: second*/
-#define FK_CLIENT_TIMEOUT 300
+#define FK_CONN_TIMEOUT 300
 
 #endif
