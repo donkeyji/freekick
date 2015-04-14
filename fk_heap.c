@@ -57,14 +57,14 @@ void fk_heap_remove(fk_heap *hp, fk_leaf *leaf)
 		j = 2 * i;
 		if (2 * i + 1 <= hp->last) {//if right child exists
 			right = hp->array[2 * i + 1];
-			cmp = hp->lop->data_cmp(left, right);
+			cmp = hp->lop->leaf_cmp(left, right);
 			if (cmp > 0) {
 				min = right;
 				j = 2 * i + 1;
 			}
 		}
 		//compare the parent with min(left, right)
-		cmp = hp->lop->data_cmp(parent, min);
+		cmp = hp->lop->leaf_cmp(parent, min);
 		if (cmp > 0) {
 			tmp = hp->array[i];
 			hp->array[i] = hp->array[j];
@@ -106,7 +106,7 @@ void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
 
 	i = hp->last;
 	while (i / 2 > 0) { //donot reach the root
-		cmp = hp->lop->data_cmp(hp->array[i], hp->array[i / 2]);
+		cmp = hp->lop->leaf_cmp(hp->array[i], hp->array[i / 2]);
 		if (cmp < 0) {//swap position
 			tmp = hp->array[i / 2];
 			hp->array[i / 2] = hp->array[i];

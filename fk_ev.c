@@ -17,7 +17,7 @@ static fk_tmev *fk_ev_nearest_tmev_get();
 static int fk_ev_pending_tmev_update();
 static int fk_ev_active_ioev_proc();
 static int fk_ev_expired_tmev_proc();
-static int fk_ev_tmev_cmp(void *tmev1, void *tmev2);
+static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
 #if defined(__linux__)
 	#include <fk_epoll.c>
@@ -351,7 +351,7 @@ int fk_ev_ioev_activate(int fd, unsigned char type)
 	return 0;
 }
 
-int fk_ev_tmev_cmp(void *tmev1, void *tmev2)
+int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
 {
 	fk_tmev *t1, *t2;
 

@@ -3,15 +3,13 @@
 
 #define FK_HEAP_LEAF_HEADER		int idx
 
-typedef int (*fk_leaf_cmp)(void *, void *);
-
-typedef struct _fk_leaf_op {
-	fk_leaf_cmp data_cmp;
-} fk_leaf_op;
-
 typedef struct _fk_leaf {
 	FK_HEAP_LEAF_HEADER;
 } fk_leaf;
+
+typedef struct _fk_leaf_op {
+	int (*leaf_cmp)(fk_leaf *, fk_leaf *);
+} fk_leaf_op;
 
 typedef struct _fk_heap {
 	int max;//the total length of the array

@@ -41,7 +41,6 @@ typedef struct _fk_server {
 	fk_ioev *listen_ev;
 	fk_tmev *svr_timer;
 	fk_tmev *svr_timer2;
-	fk_tmev *svr_timer3;
 	//fk_tmev* timer;//do not own the timer obj any more
 	fk_conn **all_conns;//MAX_CONN
 	fk_str *pid_path;
@@ -498,8 +497,8 @@ void fk_svr_init()
 	server.svr_timer = fk_ev_tmev_create(3000, FK_EV_CYCLE, NULL, fk_svr_timer_cb);
 	fk_ev_tmev_add(server.svr_timer);
 #ifdef FK_DEBUG
-	//server.svr_timer2 = fk_ev_tmev_create(4000, FK_EV_CYCLE, NULL, fk_svr_timer_cb2);
-	//fk_ev_tmev_add(server.svr_timer2);
+	server.svr_timer2 = fk_ev_tmev_create(4000, FK_EV_CYCLE, NULL, fk_svr_timer_cb2);
+	fk_ev_tmev_add(server.svr_timer2);
 #endif
 
 	server.db = (fk_dict **)fk_mem_alloc(sizeof(fk_dict *) * server.dbcnt);
