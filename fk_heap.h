@@ -4,13 +4,14 @@
 #define FK_MAX_HEAP 1
 #define FK_MIN_HEAP 2
 
+#define FK_HEAP_LEAF_HEADER		int idx
+
 typedef int (*fk_leaf_cmp)(void *, void *);
 
 typedef struct _fk_leaf_op {
 	fk_leaf_cmp data_cmp;
 } fk_leaf_op;
 
-#define FK_HEAP_LEAF_HEADER		int idx
 typedef struct _fk_leaf {
 	FK_HEAP_LEAF_HEADER;
 } fk_leaf;
