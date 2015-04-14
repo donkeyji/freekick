@@ -1,8 +1,8 @@
 #ifndef _FK_LIST_H_
 #define _FK_LIST_H_
 
-#define FK_ITER_FORWARD 1
-#define FK_ITER_BACKWARD 0
+#define FK_LIST_ITER_FORWARD 1
+#define FK_LIST_ITER_BACKWARD 0
 
 #define FK_NODE_DATA(nd) (nd->data)
 
