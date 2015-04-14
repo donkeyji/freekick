@@ -11,6 +11,7 @@ typedef struct _fk_leaf_op {
 	int (*leaf_cmp)(fk_leaf *, fk_leaf *);
 } fk_leaf_op;
 
+//do not copy memory from outside, just save a pointer to the field of array
 typedef struct _fk_heap {
 	int max;//the total length of the array
 	int last;//current the last item index
