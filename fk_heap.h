@@ -1,9 +1,6 @@
 #ifndef _FK_HEAP_H_
 #define _FK_HEAP_H_
 
-#define FK_MAX_HEAP 1
-#define FK_MIN_HEAP 2
-
 #define FK_HEAP_LEAF_HEADER		int idx
 
 typedef int (*fk_leaf_cmp)(void *, void *);
