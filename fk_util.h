@@ -3,9 +3,6 @@
 
 #include <sys/time.h>
 
-#define FK_MILLION 	1000000
-#define FK_THOUSAND 	1000
-
 void fk_util_cal_expire(struct timeval *tv, int interval);
 
 #define FK_UTIL_TV2MS(tv) 						\
