@@ -5,9 +5,7 @@
 
 #include <fk_str.h>
 
-
 typedef struct _fk_log {
-	//int log_fd;
 	int log_level;
 	FILE *log_file;
 } fk_log;
