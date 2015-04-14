@@ -14,7 +14,7 @@
 #define FK_UNUSE(var) (void)(var)
 
 /*saved fd*/
-#define FK_SAVED_FD 16
+#define FK_SAVED_FDS 16
 
 /*default setting*/
 #define FK_MAX_CONN 10240

@@ -489,7 +489,7 @@ void fk_svr_init()
 	server.start_time = time(NULL);
 	server.stop = 0;
 	server.conn_cnt = 0;
-	server.all_conns = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * (server.max_conn + FK_SAVED_FD));
+	server.all_conns = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * (server.max_conn + FK_SAVED_FDS));
 	server.listen_fd = fk_sock_create_listen(FK_STR_RAW(server.addr), server.port);
 	fk_log_debug("listen fd: %d\n", server.listen_fd);
 	server.listen_ev = fk_ev_ioev_create(server.listen_fd, FK_EV_READ, NULL, fk_svr_listen_cb);
@@ -529,7 +529,7 @@ void fk_setrlimit()
 	struct rlimit lmt;
 	int rt, max_files;
 
-	max_files = setting.max_conn + FK_SAVED_FD;//
+	max_files = setting.max_conn + FK_SAVED_FDS;//
 	rt = getrlimit(RLIMIT_NOFILE, &lmt);
 	if (rt < 0) {
 		fk_log_error("getrlimit: %s\n", strerror(errno));
@@ -563,7 +563,7 @@ void fk_setrlimit()
 				exit(EXIT_FAILURE);
 			}
 			//set current limit to the original setting
-			setting.max_conn = max_files - FK_SAVED_FD;
+			setting.max_conn = max_files - FK_SAVED_FDS;
 			fk_log_error("change the setting.max_conn according the current file number limit: %d\n", setting.max_conn);
 		}
 	}

@@ -40,7 +40,7 @@ void fk_ev_init()
 {
 	int max_fds;
 
-	max_fds = setting.max_conn + 1 + FK_SAVED_FD;
+	max_fds = setting.max_conn + 1 + FK_SAVED_FDS;
 	evmgr.timer_list = fk_list_create(NULL);
 	evmgr.timer_heap = fk_heap_create(&tmev_op);
 	//use macro to initialize this two member
