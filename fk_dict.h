@@ -6,7 +6,7 @@
 #include <fk_list.h>
 
 typedef struct _fk_elt_op {
-	fk_str *(*key_copy)(fk_str *key);//0 or 1
+	fk_str *(*key_copy)(fk_str *key);
 	void (*key_free)(fk_str *key);
 	void *(*val_copy)(void *val);
 	void (*val_free)(void *val);
