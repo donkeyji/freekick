@@ -39,15 +39,15 @@ typedef struct _fk_tmev {
 	struct _fk_tmev *next;
 } fk_tmev;
 
-#define DEF_LIST(type, name)	\
+#define FK_EV_LIST_DEF(type, name)	\
 typedef struct {				\
 	type *head;					\
 	type *tail;					\
 	int len;					\
 } name
 
-DEF_LIST(fk_ioev, fk_ioev_list);
-DEF_LIST(fk_tmev, fk_tmev_list);
+FK_EV_LIST_DEF(fk_ioev, fk_ioev_list);
+FK_EV_LIST_DEF(fk_tmev, fk_tmev_list);
 
 #define FK_EV_LIST_INSERT(lst, nd) {	\
     if (lst->head == NULL) {			\
