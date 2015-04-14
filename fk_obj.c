@@ -31,7 +31,7 @@ fk_obj *fk_obj_free_obj_get()
     obj = nd->data;
     if (obj == NULL) {
         obj = (fk_obj *)fk_mem_alloc(sizeof(fk_obj)); //really malloc memory here
-        obj->type = FK_OBJ_NULL;
+        obj->type = FK_OBJ_NIL;
         obj->ref = 0;
         obj->data = NULL;
     }
@@ -49,7 +49,7 @@ void fk_obj_free_obj_put(fk_obj *obj)
 
 void fk_obj_put_free(fk_obj *obj)
 {
-    obj->type = FK_OBJ_NULL;
+    obj->type = FK_OBJ_NIL;
     obj->data = NULL;
     obj->ref = 0;
     if (free_objs->len < FK_FREE_OBJS_MAX) {
@@ -86,7 +86,7 @@ void fk_obj_destroy(fk_obj *obj)
 	}
 	obj->data = NULL;
 	obj->ref = 0;
-	obj->type = FK_OBJ_NULL;
+	obj->type = FK_OBJ_NIL;
 	fk_mem_free(obj);
 
 	return;

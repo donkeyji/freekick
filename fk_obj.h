@@ -1,7 +1,7 @@
 #ifndef _FK_OBJ_H_
 #define _FK_OBJ_H_
 
-#define FK_OBJ_NULL 0
+#define FK_OBJ_NIL 0
 #define FK_OBJ_STR  1
 #define FK_OBJ_LIST 2
 #define FK_OBJ_DICT 3
