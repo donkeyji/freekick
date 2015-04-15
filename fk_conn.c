@@ -61,7 +61,8 @@ void fk_conn_destroy(fk_conn *conn)
 	fk_buf_destroy(conn->rbuf);
 	fk_buf_destroy(conn->wbuf);
 
-	fk_conn_args_free(conn);
+	fk_conn_args_free(conn);//free args first
+	fk_vector_destroy(conn->args);//then free vector
 	//for (i = 0; i < FK_ARG_MAX; i++) {
 		//if (conn->args[i] != NULL) {
 			//fk_str_destroy(conn->args[i]);
@@ -151,15 +152,11 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			//end = fk_buf_locate_char(rbuf, start + 1, '\n');
 			p = memchr(FK_BUF_VALID_START(rbuf), '\n', FK_BUF_VALID_LEN(rbuf));
 			if (p == NULL) {
 				return 0;
 			}
 			end = p - rbuf->data;
-			//if (end == -1) {//not found
-				//return 0;
-			//}
 			if (rbuf->data[end - 1] != '\r') {
 				fk_log_debug("wrong client data\n");
 				return -1;
@@ -172,7 +169,11 @@ int fk_conn_req_parse(fk_conn *conn)
 #ifdef FK_DEBUG
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
 #endif
+			//check whether need to stretch
 			FK_VECTOR_STRETCH(conn->args, conn->arg_cnt);
+			//check whether need to shrink
+			FK_VECTOR_SHRINK(conn->args, conn->arg_cnt);
+
 			FK_BUF_LOW_INC(rbuf, end - start + 1);
 		}
 	}

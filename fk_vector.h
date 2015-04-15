@@ -26,8 +26,8 @@ void fk_vector_destroy(fk_vector *vtr);
 	}																\
 }
 
-#define FK_VECTOR_SHRINK(vtr)	{								\
-	if ((vtr)->len > FK_VECTOR_INIT_LEN) {						\
+#define FK_VECTOR_SHRINK(vtr, length)	{						\
+	if ((length) < FK_VECTOR_INIT_LEN) {						\
 		(vtr)->array = (fk_str **)fk_mem_realloc((vtr)->array, 	\
 				sizeof(fk_str *) * FK_VECTOR_INIT_LEN);			\
 		(vtr)->len = FK_VECTOR_INIT_LEN;						\

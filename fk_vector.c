@@ -24,4 +24,7 @@ fk_vector *fk_vector_create()
 
 void fk_vector_destroy(fk_vector *vtr)
 {
+	int i;
+	fk_mem_free(vtr->array);
+	fk_mem_free(vtr);
 }
