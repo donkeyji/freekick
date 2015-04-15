@@ -66,6 +66,8 @@ static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
 static void fk_dict_obj_free(void *elt);
+static int fk_elt_cmp(void *e1, void *e2);
+static void fk_elt_free(void *e);
 static void fk_proto_init();
 
 //all the proto handlers
@@ -90,6 +92,12 @@ static fk_elt_op seteop = {
 	fk_str_destroy,
 	NULL,
 	NULL
+};
+
+static fk_node_op sortop = {
+	NULL,
+	fk_elt_free,
+	fk_elt_cmp
 };
 
 //all proto to deal
@@ -147,20 +155,20 @@ int fk_on_set(fk_conn *conn)
 #ifdef FK_DEBUG
 	fk_log_debug("[fk_on_set]parsed arg_cnt: %d\n", conn->arg_cnt);
 	for (i = 0; i < conn->arg_cnt; i++) {
-		fk_log_debug("[fk_on_set]idx: %d, len: %d, arg: %s\n", i, conn->args_len[i], conn->args[i]->data);
+		//fk_log_debug("[fk_on_set]idx: %d, len: %d, arg: %s\n", i, conn->args_len[i], conn->args[i]->data);
 	}
 #endif
 
-	key = conn->args[1];
-	value = fk_obj_create(FK_OBJ_STR, conn->args[2]);
+	key = FK_VECTOR_RAW(conn->args)[1];
+	value = fk_obj_create(FK_OBJ_STR, FK_VECTOR_RAW(conn->args)[2]);
 	rt = fk_dict_add(server.db[conn->db_idx], key, value);
 	if (rt < 0) {
 		fk_obj_destroy(value);//destroy this fk_obj
 		fk_log_error("failed to add to the dict\n");
 		return -1;
 	}
-	FK_CONN_ARG_CONSUME(conn->args[1]);
-	FK_CONN_ARG_CONSUME(conn->args[2]);
+	FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[1]);
+	FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[2]);
 
 	reply = "+OK\r\n";
 	len = strlen(reply);
@@ -184,7 +192,7 @@ int fk_on_get(fk_conn *conn)
 	fk_str *key, *value;
 	int pto_len, slen, sslen, empty, rsp_len;
 
-	key = conn->args[1];
+	key = FK_VECTOR_RAW(conn->args)[1];
 	obj = fk_dict_get(server.db[conn->db_idx], key);
 	empty = 1;
 	if (obj == NULL) {
@@ -227,38 +235,38 @@ int fk_on_hset(fk_conn *conn)
 	fk_str *hkey, *key;
 	fk_obj *hobj, *obj;
 
-	hkey = conn->args[1];
-	key = conn->args[2];
+	hkey = FK_VECTOR_RAW(conn->args)[1];
+	key = FK_VECTOR_RAW(conn->args)[2];
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
 	if (hobj == NULL) {
 		dct = fk_dict_create(&dbeop);
-		obj = fk_obj_create(FK_OBJ_STR, conn->args[3]);
+		obj = fk_obj_create(FK_OBJ_STR, FK_VECTOR_RAW(conn->args)[3]);
 		fk_dict_add(dct, key, obj);
 		hobj = fk_obj_create(FK_OBJ_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hobj);
 		//consume all the args, except args[0]
-		FK_CONN_ARG_CONSUME(conn->args[1]);
-		FK_CONN_ARG_CONSUME(conn->args[2]);
-		FK_CONN_ARG_CONSUME(conn->args[3]);
+		FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[1]);
+		FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[2]);
+		FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[3]);
 	} else {
 		if (hobj->type == FK_OBJ_DICT) {
 			dct = (fk_dict *)(hobj->data);
-			obj = fk_obj_create(FK_OBJ_STR, conn->args[3]);
+			obj = fk_obj_create(FK_OBJ_STR, FK_VECTOR_RAW(conn->args)[3]);
 			fk_dict_add(dct, key, obj);
-			//conn->args[1] is not consumed
-			FK_CONN_ARG_CONSUME(conn->args[2]);
-			FK_CONN_ARG_CONSUME(conn->args[3]);
+			//FK_VECTOR_RAW(conn->args)[1] is not consumed
+			FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[2]);
+			FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[3]);
 		} else {
 			fk_dict_remove(server.db[conn->db_idx], hkey);
 			dct = fk_dict_create(&dbeop);
-			obj = fk_obj_create(FK_OBJ_STR, conn->args[3]);
+			obj = fk_obj_create(FK_OBJ_STR, FK_VECTOR_RAW(conn->args)[3]);
 			fk_dict_add(dct, key, obj);
 			hobj = fk_obj_create(FK_OBJ_DICT, dct);
 			fk_dict_add(server.db[conn->db_idx], hkey, hobj);
 			//consume all the args, except args[0]
-			FK_CONN_ARG_CONSUME(conn->args[1]);
-			FK_CONN_ARG_CONSUME(conn->args[2]);
-			FK_CONN_ARG_CONSUME(conn->args[3]);
+			FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[1]);
+			FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[2]);
+			FK_CONN_ARG_CONSUME(FK_VECTOR_RAW(conn->args)[3]);
 		}
 	}
 	reply = "+OK\r\n";
@@ -275,8 +283,8 @@ int fk_on_hget(fk_conn *conn)
 	int pto_len, slen, sslen, empty, rsp_len;
 	fk_str *hkey, *key, *value;
 
-	hkey = conn->args[1];
-	key = conn->args[2];
+	hkey = FK_VECTOR_RAW(conn->args)[1];
+	key = FK_VECTOR_RAW(conn->args)[2];
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
 	empty = 1;
 	if (hobj == NULL) {
@@ -322,6 +330,51 @@ int fk_on_hget(fk_conn *conn)
 
 int fk_on_zadd(fk_conn *conn)
 {
+	int i;
+	fk_obj *sobj;
+	fk_str *skey;
+	fk_list *lst;
+	fk_elt *elt;
+
+	fk_log_debug("zadd\n");
+	skey = FK_VECTOR_RAW(conn->args)[1];
+
+	sobj = fk_dict_get(server.db[conn->db_idx], skey);
+
+	if (sobj == NULL) {
+		lst = fk_list_create(&sortop);
+		for (i = 2; i < conn->arg_cnt; i += 2) {
+			elt = fk_mem_alloc(sizeof(fk_elt));
+			elt->key = FK_VECTOR_RAW(conn->args)[i];
+			elt->value = FK_VECTOR_RAW(conn->args)[i+1];
+			fk_list_insert(lst, elt);
+		}
+		fk_dict_add(server.db[conn->db_idx], skey, lst);
+		sprintf(FK_BUF_FREE_START(conn->wbuf), ":%d\r\n", 1);//conn->arg_cnt-2);
+		fk_log_debug("after sprintf\n");
+		return 0;
+	}
+
+	if (sobj->type != FK_OBJ_LIST) {
+		fk_dict_remove(server.db[conn->db_idx], skey);
+		lst = fk_list_create(&sortop);
+		for (i = 2; i < conn->arg_cnt; i += 2) {
+			elt = fk_mem_alloc(sizeof(fk_elt));
+			elt->key = FK_VECTOR_RAW(conn->args)[i];
+			elt->value = FK_VECTOR_RAW(conn->args)[i+1];
+			fk_list_insert(lst, elt);
+		}
+		fk_dict_add(server.db[conn->db_idx], skey, lst);
+		return 0;
+	}
+
+	lst = (fk_list *)sobj->data;
+	for (i = 2; i < conn->arg_cnt; i += 2) {
+		elt = fk_mem_alloc(sizeof(fk_elt));
+		elt->key = FK_VECTOR_RAW(conn->args)[i];
+		elt->value = FK_VECTOR_RAW(conn->args)[i+1];
+		fk_list_insert(lst, elt);
+	}
 	return 0;
 }
 
@@ -330,6 +383,37 @@ void fk_dict_obj_free(void *val)
 	fk_obj *obj;
 	obj = (fk_obj *)val;
 	fk_obj_destroy(obj);
+}
+
+void fk_elt_free(void *e)
+{
+	fk_elt *elt;
+	fk_obj *obj;
+
+	elt = (fk_elt *)e;
+
+	fk_str_destroy(elt->key);
+
+	obj = (fk_obj *)(elt->value);
+	fk_obj_destroy(obj);
+}
+
+int fk_elt_cmp(void *e1, void *e2)
+{
+	double d1, d2;
+	fk_str *v1, *v2;
+	fk_obj *o1, *o2;
+
+	o1 = (fk_obj *)(((fk_elt *)e1)->value);
+	o2 = (fk_obj *)(((fk_elt *)e2)->value);
+
+	v1 = (fk_str *)o1->data;
+	v2 = (fk_str *)o2->data;
+
+	d1 = atof(FK_STR_RAW(v1));
+	d2 = atof(FK_STR_RAW(v2));
+
+	return d1 - d2;
 }
 
 //----------------------------

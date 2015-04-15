@@ -14,7 +14,7 @@ LDFLAGS +=
 CC = gcc 
 
 #SVRSRCS = $(foreach d,$(SRCDIRS),$(wildcard $(addprefix $(d)/*,$(SRCEXTS)))) 
-SVRSRCS = fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_str.c fk_util.c fk_conn.c fk_heap.c fk_obj.c fk_pool.c fk_dict.c freekick.c
+SVRSRCS = fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_str.c fk_util.c fk_conn.c fk_heap.c fk_obj.c fk_pool.c fk_dict.c fk_vector.c freekick.c
 
 CLTSRCS = clt_test.c
 

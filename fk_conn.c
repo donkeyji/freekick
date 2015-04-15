@@ -37,10 +37,13 @@ fk_conn *fk_conn_create(int fd)
 	conn->timer = fk_ev_tmev_create(5000, FK_EV_CYCLE, conn, fk_conn_timer_cb);
 	//fk_ev_tmev_add(conn->timer);
 
+	/*
 	for (i = 0; i < FK_ARG_MAX; i++) {
 		conn->args_len[i] = 0;
 		conn->args[i] = NULL;
 	}
+	*/
+	conn->args = fk_vector_create();
 	conn->arg_cnt = 0;
 	conn->arg_idx = 0;
 	conn->parse_done = 0;
@@ -169,6 +172,7 @@ int fk_conn_req_parse(fk_conn *conn)
 #ifdef FK_DEBUG
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
 #endif
+			FK_VECTOR_STRETCH(conn->args, conn->arg_cnt);
 			FK_BUF_LOW_INC(rbuf, end - start + 1);
 		}
 	}
@@ -199,8 +203,9 @@ int fk_conn_req_parse(fk_conn *conn)
 			return -1;
 		}
 		if (rbuf->high > end + len + 2) {//arg data available
-			conn->args[conn->arg_idx] = fk_str_create(rbuf->data + end + 1, len);
-			conn->args_len[conn->arg_idx] = len;
+			//conn->args[conn->arg_idx] = fk_str_create(rbuf->data + end + 1, len);
+			//conn->args_len[conn->arg_idx] = len;
+			FK_VECTOR_RAW(conn->args)[conn->arg_idx] = fk_str_create(rbuf->data + end + 1, len);
 			conn->arg_idx += 1;
 			FK_BUF_LOW_INC(rbuf, end + len + 2 - start + 1);
 		} else {//not received yet
@@ -225,10 +230,10 @@ static void fk_conn_args_free(fk_conn *conn)
 	int i;
 
 	for (i = 0; i < conn->arg_cnt; i++) {
-		if (conn->args[i] != NULL) {
-			fk_str_destroy(conn->args[i]);
-			conn->args[i] = NULL;
-			conn->args_len[i] = 0;
+		if (FK_VECTOR_RAW(conn->args)[i] != NULL) {
+			fk_str_destroy(FK_VECTOR_RAW(conn->args)[i]);
+			FK_VECTOR_RAW(conn->args)[i] = NULL;
+			//conn->args_len[i] = 0;
 		}
 	}
 	conn->arg_cnt = 0;
@@ -247,10 +252,10 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #endif
 		return 0;
 	}
-	fk_str_2upper(conn->args[0]);
-	pto = fk_proto_search(conn->args[0]);
+	fk_str_2upper(FK_VECTOR_RAW(conn->args)[0]);
+	pto = fk_proto_search(FK_VECTOR_RAW(conn->args)[0]);
 	if (pto == NULL) {
-		fk_log_error("invalid protocol: %s\n", FK_STR_RAW(conn->args[0]));
+		fk_log_error("invalid protocol: %s\n", FK_STR_RAW(FK_VECTOR_RAW(conn->args)[0]));
 		fk_conn_args_free(conn);
 		return -1;
 	}

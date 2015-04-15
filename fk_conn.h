@@ -7,6 +7,7 @@
 #include <fk_ev.h>
 #include <fk_buf.h>
 #include <fk_str.h>
+#include <fk_vector.h>
 
 typedef struct _fk_conn {
 	int fd;
@@ -19,8 +20,9 @@ typedef struct _fk_conn {
 	time_t last_recv;//time of last data receiving
 	fk_tmev *timer;
 
-	fk_str *args[FK_ARG_MAX];
-	int		args_len[FK_ARG_MAX];
+	//fk_str *args[FK_ARG_MAX];
+	//int		args_len[FK_ARG_MAX];
+	fk_vector *args;
 	int		arg_cnt;//the number of args of the current protocol, original 0;
 	int		arg_idx;//the arg_idx arg is being parsing, original 0;
 	int 	parse_done;//original 0;
