@@ -142,8 +142,10 @@ fk_proto *fk_proto_search(fk_str *name)
 }
 
 static char *OK = "+OK\r\n";
+static char *TYPE_ERROR = "-TypeError\r\n";
 static char *NIL = "$-1\r\n";
 static char *ONELINE = "$%d\r\n%s\r\n"; 
+static char *FMT = "%s";
 
 int fk_on_set(fk_conn *conn)
 {
@@ -196,18 +198,24 @@ int fk_on_get(fk_conn *conn)
 	obj = fk_dict_get(server.db[conn->db_idx], key);
 	empty = 1;
 	if (obj == NULL) {
-		pto_len = 5;
-		fmt = "%s";
+		fmt = FMT;
 		rsp = NIL;
+		pto_len = strlen(rsp);
 	} else {
-		value = (fk_str *)obj->data;
-		slen = value->len - 1;
-		FK_UTIL_INT_LEN(slen, sslen);
-		pto_len = value->len - 1 + 5 + sslen;
-		fmt = "$%d\r\n%s\r\n"; 
-		rsp = value->data;
-		rsp_len = value->len -  1;
-		empty = 0;
+		if (obj->type != FK_OBJ_STR) {
+			fmt = FMT;
+			rsp = TYPE_ERROR;
+			pto_len = strlen(rsp);
+		} else {
+			value = (fk_str *)obj->data;
+			slen = value->len - 1;
+			FK_UTIL_INT_LEN(slen, sslen);
+			pto_len = value->len - 1 + 5 + sslen;
+			fmt = ONELINE;
+			rsp = value->data;
+			rsp_len = value->len -  1;
+			empty = 0;
+		}
 	}
 	if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
 		FK_BUF_STRETCH(conn->wbuf);
@@ -286,25 +294,31 @@ int fk_on_hget(fk_conn *conn)
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
 	empty = 1;
 	if (hobj == NULL) {
-		pto_len = 5;
-		fmt = "%s";
+		fmt = FMT;
 		rsp = NIL;
+		pto_len = strlen(rsp);
 	} else {
-		dct = (fk_dict *)(hobj->data);
-		obj = fk_dict_get(dct, key);
-		if (obj == NULL) {
-			pto_len = 5;
-			fmt = "%s";
-			rsp = NIL;
+		if (hobj->type != FK_OBJ_DICT) {
+			fmt = FMT;
+			rsp = TYPE_ERROR;
+			pto_len = strlen(rsp);
 		} else {
-			value = (fk_str *)obj->data;
-			slen = value->len - 1;
-			FK_UTIL_INT_LEN(slen, sslen);
-			pto_len = value->len - 1 + 5 + sslen;
-			fmt = "$%d\r\n%s\r\n"; 
-			rsp = value->data;
-			rsp_len = value->len - 1;
-			empty = 0;
+			dct = (fk_dict *)(hobj->data);
+			obj = fk_dict_get(dct, key);
+			if (obj == NULL) {
+				fmt = FMT;
+				rsp = NIL;
+				pto_len = strlen(rsp);
+			} else {
+				value = (fk_str *)obj->data;
+				slen = value->len - 1;
+				FK_UTIL_INT_LEN(slen, sslen);
+				pto_len = value->len - 1 + 5 + sslen;
+				fmt = ONELINE;
+				rsp = value->data;
+				rsp_len = value->len - 1;
+				empty = 0;
+			}
 		}
 	}
 	if (FK_BUF_FREE_LEN(conn->wbuf) < pto_len) {
