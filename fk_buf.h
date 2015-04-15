@@ -21,7 +21,7 @@ void fk_buf_adjust(fk_buf *buf);
 //fk_buf *FK_BUF_SHRINK(fk_buf *buf);
 //int FK_BUF_SHIFT(fk_buf *buf);
 
-#define FK_BUF_DATA(buf) ((buf)->data)
+#define FK_BUF_RAW(buf) 		((buf)->data)
 
 #define FK_BUF_TOTAL_LEN(buf)	(buf)->len
 
@@ -54,32 +54,32 @@ void fk_buf_adjust(fk_buf *buf);
 	}																	\
 }
 
-#define FK_BUF_SHIFT(buf) 	{		\
+#define FK_BUF_SHIFT(buf) 	{			\
 	if ((buf)->low > 0) {				\
 		memmove((buf)->data, 			\
 			(buf)->data + (buf)->low, 	\
 			(buf)->high - (buf)->low	\
-		);							\
+		);								\
 		(buf)->high -= (buf)->low;		\
-		(buf)->low = 0;				\
-	}								\
+		(buf)->low = 0;					\
+	}									\
 }
 
-#define FK_BUF_SHRINK(buf)	{					\
-	if ((buf)->len >= FK_BUF_HIGHWAT				\
+#define FK_BUF_SHRINK(buf)	{							\
+	if ((buf)->len >= FK_BUF_HIGHWAT					\
 		&& (buf)->high - (buf)->low < FK_BUF_INIT_LEN) 	\
-	{											\
-		memmove((buf)->data,						\
-			(buf)->data + (buf)->low,				\
-			(buf)->high - (buf)->low				\
-		);										\
-		(buf)->high -= (buf)->low;					\
-		(buf)->low = 0;							\
-		(buf) = fk_mem_realloc((buf), 				\
+	{													\
+		memmove((buf)->data,							\
+			(buf)->data + (buf)->low,					\
+			(buf)->high - (buf)->low					\
+		);												\
+		(buf)->high -= (buf)->low;						\
+		(buf)->low = 0;									\
+		(buf) = fk_mem_realloc((buf), 					\
 				sizeof(fk_buf) + FK_BUF_INIT_LEN		\
-		);										\
+		);												\
 		(buf)->len = FK_BUF_INIT_LEN;					\
-	}											\
+	}													\
 }
 
 #endif
