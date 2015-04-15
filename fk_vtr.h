@@ -40,10 +40,12 @@ void fk_vtr_destroy(fk_vtr *vtr);
 				(sizeof(fk_str *) * (length)));						\
 		bzero((vtr)->array + (vtr)->len, (length) - (vtr)->len);	\
 		(vtr)->len = (length);										\
-	} else if ((length) < FK_VECTOR_INIT_LEN) {						\
-		(vtr)->array = (fk_str **)fk_mem_realloc((vtr)->array, 		\
+	} else if ((length) < (vtr)->len) {								\
+		if ((length) < FK_VECTOR_INIT_LEN) {						\
+			(vtr)->array = (fk_str **)fk_mem_realloc((vtr)->array, 	\
 				sizeof(fk_str *) * FK_VECTOR_INIT_LEN);				\
-		(vtr)->len = FK_VECTOR_INIT_LEN;							\
+			(vtr)->len = FK_VECTOR_INIT_LEN;						\
+		}															\
 	}																\
 }
 
