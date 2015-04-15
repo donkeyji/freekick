@@ -256,7 +256,6 @@ int fk_on_hset(fk_conn *conn)
 			FK_CONN_ARG_CONSUME(conn, 2);
 			FK_CONN_ARG_CONSUME(conn, 3);
 		} else {
-			fk_dict_remove(server.db[conn->db_idx], hkey);
 			dct = fk_dict_create(&dbeop);
 			obj = fk_obj_create(FK_OBJ_STR, FK_CONN_ARG(conn, 3));
 			fk_dict_add(dct, key, obj);
@@ -355,7 +354,6 @@ int fk_on_zadd(fk_conn *conn)
 	}
 
 	if (sobj->type != FK_OBJ_LIST) {
-		fk_dict_remove(server.db[conn->db_idx], skey);
 		lst = fk_list_create(&sortop);
 		for (i = 2; i < conn->arg_cnt; i += 2) {
 			elt = fk_mem_alloc(sizeof(fk_elt));
