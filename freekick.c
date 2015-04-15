@@ -170,7 +170,7 @@ int fk_on_set(fk_conn *conn)
 	FK_CONN_ARG_CONSUME(conn, 1);
 	FK_CONN_ARG_CONSUME(conn, 2);
 
-	reply = "+OK\r\n";
+	reply = OK;
 	len = strlen(reply);
 	if (FK_BUF_FREE_LEN(conn->wbuf) < len) {
 		FK_BUF_STRETCH(conn->wbuf);
@@ -198,7 +198,7 @@ int fk_on_get(fk_conn *conn)
 	if (obj == NULL) {
 		pto_len = 5;
 		fmt = "%s";
-		rsp = "$-1\r\n";
+		rsp = NIL;
 	} else {
 		value = (fk_str *)obj->data;
 		slen = value->len - 1;
@@ -267,7 +267,7 @@ int fk_on_hset(fk_conn *conn)
 			FK_CONN_ARG_CONSUME(conn, 3);
 		}
 	}
-	reply = "+OK\r\n";
+	reply = OK;
 	memcpy(conn->wbuf->data + conn->wbuf->low, reply, 5);
 	FK_BUF_HIGH_INC(conn->wbuf, 5);
 	return 0;
@@ -288,14 +288,14 @@ int fk_on_hget(fk_conn *conn)
 	if (hobj == NULL) {
 		pto_len = 5;
 		fmt = "%s";
-		rsp = "$-1\r\n";
+		rsp = NIL;
 	} else {
 		dct = (fk_dict *)(hobj->data);
 		obj = fk_dict_get(dct, key);
 		if (obj == NULL) {
 			pto_len = 5;
 			fmt = "%s";
-			rsp = "$-1\r\n";
+			rsp = NIL;
 		} else {
 			value = (fk_str *)obj->data;
 			slen = value->len - 1;
@@ -348,7 +348,7 @@ int fk_on_zadd(fk_conn *conn)
 			fk_list_insert(lst, elt);
 		}
 		fk_dict_add(server.db[conn->db_idx], skey, lst);
-		sprintf(FK_BUF_FREE_START(conn->wbuf), ":%d\r\n", 1);//conn->arg_cnt-2);
+		sprintf(FK_BUF_FREE_START(conn->wbuf), ":%d\r\n", 1);
 		fk_log_debug("after sprintf\n");
 		return 0;
 	}
