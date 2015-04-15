@@ -21,7 +21,6 @@ static int fk_conn_rsp_send(fk_conn *conn);
 
 fk_conn *fk_conn_create(int fd)
 {
-	int i;
 	fk_conn *conn;
 
 	conn = (fk_conn *)fk_mem_alloc(sizeof(fk_conn));
@@ -206,7 +205,7 @@ int fk_conn_req_parse(fk_conn *conn)
 		if (rbuf->high > end + len + 2) {//arg data available
 			//conn->args[conn->arg_idx] = fk_str_create(rbuf->data + end + 1, len);
 			//conn->args_len[conn->arg_idx] = len;
-			FK_VECTOR_RAW(conn->args)[conn->arg_idx] = fk_str_create(rbuf->data + end + 1, len);
+			FK_CONN_ARG(conn, conn->arg_idx) = fk_str_create(rbuf->data + end + 1, len);
 			conn->arg_idx += 1;
 			FK_BUF_LOW_INC(rbuf, end + len + 2 - start + 1);
 		} else {//not received yet
@@ -231,9 +230,9 @@ static void fk_conn_args_free(fk_conn *conn)
 	int i;
 
 	for (i = 0; i < conn->arg_cnt; i++) {
-		if (FK_VECTOR_RAW(conn->args)[i] != NULL) {
-			fk_str_destroy(FK_VECTOR_RAW(conn->args)[i]);
-			FK_VECTOR_RAW(conn->args)[i] = NULL;
+		if (FK_CONN_ARG(conn, i) != NULL) {
+			fk_str_destroy(FK_CONN_ARG(conn, i));
+			FK_CONN_ARG(conn, i) = NULL;
 			//conn->args_len[i] = 0;
 		}
 	}
@@ -253,10 +252,10 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #endif
 		return 0;
 	}
-	fk_str_2upper(FK_VECTOR_RAW(conn->args)[0]);
-	pto = fk_proto_search(FK_VECTOR_RAW(conn->args)[0]);
+	fk_str_2upper(FK_CONN_ARG(conn, 0));
+	pto = fk_proto_search(FK_CONN_ARG(conn, 0));
 	if (pto == NULL) {
-		fk_log_error("invalid protocol: %s\n", FK_STR_RAW(FK_VECTOR_RAW(conn->args)[0]));
+		fk_log_error("invalid protocol: %s\n", FK_STR_RAW(FK_CONN_ARG(conn, 0)));
 		fk_conn_args_free(conn);
 		return -1;
 	}
