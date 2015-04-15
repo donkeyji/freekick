@@ -167,8 +167,8 @@ int fk_on_set(fk_conn *conn)
 		fk_log_error("failed to add to the dict\n");
 		return -1;
 	}
-	FK_CONN_ARG_CONSUME(conn->args, 1);
-	FK_CONN_ARG_CONSUME(conn->args, 2);
+	FK_CONN_ARG_CONSUME(conn, 1);
+	FK_CONN_ARG_CONSUME(conn, 2);
 
 	reply = "+OK\r\n";
 	len = strlen(reply);
@@ -245,17 +245,16 @@ int fk_on_hset(fk_conn *conn)
 		hobj = fk_obj_create(FK_OBJ_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hobj);
 		//consume all the args, except args[0]
-		FK_CONN_ARG_CONSUME(conn->args, 1);
-		FK_CONN_ARG_CONSUME(conn->args, 2);
-		FK_CONN_ARG_CONSUME(conn->args, 3);
+		FK_CONN_ARG_CONSUME(conn, 1);
+		FK_CONN_ARG_CONSUME(conn, 2);
+		FK_CONN_ARG_CONSUME(conn, 3);
 	} else {
 		if (hobj->type == FK_OBJ_DICT) {
 			dct = (fk_dict *)(hobj->data);
 			obj = fk_obj_create(FK_OBJ_STR, FK_VECTOR_RAW(conn->args)[3]);
 			fk_dict_add(dct, key, obj);
-			//FK_VECTOR_RAW(conn->args)[1] is not consumed
-			FK_CONN_ARG_CONSUME(conn->args, 2);
-			FK_CONN_ARG_CONSUME(conn->args, 3);
+			FK_CONN_ARG_CONSUME(conn, 2);
+			FK_CONN_ARG_CONSUME(conn, 3);
 		} else {
 			fk_dict_remove(server.db[conn->db_idx], hkey);
 			dct = fk_dict_create(&dbeop);
@@ -264,9 +263,9 @@ int fk_on_hset(fk_conn *conn)
 			hobj = fk_obj_create(FK_OBJ_DICT, dct);
 			fk_dict_add(server.db[conn->db_idx], hkey, hobj);
 			//consume all the args, except args[0]
-			FK_CONN_ARG_CONSUME(conn->args, 1);
-			FK_CONN_ARG_CONSUME(conn->args, 2);
-			FK_CONN_ARG_CONSUME(conn->args, 3);
+			FK_CONN_ARG_CONSUME(conn, 1);
+			FK_CONN_ARG_CONSUME(conn, 2);
+			FK_CONN_ARG_CONSUME(conn, 3);
 		}
 	}
 	reply = "+OK\r\n";

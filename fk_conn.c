@@ -226,7 +226,7 @@ int fk_conn_req_parse(fk_conn *conn)
 	return 0;
 }
 
-static void fk_conn_args_free(fk_conn *conn)
+void fk_conn_args_free(fk_conn *conn)
 {
 	int i;
 
