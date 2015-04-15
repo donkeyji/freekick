@@ -12,12 +12,12 @@ fk_vtr *fk_vtr_create()
 	if (vtr == NULL) {
 		return NULL;
 	}
-	vtr->array = (fk_str **)fk_mem_alloc(sizeof(fk_str *) * FK_VECTOR_INIT_LEN);
+	vtr->array = (fk_str **)fk_mem_alloc(sizeof(fk_str *) * FK_VTR_INIT_LEN);
 	if (vtr->array == NULL) {
 		fk_mem_free(vtr);
 		return NULL;
 	}
-	vtr->len = FK_VECTOR_INIT_LEN;
+	vtr->len = FK_VTR_INIT_LEN;
 	bzero(vtr->array, vtr->len * sizeof(fk_str *));
 	return vtr;
 }

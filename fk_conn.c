@@ -169,10 +169,10 @@ int fk_conn_req_parse(fk_conn *conn)
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
 #endif
 			//check whether need to stretch
-			//FK_VECTOR_STRETCH(conn->args, conn->arg_cnt);
+			//FK_VTR_STRETCH(conn->args, conn->arg_cnt);
 			//check whether need to shrink
-			//FK_VECTOR_SHRINK(conn->args, conn->arg_cnt);
-			FK_VECTOR_ADJUST(conn->args, conn->arg_cnt);
+			//FK_VTR_SHRINK(conn->args, conn->arg_cnt);
+			FK_VTR_ADJUST(conn->args, conn->arg_cnt);
 
 			FK_BUF_LOW_INC(rbuf, end - start + 1);
 		}

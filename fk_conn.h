@@ -33,8 +33,8 @@ typedef struct _fk_conn {
 fk_conn *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn *conn);
 
-#define FK_CONN_ARG(conn, idx)	FK_VECTOR_RAW((conn)->args)[(idx)]
+#define FK_CONN_ARG(conn, idx)	FK_VTR_RAW((conn)->args)[(idx)]
 
-#define FK_CONN_ARG_CONSUME(conn, idx)	FK_VECTOR_RAW((conn)->args)[(idx)] = NULL
+#define FK_CONN_ARG_CONSUME(conn, idx)	FK_VTR_RAW((conn)->args)[(idx)] = NULL
 
 #endif
