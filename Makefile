@@ -21,8 +21,9 @@ CLTSRCS = clt_test.c
 SVROBJS = $(foreach x,$(SRCEXTS), $(patsubst %$(x),%.o,$(filter %$(x),$(SVRSRCS)))) 
 CLTOBJS = $(foreach x,$(SRCEXTS), $(patsubst %$(x),%.o,$(filter %$(x),$(CLTSRCS)))) 
 
-SVRDEPS = $(patsubst %.o,%.d,$(SVROBJS)) 
-CLTDEPS = $(patsubst %.o,%.d,$(CLTOBJS)) 
+#SVRDEPS = $(patsubst %.o,%.d,$(SVROBJS)) 
+#CLTDEPS = $(patsubst %.o,%.d,$(CLTOBJS)) 
+DEPS = Makefile.dep
 
 .PHONY : all clean rebuild
 
@@ -34,13 +35,17 @@ $(SVRBIN) : $(SVROBJS)
 $(CLTBIN) : $(CLTOBJS) 
 	$(CC) -o $(CLTBIN) $(CLTOBJS) $(LDFLAGS)
 
--include $(SVRDEPS) $(CLTDEPS)
+#-include $(SVRDEPS) $(CLTDEPS)
+-include $(DEPS)
 
-$(CLTDEPS): %.d : %.c 
-	@$(CC) -MM $(CFLAGS) $< -o $@
+$(DEPS): $(SVRSRCS) $(CLTSRCS)
+	@$(CC) -MM $(SVRSRCS) $(CLTSRCS) $(CFLAGS) > $(DEPS)
 
-$(SVRDEPS): %.d : %.c 
-	@$(CC) -MM $(CFLAGS) $< -o $@
+#$(CLTDEPS): %.d : %.c 
+	#@$(CC) -MM $(CFLAGS) $< -o $@
+
+#$(SVRDEPS): %.d : %.c 
+	#@$(CC) -MM $(CFLAGS) $< -o $@
 #----------------------------------------------
 # $(CFLAGS) is used automatically, no it can be omitted
 # the line below work well as the line above
@@ -69,4 +74,4 @@ $(SVRDEPS): %.d : %.c
 rebuild: clean all
 
 clean :
-	@$(RM) *.o *.d $(SVRBIN) $(CLTBIN)
+	@$(RM) $(SVROBJS) $(CLTOBJS) $(SVRBIN) $(CLTBIN) $(DEPS)
