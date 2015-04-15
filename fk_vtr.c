@@ -1,14 +1,14 @@
 #include <strings.h>
 
 #include <fk_mem.h>
-#include <fk_vector.h>
+#include <fk_vtr.h>
 
 
-fk_vector *fk_vector_create()
+fk_vtr *fk_vtr_create()
 {
-	fk_vector *vtr;
+	fk_vtr *vtr;
 
-	vtr = (fk_vector *)fk_mem_alloc(sizeof(fk_vector));
+	vtr = (fk_vtr *)fk_mem_alloc(sizeof(fk_vtr));
 	if (vtr == NULL) {
 		return NULL;
 	}
@@ -22,7 +22,7 @@ fk_vector *fk_vector_create()
 	return vtr;
 }
 
-void fk_vector_destroy(fk_vector *vtr)
+void fk_vtr_destroy(fk_vtr *vtr)
 {
 	int i;
 	fk_mem_free(vtr->array);

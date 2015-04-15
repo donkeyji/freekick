@@ -42,7 +42,7 @@ fk_conn *fk_conn_create(int fd)
 		conn->args[i] = NULL;
 	}
 	*/
-	conn->args = fk_vector_create();
+	conn->args = fk_vtr_create();
 	conn->arg_cnt = 0;
 	conn->arg_idx = 0;
 	conn->parse_done = 0;
@@ -61,7 +61,7 @@ void fk_conn_destroy(fk_conn *conn)
 	fk_buf_destroy(conn->wbuf);
 
 	fk_conn_args_free(conn);//free args first
-	fk_vector_destroy(conn->args);//then free vector
+	fk_vtr_destroy(conn->args);//then free vector
 	//for (i = 0; i < FK_ARG_MAX; i++) {
 		//if (conn->args[i] != NULL) {
 			//fk_str_destroy(conn->args[i]);

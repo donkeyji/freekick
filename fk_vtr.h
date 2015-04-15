@@ -5,13 +5,13 @@
 
 #define FK_VECTOR_INIT_LEN	2
 
-typedef struct _fk_vector {
+typedef struct _fk_vtr {
 	int len;
 	fk_str **array;
-} fk_vector;
+} fk_vtr;
 
-fk_vector *fk_vector_create();
-void fk_vector_destroy(fk_vector *vtr);
+fk_vtr *fk_vtr_create();
+void fk_vtr_destroy(fk_vtr *vtr);
 
 #define FK_VECTOR_RAW(vtr)		(vtr)->array
 
