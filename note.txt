@@ -1,2 +1,83 @@
 to do:
 1. to implement a better pool algrithm.现有的算法有问题，当分配的次数增大到一定程度时，还不如直接malloc/free来的快。
+
+2.container默认都不负责其中存放对象的生命周期。fk_list/fk_dict通过指定copy/free函数来定制是否管理对象的生命周期。
+
+3.fk_evmgr不管理tmev/ioev对象的生命周期，由外部来create/destroy tmev/ioev对象。kk
+
+4.对象的管理原则：
+		A--own-->B 
+	==> A--create/destroy-->B 
+	==> A--add/remove-->B 
+	==> A--call-->B
+	==> B--notify-->A
+
+5.fk_conn的write/read buf的长度限制	
+
+6.内存流向:
+	socket--(copy)-->
+	read_buf--(copy)-->
+	args--(move)-->db
+
+7.server返回给client的协议如何pack比较漂亮
+
+8.kqueue比epoll使用起来要方便。kqueue将一对fd/ev作为一个单元添加，所以同一个fd的write和read事件可以分两次kevent来添加，而epoll则第一次是add，第二次则需要modify，麻烦得要死。
+
+9.dict上的element中的value统一都是fk_obj类型，fk_obj作为wrapper封装fk_str/fk_list/fk_dict，不copy内存，只保存fk_str/fk_list/fk_dict的指针。
+
+10.fk_list通过data_cmp来实现有序插入。
+
+11.fk_dict的iterator实现
+
+12.fk_list的iterator优化?
+
+13.多数的segment fault都是非法内存的访问导致的，比如未初始化的内存，越界, 无权限写文件...
+
+14.解析config文件采取跟解析protocol类似的处理办法，流水线作业。
+
+15.如何将用作db的dict实现序列化和反序列化。
+
+16.存入dict的key/value对象由外部创建，通过fk_dict_add存入dict时不copy内存，通过fk_dict_remove删除时由dict来负责将key/value对象free掉。或者在update数据时，将旧的value对象free掉。
+
+17.用作db的顶层fk_dict，用作排序链表的fk_list，用作集合的fk_dict，用作子dict的fk_dict都不copy内存，但是free内存。   no copy!!! do free!!!
+
+18.用作集合的dict，其value为空，只使用key。
+
+19.ioev的callback的返回值如何处理？callback出错应该直接忽略？
+
+20.将所有的dep文件统一放入一个Makefile.dep文件中，不能用-o参数来输出，只能重定向。
+	gcc -MM $(SVRSRC) > Makefile.dep
+
+21.EV_WRITE的事件只有当write_buf不为空时才加入到evmgr中，当write_buf发送空之后就从evmgr中删除，否则epoll/kqueue会不停的返回WRITE事件。
+
+22.malloc之后需要判断返回值为NULL吗？初始化阶段的malloc不需要判断为NULL？
+
+23.fk_tmev是fk_leaf的子类，以实现对idx成员的统一操作。
+
+24.ioev/tmev不方便用通用的fk_list来存放，因为无法直接从链表中删除，只能遍历时删除。
+
+25.connection达到上限时，如何处理新到来的连接?
+
+26.epoll/kqueue/poll/select用于控制timeout的参数类型和含义不相同，统一以struct timeval为参数。
+
+27.getline()库函数内部为每一行malloc了内存，在读取文件完毕后要free掉该指针。
+
+28.sys/time.h对BSD和linux有不同的macro。
+
+29.-std=c99编译时，linux下使用struct sigaction会提示不知道该结构的size，莫名其妙。。。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
