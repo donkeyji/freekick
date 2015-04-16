@@ -228,26 +228,6 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 	return 0;
 }
 
-//---------------------------
-//do not return fk_tmev obj
-//instead, evmgr own this tmev,
-//and create/destroy this tmev itself
-//---------------------------
-int fk_ev_tmev_reg(int interval, unsigned char type, void *arg, fk_tmev_cb tmcb)
-{
-	fk_tmev *tmev;
-
-	tmev = (fk_tmev *)fk_mem_alloc(sizeof(fk_tmev));
-	tmev->type = type;
-	tmev->interval = interval;
-	tmev->arg = arg;
-	tmev->tmcb = tmcb;
-	fk_util_cal_expire(&(tmev->expire), interval);
-
-	fk_ev_tmev_add(tmev);
-	return 0;
-}
-
 int fk_ev_pending_tmev_update()
 {
 	int cmp;

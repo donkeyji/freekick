@@ -125,6 +125,5 @@ fk_tmev *fk_ev_tmev_create(int timeout, unsigned char type, void *arg, fk_tmev_c
 void fk_ev_tmev_destroy(fk_tmev *tmev);
 int fk_ev_tmev_add(fk_tmev *tmev);
 int fk_ev_tmev_remove(fk_tmev *tmev);
-int fk_ev_tmev_reg(int interval, unsigned char type, void *arg, fk_tmev_cb tmcb);
 
 #endif
