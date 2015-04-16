@@ -104,5 +104,5 @@ void fk_log_fprint_str(unsigned int level, const char *data)
 
 	//??????why fprintf does not work???????
 	fprintf(logger.log_file, "[%s]<%s>%s", date_str, level_name, data);
-	printf("[%s]<%s>%s", date_str, level_name, data);
+	//printf("[%s]<%s>%s", date_str, level_name, data);
 }
