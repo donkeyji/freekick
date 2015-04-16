@@ -30,4 +30,6 @@
 /*timeout of conn, unit: second*/
 #define FK_CONN_TIMEOUT 300
 
+#define FK_MAXCONN_2_MAXFDS(max_conn)	(max_conn) + 1 + FK_SAVED_FDS
+
 #endif

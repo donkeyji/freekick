@@ -14,7 +14,7 @@ typedef struct _fk_epoll {
 	unsigned char *emask;//to track event associated to fd
 } fk_epoll;
 
-static void *fk_epoll_create(int max_fds);
+static void *fk_epoll_create(int max_files);
 static int fk_epoll_add(void *ev_iompx, int fd, unsigned char type);
 static int fk_epoll_remove(void *ev_iompx, int fd, unsigned char type);
 static int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout);
@@ -26,7 +26,7 @@ fk_mpxop epoll_op = {
 	fk_epoll_dispatch
 };
 
-void *fk_epoll_create(int max_fds)
+void *fk_epoll_create(int max_files)
 {
 	int efd;
 	fk_epoll *iompx;
@@ -38,7 +38,7 @@ void *fk_epoll_create(int max_fds)
 
 	iompx = (fk_epoll *)fk_mem_alloc(sizeof(fk_epoll));
 
-	iompx->max_evs = max_fds;
+	iompx->max_evs = max_files;
 	iompx->efd = efd;
 
 	iompx->evlist = (struct epoll_event *)fk_mem_alloc(sizeof(struct epoll_event) * iompx->max_evs);
