@@ -111,42 +111,51 @@ int fk_ev_dispatch()
 
 int fk_ev_ioev_add(fk_ioev *ioev)
 {
-	int fd;
+	int fd, rt;
 	unsigned char type;
 
 	fd = ioev->fd;
 	type = ioev->type;
+
+	rt = mpxop->iompx_add((&evmgr)->iompx, fd, type);
+	if (rt < 0) {
+		return -1;
+	}
+
 	if (type & FK_EV_READ) {
 		evmgr.read_ev[fd] = ioev;
 	}
 	if (type & FK_EV_WRITE) {
 		evmgr.write_ev[fd] = ioev;
 	}
-
-	mpxop->iompx_add((&evmgr)->iompx, fd, type);
 	return 0;
 }
 
 int fk_ev_ioev_remove(fk_ioev *ioev)
 {
-	int fd;
+	int fd, rt;
 	unsigned char type;
 
 	//must be in the read/write event array
 	fd = ioev->fd;
 	type = ioev->type;
+	rt = mpxop->iompx_remove((&evmgr)->iompx, fd, type);
+	if (rt < 0) {
+		return -1;
+	}
+
+	//maybe this ioev in active list
+	if (ioev->prev != NULL || ioev->next != NULL || evmgr.act_ioev->head == ioev) {
+		FK_EV_LIST_REMOVE(evmgr.act_ioev, ioev);
+	}
+
 	if (type & FK_EV_READ) {
 		evmgr.read_ev[fd] = NULL;
 	}
 	if (type & FK_EV_WRITE) {
 		evmgr.write_ev[fd] = NULL;
 	}
-	mpxop->iompx_remove((&evmgr)->iompx, fd, type);
 
-	//maybe this ioev in active list
-	if (ioev->prev != NULL || ioev->next != NULL || evmgr.act_ioev->head == ioev) {
-		FK_EV_LIST_REMOVE(evmgr.act_ioev, ioev);
-	}
 	return 0;
 }
 
