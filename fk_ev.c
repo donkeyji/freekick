@@ -336,16 +336,25 @@ int fk_ev_ioev_activate(int fd, unsigned char type)
 {
 	fk_ioev *rioev, *wioev;
 
+	rioev = NULL;
+	wioev = NULL;
 	if (type & FK_EV_READ) {
 		rioev = evmgr.read_ev[fd];
-		FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);
 	}
 	if (type & FK_EV_WRITE) {
 		wioev = evmgr.write_ev[fd];
-		if (rioev != wioev) {//maybe rioev and wioev point to a same ioev associated with a same fd
-			FK_EV_LIST_INSERT(evmgr.act_ioev, wioev);
+	}
+	if (rioev == wioev) {//both not null
+		FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);//add to the exp list
+	} else {
+		if (rioev != NULL) {
+			FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);//add to the exp list
+		}
+		if (wioev != NULL) {
+			FK_EV_LIST_INSERT(evmgr.act_ioev, wioev);//add to the exp list
 		}
 	}
+
 	return 0;
 }
 
