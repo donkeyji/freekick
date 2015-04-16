@@ -210,10 +210,10 @@ void fk_ev_tmev_destroy(fk_tmev *tmev)
 
 int fk_ev_tmev_add(fk_tmev *tmev)
 {
-	fk_heap *theap;
+	fk_heap *tmhp;
 
-	theap = evmgr.timer_heap;
-	fk_heap_push(theap, (fk_leaf *)tmev);
+	tmhp = evmgr.timer_heap;
+	fk_heap_push(tmhp, (fk_leaf *)tmev);
 	return 0;
 }
 
