@@ -17,9 +17,9 @@ typedef int (*fk_ioev_cb) (int, unsigned char, void *);
 typedef int (*fk_tmev_cb) (int, unsigned char, void *);
 
 typedef struct _fk_ioev {
-	int active;
-	unsigned char type;//FK_EV_READ|FK_EV_WRITE
 	int fd;
+	unsigned char type;//FK_EV_READ|FK_EV_WRITE
+	int active;//whether in active list
 	void *arg;
 	fk_ioev_cb iocb;
 
@@ -30,7 +30,7 @@ typedef struct _fk_ioev {
 typedef struct _fk_tmev {
 	FK_HEAP_LEAF_HEADER;//for heap
 
-	int expired;
+	int expired;//whether in the expired list
 	unsigned char type;//FK_EV_CYCLE|FK_EV_ONCE
 	int interval;//milliseconds
 	struct timeval trigger;//save the trigger point time: now + timeout
