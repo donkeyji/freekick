@@ -145,7 +145,10 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	}
 
 	//maybe this ioev in active list
-	if (ioev->prev != NULL || ioev->next != NULL || evmgr.act_ioev->head == ioev) {
+	if (ioev->prev != NULL 
+		|| ioev->next != NULL 
+		|| evmgr.act_ioev->head == ioev) 
+	{
 		FK_EV_LIST_REMOVE(evmgr.act_ioev, ioev);
 	}
 
@@ -221,7 +224,10 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 	}
 
 	//maybe this tmev in expired list
-	if (tmev->prev != NULL || tmev->next != NULL || evmgr.exp_tmev->head == tmev) {
+	if (tmev->prev != NULL 
+		|| tmev->next != NULL 
+		|| evmgr.exp_tmev->head == tmev) 
+	{
 		FK_EV_LIST_REMOVE(evmgr.exp_tmev, tmev);
 	}
 
