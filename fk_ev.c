@@ -145,11 +145,9 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	}
 
 	//maybe this ioev in active list
-	if (ioev->prev != NULL 
-		|| ioev->next != NULL 
-		|| evmgr.act_ioev->head == ioev) 
-	{
+	if (ioev->active == 1) {
 		FK_EV_LIST_REMOVE(evmgr.act_ioev, ioev);
+		ioev->active = 0;
 	}
 
 	if (type & FK_EV_READ) {
@@ -171,6 +169,7 @@ fk_ioev *fk_ev_ioev_create(int fd, unsigned char type, void *arg, fk_ioev_cb ioc
 	ioev->type = type;
 	ioev->arg = arg;
 	ioev->iocb = iocb;
+	ioev->active = 0;
 
 	ioev->prev = NULL;
 	ioev->next = NULL;
@@ -191,6 +190,7 @@ fk_tmev *fk_ev_tmev_create(int interval, unsigned char type, void *arg, fk_tmev_
 
 	tmev = (fk_tmev *)fk_mem_alloc(sizeof(fk_tmev));
 	tmev->type = type;
+	tmev->expired = 0;
 	tmev->interval = interval;
 	tmev->arg = arg;
 	tmev->tmcb = tmcb;
@@ -219,15 +219,13 @@ int fk_ev_tmev_add(fk_tmev *tmev)
 
 int fk_ev_tmev_remove(fk_tmev *tmev)
 {
-	if (tmev->idx != -1) {//maybe in the min heap
+	//in the min heap
+	if (tmev->expired == 0) {
 		fk_heap_remove(evmgr.timer_heap, (fk_leaf *)tmev);
 	}
 
 	//maybe this tmev in expired list
-	if (tmev->prev != NULL 
-		|| tmev->next != NULL 
-		|| evmgr.exp_tmev->head == tmev) 
-	{
+	if (tmev->expired == 1) {
 		FK_EV_LIST_REMOVE(evmgr.exp_tmev, tmev);
 	}
 
@@ -250,6 +248,7 @@ int fk_ev_pending_tmev_update()
 		if (cmp >= 0) {
 			fk_heap_pop(evmgr.timer_heap);//pop root from the heap
 			FK_EV_LIST_INSERT(evmgr.exp_tmev, tmev);//add to the exp list
+			tmev->expired = 1;
 			root = fk_heap_root(evmgr.timer_heap);//get new root
 		} else {//break directly
 			break;
@@ -277,6 +276,7 @@ int fk_ev_expired_tmev_proc()
 		tmev = tmev->next;//go to the next position
 		//step 1: remove the expired tmev from the expired list first!!!!
 		FK_EV_LIST_REMOVE(evmgr.exp_tmev, cur);//remove current from the expired list
+		cur->expired = 0;
 		//step 2: call the callback of the expired tmev
 		rt = tmcb(interval, type, arg);
 		//step 3: how to handle the return value of the callback???
@@ -311,6 +311,7 @@ int fk_ev_active_ioev_proc()
 
 		//step 1: remove the active ioev from the active list first!!!!
 		FK_EV_LIST_REMOVE(evmgr.act_ioev, cur);
+		cur->active = 0;//mark unactive
 		//step 2: call the callback of the active ioev
 		rt = iocb(fd, type, arg);
 		//step 3: how to process the return value of the callback????
@@ -336,22 +337,22 @@ int fk_ev_ioev_activate(int fd, unsigned char type)
 {
 	fk_ioev *rioev, *wioev;
 
-	rioev = NULL;
-	wioev = NULL;
+	/*
+	 * maybe rioev and wioev point to the same ioev object
+	 * use ioev->active to avoid inerting the ioev object to the active list twice
+	 * */
 	if (type & FK_EV_READ) {
 		rioev = evmgr.read_ev[fd];
+		if (rioev->active == 0) {
+			FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);//add to the exp list
+			rioev->active = 1;
+		}
 	}
 	if (type & FK_EV_WRITE) {
 		wioev = evmgr.write_ev[fd];
-	}
-	if (rioev == wioev) {//both not null
-		FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);//add to the exp list
-	} else {
-		if (rioev != NULL) {
-			FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);//add to the exp list
-		}
-		if (wioev != NULL) {
+		if (wioev->active == 0) {
 			FK_EV_LIST_INSERT(evmgr.act_ioev, wioev);//add to the exp list
+			wioev->active = 1;
 		}
 	}
 
