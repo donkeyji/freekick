@@ -334,15 +334,18 @@ fk_tmev *fk_ev_nearest_tmev_get()
 
 int fk_ev_ioev_activate(int fd, unsigned char type)
 {
-	fk_ioev *ioev;
+	fk_ioev *rioev, *wioev;
 
 	if (type & FK_EV_READ) {
-		ioev = evmgr.read_ev[fd];
+		rioev = evmgr.read_ev[fd];
+		FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);
 	}
 	if (type & FK_EV_WRITE) {
-		ioev = evmgr.write_ev[fd];
+		wioev = evmgr.write_ev[fd];
+		if (rioev != wioev) {//maybe rioev and wioev point to a same ioev associated with a same fd
+			FK_EV_LIST_INSERT(evmgr.act_ioev, wioev);
+		}
 	}
-	FK_EV_LIST_INSERT(evmgr.act_ioev, ioev);
 	return 0;
 }
 
