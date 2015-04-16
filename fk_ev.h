@@ -33,7 +33,7 @@ typedef struct _fk_tmev {
 	int expired;
 	unsigned char type;//FK_EV_CYCLE|FK_EV_ONCE
 	int interval;//milliseconds
-	struct timeval expire;//save the trigger time: now + timeout
+	struct timeval trigger;//save the trigger point time: now + timeout
 	void *arg;//ext arg
 	fk_tmev_cb tmcb;
 
