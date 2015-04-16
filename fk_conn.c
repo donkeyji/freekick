@@ -295,6 +295,9 @@ int fk_conn_timer_cb(int interval, unsigned char type, void *ext)
 	time_t now;
 	fk_conn *conn;
 
+	FK_UNUSE(type);
+	FK_UNUSE(interval);
+
 	conn = (fk_conn *)ext;
 
 	now = time(NULL);
