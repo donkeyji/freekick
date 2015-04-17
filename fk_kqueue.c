@@ -151,8 +151,9 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 		fd = iompx->evlist[i].ident;
 		/*
 		 * unnecessary to check error here, because I call kevent to add fd before,
-		 * and the timeout is valid, unlike libevent. libevent do not call kevent
-		 * to add fd before
+		 * and the timeout && struct kevent is valid, unlike libevent. libevent do 
+		 * not call kevent to add fd before, but only call kevent one time when 
+		 * polling
 		 */
 		 
 		/*
