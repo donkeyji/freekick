@@ -82,7 +82,7 @@ int fk_ev_dispatch()
 	tmev = fk_ev_nearest_tmev_get(evmgr);
 	if (tmev != NULL) {
 		gettimeofday(&now, NULL);
-		FK_UTIL_TMVAL_SUB(&(tmev->trigger), &now, &timeout);
+		FK_UTIL_TMVAL_SUB(&(tmev->when), &now, &timeout);
 		if ((FK_UTIL_TV2MS(&timeout)) < 0) {
 			timeout.tv_sec = 0;
 			timeout.tv_usec = 0;
@@ -194,7 +194,7 @@ fk_tmev *fk_ev_tmev_create(int interval, unsigned char type, void *arg, fk_tmev_
 	tmev->interval = interval;
 	tmev->arg = arg;
 	tmev->tmcb = tmcb;
-	fk_util_cal_expire(&(tmev->trigger), interval);
+	fk_util_cal_expire(&(tmev->when), interval);
 
 	tmev->prev = NULL;
 	tmev->next = NULL;
@@ -244,7 +244,7 @@ int fk_ev_pending_tmev_update()
 	root = fk_heap_root(evmgr.timer_heap);
 	while (root != NULL) {
 		tmev = (fk_tmev *)root;
-		cmp = FK_UTIL_TMVAL_CMP(&now, &(tmev->trigger));
+		cmp = FK_UTIL_TMVAL_CMP(&now, &(tmev->when));
 		if (cmp >= 0) {
 			fk_heap_pop(evmgr.timer_heap);//pop root from the heap
 			FK_EV_LIST_INSERT(evmgr.exp_tmev, tmev);//add to the exp list
@@ -282,7 +282,7 @@ int fk_ev_expired_tmev_proc()
 		//step 3: how to handle the return value of the callback???
 		if (rt == 0) {
 			if (type == FK_EV_CYCLE) {
-				fk_util_cal_expire(&(cur->trigger), interval);//calculate the trigger point time again
+				fk_util_cal_expire(&(cur->when), interval);//calculate the trigger point time again
 				fk_heap_push(evmgr.timer_heap, (fk_leaf *)cur);//push into the heap once more
 			}
 		}
@@ -365,5 +365,5 @@ int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
 
 	t1 = (fk_tmev *)tmev1;
 	t2 = (fk_tmev *)tmev2;
-	return FK_UTIL_TMVAL_CMP(&(t1->trigger), &(t2->trigger));
+	return FK_UTIL_TMVAL_CMP(&(t1->when), &(t2->when));
 }
