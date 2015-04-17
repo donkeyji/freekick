@@ -120,7 +120,10 @@ int fk_kqueue_remove(void *ev_iompx, int fd, unsigned char type)
 
 int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-	int i, fd, nfds;
+	int i, nfds;
+	uintptr_t fd;
+	intptr_t data;
+	uint16_t flags;
 	fk_kqueue *iompx;
 	unsigned char type;
 	struct timespec *pt;
@@ -146,6 +149,15 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 	//fk_log_debug("kevent return\n");
 	for (i = 0; i < nfds; i++) {
 		fd = iompx->evlist[i].ident;
+		flags = iompx->evlist[i].flags;
+		data = iompx->evlist[i].data;
+		if (flags == EV_ERROR) {
+			if (data == EBADF || data == EINVAL || data == ENOENT) {
+				continue;//why????
+			}
+			return -1;
+		}
+
 		if (iompx->evlist[i].filter == EVFILT_READ) {
 			//fk_log_debug("EVFILT_READ\n");
 			type = FK_EV_READ;
