@@ -65,9 +65,9 @@ to do:
 28.sys/time.h对BSD和linux有不同的macro。
 
 29.-std=c99编译时，linux下使用struct sigaction会提示不知道该结构的size，莫名其妙。。。
+30.libevent/libev的kqueue，将event注册和event的poll合并一个kevent调用。可能会产生EINVAL/ENOENT/EBADF错误。而我这里将kqueue用类似epoll_ctl/epoll_wait方式调用，不会产生前述3中错误，因此在kevent返回之后无需去处理这3中错误。
 
-
-
+31.epoll的EPOLLERR/EPOLLHUP何时会产生，如何处理呢？
 
 
 
