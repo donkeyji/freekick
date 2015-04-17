@@ -343,16 +343,20 @@ int fk_ev_ioev_activate(int fd, unsigned char type)
 	 * */
 	if (type & FK_EV_READ) {
 		rioev = evmgr.read_ev[fd];
-		if (rioev->active == 0) {
-			FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);//add to the exp list
-			rioev->active = 1;
+		if (rioev != NULL) {//when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null
+			if (rioev->active == 0) {
+				FK_EV_LIST_INSERT(evmgr.act_ioev, rioev);//add to the exp list
+				rioev->active = 1;
+			}
 		}
 	}
 	if (type & FK_EV_WRITE) {
 		wioev = evmgr.write_ev[fd];
-		if (wioev->active == 0) {
-			FK_EV_LIST_INSERT(evmgr.act_ioev, wioev);//add to the exp list
-			wioev->active = 1;
+		if (wioev != NULL) {
+			if (wioev->active == 0) {
+				FK_EV_LIST_INSERT(evmgr.act_ioev, wioev);//add to the exp list
+				wioev->active = 1;
+			}
 		}
 	}
 
