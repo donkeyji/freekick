@@ -122,8 +122,8 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 {
 	int i, nfds;
 	uintptr_t fd;
-	intptr_t data;
-	uint16_t flags;
+	//intptr_t data;
+	//uint16_t flags;
 	fk_kqueue *iompx;
 	unsigned char type;
 	struct timespec *pt;
@@ -149,14 +149,22 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 	//fk_log_debug("kevent return\n");
 	for (i = 0; i < nfds; i++) {
 		fd = iompx->evlist[i].ident;
+		/*
+		 * unnecessary to check error here, because I call kevent to add fd before,
+		 * and the timeout is valid, unlike libevent. libevent do not call kevent
+		 * to add fd before
+		 */
+		 
+		/*
 		flags = iompx->evlist[i].flags;
 		data = iompx->evlist[i].data;
 		if (flags == EV_ERROR) {
 			if (data == EBADF || data == EINVAL || data == ENOENT) {
-				continue;//why????
+				continue;
 			}
 			return -1;
 		}
+		*/
 
 		if (iompx->evlist[i].filter == EVFILT_READ) {
 			//fk_log_debug("EVFILT_READ\n");
