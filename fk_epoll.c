@@ -158,7 +158,7 @@ int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 
 	ms_timeout = -1;
 	if (timeout != NULL) {
-		ms_timeout = FK_UTIL_TV2MS(timeout);
+		ms_timeout = FK_UTIL_TV2MILLIS(timeout);
 	}
 
 	//fk_log_debug("epoll to wait\n");

@@ -5,12 +5,12 @@
 
 void fk_util_cal_expire(struct timeval *tv, int interval);
 
-#define FK_UTIL_TV2MS(tv) 						\
-	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
+#define FK_UTIL_TV2MILLIS(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
-#define FK_UTIL_MS2TV(ms, tv)								\
-	(tv)->tv_sec = (ms) / 1000;								\
-	(tv)->tv_usec = ((ms) - (tv)->tv_sec * 1000) * 1000;
+#define FK_UTIL_MILLIS2TV(ms, tv)	{			\
+	(tv)->tv_sec = (ms) / 1000;				\
+	(tv)->tv_usec = ((ms) % 1000) * 1000;	\
+}
 
 #define FK_UTIL_TV2TS(tv, ts)	TIMEVAL_TO_TIMESPEC((tv), (ts))
 
