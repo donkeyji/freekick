@@ -30,7 +30,7 @@
 	fk_mem_free(elt);									\
 }
 
-static int fk_dict_hash(fk_str *key);
+static unsigned int fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
 static fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
 
@@ -125,7 +125,8 @@ fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 	return NULL;
 }
 
-int fk_dict_hash(fk_str *key)
+/*
+unsigned int fk_dict_hash(fk_str *key)
 {
 	char *s;
 	unsigned long hash;
@@ -136,7 +137,22 @@ int fk_dict_hash(fk_str *key)
 		hash = (hash << 5) + hash + (unsigned char) * s++;
 	}
 
+	printf("===hash: %lu\n", hash);
 	return hash;
+}
+*/
+
+unsigned int fk_dict_hash(fk_str *key)
+{
+    unsigned int hash = 5381;
+	int len = key->len;
+	char *buf = key->data;
+
+    while (len--) {
+		hash = ((hash << 5) + hash) + (*buf++);
+	}
+	printf("===hash: %d\n", hash);
+    return hash;
 }
 
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
