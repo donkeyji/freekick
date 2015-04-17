@@ -85,11 +85,13 @@ FK_EV_LIST_DEF(fk_tmev, fk_tmev_list);
 	}										\
 }
 
-#define FK_EV_LIST_CREATE(type, lst)	\
-	(type *)fk_mem_alloc(sizeof(type));\
-	lst->head = NULL;					\
-	lst->tail = NULL;					\
-	lst->len = 0;						\
+#define FK_EV_LIST_CREATE(type)		(type *)fk_mem_alloc(sizeof(type))
+
+#define FK_EV_LIST_INIT(lst)	{		\
+	(lst)->head = NULL;					\
+	(lst)->tail = NULL;					\
+	(lst)->len = 0;						\
+}
  
 typedef struct _fk_mpxop {
 	void *(*iompx_create)(int max_conn);
