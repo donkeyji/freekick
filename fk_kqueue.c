@@ -136,7 +136,12 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 
 	//fk_log_debug("kevent to wait\n");
 	nfds = kevent(iompx->kfd, NULL, 0, iompx->evlist, iompx->max_evs, pt);
-	if (nfds < 0) { }
+	if (nfds < 0) {
+		if (errno != EINTR) {
+			return -1;
+		}
+		return 0;
+	}
 
 	//fk_log_debug("kevent return\n");
 	for (i = 0; i < nfds; i++) {

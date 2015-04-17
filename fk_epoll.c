@@ -164,7 +164,12 @@ int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 	//fk_log_debug("epoll to wait\n");
 	nfds = epoll_wait(iompx->efd, iompx->evlist, iompx->max_evs, ms_timeout);
 	//fk_log_debug("epoll return\n");
-	if (nfds < 0) { }
+	if (nfds < 0) {
+		if (errno != EINTR) {
+			return -1;
+		}
+		return 0;
+	}
 
 	for (i = 0; i < nfds; i++) {
 		fd = iompx->evlist[i].data.fd;
