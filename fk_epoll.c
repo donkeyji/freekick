@@ -170,10 +170,10 @@ int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 		fd = iompx->evlist[i].data.fd;
 		type = 0x00;
 		//printf("i: %d	fd: %d	type:%u\n", i, fd, iompx->evlist[i].events);
-		if (iompx->evlist[i].events & EPOLLIN) {
+		if (iompx->evlist[i].events & (EPOLLIN | EPOLLHUP | EPOLLERR)) {
 			type |= FK_EV_READ;
 		}
-		if (iompx->evlist[i].events & EPOLLOUT) {
+		if (iompx->evlist[i].events & (EPOLLOUT | EPOLLHUP | EPOLLERR)) {
 			type |= FK_EV_WRITE;
 		}
 		fk_ev_ioev_activate(fd, type);
