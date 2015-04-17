@@ -9,6 +9,25 @@ static void fk_list_free_node_put(fk_node *nd);
 static void fk_list_insert_head_only(fk_list *lst, fk_node *nd);
 static void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd);
 
+#define FK_LIST_NODE_CREATE()		(fk_node *)fk_mem_alloc(sizeof(fk_node))
+
+#define FK_LIST_NODE_DESTROY(nd)	fk_mem_free((nd))
+
+#define FK_LIST_NODE_DATA_SET(lst, nd, dt)	{		\
+	if ((lst)->nop->data_copy != NULL) {			\
+		(nd)->data = (lst)->nop->data_copy((dt));	\
+	} else {										\
+		(nd)->data = (dt);							\
+	}												\
+}
+
+#define FK_LIST_NODE_DATA_UNSET(lst, nd)	{		\
+	if ((lst)->nop->data_free != NULL) {			\
+		(lst)->nop->data_free((nd)->data);			\
+	}												\
+	(nd)->data = NULL;								\
+}
+
 static fk_node_op default_nop = {
 	NULL,
 	NULL,
@@ -217,17 +236,19 @@ void fk_list_insert(fk_list *lst, void *val)
 	fk_node *nd;
 
 	//nd = fk_list_free_node_get();
-	nd = (fk_node *)fk_mem_alloc(sizeof(fk_node));
+	//nd = (fk_node *)fk_mem_alloc(sizeof(fk_node));
+	nd = FK_LIST_NODE_CREATE();
 	if (nd == NULL) {
 		return;
 	}
 
 	//initialize the node->data
-	if (lst->nop->data_copy != NULL) {
-		nd->data = lst->nop->data_copy(val);//do copy val memory
-	} else {
-		nd->data = val;//do not copy val memory
-	}
+	//if (lst->nop->data_copy != NULL) {
+		//nd->data = lst->nop->data_copy(val);//do copy val memory
+	//} else {
+		//nd->data = val;//do not copy val memory
+	//}
+	FK_LIST_NODE_DATA_SET(lst, nd, val);
 
 	//only insert this node to the list, only the prev/next field of the node changes
 	fk_list_insert_only(lst, nd);
@@ -238,11 +259,13 @@ void fk_list_remove(fk_list *lst, fk_node *nd)
 	fk_list_remove_only(lst, nd);
 
 	//whether to free the node->data
-	if (lst->nop->data_free != NULL) {
-		lst->nop->data_free(nd->data);//free node->data
-	}
+	//if (lst->nop->data_free != NULL) {
+		//lst->nop->data_free(nd->data);//free node->data
+	//}
+	FK_LIST_NODE_DATA_UNSET(lst, nd);
 	//fk_list_free_node_put(nd);
-	fk_mem_free(nd);
+	//fk_mem_free(nd);
+	FK_LIST_NODE_DESTROY(nd);
 }
 
 //remove the head from the list, and return the head
