@@ -140,7 +140,7 @@ fk_proto *fk_proto_search(fk_str *name)
 
 int fk_on_set(fk_conn *conn)
 {
-	int i, rt;
+	int rt;
 	fk_str *key;
 	fk_obj *value;
 
