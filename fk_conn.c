@@ -260,19 +260,15 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	if (pto == NULL) {
 		fk_log_error("invalid protocol: %s\n", FK_STR_RAW(FK_CONN_ARG(conn, 0)));
 		fk_conn_args_free(conn);
-		return -1;
+		fk_conn_rsp_add_error(conn, "Invalid Protocol", strlen("Invalid Protocol"));
+		return 0;
 	}
 	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_args_free(conn);
-		return -1;
+		fk_conn_rsp_add_error(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
+		return 0;
 	}
-#ifdef FK_DEBUG
-	fk_log_debug("[before adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
-#endif
-#ifdef FK_DEBUG
-	fk_log_debug("[after adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
-#endif
 	rt = pto->handler(conn);
 	if (rt < 0) {//args are not consumed, free all the args
 		fk_conn_args_free(conn);
