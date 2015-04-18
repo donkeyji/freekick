@@ -42,7 +42,6 @@ fk_list *fk_list_create(fk_node_op *nop)
 	fk_list *lst;
 
 	lst = (fk_list *)fk_mem_alloc(sizeof(fk_list));
-	if (lst == NULL) {}
 	lst->head = NULL;
 	lst->tail = NULL;
 	lst->len = 0;
@@ -238,9 +237,6 @@ void fk_list_insert(fk_list *lst, void *val)
 	//nd = fk_list_free_node_get();
 	//nd = (fk_node *)fk_mem_alloc(sizeof(fk_node));
 	nd = FK_LIST_NODE_CREATE();
-	if (nd == NULL) {
-		return;
-	}
 
 	//initialize the node->data
 	//if (lst->nop->data_copy != NULL) {
