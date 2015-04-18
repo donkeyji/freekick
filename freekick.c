@@ -40,7 +40,7 @@ typedef struct _fk_server {
 	fk_ioev *listen_ev;
 	fk_tmev *svr_timer;
 	fk_tmev *svr_timer2;
-	fk_conn **conns_map;
+	fk_conn **conns_tab;
 	fk_str *pid_path;
 	int dbcnt;
 	fk_dict **db;
@@ -432,14 +432,14 @@ void fk_svr_conn_add(int fd)
 	fk_conn *conn;
 
 	conn = fk_conn_create(fd);
-	server.conns_map[conn->fd] = conn;
+	server.conns_tab[conn->fd] = conn;
 	server.conn_cnt += 1;
 }
 
 //call when conn disconnect
 void fk_svr_conn_remove(fk_conn *conn)
 {
-	server.conns_map[conn->fd] = NULL;
+	server.conns_tab[conn->fd] = NULL;
 	server.conn_cnt -= 1;
 #ifdef FK_DEBUG
 	fk_log_debug("before free conn: %d\n", conn->fd);
@@ -580,7 +580,7 @@ void fk_svr_init()
 	server.start_time = time(NULL);
 	server.stop = 0;
 	server.conn_cnt = 0;
-	server.conns_map = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * FK_MAXCONN_2_MAXFILES(setting.max_conn));
+	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * FK_MAXCONN_2_MAXFILES(setting.max_conn));
 	server.listen_fd = fk_sock_create_listen(FK_STR_RAW(server.addr), server.port);
 	fk_log_debug("listen fd: %d\n", server.listen_fd);
 	server.listen_ev = fk_ev_ioev_create(server.listen_fd, FK_EV_READ, NULL, fk_svr_listen_cb);
@@ -594,7 +594,7 @@ void fk_svr_init()
 #endif
 
 	server.db = (fk_dict **)fk_mem_alloc(sizeof(fk_dict *) * server.dbcnt);
-	if (server.conns_map == NULL
+	if (server.conns_tab == NULL
 		||server.listen_fd < 0
 		||server.listen_ev == NULL
 		||server.db == NULL)
