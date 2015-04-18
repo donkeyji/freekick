@@ -142,28 +142,37 @@ int fk_on_set(fk_conn *conn)
 {
 	int rt;
 	fk_str *key;
-	fk_obj *value;
+	fk_obj *value, *old_val;
 
 	key = FK_CONN_ARG(conn, 1);
-	value = fk_obj_create(FK_OBJ_STR, FK_CONN_ARG(conn, 2));
-	rt = fk_dict_add(server.db[conn->db_idx], key, value);
-	if (rt < 0) {
-		fk_log_error("failed to add to the dict\n");
-		fk_obj_destroy(value);//destroy this fk_obj
+	old_val = fk_dict_get(server.db[conn->db_idx], key);
+	if (old_val == NULL) {
+		value = fk_obj_create(FK_OBJ_STR, FK_CONN_ARG(conn, 2));
+		rt = fk_dict_add(server.db[conn->db_idx], key, value);
+		FK_CONN_ARG_CONSUME(conn, 1);
 		FK_CONN_ARG_CONSUME(conn, 2);
-		rt = fk_conn_rsp_add_error(conn, "Internal Error", strlen("Internal Error"));
-		if (rt < 0) {
+
+		rt = fk_conn_rsp_add_status(conn, "OK", strlen("OK"));
+		if (rt < 0) {//buf not enough, so free the conn
+			return -1;
+		}
+		return 0;
+	}
+	if (old_val->type != FK_OBJ_STR) {
+		rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+		if (rt < 0) {//buf not enough, so free the conn
 			return -1;
 		}
 		return 0;
 	}
 
+	value = fk_obj_create(FK_OBJ_STR, FK_CONN_ARG(conn, 2));
+	rt = fk_dict_add(server.db[conn->db_idx], key, value);
 	FK_CONN_ARG_CONSUME(conn, 1);
 	FK_CONN_ARG_CONSUME(conn, 2);
 
 	rt = fk_conn_rsp_add_status(conn, "OK", strlen("OK"));
-	if (rt < 0) {
-		//buf not enough, so free the conn
+	if (rt < 0) {//buf not enough, so free the conn
 		return -1;
 	}
 
