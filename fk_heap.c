@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include <fk_heap.h>
 #include <fk_mem.h>
@@ -13,9 +14,19 @@ static void fk_heap_extend(fk_heap *hp);
 
 fk_heap *fk_heap_create(fk_leaf_op *lop)
 {
-	fk_heap *hp = (fk_heap *)fk_mem_alloc(sizeof(fk_heap));
+	fk_heap *hp;
+
+	assert(lop != NULL);
+
+   	hp = (fk_heap *)fk_mem_alloc(sizeof(fk_heap));
+	if (hp == NULL) {
+		return NULL;
+	}
 	hp->array = (fk_leaf **)fk_mem_alloc(sizeof(fk_leaf *) * FK_HEAP_INIT_SIZE);
-	if (hp->array == NULL) {}
+	if (hp->array == NULL) {
+		fk_mem_free(hp);
+		return NULL;
+	}
 	bzero(hp->array, sizeof(fk_leaf *) * FK_HEAP_INIT_SIZE);
 	hp->last = 0;
 	hp->max = FK_HEAP_INIT_SIZE;
