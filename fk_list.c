@@ -202,10 +202,10 @@ void fk_list_free_node_put(fk_node *nd)
 fk_node *fk_list_iter_begin(fk_list *lst, int dir)
 {
 	lst->iter.dir = dir;
-	if (dir == FK_LIST_ITER_BACKWARD) {
+	if (dir == FK_LIST_ITER_T2H) {
 		lst->iter.cur = lst->tail;
 	}
-	if (dir == FK_LIST_ITER_FORWARD) {
+	if (dir == FK_LIST_ITER_H2T) {
 		lst->iter.cur = lst->head;
 	}
 	lst->iter.end = NULL;
@@ -214,10 +214,10 @@ fk_node *fk_list_iter_begin(fk_list *lst, int dir)
 
 fk_node *fk_list_iter_next(fk_list *lst)
 {
-	if (lst->iter.dir == FK_LIST_ITER_BACKWARD) {
+	if (lst->iter.dir == FK_LIST_ITER_T2H) {
 		lst->iter.cur = lst->iter.cur->prev;
 	}
-	if (lst->iter.dir == FK_LIST_ITER_FORWARD) {
+	if (lst->iter.dir == FK_LIST_ITER_H2T) {
 		lst->iter.cur = lst->iter.cur->next;
 	}
 	return lst->iter.cur;
