@@ -162,7 +162,7 @@ int fk_on_set(fk_conn *conn)
 	FK_CONN_ARG_CONSUME(conn, 1);
 	FK_CONN_ARG_CONSUME(conn, 2);
 
-	rt = fk_conn_rsp_add_status(conn, "Succeed");
+	rt = fk_conn_rsp_add_status(conn, "OK", strlen("OK"));
 	if (rt < 0) {
 		//buf not enough, so free the conn
 		return -1;
@@ -186,7 +186,7 @@ int fk_on_get(fk_conn *conn)
 		}
 	} else {
 		if (obj->type != FK_OBJ_STR) {
-			rt = fk_conn_rsp_add_error(conn, "TypeError");
+			rt = fk_conn_rsp_add_error(conn, "TypeError", strlen("TypeError"));
 			if (rt < 0) {
 				return -1;
 			}
@@ -196,7 +196,7 @@ int fk_on_get(fk_conn *conn)
 			if (rt < 0) {
 				return -1;
 			}
-			rt = fk_conn_rsp_add_str(conn, FK_STR_RAW(value));
+			rt = fk_conn_rsp_add_content(conn, FK_STR_RAW(value), FK_STR_LEN(value) - 1);
 			if (rt < 0) {
 				return -1;
 			}
@@ -244,7 +244,7 @@ int fk_on_hset(fk_conn *conn)
 			FK_CONN_ARG_CONSUME(conn, 3);
 		}
 	}
-	rt = fk_conn_rsp_add_status(conn, "OK");
+	rt = fk_conn_rsp_add_status(conn, "OK", strlen("OK"));
 	if (rt < 0) {
 		return -1;
 	}
@@ -265,7 +265,10 @@ int fk_on_hget(fk_conn *conn)
 		fk_conn_rsp_add_bulk(conn, -1);
 	} else {
 		if (hobj->type != FK_OBJ_DICT) {
-			fk_conn_rsp_add_error(conn, "TypeError");
+			rt = fk_conn_rsp_add_error(conn, "TypeError", strlen("TypeError"));
+			if (rt < 0) {
+				return -1;
+			}
 		} else {
 			dct = (fk_dict *)(hobj->data);
 			obj = fk_dict_get(dct, key);
@@ -277,7 +280,7 @@ int fk_on_hget(fk_conn *conn)
 				if (rt < 0) {
 					return -1;
 				}
-				rt = fk_conn_rsp_add_str(conn, FK_STR_RAW(value));
+				rt = fk_conn_rsp_add_content(conn, FK_STR_RAW(value), FK_STR_LEN(value) - 1);
 				if (rt < 0) {
 					return -1;
 				}
