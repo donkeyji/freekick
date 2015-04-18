@@ -144,21 +144,20 @@ int fk_on_set(fk_conn *conn)
 	fk_str *key;
 	fk_obj *value;
 
-#ifdef FK_DEBUG
-	fk_log_debug("[fk_on_set]parsed arg_cnt: %d\n", conn->arg_cnt);
-	for (i = 0; i < conn->arg_cnt; i++) {
-		//fk_log_debug("[fk_on_set]idx: %d, len: %d, arg: %s\n", i, conn->args_len[i], conn->args[i]->data);
-	}
-#endif
-
 	key = FK_CONN_ARG(conn, 1);
 	value = fk_obj_create(FK_OBJ_STR, FK_CONN_ARG(conn, 2));
 	rt = fk_dict_add(server.db[conn->db_idx], key, value);
 	if (rt < 0) {
-		fk_obj_destroy(value);//destroy this fk_obj
 		fk_log_error("failed to add to the dict\n");
-		return -1;
+		fk_obj_destroy(value);//destroy this fk_obj
+		FK_CONN_ARG_CONSUME(conn, 2);
+		rt = fk_conn_rsp_add_error(conn, "Internal Error", strlen("Internal Error"));
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
 	}
+
 	FK_CONN_ARG_CONSUME(conn, 1);
 	FK_CONN_ARG_CONSUME(conn, 2);
 
