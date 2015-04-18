@@ -277,6 +277,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #ifdef FK_DEBUG
 	fk_log_debug("[before adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
 #endif
+	/*
 	if (FK_BUF_FREE_LEN(conn->wbuf) <= conn->wbuf->len / 4) {
 		FK_BUF_SHIFT(conn->wbuf);
 	}
@@ -287,6 +288,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		fk_log_info("wbuf beyond max len\n");
 		return -1;//need to close this connection
 	}
+	*/
 #ifdef FK_DEBUG
 	fk_log_debug("[after adjust wbuf] low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
 #endif
