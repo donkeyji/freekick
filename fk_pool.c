@@ -148,9 +148,6 @@ fk_block *fk_pool_block_create(unsigned short unit_size, unsigned short unit_cnt
 	fk_block *blk;
 
 	blk = (fk_block *)fk_mem_alloc(sizeof(fk_block) + unit_size * unit_cnt);
-	if (blk == NULL) {
-		return NULL;
-	}
 	blk->free_cnt = unit_cnt;
 	blk->unit_cnt = unit_cnt;
 	blk->unit_size = unit_size;
