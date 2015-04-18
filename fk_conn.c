@@ -177,10 +177,6 @@ int fk_conn_req_parse(fk_conn *conn)
 #ifdef FK_DEBUG
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
 #endif
-			//check whether need to stretch
-			//FK_VTR_STRETCH(conn->args, conn->arg_cnt);
-			//check whether need to shrink
-			//FK_VTR_SHRINK(conn->args, conn->arg_cnt);
 			FK_VTR_ADJUST(conn->args, conn->arg_cnt);
 
 			FK_BUF_LOW_INC(rbuf, end - start + 1);
@@ -200,9 +196,6 @@ int fk_conn_req_parse(fk_conn *conn)
 			return 0;
 		}
 		end = p - rbuf->data;
-		//if (end == -1) {//not found
-			//return 0;//not received yet
-		//}
 		if (rbuf->data[end - 1] != '\r') {
 			fk_log_debug("wrong client data\n");
 			return -1;
