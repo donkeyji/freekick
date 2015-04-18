@@ -475,9 +475,12 @@ int fk_conn_rsp_add_bulk(fk_conn *conn, int bulk_len)
 	int len;
 	int tmp;
 
-	tmp = bulk_len;
+	tmp = abs(bulk_len);
 	FK_UTIL_INT_LEN(tmp, len);
 	len += 3;
+	if (bulk_len < 0) {
+		len += 1;//minus
+	}
 
 	FK_BUF_ADJUST(conn->wbuf, len);
 
