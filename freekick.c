@@ -271,30 +271,47 @@ int fk_on_hget(fk_conn *conn)
 	key = FK_CONN_ARG(conn, 2);
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
 	if (hobj == NULL) {
-		fk_conn_rsp_add_bulk(conn, -1);
-	} else {
-		if (hobj->type != FK_OBJ_DICT) {
-			rt = fk_conn_rsp_add_error(conn, "TypeError", strlen("TypeError"));
-			if (rt < 0) {
-				return -1;
-			}
-		} else {
-			dct = (fk_dict *)(hobj->data);
-			obj = fk_dict_get(dct, key);
-			if (obj == NULL) {
-				fk_conn_rsp_add_bulk(conn, -1);
-			} else {
-				value = (fk_str *)obj->data;
-				rt = fk_conn_rsp_add_bulk(conn, FK_STR_LEN(value) - 1);
-				if (rt < 0) {
-					return -1;
-				}
-				rt = fk_conn_rsp_add_content(conn, FK_STR_RAW(value), FK_STR_LEN(value) - 1);
-				if (rt < 0) {
-					return -1;
-				}
-			}
+		rt = fk_conn_rsp_add_bulk(conn, -1);
+		if (rt < 0) {
+			return -1;
 		}
+		return 0;
+	} 
+
+	if (hobj->type != FK_OBJ_DICT) {
+		rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	} 
+
+	dct = (fk_dict *)(hobj->data);
+	obj = fk_dict_get(dct, key);
+	if (obj == NULL) {
+		rt = fk_conn_rsp_add_bulk(conn, -1);
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	} 
+
+	if (obj->type != FK_OBJ_STR) {
+		rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	}
+
+	value = (fk_str *)obj->data;
+	rt = fk_conn_rsp_add_bulk(conn, FK_STR_LEN(value) - 1);
+	if (rt < 0) {
+		return -1;
+	}
+	rt = fk_conn_rsp_add_content(conn, FK_STR_RAW(value), FK_STR_LEN(value) - 1);
+	if (rt < 0) {
+		return -1;
 	}
 
 	return 0;
