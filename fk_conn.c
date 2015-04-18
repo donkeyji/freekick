@@ -8,6 +8,7 @@
 #include <fk_conn.h>
 #include <fk_mem.h>
 #include <fk_sock.h>
+#include <fk_util.h>
 #include <freekick.h>//it's OK to do so
 
 static int fk_conn_read_cb(int fd, unsigned char type, void *ext);
@@ -399,5 +400,121 @@ int fk_conn_rsp_send(fk_conn *conn)
 		fk_ev_ioev_add(conn->write_ev);
 		conn->write_added = 1;
 	}
+	return 0;
+}
+
+#define FK_BUF_ADJUST(buf, len)	{				\
+	if (FK_BUF_FREE_LEN((buf)) < (len)) {		\
+		FK_BUF_SHIFT((buf));					\
+	}											\
+	if (FK_BUF_FREE_LEN((buf)) < (len)) {		\
+		FK_BUF_STRETCH((buf));					\
+	}											\
+	if (FK_BUF_FREE_LEN((buf)) < (len)) {		\
+		return -1;								\
+	}											\
+}
+
+static char *rsp_status = "+%s\r\n";
+static char *rsp_error 	= "-%s\r\n";
+static char *rsp_int 	= ":%d\r\n";
+static char *rsp_bulk	= "$%d\r\n";
+static char *rsp_mbulk	= "*%d\r\n";
+static char *rsp_str	= "%s\r\n";
+
+int fk_conn_rsp_add_int(fk_conn *conn, int num)
+{
+	int len;
+	int tmp;
+
+	tmp = num;
+	FK_UTIL_INT_LEN(tmp, len);
+
+	len += 3;
+
+	FK_BUF_ADJUST(conn->wbuf, len);
+
+	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_int, num);
+	FK_BUF_HIGH_INC(conn->wbuf, len);
+
+	return 0;
+}
+
+int fk_conn_rsp_add_status(fk_conn *conn, char *stat)
+{
+	int len;
+
+	len = strlen(stat);
+	len += 3;
+
+	FK_BUF_ADJUST(conn->wbuf, len);
+
+	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_status, stat);
+	FK_BUF_HIGH_INC(conn->wbuf, len);
+
+	return 0;
+}
+
+int fk_conn_rsp_add_error(fk_conn *conn, char *error)
+{
+	int len;
+
+	len = strlen(error);
+	len += 3;
+
+	FK_BUF_ADJUST(conn->wbuf, len);
+
+	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_error, error);
+	FK_BUF_HIGH_INC(conn->wbuf, len);
+
+	return 0;
+}
+
+int fk_conn_rsp_add_bulk(fk_conn *conn, int bulk_len)
+{
+	int len;
+	int tmp;
+
+	tmp = bulk_len;
+	FK_UTIL_INT_LEN(tmp, len);
+	len += 3;
+
+	FK_BUF_ADJUST(conn->wbuf, len);
+
+	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_bulk, bulk_len);
+	FK_BUF_HIGH_INC(conn->wbuf, len);
+
+	return 0;
+}
+
+int fk_conn_rsp_add_mbulk(fk_conn *conn, int bulk_cnt)
+{
+	int len;
+	int tmp;
+
+	tmp = bulk_cnt;
+	FK_UTIL_INT_LEN(tmp, len);
+	len += 3;
+
+	FK_BUF_ADJUST(conn->wbuf, len);
+
+	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_mbulk, bulk_cnt);
+	FK_BUF_HIGH_INC(conn->wbuf, len);
+
+	return 0;
+}
+
+int fk_conn_rsp_add_str(fk_conn *conn, char *str)
+{
+	int len;
+
+	len = strlen(str);
+	len += 3;
+
+	FK_BUF_ADJUST(conn->wbuf, len);
+
+	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_str, str);
+	FK_BUF_HIGH_INC(conn->wbuf, len);
+
 	return 0;
 }

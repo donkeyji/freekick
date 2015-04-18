@@ -144,6 +144,7 @@ static char *NIL = "$-1\r\n";
 static char *ONELINE = "$%d\r\n%s\r\n"; 
 static char *FMT = "%s";
 
+
 int fk_on_set(fk_conn *conn)
 {
 	int i, len, rt;

@@ -37,4 +37,11 @@ void fk_conn_destroy(fk_conn *conn);
 
 #define FK_CONN_ARG_CONSUME(conn, idx)	FK_VTR_RAW((conn)->args)[(idx)] = NULL
 
+int fk_conn_rsp_add_int(fk_conn *conn, int num);
+int fk_conn_rsp_add_status(fk_conn *conn, char *stat);
+int fk_conn_rsp_add_error(fk_conn *conn, char *error);
+int fk_conn_rsp_add_bulk(fk_conn *conn, int bulk_len);
+int fk_conn_rsp_add_mbulk(fk_conn *conn, int bulk_cnt);
+int fk_conn_rsp_add_str(fk_conn *conn, char *str);
+
 #endif
