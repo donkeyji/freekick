@@ -194,7 +194,7 @@ int fk_on_get(fk_conn *conn)
 		}
 	} else {
 		if (obj->type != FK_OBJ_STR) {
-			rt = fk_conn_rsp_add_error(conn, "TypeError", strlen("TypeError"));
+			rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
 			if (rt < 0) {
 				return -1;
 			}
@@ -233,26 +233,27 @@ int fk_on_hset(fk_conn *conn)
 		FK_CONN_ARG_CONSUME(conn, 1);
 		FK_CONN_ARG_CONSUME(conn, 2);
 		FK_CONN_ARG_CONSUME(conn, 3);
-	} else {
-		if (hobj->type == FK_OBJ_DICT) {
-			dct = (fk_dict *)(hobj->data);
-			obj = fk_obj_create(FK_OBJ_STR, FK_CONN_ARG(conn, 3));
-			fk_dict_add(dct, key, obj);
-			FK_CONN_ARG_CONSUME(conn, 2);
-			FK_CONN_ARG_CONSUME(conn, 3);
-		} else {
-			dct = fk_dict_create(&dbeop);
-			obj = fk_obj_create(FK_OBJ_STR, FK_CONN_ARG(conn, 3));
-			fk_dict_add(dct, key, obj);
-			hobj = fk_obj_create(FK_OBJ_DICT, dct);
-			fk_dict_add(server.db[conn->db_idx], hkey, hobj);
-			//consume all the args, except args[0]
-			FK_CONN_ARG_CONSUME(conn, 1);
-			FK_CONN_ARG_CONSUME(conn, 2);
-			FK_CONN_ARG_CONSUME(conn, 3);
+		rt = fk_conn_rsp_add_int(conn, 1);
+		if (rt < 0) {
+			return -1;
 		}
+		return 0;
 	}
-	rt = fk_conn_rsp_add_status(conn, "OK", strlen("OK"));
+
+	if (hobj->type == FK_OBJ_DICT) {
+		dct = (fk_dict *)(hobj->data);
+		obj = fk_obj_create(FK_OBJ_STR, FK_CONN_ARG(conn, 3));
+		fk_dict_add(dct, key, obj);
+		FK_CONN_ARG_CONSUME(conn, 2);
+		FK_CONN_ARG_CONSUME(conn, 3);
+		rt = fk_conn_rsp_add_int(conn, 1);
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	}
+
+	rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
 	if (rt < 0) {
 		return -1;
 	}
