@@ -192,23 +192,25 @@ int fk_on_get(fk_conn *conn)
 		if (rt < 0) {
 			return -1;
 		}
-	} else {
-		if (obj->type != FK_OBJ_STR) {
-			rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
-			if (rt < 0) {
-				return -1;
-			}
-		} else {
-			value = (fk_str *)(obj->data);
-			rt = fk_conn_rsp_add_bulk(conn, FK_STR_LEN(value) - 1);
-			if (rt < 0) {
-				return -1;
-			}
-			rt = fk_conn_rsp_add_content(conn, FK_STR_RAW(value), FK_STR_LEN(value) - 1);
-			if (rt < 0) {
-				return -1;
-			}
+		return 0;
+	} 
+
+	if (obj->type != FK_OBJ_STR) {
+		rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+		if (rt < 0) {
+			return -1;
 		}
+		return 0;
+	} 
+
+	value = (fk_str *)(obj->data);
+	rt = fk_conn_rsp_add_bulk(conn, FK_STR_LEN(value) - 1);
+	if (rt < 0) {
+		return -1;
+	}
+	rt = fk_conn_rsp_add_content(conn, FK_STR_RAW(value), FK_STR_LEN(value) - 1);
+	if (rt < 0) {
+		return -1;
 	}
 	return 0;
 }
