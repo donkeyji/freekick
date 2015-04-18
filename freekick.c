@@ -547,10 +547,10 @@ void fk_svr_init()
 #endif
 
 	server.db = (fk_dict **)fk_mem_alloc(sizeof(fk_dict *) * server.dbcnt);
-	if (server.conns_tab == NULL
-		||server.listen_fd < 0
-		||server.listen_ev == NULL
-		||server.db == NULL)
+	if (server.conns_tab == NULL ||
+		server.listen_fd < 0	 ||
+		server.listen_ev == NULL ||
+		server.db == NULL)
 	{
 		fk_log_error("[server init failed\n]");
 		exit(EXIT_FAILURE);
