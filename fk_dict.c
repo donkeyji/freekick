@@ -56,9 +56,6 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 {
 	fk_dict *dct;
 	dct = (fk_dict *)fk_mem_alloc(sizeof(fk_dict));
-	if (dct == NULL) {
-		return NULL;
-	}
 	if (eop == NULL) {
 		eop = &default_eop;
 	}
@@ -262,9 +259,6 @@ int fk_dict_stretch(fk_dict *dct)
 	}
 	new_size = dct->size * 2;
 	bks = (fk_list **)fk_mem_alloc(new_size * sizeof(fk_list *));
-	if (bks == NULL) {
-		return -1;
-	}
 	bzero(bks, sizeof(fk_list *) * new_size);
 
 	//rehash to the new buckets
