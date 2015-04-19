@@ -218,7 +218,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			len = (uintptr_t)FK_CONN_ARG_LEN(conn, conn->arg_idx);
 			fk_log_debug("arg_len: %lu\n", len);
 
-			if (rbuf->high >= start + len + 2) {//arg data available
+			if (FK_BUF_HIGH(rbuf) >= start + len + 2) {//arg data available
 				FK_CONN_ARG(conn, conn->arg_idx) = fk_str_create(rbuf->data + start, len);
 				conn->arg_idx += 1;
 				conn->arg_idx_type = 0;
