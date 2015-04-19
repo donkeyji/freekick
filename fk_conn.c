@@ -45,15 +45,11 @@ fk_conn *fk_conn_create(int fd)
 	conn->timer = fk_ev_tmev_create(5000, FK_EV_CYCLE, conn, fk_conn_timer_cb);
 	//fk_ev_tmev_add(conn->timer);
 
-	/*
-	for (i = 0; i < FK_ARG_MAX; i++) {
-		conn->args_len[i] = 0;
-		conn->args[i] = NULL;
-	}
-	*/
 	conn->args = fk_vtr_create();
+	conn->args_len = fk_vtr_create();
 	conn->arg_cnt = 0;
 	conn->arg_idx = 0;
+	conn->arg_idx_type = 0;//arg_len
 	conn->parse_done = 0;
 
 	conn->db_idx = 0;
@@ -71,11 +67,7 @@ void fk_conn_destroy(fk_conn *conn)
 
 	fk_conn_args_free(conn);//free args first
 	fk_vtr_destroy(conn->args);//then free vector
-	//for (i = 0; i < FK_ARG_MAX; i++) {
-		//if (conn->args[i] != NULL) {
-			//fk_str_destroy(conn->args[i]);
-		//}
-	//}
+	fk_vtr_destroy(conn->args_len);
 
 	conn->last_recv = -1;
 	fk_ev_tmev_remove(conn->timer);
@@ -145,7 +137,8 @@ int fk_conn_req_parse(fk_conn *conn)
 {
 	char *p;
 	fk_buf *rbuf;
-	int len, start, end, rt;
+	uintptr_t len;
+	int start, end, rt;
 
 	rbuf = conn->rbuf;
 
@@ -183,51 +176,61 @@ int fk_conn_req_parse(fk_conn *conn)
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
 #endif
 			FK_VTR_ADJUST(conn->args, conn->arg_cnt);
+			FK_VTR_ADJUST(conn->args_len, conn->arg_cnt);
 
 			FK_BUF_LOW_INC(rbuf, end - start + 1);
 		}
 	}
 
-	//while (rbuf->low < rbuf->high) {
 	while (FK_BUF_VALID_LEN(rbuf) > 0) {
-		start = rbuf->low;
-		if (rbuf->data[start] != '$') {
-			fk_log_debug("wrong client data\n");
-			return -1;
-		}
-		//end = fk_buf_locate_char(rbuf, start + 1, '\n');
-		p = memchr(FK_BUF_VALID_START(rbuf), '\n', FK_BUF_VALID_LEN(rbuf));
-		if (p == NULL) {
-			return 0;
-		}
-		end = p - rbuf->data;
-		if (rbuf->data[end - 1] != '\r') {
-			fk_log_debug("wrong client data\n");
-			return -1;
-		}
-		rt = fk_util_positive_check(rbuf->data + start + 1, rbuf->data + end - 1 - 1);
-		if (rt < 0) {
-			fk_log_debug("wrong client data\n");
-			return -1;
-		}
-		len = atoi(rbuf->data + start + 1);//arg len
-		if (len == 0) {
-			fk_log_debug("wrong client data\n");
-			return -1;
-		}
-		if (rbuf->high > end + len + 2) {//arg data available
-			//conn->args[conn->arg_idx] = fk_str_create(rbuf->data + end + 1, len);
-			//conn->args_len[conn->arg_idx] = len;
-			FK_CONN_ARG(conn, conn->arg_idx) = fk_str_create(rbuf->data + end + 1, len);
-			conn->arg_idx += 1;
-			FK_BUF_LOW_INC(rbuf, end + len + 2 - start + 1);
-		} else {//not received yet
-			break;
+		if (conn->arg_idx_type == 0) {
+			start = rbuf->low;
+			if (rbuf->data[start] != '$') {
+				fk_log_debug("wrong client data\n");
+				return -1;
+			}
+			p = memchr(FK_BUF_VALID_START(rbuf), '\n', FK_BUF_VALID_LEN(rbuf));
+			if (p == NULL) {
+				return 0;
+			}
+			end = p - rbuf->data;
+			if (rbuf->data[end - 1] != '\r') {
+				fk_log_debug("wrong client data\n");
+				return -1;
+			}
+			rt = fk_util_positive_check(rbuf->data + start + 1, rbuf->data + end - 1 - 1);
+			if (rt < 0) {
+				fk_log_debug("wrong client data\n");
+				return -1;
+			}
+			len = atoi(rbuf->data + start + 1);//arg len
+			if (len == 0) {
+				fk_log_debug("wrong client data\n");
+				return -1;
+			}
+			FK_CONN_ARG_LEN(conn, conn->arg_idx) = (void *)len;
+			conn->arg_idx_type = 1;//need to parse arg
+			FK_BUF_LOW_INC(rbuf, end - start + 1);
 		}
 
-		if (conn->arg_cnt == conn->arg_idx) {//a total protocol has been parsed
-			conn->parse_done = 1;
-			break;
+		if (conn->arg_idx_type == 1) {
+			start = rbuf->low;
+			len = (uintptr_t)FK_CONN_ARG_LEN(conn, conn->arg_idx);
+			fk_log_debug("arg_len: %lu\n", len);
+
+			if (rbuf->high >= start + len + 2) {//arg data available
+				FK_CONN_ARG(conn, conn->arg_idx) = fk_str_create(rbuf->data + start, len);
+				conn->arg_idx += 1;
+				conn->arg_idx_type = 0;
+				FK_BUF_LOW_INC(rbuf, len + 2);
+			} else {//not received yet
+				break;
+			}
+
+			if (conn->arg_cnt == conn->arg_idx) {//a total protocol has been parsed
+				conn->parse_done = 1;
+				break;
+			}
 		}
 	}
 
@@ -244,14 +247,15 @@ void fk_conn_args_free(fk_conn *conn)
 
 	for (i = 0; i < conn->arg_cnt; i++) {
 		if (FK_CONN_ARG(conn, i) != NULL) {
-			fk_str_destroy(FK_CONN_ARG(conn, i));
+			fk_str_destroy((fk_str *)FK_CONN_ARG(conn, i));
 			FK_CONN_ARG(conn, i) = NULL;
-			//conn->args_len[i] = 0;
 		}
+		FK_CONN_ARG_LEN(conn, i) = (void *)0;
 	}
 	conn->arg_cnt = 0;
 	conn->parse_done = 0;
 	conn->arg_idx = 0;
+	conn->arg_idx_type = 0;
 }
 
 int fk_conn_cmd_proc(fk_conn *conn)
@@ -265,10 +269,10 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #endif
 		return 0;
 	}
-	fk_str_2upper(FK_CONN_ARG(conn, 0));
-	pto = fk_proto_search(FK_CONN_ARG(conn, 0));
+	fk_str_2upper((fk_str *)FK_CONN_ARG(conn, 0));
+	pto = fk_proto_search((fk_str *)FK_CONN_ARG(conn, 0));
 	if (pto == NULL) {
-		fk_log_error("invalid protocol: %s\n", FK_STR_RAW(FK_CONN_ARG(conn, 0)));
+		fk_log_error("invalid protocol: %s\n", FK_STR_RAW((fk_str *)FK_CONN_ARG(conn, 0)));
 		fk_conn_args_free(conn);
 		fk_conn_rsp_add_error(conn, "Invalid Protocol", strlen("Invalid Protocol"));
 		return 0;

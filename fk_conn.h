@@ -23,8 +23,10 @@ typedef struct _fk_conn {
 	//fk_str *args[FK_ARG_MAX];
 	//int		args_len[FK_ARG_MAX];
 	fk_vtr *args;
+	fk_vtr *args_len;
 	int		arg_cnt;//the number of args of the current protocol, original 0;
 	int		arg_idx;//the arg_idx arg is being parsing, original 0;
+	int 	arg_idx_type;//arg_len or arg
 	int 	parse_done;//original 0;
 
 	int db_idx;
@@ -36,6 +38,8 @@ void fk_conn_destroy(fk_conn *conn);
 #define FK_CONN_ARG(conn, idx)	FK_VTR_RAW((conn)->args)[(idx)]
 
 #define FK_CONN_ARG_CONSUME(conn, idx)	FK_VTR_RAW((conn)->args)[(idx)] = NULL
+
+#define FK_CONN_ARG_LEN(conn, idx)  FK_VTR_RAW((conn)->args_len)[(idx)]
 
 int fk_conn_rsp_add_status(fk_conn *conn, char *stat, int stat_len);
 int fk_conn_rsp_add_error(fk_conn *conn, char *error, int error_len);
