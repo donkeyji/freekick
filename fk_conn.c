@@ -145,7 +145,7 @@ int fk_conn_req_parse(fk_conn *conn)
 {
 	char *p;
 	fk_buf *rbuf;
-	int len, start, end;
+	int len, start, end, rt;
 
 	rbuf = conn->rbuf;
 
@@ -166,6 +166,11 @@ int fk_conn_req_parse(fk_conn *conn)
 			}
 			end = p - rbuf->data;
 			if (rbuf->data[end - 1] != '\r') {
+				fk_log_debug("wrong client data\n");
+				return -1;
+			}
+			rt = fk_util_positive_check(rbuf->data + start + 1, rbuf->data + end - 1 - 1);
+			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
@@ -197,6 +202,11 @@ int fk_conn_req_parse(fk_conn *conn)
 		}
 		end = p - rbuf->data;
 		if (rbuf->data[end - 1] != '\r') {
+			fk_log_debug("wrong client data\n");
+			return -1;
+		}
+		rt = fk_util_positive_check(rbuf->data + start + 1, rbuf->data + end - 1 - 1);
+		if (rt < 0) {
 			fk_log_debug("wrong client data\n");
 			return -1;
 		}

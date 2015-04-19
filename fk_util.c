@@ -14,3 +14,21 @@ void fk_util_cal_expire(struct timeval *tv, int interval)
 
 	FK_UTIL_TMVAL_ADD(&now, &itv, tv);
 }
+
+int fk_util_positive_check(char *start, char *end)
+{
+	char *p;
+
+	for (p = start; p <= end; p++) {
+		if (p == start) {
+			if (*p <= '0' || *p > '9') {
+				return -1;
+			}
+		} else {
+			if (*p < '0' || *p > '9') {
+				return -1;
+			}
+		}
+	}
+	return 0;
+}
