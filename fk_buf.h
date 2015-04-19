@@ -29,7 +29,7 @@ void fk_buf_adjust(fk_buf *buf);
 
 #define FK_BUF_CHAR_PTR(buf, idx) ((buf)->data + (idx))
 
-#define FK_BUF_CHAR(buf, idx)	((buf)->data)[(idx)]
+#define FK_BUF_CHAR(buf, idx)	(((buf)->data)[(idx)])
 
 #define FK_BUF_TOTAL_LEN(buf)	(buf)->len
 
