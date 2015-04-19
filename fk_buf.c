@@ -31,55 +31,6 @@ void fk_buf_print(fk_buf *buf)
 	printf("%s\n", ps);
 }
 
-/*
-fk_buf *FK_BUF_STRETCH(fk_buf *buf)
-{
-	if (buf->len < FK_BUF_HIGHWAT) {
-		buf = fk_mem_realloc(buf, sizeof(fk_buf) + buf->len * 2);
-		buf->len *= 2;
-		fk_log_debug("after realloc: len: %d, %p\n", buf->len, buf);
-	}
-	return buf;
-}
-*/
-
-/*
-fk_buf *FK_BUF_SHRINK(fk_buf *buf)
-{
-	if (buf->len >= FK_BUF_HIGHWAT
-		&& buf->high - buf->low < FK_BUF_INIT_LEN) 
-	{
-		memmove(buf->data, 
-			buf->data + buf->low, 
-			buf->high - buf->low
-		);
-		buf->high -= buf->low;
-		buf->low = 0;
-		buf = fk_mem_realloc(buf, sizeof(fk_buf) + FK_BUF_INIT_LEN);
-		buf->len = FK_BUF_INIT_LEN;
-		fk_log_debug("shrink\n");
-	}
-	return buf;
-}
-*/
-
-/*
-int FK_BUF_SHIFT(fk_buf *buf)
-{
-	if (buf->low > 0) {
-		memmove(buf->data, 
-			buf->data + buf->low, 
-			buf->high - buf->low
-		);
-		buf->high -= buf->low;
-		buf->low = 0;
-		fk_log_debug("shift left\n");
-		return 0;
-	}
-	return -1;
-}
-*/
-
 void fk_buf_adjust(fk_buf *buf)
 {
 	//need to shitf left: the buf is full
