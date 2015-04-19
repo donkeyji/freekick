@@ -84,12 +84,14 @@ static fk_elt_op dbeop = {
 	fk_dict_obj_free
 };
 
+/*
 static fk_elt_op seteop = {
 	NULL,
 	fk_str_destroy,
 	NULL,
 	NULL
 };
+*/
 
 static fk_node_op sortop = {
 	NULL,
