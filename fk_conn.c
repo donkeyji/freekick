@@ -45,8 +45,8 @@ fk_conn *fk_conn_create(int fd)
 	conn->timer = fk_ev_tmev_create(5000, FK_EV_CYCLE, conn, fk_conn_timer_cb);
 	//fk_ev_tmev_add(conn->timer);
 
-	conn->args = fk_vtr_create();
-	conn->args_len = fk_vtr_create();
+	conn->arg_vtr = fk_vtr_create();
+	conn->len_vtr = fk_vtr_create();
 	conn->arg_cnt = 0;
 	conn->arg_idx = 0;
 	conn->arg_idx_type = 0;//arg_len
@@ -65,9 +65,9 @@ void fk_conn_destroy(fk_conn *conn)
 	fk_buf_destroy(conn->rbuf);
 	fk_buf_destroy(conn->wbuf);
 
-	fk_conn_args_free(conn);//free args first
-	fk_vtr_destroy(conn->args);//then free vector
-	fk_vtr_destroy(conn->args_len);
+	fk_conn_args_free(conn);//free arg_vtr first
+	fk_vtr_destroy(conn->arg_vtr);//then free vector
+	fk_vtr_destroy(conn->len_vtr);
 
 	conn->last_recv = -1;
 	fk_ev_tmev_remove(conn->timer);
@@ -175,8 +175,8 @@ int fk_conn_req_parse(fk_conn *conn)
 #ifdef FK_DEBUG
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
 #endif
-			FK_VTR_ADJUST(conn->args, conn->arg_cnt);
-			FK_VTR_ADJUST(conn->args_len, conn->arg_cnt);
+			FK_VTR_ADJUST(conn->arg_vtr, conn->arg_cnt);
+			FK_VTR_ADJUST(conn->len_vtr, conn->arg_cnt);
 
 			FK_BUF_LOW_INC(rbuf, end - start + 1);
 		}
@@ -284,7 +284,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		return 0;
 	}
 	rt = pto->handler(conn);
-	if (rt < 0) {//args are not consumed, free all the args
+	if (rt < 0) {//arg_vtr are not consumed, free all the arg_vtr
 		fk_conn_args_free(conn);
 		return -1;
 	}
