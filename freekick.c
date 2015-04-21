@@ -146,10 +146,10 @@ int fk_on_set(fk_conn *conn)
 	fk_str *key;
 	fk_obj *value, *old_val;
 
-	key = fk_conn_arg(conn, 1);
+	key = fk_conn_arg_get(conn, 1);
 	old_val = fk_dict_get(server.db[conn->db_idx], key);
 	if (old_val == NULL) {
-		value = fk_obj_create(FK_OBJ_STR, fk_conn_arg(conn, 2));
+		value = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
 		rt = fk_dict_add(server.db[conn->db_idx], key, value);
 		fk_conn_arg_consume(conn, 1);
 		fk_conn_arg_consume(conn, 2);
@@ -168,7 +168,7 @@ int fk_on_set(fk_conn *conn)
 		return 0;
 	}
 
-	value = fk_obj_create(FK_OBJ_STR, fk_conn_arg(conn, 2));
+	value = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
 	rt = fk_dict_add(server.db[conn->db_idx], key, value);
 	fk_conn_arg_consume(conn, 1);
 	fk_conn_arg_consume(conn, 2);
@@ -187,7 +187,7 @@ int fk_on_get(fk_conn *conn)
 	fk_obj *obj;
 	fk_str *key, *value;
 
-	key = fk_conn_arg(conn, 1);
+	key = fk_conn_arg_get(conn, 1);
 	obj = fk_dict_get(server.db[conn->db_idx], key);
 	if (obj == NULL) {
 		rt = fk_conn_rsp_add_bulk(conn, -1);
@@ -224,12 +224,12 @@ int fk_on_hset(fk_conn *conn)
 	fk_str *hkey, *key;
 	fk_obj *hobj, *obj;
 
-	hkey = fk_conn_arg(conn, 1);
-	key = fk_conn_arg(conn, 2);
+	hkey = fk_conn_arg_get(conn, 1);
+	key = fk_conn_arg_get(conn, 2);
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
 	if (hobj == NULL) {
 		dct = fk_dict_create(&dbeop);
-		obj = fk_obj_create(FK_OBJ_STR, fk_conn_arg(conn, 3));
+		obj = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 3));
 		fk_dict_add(dct, key, obj);
 		hobj = fk_obj_create(FK_OBJ_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hobj);
@@ -246,7 +246,7 @@ int fk_on_hset(fk_conn *conn)
 
 	if (hobj->type == FK_OBJ_DICT) {
 		dct = (fk_dict *)(hobj->data);
-		obj = fk_obj_create(FK_OBJ_STR, fk_conn_arg(conn, 3));
+		obj = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 3));
 		fk_dict_add(dct, key, obj);
 		fk_conn_arg_consume(conn, 2);
 		fk_conn_arg_consume(conn, 3);
@@ -271,8 +271,8 @@ int fk_on_hget(fk_conn *conn)
 	fk_obj *hobj, *obj;
 	fk_str *hkey, *key, *value;
 
-	hkey = fk_conn_arg(conn, 1);
-	key = fk_conn_arg(conn, 2);
+	hkey = fk_conn_arg_get(conn, 1);
+	key = fk_conn_arg_get(conn, 2);
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
 	if (hobj == NULL) {
 		rt = fk_conn_rsp_add_bulk(conn, -1);
@@ -330,7 +330,7 @@ int fk_on_zadd(fk_conn *conn)
 	fk_elt *elt;
 
 	fk_log_debug("zadd\n");
-	skey = fk_conn_arg(conn, 1);
+	skey = fk_conn_arg_get(conn, 1);
 
 	sobj = fk_dict_get(server.db[conn->db_idx], skey);
 
@@ -338,8 +338,8 @@ int fk_on_zadd(fk_conn *conn)
 		lst = fk_list_create(&sortop);
 		for (i = 2; i < conn->arg_cnt; i += 2) {
 			elt = fk_mem_alloc(sizeof(fk_elt));
-			elt->key = fk_conn_arg(conn, i);
-			elt->value = fk_conn_arg(conn, i+1);
+			elt->key = fk_conn_arg_get(conn, i);
+			elt->value = fk_conn_arg_get(conn, i+1);
 			fk_list_insert(lst, elt);
 		}
 		fk_dict_add(server.db[conn->db_idx], skey, lst);
@@ -352,8 +352,8 @@ int fk_on_zadd(fk_conn *conn)
 		lst = fk_list_create(&sortop);
 		for (i = 2; i < conn->arg_cnt; i += 2) {
 			elt = fk_mem_alloc(sizeof(fk_elt));
-			elt->key = fk_conn_arg(conn, i);
-			elt->value = fk_conn_arg(conn, i+1);
+			elt->key = fk_conn_arg_get(conn, i);
+			elt->value = fk_conn_arg_get(conn, i+1);
 			fk_list_insert(lst, elt);
 		}
 		fk_dict_add(server.db[conn->db_idx], skey, lst);
@@ -363,8 +363,8 @@ int fk_on_zadd(fk_conn *conn)
 	lst = (fk_list *)sobj->data;
 	for (i = 2; i < conn->arg_cnt; i += 2) {
 		elt = fk_mem_alloc(sizeof(fk_elt));
-		elt->key = fk_conn_arg(conn, i);
-		elt->value = fk_conn_arg(conn, i+1);
+		elt->key = fk_conn_arg_get(conn, i);
+		elt->value = fk_conn_arg_get(conn, i+1);
 		fk_list_insert(lst, elt);
 	}
 	return 0;
