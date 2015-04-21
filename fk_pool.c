@@ -16,12 +16,12 @@
 #define FK_POOL_BLOCK_ALLOC(blk, ptr)	{					\
 	(blk)->free_cnt--;										\
 	(ptr) = (blk)->data + (blk)->unit_size * (blk)->first;	\
-	(blk)->first = *((unsigned short *)(ptr));				\
+	(blk)->first = *((uint16_t *)(ptr));				\
 }
 
 #define FK_POOL_BLOCK_FREE(blk, ptr) {											\
 	(blk)->free_cnt++;															\
-	*((unsigned short *)(ptr)) = (blk)->first;									\
+	*((uint16_t *)(ptr)) = (blk)->first;									\
 	(blk)->first = ((char*)(ptr) - (char*)(blk)->data) / (blk)->unit_size;		\
 }
 
@@ -29,10 +29,10 @@
 
 #define FK_POOL_MAX_EMPTY_BLOCKS 1
 
-static fk_block *fk_pool_block_create(unsigned short unit_size, unsigned short unit_cnt);
+static fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt);
 static void fk_pool_block_destroy(fk_block *blk);
 
-static unsigned short fk_pool_align = 2;
+static uint16_t fk_pool_align = 2;
 static fk_pool *node_pool = NULL;
 static fk_pool *obj_pool = NULL;
 static fk_pool *str_pool = NULL;
@@ -51,7 +51,7 @@ void fk_pool_end()
 	fk_pool_destroy(str_pool);
 }
 
-fk_pool *fk_pool_create(unsigned short unit_size, unsigned short init_cnt)
+fk_pool *fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
 {
 	fk_pool *pool;
 
@@ -141,7 +141,7 @@ void fk_pool_destroy(fk_pool *pool)
 {
 }
 
-fk_block *fk_pool_block_create(unsigned short unit_size, unsigned short unit_cnt)
+fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
 	int i;
 	char *ptr;
@@ -155,10 +155,10 @@ fk_block *fk_pool_block_create(unsigned short unit_size, unsigned short unit_cnt
 
 	ptr = blk->data;
 	for (i = 0; i < unit_cnt - 1; i++) {
-		*((unsigned short *)ptr) = i + 1; //point to the index of the next free unit
+		*((uint16_t *)ptr) = i + 1; //point to the index of the next free unit
 		ptr += unit_size;
 	}
-	*((unsigned short *)ptr) = -1; //the last unit
+	*((uint16_t *)ptr) = -1; //the last unit
 
 	return blk;
 }

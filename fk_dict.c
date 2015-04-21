@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <stdint.h>
 
 #include <fk_dict.h>
 #include <fk_mem.h>
@@ -41,7 +42,7 @@
 	(elt)->value = NULL;							\
 }
 
-static unsigned int fk_dict_hash(fk_str *key);
+static uint32_t fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
 static fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
 
@@ -136,7 +137,7 @@ fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 }
 
 /*
-unsigned int fk_dict_hash(fk_str *key)
+uint32_t fk_dict_hash(fk_str *key)
 {
 	char *s;
 	unsigned long hash;
@@ -152,11 +153,11 @@ unsigned int fk_dict_hash(fk_str *key)
 }
 */
 
-unsigned int fk_dict_hash(fk_str *key)
+uint32_t fk_dict_hash(fk_str *key)
 {
 	int len;
 	char *buf;
-    unsigned int hash;
+    uint32_t hash;
 
 	hash = 5381;
 	len = fk_str_len(key);
