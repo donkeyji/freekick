@@ -227,7 +227,7 @@ int fk_conf_line_parse(fk_line *line)
 
 		i = end;
 	}
-	printf("line %d: fields cnt %d\n", line->no, line->cnt);
+	//printf("line %d: fields cnt %d\n", line->no, line->cnt);
 
 	return 0;
 }
@@ -255,9 +255,11 @@ int fk_conf_line_proc(fk_line *line)
 		return 0;
 	}
 
+	/*
 	for (rt = 0; rt < line->cnt; rt++) {
 		printf("%s\n", fk_str_raw(line->fields[rt]));
 	}
+	*/
 
 	cmd = line->fields[0];
 	itv = fk_conf_search(cmd);
@@ -304,7 +306,7 @@ int fk_conf_handle_port(fk_line *line)
 		return -1;
 	}
 	port = atoi(fk_str_raw(line->fields[1]));
-	printf("port %d\n", port);
+	//printf("port %d\n", port);
 	if (port <= 0 || port > 65536) {
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
 		return -1;
