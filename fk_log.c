@@ -10,16 +10,7 @@
 
 #define FK_LOG_BUFF_SIZE 1024
 
-#define FK_LOG_BEGIN	\
-	va_list ap;			\
-	char log_buff[FK_LOG_BUFF_SIZE]	\
- 
-#define FK_LOG_END		\
-	va_start(ap, fmt);	\
-	vsprintf(log_buff, fmt, ap);\
-	va_end(ap)	\
- 
-#define FK_LOG_WRITE(level)	{					\
+#define fk_log_write(level)	{					\
 	va_list ap;									\
 	char log_buff[FK_LOG_BUFF_SIZE];			\
 	if (level > logger.log_level) {				\
@@ -50,22 +41,22 @@ void fk_log_init()
 
 void fk_log_error(const char *fmt, ...)
 {
-	FK_LOG_WRITE(FK_LOG_ERROR);
+	fk_log_write(FK_LOG_ERROR);
 }
 
 void fk_log_warn(const char *fmt, ...)
 {
-	FK_LOG_WRITE(FK_LOG_WARN);
+	fk_log_write(FK_LOG_WARN);
 }
 
 void fk_log_info(const char *fmt, ...)
 {
-	FK_LOG_WRITE(FK_LOG_INFO);
+	fk_log_write(FK_LOG_INFO);
 }
 
 void fk_log_debug(const char *fmt, ...)
 {
-	FK_LOG_WRITE(FK_LOG_DEBUG);
+	fk_log_write(FK_LOG_DEBUG);
 }
 
 void fk_log_fprint_str(unsigned int level, const char *data)
