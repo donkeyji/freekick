@@ -18,18 +18,6 @@ void fk_buf_destroy(fk_buf *buf);
 void fk_buf_print(fk_buf *buf);
 void fk_buf_adjust(fk_buf *buf);
 
-#define FK_BUF_RAW(buf) 		((buf)->data)
-
-#define FK_BUF_LOW(buf)			((buf)->low)
-
-#define FK_BUF_HIGH(buf)		((buf)->high)
-
-#define FK_BUF_CHAR_PTR(buf, idx) ((buf)->data + (idx))
-
-#define FK_BUF_CHAR(buf, idx)	(((buf)->data)[(idx)])
-
-#define FK_BUF_TOTAL_LEN(buf)	((buf)->len)
-
 #define FK_BUF_FREE_LEN(buf) 	((buf)->len - (buf)->high)
 
 #define FK_BUF_VALID_LEN(buf)	((buf)->high - (buf)->low)

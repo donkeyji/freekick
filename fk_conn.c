@@ -135,10 +135,10 @@ int fk_conn_data_recv(fk_conn *conn)
 
 int fk_conn_req_parse(fk_conn *conn)
 {
-	char *p;
+	int rt;
 	fk_buf *rbuf;
 	uintptr_t len;
-	int start, end, rt;
+	char *start, *end;
 
 	rbuf = conn->rbuf;
 
@@ -148,26 +148,25 @@ int fk_conn_req_parse(fk_conn *conn)
 
 	if (conn->arg_cnt == 0) {
 		if (FK_BUF_VALID_LEN(rbuf) > 0) {
-			start = FK_BUF_LOW(rbuf);
-			if (FK_BUF_RAW(rbuf)[start] != '*') {
+			start = FK_BUF_VALID_START(rbuf);
+			if (*start != '*') {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			p = memchr(FK_BUF_VALID_START(rbuf), '\n', FK_BUF_VALID_LEN(rbuf));
-			if (p == NULL) {
+			end = memchr(start + 1, '\n', FK_BUF_VALID_LEN(rbuf) - 1);
+			if (end == NULL) {
 				return 0;
 			}
-			end = p - FK_BUF_RAW(rbuf);
-			if (FK_BUF_RAW(rbuf)[end - 1] != '\r') {
+			if (*(end - 1) != '\r') {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			rt = fk_util_positive_check(FK_BUF_RAW(rbuf) + start + 1, FK_BUF_RAW(rbuf) + end - 1 - 1);
+			rt = fk_util_positive_check(start + 1, end - 1 - 1);
 			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			conn->arg_cnt = atoi(FK_BUF_RAW(rbuf) + start + 1);
+			conn->arg_cnt = atoi(start + 1);
 			if (conn->arg_cnt == 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
@@ -184,26 +183,25 @@ int fk_conn_req_parse(fk_conn *conn)
 
 	while (FK_BUF_VALID_LEN(rbuf) > 0) {
 		if (conn->arg_idx_type == 0) {
-			start = FK_BUF_LOW(rbuf);
-			if (FK_BUF_RAW(rbuf)[start] != '$') {
+			start = FK_BUF_VALID_START(rbuf);
+			if (*start != '$') {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			p = memchr(FK_BUF_VALID_START(rbuf), '\n', FK_BUF_VALID_LEN(rbuf));
-			if (p == NULL) {
+			end = memchr(start + 1, '\n', FK_BUF_VALID_LEN(rbuf) - 1);
+			if (end == NULL) {
 				return 0;
 			}
-			end = p - FK_BUF_RAW(rbuf);
-			if (FK_BUF_RAW(rbuf)[end - 1] != '\r') {
+			if (*(end - 1) != '\r') {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			rt = fk_util_positive_check(FK_BUF_RAW(rbuf) + start + 1, FK_BUF_RAW(rbuf) + end - 1 - 1);
+			rt = fk_util_positive_check(start + 1, end - 1 - 1);
 			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			len = atoi(FK_BUF_RAW(rbuf) + start + 1);//arg len
+			len = atoi(start + 1);//arg len
 			if (len == 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
@@ -214,12 +212,12 @@ int fk_conn_req_parse(fk_conn *conn)
 		}
 
 		if (conn->arg_idx_type == 1) {
-			start = FK_BUF_LOW(rbuf);
+			start = FK_BUF_VALID_START(rbuf);
 			len = (uintptr_t)FK_CONN_ARG_LEN(conn, conn->arg_idx);
 			fk_log_debug("arg_len: %lu\n", len);
 
-			if (FK_BUF_HIGH(rbuf) >= start + len + 2) {//arg data available
-				FK_CONN_ARG(conn, conn->arg_idx) = fk_str_create(FK_BUF_RAW(rbuf) + start, len);
+			if (FK_BUF_VALID_LEN(rbuf) >= len + 2) {
+				FK_CONN_ARG(conn, conn->arg_idx) = fk_str_create(start, len);
 				conn->arg_idx += 1;
 				conn->arg_idx_type = 0;
 				FK_BUF_LOW_INC(rbuf, len + 2);
