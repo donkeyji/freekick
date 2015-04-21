@@ -22,7 +22,7 @@
 	fk_log_fprint_str(level, log_buff);			\
 }
 
-static void fk_log_fprint_str(unsigned int level, const char *data);
+static void fk_log_fprint_str(int level, char *data);
 
 fk_log logger;
 
@@ -39,27 +39,27 @@ void fk_log_init()
 	logger.log_file = fp;
 }
 
-void fk_log_error(const char *fmt, ...)
+void fk_log_error(char *fmt, ...)
 {
 	fk_log_write(FK_LOG_ERROR);
 }
 
-void fk_log_warn(const char *fmt, ...)
+void fk_log_warn(char *fmt, ...)
 {
 	fk_log_write(FK_LOG_WARN);
 }
 
-void fk_log_info(const char *fmt, ...)
+void fk_log_info(char *fmt, ...)
 {
 	fk_log_write(FK_LOG_INFO);
 }
 
-void fk_log_debug(const char *fmt, ...)
+void fk_log_debug(char *fmt, ...)
 {
 	fk_log_write(FK_LOG_DEBUG);
 }
 
-void fk_log_fprint_str(unsigned int level, const char *data)
+void fk_log_fprint_str(int level, char *data)
 {
 	time_t now;
 	char *level_name;
