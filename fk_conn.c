@@ -11,9 +11,9 @@
 #include <fk_util.h>
 #include <freekick.h>//it's OK to do so
 
-static int fk_conn_read_cb(int fd, unsigned char type, void *ext);
-static int fk_conn_write_cb(int fd, unsigned char type, void *ext);
-static int fk_conn_timer_cb(int interval, unsigned char type, void *ext);
+static int fk_conn_read_cb(int fd, char type, void *ext);
+static int fk_conn_write_cb(int fd, char type, void *ext);
+static int fk_conn_timer_cb(int interval, char type, void *ext);
 static void fk_conn_args_free(fk_conn *conn);
 static int fk_conn_req_parse(fk_conn *conn);
 static int fk_conn_data_recv(fk_conn *conn);
@@ -304,7 +304,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	return 0;
 }
 
-int fk_conn_timer_cb(int interval, unsigned char type, void *ext)
+int fk_conn_timer_cb(int interval, char type, void *ext)
 {
 	time_t now;
 	fk_conn *conn;
@@ -324,7 +324,7 @@ int fk_conn_timer_cb(int interval, unsigned char type, void *ext)
 }
 
 // callback for conn read event
-int fk_conn_read_cb(int fd, unsigned char type, void *ext)
+int fk_conn_read_cb(int fd, char type, void *ext)
 {
 	int rt;
 	fk_conn *conn;
@@ -375,7 +375,7 @@ int fk_conn_read_cb(int fd, unsigned char type, void *ext)
 	return 0;
 }
 
-int fk_conn_write_cb(int fd, unsigned char type, void *ext)
+int fk_conn_write_cb(int fd, char type, void *ext)
 {
 	int rt, len;
 	char *buf;

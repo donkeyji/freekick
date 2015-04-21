@@ -12,7 +12,7 @@
 #include <fk_macro.h>
 #include <fk_log.h>
 
-static int fk_ev_ioev_activate(int fd, unsigned char type);
+static int fk_ev_ioev_activate(int fd, char type);
 static fk_tmev *fk_ev_nearest_tmev_get();
 static int fk_ev_pending_tmev_update();
 static int fk_ev_active_ioev_proc();
@@ -120,7 +120,7 @@ int fk_ev_dispatch()
 int fk_ev_ioev_add(fk_ioev *ioev)
 {
 	int fd, rt;
-	unsigned char type;
+	char type;
 
 	fd = ioev->fd;
 	type = ioev->type;
@@ -142,7 +142,7 @@ int fk_ev_ioev_add(fk_ioev *ioev)
 int fk_ev_ioev_remove(fk_ioev *ioev)
 {
 	int fd, rt;
-	unsigned char type;
+	char type;
 
 	//must be in the read/write event array
 	fd = ioev->fd;
@@ -168,7 +168,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	return 0;
 }
 
-fk_ioev *fk_ev_ioev_create(int fd, unsigned char type, void *arg, fk_ioev_cb iocb)
+fk_ioev *fk_ev_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb)
 {
 	fk_ioev *ioev;
 
@@ -192,7 +192,7 @@ void fk_ev_ioev_destroy(fk_ioev *ioev)
 /* no need to delete timer
  * so fk_ev_timer_del not supplied
  */
-fk_tmev *fk_ev_tmev_create(int interval, unsigned char type, void *arg, fk_tmev_cb tmcb)
+fk_tmev *fk_ev_tmev_create(int interval, char type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev *tmev;
 
@@ -271,7 +271,7 @@ int fk_ev_expired_tmev_proc()
 	int interval, rt;
 	fk_tmev *tmev, *cur;
 	fk_tmev_cb tmcb;
-	unsigned char type;
+	char type;
 
 	tmev = evmgr.exp_tmev->head;
 	while (tmev != NULL) {
@@ -304,7 +304,7 @@ int fk_ev_active_ioev_proc()
 	int fd, rt;
 	void *arg;
 	fk_ioev_cb iocb;
-	unsigned char type;
+	char type;
 	fk_ioev *ioev, *cur;
 
 	ioev = evmgr.act_ioev->head;
@@ -341,7 +341,7 @@ fk_tmev *fk_ev_nearest_tmev_get()
 	return tmev;
 }
 
-int fk_ev_ioev_activate(int fd, unsigned char type)
+int fk_ev_ioev_activate(int fd, char type)
 {
 	fk_ioev *rioev, *wioev;
 

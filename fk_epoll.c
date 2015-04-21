@@ -11,12 +11,12 @@ typedef struct _fk_epoll {
 	int max_evs;
 	struct epoll_event ev;//temporary variable
 	struct epoll_event *evlist;
-	unsigned char *emask;//to track event associated to fd
+	char *emask;//to track event associated to fd
 } fk_epoll;
 
 static void *fk_epoll_create(int max_files);
-static int fk_epoll_add(void *ev_iompx, int fd, unsigned char type);
-static int fk_epoll_remove(void *ev_iompx, int fd, unsigned char type);
+static int fk_epoll_add(void *ev_iompx, int fd, char type);
+static int fk_epoll_remove(void *ev_iompx, int fd, char type);
 static int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout);
 
 fk_mpxop epoll_op = {
@@ -42,18 +42,18 @@ void *fk_epoll_create(int max_files)
 	iompx->efd = efd;
 
 	iompx->evlist = (struct epoll_event *)fk_mem_alloc(sizeof(struct epoll_event) * iompx->max_evs);
-	iompx->emask = (unsigned char *)fk_mem_alloc(sizeof(unsigned char *) * iompx->max_evs);
-	bzero(iompx->emask, sizeof(unsigned char *) * iompx->max_evs);
+	iompx->emask = (char *)fk_mem_alloc(sizeof(char *) * iompx->max_evs);
+	bzero(iompx->emask, sizeof(char *) * iompx->max_evs);
 
 	return iompx;
 }
 
-int fk_epoll_add(void *ev_iompx, int fd, unsigned char type)
+int fk_epoll_add(void *ev_iompx, int fd, char type)
 {
 	int rt, op;
 	fk_epoll *iompx;
 	int32_t oev, nev;
-	unsigned char otp;
+	char otp;
 
 	iompx = (fk_epoll *)ev_iompx;
 
@@ -98,12 +98,12 @@ int fk_epoll_add(void *ev_iompx, int fd, unsigned char type)
 	return 0;
 }
 
-int fk_epoll_remove(void *ev_iompx, int fd, unsigned char type)
+int fk_epoll_remove(void *ev_iompx, int fd, char type)
 {
 	int rt, op;
 	fk_epoll *iompx;
 	int32_t oev, nev;
-	unsigned char otp;
+	char otp;
 
 	iompx = (fk_epoll *)ev_iompx;
 
@@ -151,7 +151,7 @@ int fk_epoll_remove(void *ev_iompx, int fd, unsigned char type)
 int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 {
 	fk_epoll *iompx;
-	unsigned char type;
+	char type;
 	int i, nfds, fd, ms_timeout;
 
 	iompx = (fk_epoll *)ev_iompx;

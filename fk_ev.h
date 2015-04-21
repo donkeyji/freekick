@@ -13,12 +13,12 @@
 #define FK_EV_CYCLE 	1
 #define FK_EV_ONCE		2
 
-typedef int (*fk_ioev_cb) (int, unsigned char, void *);
-typedef int (*fk_tmev_cb) (int, unsigned char, void *);
+typedef int (*fk_ioev_cb) (int, char, void *);
+typedef int (*fk_tmev_cb) (int, char, void *);
 
 typedef struct _fk_ioev {
 	int fd;
-	unsigned char type;//FK_EV_READ|FK_EV_WRITE
+	char type;//FK_EV_READ|FK_EV_WRITE
 	int active;//whether in active list
 	void *arg;
 	fk_ioev_cb iocb;
@@ -31,7 +31,7 @@ typedef struct _fk_tmev {
 	FK_HEAP_LEAF_HEADER;//for heap
 
 	int expired;//whether in the expired list
-	unsigned char type;//FK_EV_CYCLE|FK_EV_ONCE
+	char type;//FK_EV_CYCLE|FK_EV_ONCE
 	int interval;//milliseconds
 	struct timeval when;//save the trigger point time: now + timeout
 	void *arg;//ext arg
@@ -95,8 +95,8 @@ FK_EV_LIST_DEF(fk_tmev, fk_tmev_list);
  
 typedef struct _fk_mpxop {
 	void *(*iompx_create)(int max_conn);
-	int (*iompx_add)(void *iompx, int fd, unsigned char type);
-	int (*iompx_remove)(void *iompx, int fd, unsigned char type);
+	int (*iompx_add)(void *iompx, int fd, char type);
+	int (*iompx_remove)(void *iompx, int fd, char type);
 	int (*iompx_dispatch)(void *iompx, struct timeval *timeout);
 } fk_mpxop;
 
@@ -121,11 +121,11 @@ typedef struct _fk_evmgr {
 void fk_ev_init();
 void fk_ev_end();
 int fk_ev_dispatch();
-fk_ioev *fk_ev_ioev_create(int fd, unsigned char type, void *arg, fk_ioev_cb iocb);
+fk_ioev *fk_ev_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
 void fk_ev_ioev_destroy(fk_ioev *ioev);
 int fk_ev_ioev_add(fk_ioev *ioev);
 int fk_ev_ioev_remove(fk_ioev *ioev);
-fk_tmev *fk_ev_tmev_create(int timeout, unsigned char type, void *arg, fk_tmev_cb tmcb);
+fk_tmev *fk_ev_tmev_create(int timeout, char type, void *arg, fk_tmev_cb tmcb);
 void fk_ev_tmev_destroy(fk_tmev *tmev);
 int fk_ev_tmev_add(fk_tmev *tmev);
 int fk_ev_tmev_remove(fk_tmev *tmev);

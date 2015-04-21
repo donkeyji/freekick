@@ -55,8 +55,8 @@ static void fk_daemon_run();
 static void fk_write_pid_file();
 static void fk_main_loop();
 static void fk_svr_init();
-static int fk_svr_timer_cb(int interval, unsigned char type, void *arg);
-static int fk_svr_listen_cb(int listen_fd, unsigned char type, void *arg);
+static int fk_svr_timer_cb(int interval, char type, void *arg);
+static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
 static void fk_svr_db_load(fk_str *db_path);
 static void fk_svr_db_save();
 static void fk_signal_reg();
@@ -434,7 +434,7 @@ void fk_svr_conn_remove(fk_conn *conn)
 #endif
 }
 
-int fk_svr_listen_cb(int listen_fd, unsigned char type, void *arg)
+int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 {
 	int fd;
 
@@ -448,7 +448,7 @@ int fk_svr_listen_cb(int listen_fd, unsigned char type, void *arg)
 	return 0;
 }
 
-int fk_svr_timer_cb(int interval, unsigned char type, void *arg)
+int fk_svr_timer_cb(int interval, char type, void *arg)
 {
 	fk_log_info("[timer callback 1]conn cnt: %d\n", server.conn_cnt);
 	fk_log_info("[timer callback 1]dbdict size: %d, used: %d, limit: %d\n", server.db[0]->size, server.db[0]->used, server.db[0]->limit);
@@ -461,7 +461,7 @@ int fk_svr_timer_cb(int interval, unsigned char type, void *arg)
 }
 
 #ifdef FK_DEBUG
-int fk_svr_timer_cb2(int interval, unsigned char type, void *arg)
+int fk_svr_timer_cb2(int interval, char type, void *arg)
 {
 	fk_tmev *tmev;
 
