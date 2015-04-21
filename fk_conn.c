@@ -147,13 +147,13 @@ int fk_conn_req_parse(fk_conn *conn)
 #endif
 
 	if (conn->arg_cnt == 0) {
-		if (fk_buf_valid_len(rbuf) > 0) {
-			start = fk_buf_valid_start(rbuf);
+		if (fk_buf_payload_len(rbuf) > 0) {
+			start = fk_buf_payload_start(rbuf);
 			if (*start != '*') {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			end = memchr(start + 1, '\n', fk_buf_valid_len(rbuf) - 1);
+			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
 			if (end == NULL) {
 				return 0;
 			}
@@ -181,14 +181,14 @@ int fk_conn_req_parse(fk_conn *conn)
 		}
 	}
 
-	while (fk_buf_valid_len(rbuf) > 0) {
+	while (fk_buf_payload_len(rbuf) > 0) {
 		if (conn->arg_idx_type == 0) {
-			start = fk_buf_valid_start(rbuf);
+			start = fk_buf_payload_start(rbuf);
 			if (*start != '$') {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			end = memchr(start + 1, '\n', fk_buf_valid_len(rbuf) - 1);
+			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
 			if (end == NULL) {
 				return 0;
 			}
@@ -212,11 +212,11 @@ int fk_conn_req_parse(fk_conn *conn)
 		}
 
 		if (conn->arg_idx_type == 1) {
-			start = fk_buf_valid_start(rbuf);
+			start = fk_buf_payload_start(rbuf);
 			len = (uintptr_t)fk_conn_arglen_get(conn, conn->arg_idx);
 			fk_log_debug("arg_len: %lu\n", len);
 
-			if (fk_buf_valid_len(rbuf) >= len + 2) {
+			if (fk_buf_payload_len(rbuf) >= len + 2) {
 				if (*(start + len) != '\r' ||
 					*(start + len + 1) != '\n') 
 				{
@@ -338,7 +338,7 @@ int fk_conn_read_cb(int fd, unsigned char type, void *ext)
 	 * maybe more than one complete protocol were received
 	 * parse all the complete protocol received yet
 	 */
-	while (fk_buf_valid_len(conn->rbuf) > 0) {
+	while (fk_buf_payload_len(conn->rbuf) > 0) {
 		rt = fk_conn_req_parse(conn);
 		if (rt < 0) {//error when parsing
 			fk_log_error("fatal error occured when parsing protocol\n");
@@ -376,8 +376,8 @@ int fk_conn_write_cb(int fd, unsigned char type, void *ext)
 	FK_UNUSE(type);
 
 	conn = (fk_conn *)ext;
-	buf = fk_buf_valid_start(conn->wbuf);
-	len = fk_buf_valid_len(conn->wbuf);
+	buf = fk_buf_payload_start(conn->wbuf);
+	len = fk_buf_payload_len(conn->wbuf);
 
 #ifdef FK_DEBUG
 	fk_log_debug("write callback]wbuf  buf: %s, valid len: %d, low: %d, high: %d\n", buf, len, conn->wbuf->low, conn->wbuf->high);
@@ -394,7 +394,7 @@ int fk_conn_write_cb(int fd, unsigned char type, void *ext)
 
 	//if all the data in wbuf is sent, remove the write ioev
 	//but donot destroy the write ioev
-	if (fk_buf_valid_len(conn->wbuf) == 0) {
+	if (fk_buf_payload_len(conn->wbuf) == 0) {
 		fk_ev_ioev_remove(conn->write_ev);
 		conn->write_added = 0;
 	}
@@ -407,10 +407,10 @@ int fk_conn_rsp_send(fk_conn *conn)
 
 	wbuf = conn->wbuf;
 #ifdef FK_DEBUG
-	//fk_log_debug("[wbuf data]: %s\n", fk_buf_valid_start(wbuf));
+	//fk_log_debug("[wbuf data]: %s\n", fk_buf_payload_start(wbuf));
 #endif
 	//if any data in write buf and never add write ioev yet
-	if (fk_buf_valid_len(wbuf) > 0 && conn->write_added == 0) {
+	if (fk_buf_payload_len(wbuf) > 0 && conn->write_added == 0) {
 		fk_ev_ioev_add(conn->write_ev);
 		conn->write_added = 1;
 	}

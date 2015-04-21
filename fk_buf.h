@@ -20,11 +20,11 @@ void fk_buf_adjust(fk_buf *buf);
 
 #define fk_buf_free_len(buf) 	((buf)->len - (buf)->high)
 
-#define fk_buf_valid_len(buf)	((buf)->high - (buf)->low)
+#define fk_buf_payload_len(buf)	((buf)->high - (buf)->low)
 
 #define fk_buf_free_start(buf) 	((buf)->data + (buf)->high)
 
-#define fk_buf_valid_start(buf) ((buf)->data + (buf)->low)
+#define fk_buf_payload_start(buf) ((buf)->data + (buf)->low)
 
 #define fk_buf_high_inc(buf, offset)	{	\
 	(buf)->high += (offset);				\
