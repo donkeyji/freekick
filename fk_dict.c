@@ -7,11 +7,11 @@
 
 #define FK_DICT_INIT_SIZE 4
 
-#define FK_DICT_ELT_CREATE()	(fk_elt *)fk_mem_alloc(sizeof(fk_elt))
+#define fk_dict_elt_create()	(fk_elt *)fk_mem_alloc(sizeof(fk_elt))
  
-#define FK_DICT_ELT_DESTROY(elt)	fk_mem_free(elt)
+#define fk_dict_elt_destroy(elt)	fk_mem_free(elt)
 
-#define FK_DICT_ELT_KEY_SET(dct, elt, k)	{		\
+#define fk_dict_elt_key_set(dct, elt, k)	{		\
 	if ((dct)->eop->key_copy != NULL) {				\
 		(elt)->key = (dct)->eop->key_copy((k));		\
 	} else {										\
@@ -19,7 +19,7 @@
 	}												\
 }
 
-#define FK_DICT_ELT_VALUE_SET(dct, elt, v)	{		\
+#define fk_dict_elt_value_set(dct, elt, v)	{		\
 	if ((dct)->eop->val_copy != NULL) {				\
 		(elt)->value = (dct)->eop->val_copy((v));	\
 	} else {										\
@@ -27,14 +27,14 @@
 	}												\
 }
 
-#define FK_DICT_ELT_KEY_UNSET(dct, elt)	{			\
+#define fk_dict_elt_key_unset(dct, elt)	{			\
 	if ((dct)->eop->key_free != NULL) {				\
 		(dct)->eop->key_free((elt)->key);			\
 	}												\
 	(elt)->key = NULL;								\
 }
 
-#define FK_DICT_ELT_VALUE_UNSET(dct, elt)	{		\
+#define fk_dict_elt_value_unset(dct, elt)	{		\
 	if ((dct)->eop->val_free != NULL) {				\
 		(dct)->eop->val_free((elt)->value);			\
 	}												\
@@ -85,9 +85,9 @@ void fk_dict_destroy(fk_dict *dct)
 			elt = (fk_elt *)nd->data;		
 			nxt = fk_list_iter_next(lst);
 			fk_list_remove(lst, nd);//do not free nd->data
-			FK_DICT_ELT_KEY_UNSET(dct, elt);
-			FK_DICT_ELT_VALUE_UNSET(dct, elt);
-			FK_DICT_ELT_DESTROY(elt);//free nd->data
+			fk_dict_elt_key_unset(dct, elt);
+			fk_dict_elt_value_unset(dct, elt);
+			fk_dict_elt_destroy(elt);//free nd->data
 			nd = nxt;
 		}
 		fk_mem_free(lst);//free the empty list
@@ -182,9 +182,9 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 			dct->buckets[idx] = fk_list_create(NULL);
 			lst = dct->buckets[idx];
 		}
-		elt = FK_DICT_ELT_CREATE();
-		FK_DICT_ELT_KEY_SET(dct, elt, key);
-		FK_DICT_ELT_VALUE_SET(dct, elt, value);
+		elt = fk_dict_elt_create();
+		fk_dict_elt_key_set(dct, elt, key);
+		fk_dict_elt_value_set(dct, elt, value);
 
 		fk_list_insert(lst, elt);
 		dct->used++;
@@ -219,9 +219,9 @@ int fk_dict_remove(fk_dict *dct, fk_str *key)
 	elt = nd->data;
 
 	fk_list_remove(lst, nd);//do not free elt
-	FK_DICT_ELT_KEY_UNSET(dct, elt);
-	FK_DICT_ELT_VALUE_UNSET(dct, elt);
-	FK_DICT_ELT_DESTROY(elt);//free nd->data
+	fk_dict_elt_key_unset(dct, elt);
+	fk_dict_elt_value_unset(dct, elt);
+	fk_dict_elt_destroy(elt);//free nd->data
 	dct->used--;
 
 	return 0;
