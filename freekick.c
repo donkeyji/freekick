@@ -757,14 +757,12 @@ void fk_main_loop()
 
 void fk_main_end()
 {
-	int rt;
-
 	//to do: free resource
 	while (server.save_done == 0) {
 		sleep(1);
 	}
 	//save db once more
-	rt = fk_svr_db_save_exec();
+	fk_svr_db_save_exec();
 }
 
 int main(int argc, char **argv)

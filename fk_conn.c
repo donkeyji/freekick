@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <time.h>
+#include <stdint.h>
 
 #include <fk_macro.h>
 #include <fk_log.h>
