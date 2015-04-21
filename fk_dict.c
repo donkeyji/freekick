@@ -140,12 +140,12 @@ fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 uint32_t fk_dict_hash(fk_str *key)
 {
 	char *s;
-	unsigned long hash;
+	uint32_t hash;
 
 	s = fk_str_raw(key);
 	hash = 0;
 	while (*s) {
-		hash = (hash << 5) + hash + (unsigned char) * s++;
+		hash = (hash << 5) + hash + (uint8_t) * s++;
 	}
 
 	printf("===hash: %lu\n", hash);
