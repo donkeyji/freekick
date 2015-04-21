@@ -14,7 +14,7 @@
 
 static int fk_sock_set_noblocking(int sock);
 
-int fk_sock_create_listen(char *addr, unsigned short port)
+int fk_sock_create_listen(char *addr, uint16_t port)
 {
 	int rt, opt, listen_sock;
 	struct sockaddr_in saddr;
