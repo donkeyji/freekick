@@ -11,11 +11,11 @@ typedef struct _fk_vtr {
 fk_vtr *fk_vtr_create();
 void fk_vtr_destroy(fk_vtr *vtr);
 
-#define FK_VTR_RAW(vtr)		(vtr)->array
+#define fk_vtr_raw(vtr)		(vtr)->array
 
-#define FK_VTR_LEN(vtr)		(vtr)->len
+#define fk_vtr_len(vtr)		(vtr)->len
 
-#define FK_VTR_STRETCH(vtr, length)	{								\
+#define fk_vtr_stretch(vtr, length)	{								\
 	if ((length) > (vtr)->len) {									\
 		(vtr)->array = (void **)fk_mem_realloc((vtr)->array, 		\
 				(sizeof(void *) * (length)));						\
@@ -24,7 +24,7 @@ void fk_vtr_destroy(fk_vtr *vtr);
 	}																\
 }
 
-#define FK_VTR_SHRINK(vtr, length)	{							\
+#define fk_vtr_shrink(vtr, length)	{							\
 	if ((length) < FK_VTR_INIT_LEN) {							\
 		(vtr)->array = (void **)fk_mem_realloc((vtr)->array, 	\
 				sizeof(void *) * FK_VTR_INIT_LEN);			\
@@ -32,7 +32,7 @@ void fk_vtr_destroy(fk_vtr *vtr);
 	}															\
 }
 
-#define FK_VTR_ADJUST(vtr, length)	{								\
+#define fk_vtr_adjust(vtr, length)	{								\
 	if ((length) > (vtr)->len) {									\
 		(vtr)->array = (void **)fk_mem_realloc((vtr)->array, 		\
 				(sizeof(void *) * (length)));						\

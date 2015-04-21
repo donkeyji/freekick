@@ -174,8 +174,8 @@ int fk_conn_req_parse(fk_conn *conn)
 #ifdef FK_DEBUG
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
 #endif
-			FK_VTR_ADJUST(conn->arg_vtr, conn->arg_cnt);
-			FK_VTR_ADJUST(conn->len_vtr, conn->arg_cnt);
+			fk_vtr_adjust(conn->arg_vtr, conn->arg_cnt);
+			fk_vtr_adjust(conn->len_vtr, conn->arg_cnt);
 
 			fk_buf_low_inc(rbuf, end - start + 1);
 		}
