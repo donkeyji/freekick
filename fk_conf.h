@@ -1,10 +1,12 @@
 #ifndef _FK_CONF_H_
 #define _FK_CONF_H_
 
+#include <stdint.h>
+
 #include <fk_str.h>
 
 typedef struct _fk_conf {
-	int port;
+	uint16_t port;
 	fk_str *addr;
 	int daemon;
 	int max_conn;

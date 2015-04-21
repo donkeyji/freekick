@@ -311,7 +311,7 @@ int fk_conf_handle_port(fk_line *line)
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
 		return -1;
 	}
-	setting.port = (unsigned short)port;
+	setting.port = (uint16_t)port;
 	return 0;
 }
 
