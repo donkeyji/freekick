@@ -171,6 +171,10 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
+			if (conn->arg_cnt > FK_ARG_CNT_HIGHWAT) {
+				fk_log_debug("too many arguments\n");
+				return -1;
+			}
 #ifdef FK_DEBUG
 			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
 #endif
@@ -204,6 +208,10 @@ int fk_conn_req_parse(fk_conn *conn)
 			len = atoi(start + 1);//arg len
 			if (len == 0) {
 				fk_log_debug("wrong client data\n");
+				return -1;
+			}
+			if (len > FK_ARG_HIGHWAT) {
+				fk_log_debug("too long argument\n");
 				return -1;
 			}
 			fk_conn_arglen_set(conn, conn->arg_idx, (void *)len);

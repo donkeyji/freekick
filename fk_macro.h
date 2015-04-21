@@ -33,4 +33,10 @@
 #define FK_MAXCONN_2_MAXFILES(max_conn)	(max_conn) + 1 + FK_SAVED_FDS
 #define FK_MAXFILES_2_MAXCONN(max_files)	(max_files) - 1 - FK_SAVED_FDS
 
+/*high water*/
+#define FK_BUF_HIGHWAT		(1024 * 64)
+#define FK_ARG_HIGHWAT 		(FK_BUF_HIGHWAT - 2)
+#define FK_STR_HIGHWAT 		(FK_ARG_HIGHWAT + 1)
+#define FK_ARG_CNT_HIGHWAT 	128
+
 #endif

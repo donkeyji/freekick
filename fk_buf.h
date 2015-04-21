@@ -3,8 +3,9 @@
 
 #include <string.h>
 
+#include <fk_macro.h>
+
 #define FK_BUF_INIT_LEN 	16
-#define FK_BUF_HIGHWAT 		128
 
 typedef struct _fk_buf {
 	int len;
