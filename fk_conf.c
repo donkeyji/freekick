@@ -237,7 +237,7 @@ fk_itv *fk_conf_search(fk_str *name)
 	int i;
 
 	for (i = 0; itv_map[i].name != NULL; i++) {
-		if (strcmp(FK_STR_RAW(name), itv_map[i].name) == 0) {
+		if (strcmp(fk_str_raw(name), itv_map[i].name) == 0) {
 			return &itv_map[i];
 		}
 	}
@@ -256,13 +256,13 @@ int fk_conf_line_proc(fk_line *line)
 	}
 
 	for (rt = 0; rt < line->cnt; rt++) {
-		printf("%s\n", FK_STR_RAW(line->fields[rt]));
+		printf("%s\n", fk_str_raw(line->fields[rt]));
 	}
 
 	cmd = line->fields[0];
 	itv = fk_conf_search(cmd);
 	if (itv == NULL) {
-		sprintf(line->err, "no this cmd: %s, line: %d\n", FK_STR_RAW(cmd), line->no);
+		sprintf(line->err, "no this cmd: %s, line: %d\n", fk_str_raw(cmd), line->no);
 		return -1;
 	}
 	if (itv->field_cnt != line->cnt) {
@@ -303,7 +303,7 @@ int fk_conf_handle_port(fk_line *line)
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
 		return -1;
 	}
-	port = atoi(FK_STR_RAW(line->fields[1]));
+	port = atoi(fk_str_raw(line->fields[1]));
 	printf("port %d\n", port);
 	if (port <= 0 || port > 65536) {
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
@@ -346,7 +346,7 @@ int fk_conf_handle_maxconn(fk_line *line)
 		sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
 		return -1;
 	}
-	max_conn = atoi(FK_STR_RAW(line->fields[1]));
+	max_conn = atoi(fk_str_raw(line->fields[1]));
 	if (max_conn == 0) {
 		sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
 		return -1;
@@ -364,7 +364,7 @@ int fk_conf_handle_dbcnt(fk_line *line)
 		sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
 		return -1;
 	}
-	dbcnt = atoi(FK_STR_RAW(line->fields[1]));
+	dbcnt = atoi(fk_str_raw(line->fields[1]));
 	if (dbcnt == 0) {
 		sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
 		return -1;
@@ -383,7 +383,7 @@ int fk_conf_handle_loglevel(fk_line *line)
 {
 	char *level;
 
-	level = FK_STR_RAW(line->fields[1]);
+	level = fk_str_raw(line->fields[1]);
 	if (strcmp(level, "debug") == 0) {
 		setting.log_level = FK_LOG_DEBUG;
 	} else if (strcmp(level, "info") == 0) {

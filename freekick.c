@@ -206,11 +206,11 @@ int fk_on_get(fk_conn *conn)
 	} 
 
 	value = (fk_str *)(obj->data);
-	rt = fk_conn_rsp_add_bulk(conn, FK_STR_LEN(value) - 1);
+	rt = fk_conn_rsp_add_bulk(conn, fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
 	}
-	rt = fk_conn_rsp_add_content(conn, FK_STR_RAW(value), FK_STR_LEN(value) - 1);
+	rt = fk_conn_rsp_add_content(conn, fk_str_raw(value), fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
 	}
@@ -309,11 +309,11 @@ int fk_on_hget(fk_conn *conn)
 	}
 
 	value = (fk_str *)obj->data;
-	rt = fk_conn_rsp_add_bulk(conn, FK_STR_LEN(value) - 1);
+	rt = fk_conn_rsp_add_bulk(conn, fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
 	}
-	rt = fk_conn_rsp_add_content(conn, FK_STR_RAW(value), FK_STR_LEN(value) - 1);
+	rt = fk_conn_rsp_add_content(conn, fk_str_raw(value), fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
 	}
@@ -402,8 +402,8 @@ int fk_elt_cmp(void *e1, void *e2)
 	v1 = (fk_str *)o1->data;
 	v2 = (fk_str *)o2->data;
 
-	d1 = atof(FK_STR_RAW(v1));
-	d2 = atof(FK_STR_RAW(v2));
+	d1 = atof(fk_str_raw(v1));
+	d2 = atof(fk_str_raw(v2));
 
 	return d1 - d2;
 }
@@ -540,10 +540,10 @@ void fk_write_pid_file()
 	FILE *pid_file;
 	pid_t pid;
 
-	pid_file = fopen(FK_STR_RAW(setting.pid_path), "w+");
+	pid_file = fopen(fk_str_raw(setting.pid_path), "w+");
 	pid = getpid();
 	fk_log_info("pid: %d\n", pid);
-	fk_log_info("pid path: %s\n", FK_STR_RAW(setting.pid_path));
+	fk_log_info("pid path: %s\n", fk_str_raw(setting.pid_path));
 	fprintf(pid_file, "%d\n", pid);
 	fclose(pid_file);
 }
@@ -565,7 +565,7 @@ void fk_svr_init()
 	server.stop = 0;
 	server.conn_cnt = 0;
 	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * FK_MAXCONN_2_MAXFILES(setting.max_conn));
-	server.listen_fd = fk_sock_create_listen(FK_STR_RAW(server.addr), server.port);
+	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
 	fk_log_debug("listen fd: %d\n", server.listen_fd);
 	server.listen_ev = fk_ev_ioev_create(server.listen_fd, FK_EV_READ, NULL, fk_svr_listen_cb);
 	fk_ev_ioev_add(server.listen_ev);

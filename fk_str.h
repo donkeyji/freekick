@@ -6,11 +6,11 @@ typedef struct _fk_str {
 	char data[];
 } fk_str;
 
-#define FK_STR_RAW(str) ((str)->data)
+#define fk_str_raw(str) ((str)->data)
 
-#define FK_STR_LEN(str) ((str)->len)
+#define fk_str_len(str) ((str)->len)
 
-#define FK_STR_PRINT(str) printf("%s\n", (str)->data)
+#define fk_str_print(str) printf("%s\n", (str)->data)
 
 fk_str *fk_str_create(char *data, int len);
 void fk_str_destroy(fk_str *src);

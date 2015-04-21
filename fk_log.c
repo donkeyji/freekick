@@ -39,7 +39,7 @@ void fk_log_init()
 {
 	FILE *fp;
 
-	fp = fopen(FK_STR_RAW(setting.log_path), "a+");
+	fp = fopen(fk_str_raw(setting.log_path), "a+");
 	if (fp == NULL) {
 		printf("null file\n");
 		exit(1);

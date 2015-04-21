@@ -141,7 +141,7 @@ unsigned int fk_dict_hash(fk_str *key)
 	char *s;
 	unsigned long hash;
 
-	s = FK_STR_RAW(key);
+	s = fk_str_raw(key);
 	hash = 0;
 	while (*s) {
 		hash = (hash << 5) + hash + (unsigned char) * s++;
@@ -155,8 +155,8 @@ unsigned int fk_dict_hash(fk_str *key)
 unsigned int fk_dict_hash(fk_str *key)
 {
     unsigned int hash = 5381;
-	int len = FK_STR_LEN(key);
-	char *buf = FK_STR_RAW(key);
+	int len = fk_str_len(key);
+	char *buf = fk_str_raw(key);
 
     while (len--) {
 		hash = ((hash << 5) + hash) + (*buf++);
@@ -240,7 +240,7 @@ void fk_dict_print(fk_dict *dct)
 		if (lst != NULL && lst->len > 0) {
 			nd = lst->head;
 			elt = nd->data;
-			FK_STR_PRINT(elt->key);
+			fk_str_print(elt->key);
 		}
 	}
 }

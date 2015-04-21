@@ -276,7 +276,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	fk_str_2upper((fk_str *)fk_conn_arg(conn, 0));
 	pto = fk_proto_search((fk_str *)fk_conn_arg(conn, 0));
 	if (pto == NULL) {
-		fk_log_error("invalid protocol: %s\n", FK_STR_RAW((fk_str *)fk_conn_arg(conn, 0)));
+		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg(conn, 0)));
 		fk_conn_args_free(conn);
 		fk_conn_rsp_add_error(conn, "Invalid Protocol", strlen("Invalid Protocol"));
 		return 0;
