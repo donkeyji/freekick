@@ -30,7 +30,7 @@ fk_str *fk_str_clone(fk_str *old_one)
 	new_one = (fk_str *)fk_mem_alloc(sizeof(fk_str) + old_one->len);
 	new_one->len = old_one->len;
 	memcpy(new_one->data, old_one->data, new_one->len);
-	new_one->data[new_one->len] = '\0';
+	//new_one->data[new_one->len] = '\0';
 	return new_one;
 }
 
