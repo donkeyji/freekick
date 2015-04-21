@@ -206,14 +206,14 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			fk_conn_arg_len(conn, conn->arg_idx) = (void *)len;
+			fk_conn_arglen_set(conn, conn->arg_idx, (void *)len);
 			conn->arg_idx_type = 1;//need to parse arg
 			fk_buf_low_inc(rbuf, end - start + 1);
 		}
 
 		if (conn->arg_idx_type == 1) {
 			start = fk_buf_valid_start(rbuf);
-			len = (uintptr_t)fk_conn_arg_len(conn, conn->arg_idx);
+			len = (uintptr_t)fk_conn_arglen_get(conn, conn->arg_idx);
 			fk_log_debug("arg_len: %lu\n", len);
 
 			if (fk_buf_valid_len(rbuf) >= len + 2) {
@@ -223,7 +223,7 @@ int fk_conn_req_parse(fk_conn *conn)
 					fk_log_debug("wrong client data\n");
 					return -1;
 				}
-				fk_conn_arg(conn, conn->arg_idx) = fk_str_create(start, len);
+				fk_conn_arg_set(conn, conn->arg_idx, fk_str_create(start, len));
 				conn->arg_idx += 1;
 				conn->arg_idx_type = 0;
 				fk_buf_low_inc(rbuf, len + 2);
@@ -250,11 +250,11 @@ void fk_conn_args_free(fk_conn *conn)
 	int i;
 
 	for (i = 0; i < conn->arg_cnt; i++) {
-		if (fk_conn_arg(conn, i) != NULL) {
-			fk_str_destroy((fk_str *)fk_conn_arg(conn, i));
-			fk_conn_arg(conn, i) = NULL;
+		if (fk_conn_arg_get(conn, i) != NULL) {
+			fk_str_destroy((fk_str *)fk_conn_arg_get(conn, i));
+			fk_conn_arg_set(conn, i, NULL);
 		}
-		fk_conn_arg_len(conn, i) = (void *)0;
+		fk_conn_arglen_set(conn, i, (void *)0);
 	}
 	conn->arg_cnt = 0;
 	conn->parse_done = 0;
@@ -273,10 +273,10 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #endif
 		return 0;
 	}
-	fk_str_2upper((fk_str *)fk_conn_arg(conn, 0));
-	pto = fk_proto_search((fk_str *)fk_conn_arg(conn, 0));
+	fk_str_2upper((fk_str *)fk_conn_arg_get(conn, 0));
+	pto = fk_proto_search((fk_str *)fk_conn_arg_get(conn, 0));
 	if (pto == NULL) {
-		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg(conn, 0)));
+		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg_get(conn, 0)));
 		fk_conn_args_free(conn);
 		fk_conn_rsp_add_error(conn, "Invalid Protocol", strlen("Invalid Protocol"));
 		return 0;
