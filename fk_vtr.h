@@ -15,6 +15,10 @@ void fk_vtr_destroy(fk_vtr *vtr);
 
 #define fk_vtr_len(vtr)		(vtr)->len
 
+#define fk_vtr_set(vtr, idx, val)	((vtr)->array)[(idx)] = (val);
+
+#define fk_vtr_get(vtr, idx)	((vtr)->array)[(idx)]
+
 #define fk_vtr_stretch(vtr, length)	{								\
 	if ((length) > (vtr)->len) {									\
 		(vtr)->array = (void **)fk_mem_realloc((vtr)->array, 		\
