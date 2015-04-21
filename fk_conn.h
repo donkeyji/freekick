@@ -33,11 +33,11 @@ typedef struct _fk_conn {
 fk_conn *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn *conn);
 
-#define FK_CONN_ARG(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
+#define fk_conn_arg(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
 
-#define FK_CONN_ARG_CONSUME(conn, idx)	FK_CONN_ARG((conn), (idx)) = NULL
+#define fk_conn_arg_consume(conn, idx)	fk_conn_arg((conn), (idx)) = NULL
 
-#define FK_CONN_ARG_LEN(conn, idx)  fk_vtr_get((conn)->len_vtr, (idx))
+#define fk_conn_arg_len(conn, idx)  fk_vtr_get((conn)->len_vtr, (idx))
 
 int fk_conn_rsp_add_status(fk_conn *conn, char *stat, int stat_len);
 int fk_conn_rsp_add_error(fk_conn *conn, char *error, int error_len);
