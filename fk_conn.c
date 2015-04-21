@@ -217,6 +217,12 @@ int fk_conn_req_parse(fk_conn *conn)
 			fk_log_debug("arg_len: %lu\n", len);
 
 			if (FK_BUF_VALID_LEN(rbuf) >= len + 2) {
+				if (*(start + len) != '\r' ||
+					*(start + len + 1) != '\n') 
+				{
+					fk_log_debug("wrong client data\n");
+					return -1;
+				}
 				FK_CONN_ARG(conn, conn->arg_idx) = fk_str_create(start, len);
 				conn->arg_idx += 1;
 				conn->arg_idx_type = 0;
