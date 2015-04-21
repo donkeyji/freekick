@@ -15,12 +15,16 @@ void fk_vtr_destroy(fk_vtr *vtr);
 
 #define fk_vtr_get(vtr, idx)	((vtr)->array)[(idx)]
 
+#define fk_vtr_align(length)	(((length) + FK_VTR_INIT_LEN - 1) & ~(FK_VTR_INIT_LEN - 1))
+
 #define fk_vtr_adjust(vtr, length)	{								\
 	if ((length) > (vtr)->len) {									\
 		(vtr) = (fk_vtr *)fk_mem_realloc((vtr),						\
-				sizeof(fk_vtr) + sizeof(void *) * (length));		\
+				sizeof(fk_vtr) + 									\
+				sizeof(void *) * fk_vtr_align((length)));			\
 		bzero((vtr)->array + (vtr)->len, 							\
-				sizeof(void *) * ((length) - (vtr)->len));			\
+				sizeof(void *) * 									\
+				(fk_vtr_align((length)) - (vtr)->len));				\
 		(vtr)->len = (length);										\
 	} else {														\
 		if ((vtr)->len > FK_VTR_INIT_LEN 							\
