@@ -86,19 +86,19 @@ int fk_conn_data_recv(fk_conn *conn)
 #ifdef FK_DEBUG
 	fk_log_debug("[before rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
 #endif
-	FK_BUF_SHRINK(conn->rbuf);
-	if (FK_BUF_FREE_LEN(conn->rbuf) <= conn->rbuf->len / 4) {
-		FK_BUF_SHIFT(conn->rbuf);
+	fk_buf_shrink(conn->rbuf);
+	if (fk_buf_free_len(conn->rbuf) <= conn->rbuf->len / 4) {
+		fk_buf_shift(conn->rbuf);
 	}
-	if (FK_BUF_FREE_LEN(conn->rbuf) == 0) {
-		FK_BUF_STRETCH(conn->rbuf);
+	if (fk_buf_free_len(conn->rbuf) == 0) {
+		fk_buf_stretch(conn->rbuf);
 	}
 #ifdef FK_DEBUG
 	fk_log_debug("[after rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
 #endif
 
-	free_buf = FK_BUF_FREE_START(conn->rbuf);
-	free_len = FK_BUF_FREE_LEN(conn->rbuf);
+	free_buf = fk_buf_free_start(conn->rbuf);
+	free_len = fk_buf_free_len(conn->rbuf);
 	if (free_len == 0) {
 		fk_log_info("beyond max buf len\n");
 		return -1;//need to close this connection
@@ -124,7 +124,7 @@ int fk_conn_data_recv(fk_conn *conn)
 #ifdef FK_DEBUG
 		fk_log_debug("[conn data] fd: %d, recv_len: %d, data: %s\n", conn->fd, recv_len, free_buf);
 #endif
-		FK_BUF_HIGH_INC(conn->rbuf, recv_len);
+		fk_buf_high_inc(conn->rbuf, recv_len);
 #ifdef FK_DEBUG
 		fk_log_debug("[after recv]rbuf->low: %d, rbuf->high: %d\n", conn->rbuf->low, conn->rbuf->high);
 #endif
@@ -147,13 +147,13 @@ int fk_conn_req_parse(fk_conn *conn)
 #endif
 
 	if (conn->arg_cnt == 0) {
-		if (FK_BUF_VALID_LEN(rbuf) > 0) {
-			start = FK_BUF_VALID_START(rbuf);
+		if (fk_buf_valid_len(rbuf) > 0) {
+			start = fk_buf_valid_start(rbuf);
 			if (*start != '*') {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			end = memchr(start + 1, '\n', FK_BUF_VALID_LEN(rbuf) - 1);
+			end = memchr(start + 1, '\n', fk_buf_valid_len(rbuf) - 1);
 			if (end == NULL) {
 				return 0;
 			}
@@ -177,18 +177,18 @@ int fk_conn_req_parse(fk_conn *conn)
 			FK_VTR_ADJUST(conn->arg_vtr, conn->arg_cnt);
 			FK_VTR_ADJUST(conn->len_vtr, conn->arg_cnt);
 
-			FK_BUF_LOW_INC(rbuf, end - start + 1);
+			fk_buf_low_inc(rbuf, end - start + 1);
 		}
 	}
 
-	while (FK_BUF_VALID_LEN(rbuf) > 0) {
+	while (fk_buf_valid_len(rbuf) > 0) {
 		if (conn->arg_idx_type == 0) {
-			start = FK_BUF_VALID_START(rbuf);
+			start = fk_buf_valid_start(rbuf);
 			if (*start != '$') {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			end = memchr(start + 1, '\n', FK_BUF_VALID_LEN(rbuf) - 1);
+			end = memchr(start + 1, '\n', fk_buf_valid_len(rbuf) - 1);
 			if (end == NULL) {
 				return 0;
 			}
@@ -208,15 +208,15 @@ int fk_conn_req_parse(fk_conn *conn)
 			}
 			FK_CONN_ARG_LEN(conn, conn->arg_idx) = (void *)len;
 			conn->arg_idx_type = 1;//need to parse arg
-			FK_BUF_LOW_INC(rbuf, end - start + 1);
+			fk_buf_low_inc(rbuf, end - start + 1);
 		}
 
 		if (conn->arg_idx_type == 1) {
-			start = FK_BUF_VALID_START(rbuf);
+			start = fk_buf_valid_start(rbuf);
 			len = (uintptr_t)FK_CONN_ARG_LEN(conn, conn->arg_idx);
 			fk_log_debug("arg_len: %lu\n", len);
 
-			if (FK_BUF_VALID_LEN(rbuf) >= len + 2) {
+			if (fk_buf_valid_len(rbuf) >= len + 2) {
 				if (*(start + len) != '\r' ||
 					*(start + len + 1) != '\n') 
 				{
@@ -226,7 +226,7 @@ int fk_conn_req_parse(fk_conn *conn)
 				FK_CONN_ARG(conn, conn->arg_idx) = fk_str_create(start, len);
 				conn->arg_idx += 1;
 				conn->arg_idx_type = 0;
-				FK_BUF_LOW_INC(rbuf, len + 2);
+				fk_buf_low_inc(rbuf, len + 2);
 			} else {//not received yet
 				break;
 			}
@@ -338,7 +338,7 @@ int fk_conn_read_cb(int fd, unsigned char type, void *ext)
 	 * maybe more than one complete protocol were received
 	 * parse all the complete protocol received yet
 	 */
-	while (FK_BUF_VALID_LEN(conn->rbuf) > 0) {
+	while (fk_buf_valid_len(conn->rbuf) > 0) {
 		rt = fk_conn_req_parse(conn);
 		if (rt < 0) {//error when parsing
 			fk_log_error("fatal error occured when parsing protocol\n");
@@ -376,8 +376,8 @@ int fk_conn_write_cb(int fd, unsigned char type, void *ext)
 	FK_UNUSE(type);
 
 	conn = (fk_conn *)ext;
-	buf = FK_BUF_VALID_START(conn->wbuf);
-	len = FK_BUF_VALID_LEN(conn->wbuf);
+	buf = fk_buf_valid_start(conn->wbuf);
+	len = fk_buf_valid_len(conn->wbuf);
 
 #ifdef FK_DEBUG
 	fk_log_debug("write callback]wbuf  buf: %s, valid len: %d, low: %d, high: %d\n", buf, len, conn->wbuf->low, conn->wbuf->high);
@@ -388,13 +388,13 @@ int fk_conn_write_cb(int fd, unsigned char type, void *ext)
 		return -1;
 	}
 
-	FK_BUF_LOW_INC(conn->wbuf, rt);
+	fk_buf_low_inc(conn->wbuf, rt);
 
-	FK_BUF_SHRINK(conn->wbuf);
+	fk_buf_shrink(conn->wbuf);
 
 	//if all the data in wbuf is sent, remove the write ioev
 	//but donot destroy the write ioev
-	if (FK_BUF_VALID_LEN(conn->wbuf) == 0) {
+	if (fk_buf_valid_len(conn->wbuf) == 0) {
 		fk_ev_ioev_remove(conn->write_ev);
 		conn->write_added = 0;
 	}
@@ -407,10 +407,10 @@ int fk_conn_rsp_send(fk_conn *conn)
 
 	wbuf = conn->wbuf;
 #ifdef FK_DEBUG
-	//fk_log_debug("[wbuf data]: %s\n", FK_BUF_VALID_START(wbuf));
+	//fk_log_debug("[wbuf data]: %s\n", fk_buf_valid_start(wbuf));
 #endif
 	//if any data in write buf and never add write ioev yet
-	if (FK_BUF_VALID_LEN(wbuf) > 0 && conn->write_added == 0) {
+	if (fk_buf_valid_len(wbuf) > 0 && conn->write_added == 0) {
 		fk_ev_ioev_add(conn->write_ev);
 		conn->write_added = 1;
 	}
@@ -418,13 +418,13 @@ int fk_conn_rsp_send(fk_conn *conn)
 }
 
 #define FK_CONN_WBUF_ADJUST(buf, len)	{		\
-	if (FK_BUF_FREE_LEN((buf)) < (len)) {		\
-		FK_BUF_SHIFT((buf));					\
+	if (fk_buf_free_len((buf)) < (len)) {		\
+		fk_buf_shift((buf));					\
 	}											\
-	if (FK_BUF_FREE_LEN((buf)) < (len)) {		\
-		FK_BUF_STRETCH((buf));					\
+	if (fk_buf_free_len((buf)) < (len)) {		\
+		fk_buf_stretch((buf));					\
 	}											\
-	if (FK_BUF_FREE_LEN((buf)) < (len)) {		\
+	if (fk_buf_free_len((buf)) < (len)) {		\
 		return -1;								\
 	}											\
 }
@@ -443,8 +443,8 @@ int fk_conn_rsp_add_int(fk_conn *conn, int num)
 
 	FK_CONN_WBUF_ADJUST(conn->wbuf, len);
 
-	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_int, num);
-	FK_BUF_HIGH_INC(conn->wbuf, len);
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_int, num);
+	fk_buf_high_inc(conn->wbuf, len);
 
 	return 0;
 }
@@ -457,8 +457,8 @@ int fk_conn_rsp_add_status(fk_conn *conn, char *stat, int stat_len)
 
 	FK_CONN_WBUF_ADJUST(conn->wbuf, len);
 
-	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_status, stat);
-	FK_BUF_HIGH_INC(conn->wbuf, len);
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_status, stat);
+	fk_buf_high_inc(conn->wbuf, len);
 
 	return 0;
 }
@@ -471,8 +471,8 @@ int fk_conn_rsp_add_error(fk_conn *conn, char *error, int error_len)
 
 	FK_CONN_WBUF_ADJUST(conn->wbuf, len);
 
-	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_error, error);
-	FK_BUF_HIGH_INC(conn->wbuf, len);
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_error, error);
+	fk_buf_high_inc(conn->wbuf, len);
 
 	return 0;
 }
@@ -491,8 +491,8 @@ int fk_conn_rsp_add_bulk(fk_conn *conn, int bulk_len)
 
 	FK_CONN_WBUF_ADJUST(conn->wbuf, len);
 
-	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_bulk, bulk_len);
-	FK_BUF_HIGH_INC(conn->wbuf, len);
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_bulk, bulk_len);
+	fk_buf_high_inc(conn->wbuf, len);
 
 	return 0;
 }
@@ -511,8 +511,8 @@ int fk_conn_rsp_add_mbulk(fk_conn *conn, int bulk_cnt)
 
 	FK_CONN_WBUF_ADJUST(conn->wbuf, len);
 
-	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_mbulk, bulk_cnt);
-	FK_BUF_HIGH_INC(conn->wbuf, len);
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_mbulk, bulk_cnt);
+	fk_buf_high_inc(conn->wbuf, len);
 
 	return 0;
 }
@@ -525,8 +525,8 @@ int fk_conn_rsp_add_content(fk_conn *conn, char *content, int content_len)
 
 	FK_CONN_WBUF_ADJUST(conn->wbuf, len);
 
-	sprintf(FK_BUF_FREE_START(conn->wbuf), rsp_content, content);
-	FK_BUF_HIGH_INC(conn->wbuf, len);
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_content, content);
+	fk_buf_high_inc(conn->wbuf, len);
 
 	return 0;
 }

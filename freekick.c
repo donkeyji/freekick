@@ -343,7 +343,7 @@ int fk_on_zadd(fk_conn *conn)
 			fk_list_insert(lst, elt);
 		}
 		fk_dict_add(server.db[conn->db_idx], skey, lst);
-		sprintf(FK_BUF_FREE_START(conn->wbuf), ":%d\r\n", 1);
+		sprintf(fk_buf_free_start(conn->wbuf), ":%d\r\n", 1);
 		fk_log_debug("after sprintf\n");
 		return 0;
 	}

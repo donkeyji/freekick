@@ -25,8 +25,8 @@ void fk_buf_print(fk_buf *buf)
 	int len;
 	char ps[4096];
 
-	len = FK_BUF_VALID_LEN(buf);
-	memcpy(ps, FK_BUF_VALID_START(buf), len);
+	len = fk_buf_valid_len(buf);
+	memcpy(ps, fk_buf_valid_start(buf), len);
 	ps[len] = '\0';
 	printf("%s\n", ps);
 }
