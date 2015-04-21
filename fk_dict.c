@@ -154,10 +154,13 @@ unsigned int fk_dict_hash(fk_str *key)
 
 unsigned int fk_dict_hash(fk_str *key)
 {
-    unsigned int hash = 5381;
-	int len = fk_str_len(key);
-	char *buf = fk_str_raw(key);
+	int len;
+	char *buf;
+    unsigned int hash;
 
+	hash = 5381;
+	len = fk_str_len(key);
+	buf = fk_str_raw(key);
     while (len--) {
 		hash = ((hash << 5) + hash) + (*buf++);
 	}
