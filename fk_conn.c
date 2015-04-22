@@ -324,7 +324,11 @@ int fk_conn_timer_cb(int interval, char type, void *ext)
 	return 0;
 }
 
-// callback for conn read event
+/*
+ * callback for conn read event
+ * evmgr do not care the return value of this callback
+ * so this callback itself should handle all error occurs
+ */
 int fk_conn_read_cb(int fd, char type, void *ext)
 {
 	int rt;
