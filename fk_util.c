@@ -19,15 +19,12 @@ int fk_util_positive_check(char *start, char *end)
 {
 	char *p;
 
+	if (end < start) {
+		return -1;
+	}
 	for (p = start; p <= end; p++) {
-		if (p == start) {
-			if (*p <= '0' || *p > '9') {
-				return -1;
-			}
-		} else {
-			if (*p < '0' || *p > '9') {
-				return -1;
-			}
+		if (*p <= '0' || *p > '9') {
+			return -1;
 		}
 	}
 	return 0;
@@ -37,6 +34,9 @@ int fk_util_nonminus_check(char *start, char *end)
 {
 	char *p;
 
+	if (end < start) {
+		return -1;
+	}
 	for (p = start; p <= end; p++) {
 		if (p == start) {
 			if (*p < '0' || *p > '9') {
