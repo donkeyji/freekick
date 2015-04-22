@@ -177,7 +177,7 @@ int fk_conn_req_parse(fk_conn *conn)
 				return -1;
 			}
 #ifdef FK_DEBUG
-			fk_log_debug("[cnt parsed]: %d\n", conn->arg_cnt);
+			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
 #endif
 			fk_vtr_adjust(conn->arg_vtr, conn->arg_cnt);
 			fk_vtr_adjust(conn->len_vtr, conn->arg_cnt);
@@ -223,7 +223,7 @@ int fk_conn_req_parse(fk_conn *conn)
 		if (conn->arg_idx_type == 1) {
 			start = fk_buf_payload_start(rbuf);
 			len = (uintptr_t)fk_conn_arglen_get(conn, conn->arg_idx);
-			fk_log_debug("arg_len: %lu\n", len);
+			fk_log_debug("saved arg_len: %lu\n", len);
 
 			if (fk_buf_payload_len(rbuf) >= len + 2) {
 				if (*(start + len) != '\r' ||
