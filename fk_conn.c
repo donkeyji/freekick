@@ -38,7 +38,7 @@ fk_conn *fk_conn_create(int fd)
 	conn->fd = fd;
 	conn->rbuf = fk_buf_create();
 	conn->wbuf = fk_buf_create();
-	conn->read_ev = fk_ev_ioev_create(fd, FK_EV_READ, conn, fk_conn_read_cb);
+	conn->read_ev = fk_ev_ioev_create(fd, FK_IOEV_READ, conn, fk_conn_read_cb);
 	fk_ev_ioev_add(conn->read_ev);
 	conn->write_ev = fk_ev_ioev_create(fd, FK_EV_WRITE, conn, fk_conn_write_cb);
 	conn->write_added = 0;

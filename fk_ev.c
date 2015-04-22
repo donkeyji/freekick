@@ -130,7 +130,7 @@ int fk_ev_ioev_add(fk_ioev *ioev)
 		return -1;
 	}
 
-	if (type & FK_EV_READ) {
+	if (type & FK_IOEV_READ) {
 		evmgr.read_ev[fd] = ioev;
 	}
 	if (type & FK_EV_WRITE) {
@@ -158,7 +158,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 		ioev->active = 0;
 	}
 
-	if (type & FK_EV_READ) {
+	if (type & FK_IOEV_READ) {
 		evmgr.read_ev[fd] = NULL;
 	}
 	if (type & FK_EV_WRITE) {
@@ -349,7 +349,7 @@ int fk_ev_ioev_activate(int fd, char type)
 	 * maybe rioev and wioev point to the same ioev object
 	 * use ioev->active to avoid inerting the ioev object to the active list twice
 	 * */
-	if (type & FK_EV_READ) {
+	if (type & FK_IOEV_READ) {
 		rioev = evmgr.read_ev[fd];
 		if (rioev != NULL) {//when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null
 			if (rioev->active == 0) {

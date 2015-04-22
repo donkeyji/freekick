@@ -64,7 +64,7 @@ int fk_epoll_add(void *ev_iompx, int fd, char type)
 	}
 
 	oev = 0x0000;
-	if (otp & FK_EV_READ) {
+	if (otp & FK_IOEV_READ) {
 		oev |= EPOLLIN;
 	}
 	if (otp & FK_EV_WRITE) {
@@ -72,7 +72,7 @@ int fk_epoll_add(void *ev_iompx, int fd, char type)
 	}
 
 	nev = 0x0000;
-	if (type & FK_EV_READ) {
+	if (type & FK_IOEV_READ) {
 		nev |= EPOLLIN;
 	}
 	if (type & FK_EV_WRITE) {
@@ -114,7 +114,7 @@ int fk_epoll_remove(void *ev_iompx, int fd, char type)
 	}
 
 	oev = 0x0000;
-	if (otp & FK_EV_READ) {
+	if (otp & FK_IOEV_READ) {
 		oev |= EPOLLIN;
 	}
 	if (otp & FK_EV_WRITE) {
@@ -122,7 +122,7 @@ int fk_epoll_remove(void *ev_iompx, int fd, char type)
 	}
 
 	nev = 0x0000;
-	if (type & FK_EV_READ) {
+	if (type & FK_IOEV_READ) {
 		nev |= EPOLLIN;
 	}
 	if (type & FK_EV_WRITE) {
@@ -176,7 +176,7 @@ int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 		type = 0x00;
 		//printf("i: %d	fd: %d	type:%u\n", i, fd, iompx->evlist[i].events);
 		if (iompx->evlist[i].events & (EPOLLIN | EPOLLHUP | EPOLLERR)) {
-			type |= FK_EV_READ;
+			type |= FK_IOEV_READ;
 		}
 		if (iompx->evlist[i].events & (EPOLLOUT | EPOLLHUP | EPOLLERR)) {
 			type |= FK_EV_WRITE;
