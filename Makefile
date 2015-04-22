@@ -39,7 +39,7 @@ $(CLTBIN) : $(CLTOBJS)
 -include $(DEPS)
 
 $(DEPS): $(SVRSRCS) $(CLTSRCS)
-	@$(CC) -MM $(SVRSRCS) $(CLTSRCS) $(CFLAGS) > $(DEPS)
+	@$(CC) -MM $(CFLAGS) $^ > $(DEPS)
 
 #$(CLTDEPS): %.d : %.c 
 	#@$(CC) -MM $(CFLAGS) $< -o $@
