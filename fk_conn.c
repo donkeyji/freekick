@@ -443,7 +443,7 @@ int fk_conn_rsp_send(fk_conn *conn)
 	if (fk_buf_free_len((buf)) < (len)) {		\
 		fk_buf_shift((buf));					\
 	}											\
-	if (fk_buf_free_len((buf)) < (len)) {		\
+	while (fk_buf_free_len((buf)) < (len)) {		\
 		fk_buf_stretch((buf));					\
 	}											\
 	if (fk_buf_free_len((buf)) < (len)) {		\
