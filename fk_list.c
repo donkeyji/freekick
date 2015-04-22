@@ -4,8 +4,8 @@
 #include <fk_list.h>
 #include <fk_mem.h>
 
-static fk_node *fk_list_free_node_get();
-static void fk_list_free_node_put(fk_node *nd);
+//static fk_node *fk_list_free_node_get();
+//static void fk_list_free_node_put(fk_node *nd);
 static void fk_list_insert_head_only(fk_list *lst, fk_node *nd);
 static void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd);
 
@@ -170,6 +170,7 @@ void fk_list_remove_only(fk_list *lst, fk_node *nd)
 	lst->len--;
 }
 
+/*
 fk_node *fk_list_free_node_get()
 {
 	fk_node *nd;
@@ -188,7 +189,9 @@ fk_node *fk_list_free_node_get()
 	}
 	return nd;
 }
+*/
 
+/*
 void fk_list_free_node_put(fk_node *nd)
 {
 	nd->prev = NULL;
@@ -196,6 +199,7 @@ void fk_list_free_node_put(fk_node *nd)
 	nd->data = NULL;
 	fk_list_insert_only(free_nodes, nd);
 }
+*/
 
 //----------------------------------------------
 fk_node *fk_list_iter_begin(fk_list *lst, int dir)
