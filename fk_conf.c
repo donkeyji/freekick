@@ -300,7 +300,7 @@ int fk_conf_handle_port(fk_line *line)
 {
 	int rt, port;
 
-	rt = fk_str_is_digit(line->fields[1]);
+	rt = fk_str_is_positive(line->fields[1]);
 	if (rt == 0) {//not a positive integer
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
 		return -1;
@@ -343,7 +343,7 @@ int fk_conf_handle_maxconn(fk_line *line)
 {
 	int rt, max_conn;
 
-	rt = fk_str_is_digit(line->fields[1]);
+	rt = fk_str_is_positive(line->fields[1]);
 	if (rt == 0) {//not a positive integer
 		sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
 		return -1;
@@ -361,7 +361,7 @@ int fk_conf_handle_dbcnt(fk_line *line)
 {
 	int rt, dbcnt;
 
-	rt = fk_str_is_digit(line->fields[1]);
+	rt = fk_str_is_positive(line->fields[1]);
 	if (rt == 0) {//not a positive integer
 		sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
 		return -1;

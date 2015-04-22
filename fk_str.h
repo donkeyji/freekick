@@ -17,6 +17,8 @@ void fk_str_destroy(fk_str *src);
 fk_str *fk_str_clone(fk_str *src);
 int fk_str_cmp(fk_str *s1, fk_str *s2);
 int fk_str_is_digit(fk_str *str);
+int fk_str_is_positive(fk_str *str);
+int fk_str_is_nonminus(fk_str *str);
 void fk_str_2upper(fk_str *str);
 
 #endif
