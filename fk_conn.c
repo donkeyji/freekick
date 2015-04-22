@@ -162,16 +162,21 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			rt = fk_util_num_check(start + 1, end - 1 - 1);
+			if (end - 2 < start + 1) {
+				fk_log_debug("wrong client data\n");
+				return -1;
+			}
+			rt = fk_util_positive_check(start + 1, end - 2);
 			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
 			conn->arg_cnt = atoi(start + 1);
-			if (conn->arg_cnt == 0) {
-				fk_log_debug("wrong client data\n");
-				return -1;
-			}
+			/*no need to check arg_cnt <= 0 again*/
+			//if (conn->arg_cnt == 0) {
+				//fk_log_debug("wrong client data\n");
+				//return -1;
+			//}
 			if (conn->arg_cnt > FK_ARG_CNT_HIGHWAT) {
 				fk_log_debug("too many arguments\n");
 				return -1;
@@ -201,16 +206,21 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			rt = fk_util_num_check(start + 1, end - 1 - 1);
+			if (end - 2 < start + 1) {
+				fk_log_debug("wrong client data\n");
+				return -1;
+			}
+			rt = fk_util_nonminus_check(start + 1, end - 2);
 			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
 			len = atoi(start + 1);//arg len
-			if (len < 0) {
-				fk_log_debug("wrong client data\n");
-				return -1;
-			}
+			/*no need to check len < 0*/
+			//if (len < 0) {
+				//fk_log_debug("wrong client data\n");
+				//return -1;
+			//}
 			if (len > FK_ARG_HIGHWAT) {
 				fk_log_debug("too long argument\n");
 				return -1;

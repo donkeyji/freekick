@@ -5,7 +5,7 @@
 
 void fk_util_cal_expire(struct timeval *tv, int interval);
 int fk_util_positive_check(char *start, char *end);
-int fk_util_num_check(char *start, char *end);
+int fk_util_nonminus_check(char *start, char *end);
 
 #define FK_UTIL_TV2MILLIS(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
