@@ -289,7 +289,7 @@ int fk_ev_expired_tmev_proc()
 		rt = tmcb(interval, type, arg);
 		//step 3: how to handle the return value of the callback???
 		if (rt == 0) {
-			if (type == FK_EV_CYCLE) {
+			if (type == FK_TMEV_CYCLE) {
 				fk_util_cal_expire(&(cur->when), interval);//calculate the trigger point time again
 				fk_heap_push(evmgr.timer_heap, (fk_leaf *)cur);//push into the heap once more
 			}

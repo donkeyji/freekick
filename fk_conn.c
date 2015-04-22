@@ -43,7 +43,7 @@ fk_conn *fk_conn_create(int fd)
 	conn->write_ev = fk_ev_ioev_create(fd, FK_IOEV_WRITE, conn, fk_conn_write_cb);
 	conn->write_added = 0;
 	conn->last_recv = time(NULL);//save the current time
-	conn->timer = fk_ev_tmev_create(5000, FK_EV_CYCLE, conn, fk_conn_timer_cb);
+	conn->timer = fk_ev_tmev_create(5000, FK_TMEV_CYCLE, conn, fk_conn_timer_cb);
 	//fk_ev_tmev_add(conn->timer);
 
 	conn->arg_vtr = fk_vtr_create();

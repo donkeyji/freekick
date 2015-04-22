@@ -570,10 +570,10 @@ void fk_svr_init()
 	server.listen_ev = fk_ev_ioev_create(server.listen_fd, FK_IOEV_READ, NULL, fk_svr_listen_cb);
 	fk_ev_ioev_add(server.listen_ev);
 
-	server.svr_timer = fk_ev_tmev_create(3000, FK_EV_CYCLE, NULL, fk_svr_timer_cb);
+	server.svr_timer = fk_ev_tmev_create(3000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb);
 	fk_ev_tmev_add(server.svr_timer);
 #ifdef FK_DEBUG
-	server.svr_timer2 = fk_ev_tmev_create(4000, FK_EV_CYCLE, NULL, fk_svr_timer_cb2);
+	server.svr_timer2 = fk_ev_tmev_create(4000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb2);
 	fk_ev_tmev_add(server.svr_timer2);
 #endif
 

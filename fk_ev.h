@@ -10,8 +10,8 @@
 #define FK_IOEV_WRITE 	0x02
 
 //for timer ev
-#define FK_EV_CYCLE 	1
-#define FK_EV_ONCE		2
+#define FK_TMEV_CYCLE 	1
+#define FK_TMEV_ONCE		2
 
 typedef int (*fk_ioev_cb) (int, char, void *);
 typedef int (*fk_tmev_cb) (int, char, void *);
@@ -31,7 +31,7 @@ typedef struct _fk_tmev {
 	FK_HEAP_LEAF_HEADER;//for heap
 
 	int expired;//whether in the expired list
-	char type;//FK_EV_CYCLE|FK_EV_ONCE
+	char type;//FK_TMEV_CYCLE|FK_TMEV_ONCE
 	int interval;//milliseconds
 	struct timeval when;//save the trigger point time: now + timeout
 	void *arg;//ext arg
