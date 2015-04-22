@@ -156,7 +156,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			}
 			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
 			if (end == NULL) {
-				return 0;
+				return 1;
 			}
 			if (*(end - 1) != '\r') {
 				fk_log_debug("wrong client data\n");
@@ -195,7 +195,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			}
 			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
 			if (end == NULL) {
-				return 0;
+				return 1;
 			}
 			if (*(end - 1) != '\r') {
 				fk_log_debug("wrong client data\n");
@@ -237,12 +237,12 @@ int fk_conn_req_parse(fk_conn *conn)
 				conn->arg_idx_type = 0;
 				fk_buf_low_inc(rbuf, len + 2);
 			} else {//not received yet
-				break;
+				return 1;
 			}
 
 			if (conn->arg_cnt == conn->arg_idx) {//a total protocol has been parsed
 				conn->parse_done = 1;
-				break;
+				return 0;
 			}
 		}
 	}
@@ -251,7 +251,7 @@ int fk_conn_req_parse(fk_conn *conn)
 	fk_log_debug("[after parsing] low: %d, high: %d\n", rbuf->low, rbuf->high);
 #endif
 
-	return 0;
+	return 1;
 }
 
 void fk_conn_args_free(fk_conn *conn)
@@ -353,8 +353,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 			fk_log_error("fatal error occured when parsing protocol\n");
 			fk_svr_conn_remove(conn);
 			return 0;
-		}
-		if (conn->parse_done != 1) {
+		} else if (rt > 0) {//parsing not completed
 			break;
 		}
 
