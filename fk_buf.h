@@ -17,7 +17,6 @@ typedef struct _fk_buf {
 fk_buf *fk_buf_create();
 void fk_buf_destroy(fk_buf *buf);
 void fk_buf_print(fk_buf *buf);
-void fk_buf_adjust(fk_buf *buf);
 
 #define fk_buf_free_len(buf) 	((buf)->len - (buf)->high)
 
@@ -74,6 +73,17 @@ void fk_buf_adjust(fk_buf *buf);
 		);												\
 		(buf)->len = FK_BUF_INIT_LEN;					\
 	}													\
+}
+
+#define fk_buf_adjust(buf, length)	{				\
+	if (fk_buf_free_len((buf)) < (length)) {		\
+		fk_buf_shift((buf));						\
+	}												\
+	while ((buf)->len < FK_BUF_HIGHWAT && 			\
+			fk_buf_free_len((buf)) < (length))		\
+	{												\
+		fk_buf_stretch((buf));						\
+	}												\
 }
 
 #endif
