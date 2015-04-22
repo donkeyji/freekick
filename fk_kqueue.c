@@ -69,14 +69,14 @@ int fk_kqueue_add(void *ev_iompx, int fd, char type)
 		//iompx->emask[fd] |= FK_IOEV_READ;
 	}
 
-	if (type & FK_EV_WRITE) {//both read & write
+	if (type & FK_IOEV_WRITE) {//both read & write
 		EV_SET(&(iompx->kev), fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL );
 		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent add write failed: %s\n", strerror(errno));
 			return -1;
 		}
-		//iompx->emask[fd] |= FK_EV_WRITE;
+		//iompx->emask[fd] |= FK_IOEV_WRITE;
 	}
 
 	return 0;
@@ -105,14 +105,14 @@ int fk_kqueue_remove(void *ev_iompx, int fd, char type)
 		}
 		//iompx->emask[fd] &= (~FK_IOEV_READ);
 	}
-	if (type & FK_EV_WRITE) {//both read & write
+	if (type & FK_IOEV_WRITE) {//both read & write
 		EV_SET(&(iompx->kev), fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL );
 		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent delete write failed: %s\n", strerror(errno));
 			return -1;
 		}
-		//iompx->emask[fd] &= (~FK_EV_WRITE);
+		//iompx->emask[fd] &= (~FK_IOEV_WRITE);
 	}
 
 	return 0;
@@ -173,7 +173,7 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 		}
 		if (iompx->evlist[i].filter == EVFILT_WRITE) {
 			//fk_log_debug("EVFILT_WRITE\n");
-			type = FK_EV_WRITE;
+			type = FK_IOEV_WRITE;
 		}
 		//fk_log_debug("i: %d	fd: %lu	type: %d\n", i, iompx->evlist[i].ident, iompx->evlist[i].filter);
 		fk_ev_ioev_activate(fd, type);

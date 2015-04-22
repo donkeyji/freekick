@@ -7,7 +7,7 @@
 
 //for file ev
 #define FK_IOEV_READ 		0x01
-#define FK_EV_WRITE 	0x02
+#define FK_IOEV_WRITE 	0x02
 
 //for timer ev
 #define FK_EV_CYCLE 	1
@@ -18,7 +18,7 @@ typedef int (*fk_tmev_cb) (int, char, void *);
 
 typedef struct _fk_ioev {
 	int fd;
-	char type;//FK_IOEV_READ|FK_EV_WRITE
+	char type;//FK_IOEV_READ|FK_IOEV_WRITE
 	int active;//whether in active list
 	void *arg;
 	fk_ioev_cb iocb;

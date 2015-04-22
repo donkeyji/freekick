@@ -133,7 +133,7 @@ int fk_ev_ioev_add(fk_ioev *ioev)
 	if (type & FK_IOEV_READ) {
 		evmgr.read_ev[fd] = ioev;
 	}
-	if (type & FK_EV_WRITE) {
+	if (type & FK_IOEV_WRITE) {
 		evmgr.write_ev[fd] = ioev;
 	}
 	return 0;
@@ -161,7 +161,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	if (type & FK_IOEV_READ) {
 		evmgr.read_ev[fd] = NULL;
 	}
-	if (type & FK_EV_WRITE) {
+	if (type & FK_IOEV_WRITE) {
 		evmgr.write_ev[fd] = NULL;
 	}
 
@@ -358,7 +358,7 @@ int fk_ev_ioev_activate(int fd, char type)
 			}
 		}
 	}
-	if (type & FK_EV_WRITE) {
+	if (type & FK_IOEV_WRITE) {
 		wioev = evmgr.write_ev[fd];
 		if (wioev != NULL) {
 			if (wioev->active == 0) {

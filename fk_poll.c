@@ -56,7 +56,7 @@ int fk_poll_add(void *ev_iompx, int fd, char type)
 	if (type & FK_IOEV_READ) {
 		nev |= POLLIN;
 	}
-	if (type & FK_EV_WRITE) {
+	if (type & FK_IOEV_WRITE) {
 		nev |= POLLOUT;
 	}
 
@@ -94,7 +94,7 @@ int fk_poll_remove(void *ev_iompx, int fd, char type)
 	if (type & FK_IOEV_READ) {
 		nev |= POLLIN;
 	}
-	if (type & FK_EV_WRITE) {
+	if (type & FK_IOEV_WRITE) {
 		nev |= POLLOUT;
 	}
 
@@ -148,7 +148,7 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 			type |= FK_IOEV_READ;
 		}
 		if (pfd->revents & POLLOUT) {
-			type |= FK_EV_WRITE;
+			type |= FK_IOEV_WRITE;
 		}
 		if (type == 0x00) {
 			continue;
