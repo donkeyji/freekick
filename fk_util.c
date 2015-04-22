@@ -32,3 +32,15 @@ int fk_util_positive_check(char *start, char *end)
 	}
 	return 0;
 }
+
+int fk_util_num_check(char *start, char *end)
+{
+	char *p;
+
+	for (p = start; p <= end; p++) {
+		if (*p < '0' || *p > '9') {
+			return -1;
+		}
+	}
+	return 0;
+}
