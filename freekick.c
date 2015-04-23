@@ -33,8 +33,8 @@ typedef struct _fk_server {
 	int port;
 	fk_str *addr;
 	int listen_fd;
-	int max_conn;//max connections
-	int conn_cnt;//connection count
+	int max_conn;/*max connections*/
+	int conn_cnt;/*connection count*/
 	time_t start_time;
 	int stop;
 	fk_ioev *listen_ev;
@@ -67,14 +67,14 @@ static int fk_elt_cmp(void *e1, void *e2);
 static void fk_elt_free(void *e);
 static void fk_proto_init();
 
-//all the proto handlers
+/*all the proto handlers*/
 static int fk_on_set(fk_conn *conn);
 static int fk_on_get(fk_conn *conn);
 static int fk_on_hset(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
 static int fk_on_zadd(fk_conn *conn);
 
-//global variable
+/*global variable*/
 static fk_server server;
 
 static fk_elt_op dbeop = {
@@ -99,7 +99,7 @@ static fk_node_op sortop = {
 	fk_elt_cmp
 };
 
-//all proto to deal
+/*all proto to deal*/
 static fk_proto protos[] = {
 	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_on_set},
 	{"GET", 	FK_PROTO_READ, 		2, 					fk_on_get},
@@ -408,9 +408,7 @@ int fk_elt_cmp(void *e1, void *e2)
 	return d1 - d2;
 }
 
-//----------------------------
-// server interface
-//----------------------------
+/*server interface*/
 void fk_svr_conn_add(int fd)
 {
 	fk_conn *conn;
@@ -420,7 +418,7 @@ void fk_svr_conn_add(int fd)
 	server.conn_cnt += 1;
 }
 
-//call when conn disconnect
+/*call when conn disconnect*/
 void fk_svr_conn_remove(fk_conn *conn)
 {
 	server.conns_tab[conn->fd] = NULL;
@@ -552,7 +550,7 @@ void fk_svr_init()
 {
 	int i;
 
-	// copy setting from conf to server
+	/*copy setting from conf to server*/
 	server.port = setting.port;
 	server.max_conn = setting.max_conn;
 	server.dbcnt = setting.dbcnt;
@@ -560,7 +558,7 @@ void fk_svr_init()
 	server.save_done = 1;
 	server.addr = fk_str_clone(setting.addr);
 
-	//create global environment
+	/*create global environment*/
 	server.start_time = time(NULL);
 	server.stop = 0;
 	server.conn_cnt = 0;
@@ -594,7 +592,7 @@ void fk_svr_init()
 			exit(EXIT_FAILURE);
 		}
 	}
-	//load db from file
+	/*load db from file*/
 	fk_svr_db_load(server.db_path);
 }
 
@@ -637,7 +635,7 @@ void fk_setrlimit()
 				fk_log_error("setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
-			//set current limit to the original setting
+			/*set current limit to the original setting*/
 			setting.max_conn = FK_MAXFILES_2_MAXCONN(max_files);
 			fk_log_error("change the setting.max_conn according the current file number limit: %d\n", setting.max_conn);
 		}
@@ -723,10 +721,13 @@ void fk_svr_db_load(fk_str *db_path)
 
 void fk_main_init(char *conf_path)
 {
-	//the first to init
+	/*the first to init*/
 	fk_conf_init(conf_path);
 
-	//the second to init, so that all the ther module can call fk_log_xxx()
+	/* 
+	 * the second to init, so that all the 
+	 * ther module can call fk_log_xxx()
+	 */
 	fk_log_init();
 
 	fk_setrlimit();
@@ -757,11 +758,11 @@ void fk_main_loop()
 
 void fk_main_end()
 {
-	//to do: free resource
+	/*to do: free resource*/
 	while (server.save_done == 0) {
 		sleep(1);
 	}
-	//save db once more
+	/*save db once more*/
 	fk_svr_db_save_exec();
 }
 
