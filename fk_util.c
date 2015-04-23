@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+
 #include <sys/time.h>
 
 #include <fk_util.h>

@@ -5,10 +5,10 @@ SRCDIRS := .
 
 SRCEXTS := .c
 
-CFLAGS := -std=gnu99 -Wall -g -D FK_DEBUG
+CFLAGS := -std=gnu99 -Wall -g -pg
 CFLAGS += -I .
 
-LDFLAGS := 
+LDFLAGS := -pg
 LDFLAGS +=
 
 CC = gcc 

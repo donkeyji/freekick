@@ -133,7 +133,7 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 
 	pt = NULL;
 	if (timeout != NULL) {
-		FK_UTIL_TV2TS(timeout, &kev_timeout);
+		fk_util_tv2ts(timeout, &kev_timeout);
 		pt = &kev_timeout;
 	}
 

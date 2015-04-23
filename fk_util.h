@@ -15,7 +15,7 @@ int fk_util_min_power(int n);
 	(tv)->tv_usec = ((ms) % 1000) * 1000;	\
 }
 
-#define FK_UTIL_TV2TS(tv, ts)	TIMEVAL_TO_TIMESPEC((tv), (ts))
+#define fk_util_tv2ts(tv, ts)	TIMEVAL_TO_TIMESPEC((tv), (ts))
 
 #define FK_UTIL_TS2TV(tv, ts)	TIMESPEC_TO_TIMEVAL((tv), (ts))
 
