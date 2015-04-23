@@ -154,14 +154,14 @@ int fk_on_set(fk_conn *conn)
 		fk_conn_arg_consume(conn, 1);
 		fk_conn_arg_consume(conn, 2);
 
-		rt = fk_conn_rsp_add_status(conn, "OK", strlen("OK"));
+		rt = fk_conn_rsp_add_status(conn, "OK", sizeof("OK") - 1);
 		if (rt < 0) {//buf not enough, so free the conn
 			return -1;
 		}
 		return 0;
 	}
 	if (old_val->type != FK_OBJ_STR) {
-		rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {//buf not enough, so free the conn
 			return -1;
 		}
@@ -173,7 +173,7 @@ int fk_on_set(fk_conn *conn)
 	fk_conn_arg_consume(conn, 1);
 	fk_conn_arg_consume(conn, 2);
 
-	rt = fk_conn_rsp_add_status(conn, "OK", strlen("OK"));
+	rt = fk_conn_rsp_add_status(conn, "OK", sizeof("OK") - 1);
 	if (rt < 0) {//buf not enough, so free the conn
 		return -1;
 	}
@@ -198,7 +198,7 @@ int fk_on_get(fk_conn *conn)
 	} 
 
 	if (obj->type != FK_OBJ_STR) {
-		rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
 		}
@@ -257,7 +257,7 @@ int fk_on_hset(fk_conn *conn)
 		return 0;
 	}
 
-	rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+	rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 	if (rt < 0) {
 		return -1;
 	}
@@ -283,7 +283,7 @@ int fk_on_hget(fk_conn *conn)
 	} 
 
 	if (hobj->type != FK_OBJ_DICT) {
-		rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
 		}
@@ -301,7 +301,7 @@ int fk_on_hget(fk_conn *conn)
 	} 
 
 	if (obj->type != FK_OBJ_STR) {
-		rt = fk_conn_rsp_add_error(conn, "Type Error", strlen("Type Error"));
+		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
 		}
