@@ -14,7 +14,7 @@ void fk_util_cal_expire(struct timeval *tv, int interval)
 	gettimeofday(&now, NULL);
 	FK_UTIL_MILLIS2TV(interval, &itv);
 
-	FK_UTIL_TMVAL_ADD(&now, &itv, tv);
+	fk_util_tmval_add(&now, &itv, tv);
 }
 
 int fk_util_is_positive_str(char *start, int len)
