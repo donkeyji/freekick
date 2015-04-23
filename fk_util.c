@@ -63,3 +63,15 @@ int fk_util_nonminus_check(char *start, char *end)
 	}
 	return 0;
 }
+
+int fk_util_min_power(int n)
+{
+	uint32_t q;
+
+	q = 0;
+	while (n > 0) {
+		q++;
+		n >>= 1;
+	}
+	return 1 << q;
+}
