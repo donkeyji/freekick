@@ -47,7 +47,7 @@ int fk_util_min_power(int n);
 		}                           						\
 	} while (0)
 
-#define FK_UTIL_TMVAL_SUB(a, b, result)						\
+#define fk_util_tmval_sub(a, b, result)						\
 	do {									      			\
 		(result)->tv_sec = (a)->tv_sec - (b)->tv_sec;	    \
 		(result)->tv_usec = (a)->tv_usec - (b)->tv_usec;    \
