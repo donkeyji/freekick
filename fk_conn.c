@@ -50,7 +50,7 @@ fk_conn *fk_conn_create(int fd)
 	conn->len_vtr = fk_vtr_create();
 	conn->arg_cnt = 0;
 	conn->arg_idx = 0;
-	conn->arg_idx_type = 0;//arg_len
+	conn->idx_flag = 0;//arg_len
 	conn->parse_done = 0;
 
 	conn->db_idx = 0;
@@ -192,7 +192,7 @@ int fk_conn_req_parse(fk_conn *conn)
 	}
 
 	while (fk_buf_payload_len(rbuf) > 0) {
-		if (conn->arg_idx_type == 0) {
+		if (conn->idx_flag == 0) {
 			start = fk_buf_payload_start(rbuf);
 			if (*start != '$') {
 				fk_log_debug("wrong client data\n");
@@ -226,11 +226,11 @@ int fk_conn_req_parse(fk_conn *conn)
 				return -1;
 			}
 			fk_conn_arglen_set(conn, conn->arg_idx, (void *)len);
-			conn->arg_idx_type = 1;//need to parse arg
+			conn->idx_flag = 1;//need to parse arg
 			fk_buf_low_inc(rbuf, end - start + 1);
 		}
 
-		if (conn->arg_idx_type == 1) {
+		if (conn->idx_flag == 1) {
 			start = fk_buf_payload_start(rbuf);
 			len = (int)fk_conn_arglen_get(conn, conn->arg_idx);
 			fk_log_debug("saved arg_len: %lu\n", len);
@@ -244,7 +244,7 @@ int fk_conn_req_parse(fk_conn *conn)
 				}
 				fk_conn_arg_set(conn, conn->arg_idx, fk_str_create(start, len));
 				conn->arg_idx += 1;
-				conn->arg_idx_type = 0;
+				conn->idx_flag = 0;
 				fk_buf_low_inc(rbuf, len + 2);
 			} else {//not received yet
 				return 1;
@@ -278,7 +278,7 @@ void fk_conn_args_free(fk_conn *conn)
 	conn->arg_cnt = 0;
 	conn->parse_done = 0;
 	conn->arg_idx = 0;
-	conn->arg_idx_type = 0;
+	conn->idx_flag = 0;
 }
 
 int fk_conn_cmd_proc(fk_conn *conn)

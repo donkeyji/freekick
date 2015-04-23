@@ -24,7 +24,7 @@ typedef struct _fk_conn {
 	fk_vtr *len_vtr;
 	int		arg_cnt;/*the number of arg_vtr of the current protocol, original 0;*/
 	int		arg_idx;/*the arg_idx arg is being parsing, original 0*/
-	int 	arg_idx_type;/*arg_len or arg*/
+	int 	idx_flag;/*arg_len or arg*/
 	int 	parse_done;/*original 0*/
 
 	int db_idx;
