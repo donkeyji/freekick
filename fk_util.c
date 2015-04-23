@@ -15,53 +15,54 @@ void fk_util_cal_expire(struct timeval *tv, int interval)
 	FK_UTIL_TMVAL_ADD(&now, &itv, tv);
 }
 
-int fk_util_positive_check(char *start, char *end)
+int fk_util_is_positive_str(char *start, int len)
 {
 	char *p;
 
-	if (end < start) {
-		return -1;
+	if (len <= 0) {
+		return 0;
 	}
-	for (p = start; p <= end; p++) {
+	for (p = start; p <= start + len -1; p++) {
 		if (p == start) {
 			if (*p <= '0' || *p > '9') {
-				return -1;
+				return 0;
 			}
 		} else {
 			if (*p < '0' || *p > '9') {
-				return -1;
+				return 0;
 			}
 		}
 	}
-	return 0;
+	return 1;
 }
 
-int fk_util_nonminus_check(char *start, char *end)
+int fk_util_is_nonminus_str(char *start, int len)
 {
 	char *p;
 
-	if (end < start) {
-		return -1;
+	if (len <= 0) {
+		return 0;
 	}
-	for (p = start; p <= end; p++) {
+
+	for (p = start; p <= start + len - 1; p++) {
 		if (p == start) {
 			if (*p < '0' || *p > '9') {
-				return -1;
+				return 0;
 			}
 			if (*p == '0') {
-				if (start == end) {
-					return 0;
+				if (len == 1) {
+					return 1;
 				} else {
-					return -1;
+					return 0;
 				}
 			}
 		} else {
 			if (*p < '0' || *p > '9') {
-				return -1;
+				return 0;
 			}
 		}
 	}
-	return 0;
+	return 1;
 }
 
 int fk_util_min_power(int n)

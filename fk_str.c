@@ -48,18 +48,13 @@ int fk_str_cmp(fk_str *s1, fk_str *s2)
 int fk_str_is_positive(fk_str *str)
 {
 	int rt;
-	char *start, *end;
 
 	if (str->len < 2) {
 		return 0;
 	}
 
-	start = str->data;
-	end = str->data + str->len - 2;
-	printf("%c\n", *start);
-	printf("%c\n", *end);
-	rt = fk_util_positive_check(start, end);
-	if (rt == 0) {
+	rt = fk_util_is_positive_str(str->data, str->len - 1);
+	if (rt == 1) {
 		return 1;
 	} else {
 		return 0;
@@ -69,16 +64,13 @@ int fk_str_is_positive(fk_str *str)
 int fk_str_is_nonminus(fk_str *str)
 {
 	int rt;
-	char *start, *end;
 
 	if (str->len < 2) {
 		return 0;
 	}
 
-	start = str->data;
-	end = str->data + str->len - 2;
-	rt = fk_util_nonminus_check(start, end);
-	if (rt == 0) {
+	rt = fk_util_is_nonminus_str(str->data, str->len - 1);
+	if (rt == 1) {
 		return 1;
 	} else {
 		return 0;
