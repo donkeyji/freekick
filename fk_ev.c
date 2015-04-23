@@ -252,7 +252,7 @@ int fk_ev_pending_tmev_update()
 	root = fk_heap_root(evmgr.timer_heap);
 	while (root != NULL) {
 		tmev = (fk_tmev *)root;
-		cmp = FK_UTIL_TMVAL_CMP(&now, &(tmev->when));
+		cmp = fk_util_tmval_cmp(&now, &(tmev->when));
 		if (cmp >= 0) {
 			fk_heap_pop(evmgr.timer_heap);//pop root from the heap
 			FK_EV_LIST_INSERT(evmgr.exp_tmev, tmev);//add to the exp list
@@ -377,5 +377,5 @@ int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
 
 	t1 = (fk_tmev *)tmev1;
 	t2 = (fk_tmev *)tmev2;
-	return FK_UTIL_TMVAL_CMP(&(t1->when), &(t2->when));
+	return fk_util_tmval_cmp(&(t1->when), &(t2->when));
 }

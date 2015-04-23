@@ -34,7 +34,7 @@ int fk_util_min_power(int n);
 // <0: t1<t2
 // 0: t1=t2
 //----------------
-#define FK_UTIL_TMVAL_CMP(t1, t2)	\
+#define fk_util_tmval_cmp(t1, t2)	\
 	(t1)->tv_sec == (t2)->tv_sec ? (t1)->tv_usec - (t2)->tv_usec : (t1)->tv_sec - (t2)->tv_sec
 
 #define FK_UTIL_TMVAL_ADD(a, b, result)						\
