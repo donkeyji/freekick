@@ -17,7 +17,7 @@ int fk_util_min_power(int n);
 
 #define fk_util_tv2ts(tv, ts)	TIMEVAL_TO_TIMESPEC((tv), (ts))
 
-#define FK_UTIL_TS2TV(tv, ts)	TIMESPEC_TO_TIMEVAL((tv), (ts))
+#define fk_util_ts2tv(tv, ts)	TIMESPEC_TO_TIMEVAL((tv), (ts))
 
 #define FK_UTIL_TMSPEC_PRINT(ts) {				\
 	printf("sec: %lu\t", (ts)->tv_sec);			\
