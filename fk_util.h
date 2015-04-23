@@ -19,23 +19,14 @@ int fk_util_min_power(int n);
 
 #define fk_util_ts2tv(tv, ts)	TIMESPEC_TO_TIMEVAL((tv), (ts))
 
-#define FK_UTIL_TMSPEC_PRINT(ts) {				\
-	printf("sec: %lu\t", (ts)->tv_sec);			\
-	printf("usec: %lu\n", (ts)->tv_nsec);		\
-}
-
-#define FK_UTIL_TMVAL_PRINT(tv) {				\
-	printf("sec: %lu\t", (tv)->tv_sec);			\
-	printf("usec: %lu\n", (tv)->tv_usec);		\
-}
-
-//----------------
-// >0: t1>t2
-// <0: t1<t2
-// 0: t1=t2
-//----------------
+/*
+ * >0: t1>t2 
+ * <0: t1<t2 
+ * 0: t1=t2
+ */
 #define fk_util_tmval_cmp(t1, t2)	\
-	(t1)->tv_sec == (t2)->tv_sec ? (t1)->tv_usec - (t2)->tv_usec : (t1)->tv_sec - (t2)->tv_sec
+	(t1)->tv_sec == (t2)->tv_sec ? 	\
+	(t1)->tv_usec - (t2)->tv_usec : (t1)->tv_sec - (t2)->tv_sec
 
 #define fk_util_tmval_add(a, b, result)						\
 	do {                                					\
