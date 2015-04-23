@@ -17,15 +17,15 @@ typedef struct _fk_conn {
 
 	fk_buf *rbuf;
 	fk_buf *wbuf;
-	time_t last_recv;//time of last data receiving
+	time_t last_recv;/*time of last data receiving*/
 	fk_tmev *timer;
 
 	fk_vtr *arg_vtr;
 	fk_vtr *len_vtr;
-	int		arg_cnt;//the number of arg_vtr of the current protocol, original 0;
-	int		arg_idx;//the arg_idx arg is being parsing, original 0;
-	int 	arg_idx_type;//arg_len or arg
-	int 	parse_done;//original 0;
+	int		arg_cnt;/*the number of arg_vtr of the current protocol, original 0;*/
+	int		arg_idx;/*the arg_idx arg is being parsing, original 0*/
+	int 	arg_idx_type;/*arg_len or arg*/
+	int 	parse_done;/*original 0*/
 
 	int db_idx;
 } fk_conn;
