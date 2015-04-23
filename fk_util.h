@@ -10,7 +10,7 @@ int fk_util_min_power(int n);
 
 #define fk_util_tv2millis(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
-#define FK_UTIL_MILLIS2TV(ms, tv)	{			\
+#define fk_util_millis2tv(ms, tv)	{			\
 	(tv)->tv_sec = (ms) / 1000;				\
 	(tv)->tv_usec = ((ms) % 1000) * 1000;	\
 }

@@ -12,7 +12,7 @@ void fk_util_cal_expire(struct timeval *tv, int interval)
 	struct timeval now, itv;
 
 	gettimeofday(&now, NULL);
-	FK_UTIL_MILLIS2TV(interval, &itv);
+	fk_util_millis2tv(interval, &itv);
 
 	fk_util_tmval_add(&now, &itv, tv);
 }
