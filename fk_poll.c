@@ -126,7 +126,7 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 
 	ms_timeout = -1;
 	if (timeout != NULL) {
-		ms_timeout = FK_UTIL_TV2MILLIS(timeout);
+		ms_timeout = fk_util_tv2millis(timeout);
 	}
 
 	iompx = (fk_poll *)ev_iompx;

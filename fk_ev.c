@@ -91,7 +91,7 @@ int fk_ev_dispatch()
 	if (tmev != NULL) {
 		gettimeofday(&now, NULL);
 		fk_util_tmval_sub(&(tmev->when), &now, &timeout);
-		if ((FK_UTIL_TV2MILLIS(&timeout)) < 0) {
+		if ((fk_util_tv2millis(&timeout)) < 0) {
 			timeout.tv_sec = 0;
 			timeout.tv_usec = 0;
 		}

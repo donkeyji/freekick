@@ -8,7 +8,7 @@ int fk_util_is_positive_str(char *start, int len);
 int fk_util_is_nonminus_str(char *start, int len);
 int fk_util_min_power(int n);
 
-#define FK_UTIL_TV2MILLIS(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
+#define fk_util_tv2millis(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
 #define FK_UTIL_MILLIS2TV(ms, tv)	{			\
 	(tv)->tv_sec = (ms) / 1000;				\
