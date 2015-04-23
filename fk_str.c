@@ -79,32 +79,18 @@ int fk_str_is_nonminus(fk_str *str)
 
 int fk_str_is_digit(fk_str *str)
 {
-	int i;
-	char c;
+	int rt;
 
 	if (str->len < 2) {
 		return 0;
 	}
 
-	for (i = 0; i < str->len - 1; i++) {
-		c = str->data[i];
-		if (i == 0) {
-			if (c != '-' && c != '+' && (c <= '0' || c > '9')) {
-				return 0;
-			} else {
-				if (c == '-' || c == '+') {
-					if (str->len <= 2) {
-						return 0;
-					}
-				}
-			}
-		} else {
-			if (c < '0' || c > '9') {
-				return 0;
-			}
-		}
+	rt = fk_util_is_digit_seq(str->data, str->len - 1);
+	if (rt == 1) {
+		return 1;
+	} else {
+		return 0;
 	}
-	return 1;
 }
 
 void fk_str_2upper(fk_str *str)

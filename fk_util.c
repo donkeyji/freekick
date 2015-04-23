@@ -67,6 +67,36 @@ int fk_util_is_nonminus_seq(char *start, int len)
 	return 1;
 }
 
+int fk_util_is_digit_seq(char *start, int len)
+{
+	int i;
+	char c;
+
+	if (len <= 0) {
+		return 0;
+	}
+
+	for (i = 0; i < len; i++) {
+		c = *(start + i); 
+		if (i == 0) {
+			if (c != '-' && c != '+' && (c <= '0' || c > '9')) {
+				return 0;
+			} else {
+				if (c == '-' || c == '+') {
+					if (len <= 1) {
+						return 0;
+					}
+				}
+			}
+		} else {
+			if (c < '0' || c > '9') {
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
 int fk_util_min_power(int n)
 {
 	uint32_t q;
