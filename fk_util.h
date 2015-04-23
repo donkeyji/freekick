@@ -4,8 +4,8 @@
 #include <sys/time.h>
 
 void fk_util_cal_expire(struct timeval *tv, int interval);
-int fk_util_is_positive_str(char *start, int len);
-int fk_util_is_nonminus_str(char *start, int len);
+int fk_util_is_positive_seq(char *start, int len);
+int fk_util_is_nonminus_seq(char *start, int len);
 int fk_util_min_power(int n);
 
 #define fk_util_tv2millis(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)

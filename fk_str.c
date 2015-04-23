@@ -53,7 +53,7 @@ int fk_str_is_positive(fk_str *str)
 		return 0;
 	}
 
-	rt = fk_util_is_positive_str(str->data, str->len - 1);
+	rt = fk_util_is_positive_seq(str->data, str->len - 1);
 	if (rt == 1) {
 		return 1;
 	} else {
@@ -69,7 +69,7 @@ int fk_str_is_nonminus(fk_str *str)
 		return 0;
 	}
 
-	rt = fk_util_is_nonminus_str(str->data, str->len - 1);
+	rt = fk_util_is_nonminus_seq(str->data, str->len - 1);
 	if (rt == 1) {
 		return 1;
 	} else {
