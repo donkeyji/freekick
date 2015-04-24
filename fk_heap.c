@@ -10,7 +10,7 @@
 #define FK_HEAP_INIT_SIZE 65
 #define FK_HEAP_INC_SIZE 64
 
-static void fk_heap_extend(fk_heap *hp);
+static void fk_heap_stretch(fk_heap *hp);
 
 fk_heap *fk_heap_create(fk_leaf_op *lop)
 {
@@ -102,7 +102,7 @@ void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
 	int i, cmp;
 
 	if (hp->last == (hp->max - 1)) {//heap is full
-		fk_heap_extend(hp);
+		fk_heap_stretch(hp);
 	}
 	hp->last += 1;//from 1 on
 	hp->array[hp->last] = leaf;
@@ -132,7 +132,7 @@ fk_leaf *fk_heap_root(fk_heap *hp)
 	return hp->array[1];//the first item as the root
 }
 
-void fk_heap_extend(fk_heap *hp)
+void fk_heap_stretch(fk_heap *hp)
 {
 	int inc_size, total_size;
 	inc_size = sizeof(fk_leaf *) * FK_HEAP_INC_SIZE;
