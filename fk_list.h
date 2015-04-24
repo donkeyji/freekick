@@ -4,34 +4,20 @@
 #define FK_LIST_ITER_H2T 1
 #define FK_LIST_ITER_T2H 0
 
-typedef struct _fk_node {
-	struct _fk_node *prev;
-	struct _fk_node *next;
-	void *data;
-} fk_node;
+#define fk_rawlist_def(type, name)	\
+typedef struct {				\
+	type *head;					\
+	type *tail;					\
+	int len;					\
+} name
 
-typedef struct _fk_iter {
-	fk_node *cur;
-	fk_node *end;
-	int dir;/*0, 1 */
-} fk_iter;
+#define fk_rawlist_create(type)		(type *)fk_mem_alloc(sizeof(type))
 
-typedef struct _fk_node_op {
-	/* method specified */
-	void *(*data_copy)(void *);
-	void (*data_free)(void *);
-	int (*data_cmp)(void *, void *);
-} fk_node_op;
-
-typedef struct _fk_list {
-	fk_node *head;
-	fk_node *tail;
-	int len;
-	
-	fk_iter iter;
-
-	fk_node_op *nop;
-} fk_list;
+#define fk_rawlist_init(lst)	{		\
+	(lst)->head = NULL;					\
+	(lst)->tail = NULL;					\
+	(lst)->len = 0;						\
+}
 
 /*insert to the head*/
 #define fk_rawlist_insert(lst, nd) {	\
@@ -68,6 +54,35 @@ typedef struct _fk_list {
 		lst->len--;							\
 	}										\
 }
+
+typedef struct _fk_node {
+	struct _fk_node *prev;
+	struct _fk_node *next;
+	void *data;
+} fk_node;
+
+typedef struct _fk_iter {
+	fk_node *cur;
+	fk_node *end;
+	int dir;/*0, 1 */
+} fk_iter;
+
+typedef struct _fk_node_op {
+	/* method specified */
+	void *(*data_copy)(void *);
+	void (*data_free)(void *);
+	int (*data_cmp)(void *, void *);
+} fk_node_op;
+
+typedef struct _fk_list {
+	fk_node *head;
+	fk_node *tail;
+	int len;
+	
+	fk_iter iter;
+
+	fk_node_op *nop;
+} fk_list;
 
 fk_list *fk_list_create(fk_node_op *nop);
 void fk_list_destroy(fk_list *lst);

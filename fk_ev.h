@@ -41,24 +41,9 @@ typedef struct _fk_tmev {
 	struct _fk_tmev *next;
 } fk_tmev;
 
-#define fk_rawlist_def(type, name)	\
-typedef struct {				\
-	type *head;					\
-	type *tail;					\
-	int len;					\
-} name
-
 fk_rawlist_def(fk_ioev, fk_ioev_list);
 fk_rawlist_def(fk_tmev, fk_tmev_list);
 
-#define fk_rawlist_create(type)		(type *)fk_mem_alloc(sizeof(type))
-
-#define fk_rawlist_init(lst)	{		\
-	(lst)->head = NULL;					\
-	(lst)->tail = NULL;					\
-	(lst)->len = 0;						\
-}
- 
 typedef struct _fk_mpxop {
 	void *(*iompx_create)(int max_conn);
 	int (*iompx_add)(void *iompx, int fd, char type);
