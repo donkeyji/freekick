@@ -5,13 +5,17 @@ SRCDIRS := .
 
 SRCEXTS := .c
 
-CFLAGS := -std=gnu99 -Wall -g -pg
-CFLAGS += -I .
+CFLAGS := -I . -std=gnu99 -Wall -D FK_DEBUG
+ifeq ($(gp),y)
+CFLAGS += -g -pg -lc_p
+endif
 
-LDFLAGS := -pg
-LDFLAGS +=
+LDFLAGS :=
+ifeq ($(gp),y)
+LDFLAGS += -pg
+endif
 
-CC = gcc 
+CC = gcc
 
 #SVRSRCS = $(foreach d,$(SRCDIRS),$(wildcard $(addprefix $(d)/*,$(SRCEXTS)))) 
 SVRSRCS = fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_str.c fk_util.c fk_conn.c fk_heap.c fk_obj.c fk_pool.c fk_dict.c fk_vtr.c freekick.c
