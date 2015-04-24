@@ -51,40 +51,6 @@ typedef struct {				\
 fk_ev_list_def(fk_ioev, fk_ioev_list);
 fk_ev_list_def(fk_tmev, fk_tmev_list);
 
-#define fk_ev_list_insert(lst, nd) {	\
-    if (lst->len == 0) {				\
-        nd->next = NULL;				\
-        nd->prev = NULL;				\
-        lst->tail = nd;					\
-    } else {							\
-        nd->prev = lst->head->prev;		\
-        nd->next = lst->head;			\
-    }									\
-    lst->head = nd;						\
-    lst->len++;							\
-}
-
-#define fk_ev_list_remove(lst, nd) {		\
-    if (lst->len > 0) {						\
-		if (lst->len == 1) {				\
-			lst->head = NULL;				\
-			lst->tail = NULL;				\
-		} else {							\
-			if (nd == lst->head) {			\
-				nd->next->prev = nd->prev;	\
-				lst->head = nd->next;		\
-			} else if (nd == lst->tail) {	\
-				nd->prev->next = nd->next;	\
-				lst->tail = nd->prev;		\
-			} else {						\
-				nd->next->prev = nd->prev;	\
-				nd->prev->next = nd->next;	\
-			}								\
-		}									\
-		lst->len--;							\
-	}										\
-}
-
 #define fk_ev_list_create(type)		(type *)fk_mem_alloc(sizeof(type))
 
 #define fk_ev_list_init(lst)	{		\

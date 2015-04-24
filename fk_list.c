@@ -126,16 +126,7 @@ void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
 /*do not change node->data*/
 void fk_list_insert_head_only(fk_list *lst, fk_node *nd)
 {
-	if (lst->len == 0) {//empty list
-		nd->next = NULL;
-		nd->prev = NULL;
-		lst->tail = nd;//also be the tail of this list
-	} else {
-		nd->prev = lst->head->prev;
-		nd->next = lst->head;
-	}
-	lst->head = nd;//new head of this list
-	lst->len++;
+	fk_list_node_insert(lst, nd);
 }
 
 void fk_list_insert_only(fk_list *lst, fk_node *nd)
@@ -149,25 +140,7 @@ void fk_list_insert_only(fk_list *lst, fk_node *nd)
 
 void fk_list_remove_only(fk_list *lst, fk_node *nd)
 {
-	/*put the node away from the chain*/
-	if (lst->len > 0) {
-		if (lst->len == 1) {
-			lst->head = NULL;
-			lst->tail = NULL;
-		} else {/*len >= 2*/
-			if (nd == lst->head) {
-				nd->next->prev = nd->prev;
-				lst->head = nd->next;
-			} else if (nd == lst->tail) {
-				nd->prev->next = nd->next;
-				lst->tail = nd->prev;
-			} else { /*len  >= 3 */
-				nd->next->prev = nd->prev;
-				nd->prev->next = nd->next;
-			}
-		}
-		lst->len--;
-	}
+	fk_list_node_remove(lst, nd);
 }
 
 /*

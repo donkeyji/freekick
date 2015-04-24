@@ -35,6 +35,42 @@ typedef struct _fk_list {
 	fk_node_op *nop;
 } fk_list;
 
+/*insert to the head*/
+#define fk_list_node_insert(lst, nd) {	\
+    if (lst->len == 0) {				\
+        nd->next = NULL;				\
+        nd->prev = NULL;				\
+        lst->tail = nd;					\
+    } else {							\
+        nd->prev = lst->head->prev;		\
+        nd->next = lst->head;			\
+    }									\
+    lst->head = nd;						\
+    lst->len++;							\
+}
+
+/*remove specified node*/
+#define fk_list_node_remove(lst, nd) {		\
+    if (lst->len > 0) {						\
+		if (lst->len == 1) {				\
+			lst->head = NULL;				\
+			lst->tail = NULL;				\
+		} else {							\
+			if (nd == lst->head) {			\
+				nd->next->prev = nd->prev;	\
+				lst->head = nd->next;		\
+			} else if (nd == lst->tail) {	\
+				nd->prev->next = nd->next;	\
+				lst->tail = nd->prev;		\
+			} else {						\
+				nd->next->prev = nd->prev;	\
+				nd->prev->next = nd->next;	\
+			}								\
+		}									\
+		lst->len--;							\
+	}										\
+}
+
 fk_list *fk_list_create(fk_node_op *nop);
 void fk_list_destroy(fk_list *lst);
 void fk_list_insert(fk_list *lst, void *val);

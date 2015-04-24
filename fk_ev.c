@@ -152,7 +152,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 
 	//maybe this ioev in active list
 	if (ioev->active == 1) {
-		fk_ev_list_remove(evmgr.act_ioev, ioev);
+		fk_list_node_remove(evmgr.act_ioev, ioev);
 		ioev->active = 0;
 	}
 
@@ -232,7 +232,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 
 	//maybe this tmev in expired list
 	if (tmev->expired == 1) {
-		fk_ev_list_remove(evmgr.exp_tmev, tmev);
+		fk_list_node_remove(evmgr.exp_tmev, tmev);
 	}
 
 	return 0;
@@ -253,7 +253,7 @@ int fk_ev_pending_tmev_update()
 		cmp = fk_util_tmval_cmp(&now, &(tmev->when));
 		if (cmp >= 0) {
 			fk_heap_pop(evmgr.timer_heap);//pop root from the heap
-			fk_ev_list_insert(evmgr.exp_tmev, tmev);//add to the exp list
+			fk_list_node_insert(evmgr.exp_tmev, tmev);//add to the exp list
 			tmev->expired = 1;
 			root = fk_heap_root(evmgr.timer_heap);//get new root
 		} else {//break directly
@@ -281,7 +281,7 @@ int fk_ev_expired_tmev_proc()
 		cur = tmev;//save current position
 		tmev = tmev->next;//go to the next position
 		//step 1: remove the expired tmev from the expired list first!!!!
-		fk_ev_list_remove(evmgr.exp_tmev, cur);//remove current from the expired list
+		fk_list_node_remove(evmgr.exp_tmev, cur);//remove current from the expired list
 		cur->expired = 0;
 		//step 2: call the callback of the expired tmev
 		rt = tmcb(interval, type, arg);
@@ -316,7 +316,7 @@ int fk_ev_active_ioev_proc()
 		ioev = ioev->next;//go to the next positon
 
 		//step 1: remove the active ioev from the active list first!!!!
-		fk_ev_list_remove(evmgr.act_ioev, cur);
+		fk_list_node_remove(evmgr.act_ioev, cur);
 		cur->active = 0;//mark unactive
 		//step 2: call the callback of the active ioev
 		rt = iocb(fd, type, arg);
@@ -351,7 +351,7 @@ int fk_ev_ioev_activate(int fd, char type)
 		rioev = evmgr.read_ev[fd];
 		if (rioev != NULL) {//when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null
 			if (rioev->active == 0) {
-				fk_ev_list_insert(evmgr.act_ioev, rioev);//add to the exp list
+				fk_list_node_insert(evmgr.act_ioev, rioev);//add to the exp list
 				rioev->active = 1;
 			}
 		}
@@ -360,7 +360,7 @@ int fk_ev_ioev_activate(int fd, char type)
 		wioev = evmgr.write_ev[fd];
 		if (wioev != NULL) {
 			if (wioev->active == 0) {
-				fk_ev_list_insert(evmgr.act_ioev, wioev);//add to the exp list
+				fk_list_node_insert(evmgr.act_ioev, wioev);//add to the exp list
 				wioev->active = 1;
 			}
 		}
