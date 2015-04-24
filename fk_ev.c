@@ -182,7 +182,7 @@ fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb)
 	return ioev;
 }
 
-void fk_ev_ioev_destroy(fk_ioev *ioev)
+void fk_ioev_destroy(fk_ioev *ioev)
 {
 	fk_mem_free(ioev);
 }

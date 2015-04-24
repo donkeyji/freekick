@@ -61,7 +61,7 @@ void fk_conn_destroy(fk_conn *conn)
 {
 	//remove from freekick and unregister event from event manager
 	fk_ev_ioev_remove(conn->read_ev);
-	fk_ev_ioev_destroy(conn->read_ev);
+	fk_ioev_destroy(conn->read_ev);
 
 	fk_buf_destroy(conn->rbuf);
 	fk_buf_destroy(conn->wbuf);
