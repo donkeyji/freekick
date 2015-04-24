@@ -77,7 +77,7 @@ void fk_ioev_destroy(fk_ioev *ioev);
 int fk_ev_ioev_add(fk_ioev *ioev);
 int fk_ev_ioev_remove(fk_ioev *ioev);
 fk_tmev *fk_tmev_create(int timeout, char type, void *arg, fk_tmev_cb tmcb);
-void fk_ev_tmev_destroy(fk_tmev *tmev);
+void fk_tmev_destroy(fk_tmev *tmev);
 int fk_ev_tmev_add(fk_tmev *tmev);
 int fk_ev_tmev_remove(fk_tmev *tmev);
 

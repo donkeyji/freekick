@@ -208,7 +208,7 @@ fk_tmev *fk_tmev_create(int interval, char type, void *arg, fk_tmev_cb tmcb)
 	return tmev;
 }
 
-void fk_ev_tmev_destroy(fk_tmev *tmev)
+void fk_tmev_destroy(fk_tmev *tmev)
 {
 	//just free memory, no other things to do
 	fk_mem_free(tmev);
