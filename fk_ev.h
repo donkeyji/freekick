@@ -5,11 +5,11 @@
 #include <fk_list.h>
 #include <fk_heap.h>
 
-//for file ev
+/*for file ev*/
 #define FK_IOEV_READ 		0x01
 #define FK_IOEV_WRITE 	0x02
 
-//for timer ev
+/*for timer ev*/
 #define FK_TMEV_CYCLE 	1
 #define FK_TMEV_ONCE		2
 
@@ -18,8 +18,8 @@ typedef int (*fk_tmev_cb) (int, char, void *);
 
 typedef struct _fk_ioev {
 	int fd;
-	char type;//FK_IOEV_READ|FK_IOEV_WRITE
-	int active;//whether in active list
+	char type;/*FK_IOEV_READ|FK_IOEV_WRITE*/
+	int active;/*whether in active list*/
 	void *arg;
 	fk_ioev_cb iocb;
 
@@ -28,13 +28,13 @@ typedef struct _fk_ioev {
 } fk_ioev;
 
 typedef struct _fk_tmev {
-	FK_HEAP_LEAF_HEADER;//for heap
+	FK_HEAP_LEAF_HEADER;/*for heap*/
 
-	int expired;//whether in the expired list
-	char type;//FK_TMEV_CYCLE|FK_TMEV_ONCE
-	int interval;//milliseconds
-	struct timeval when;//save the trigger point time: now + timeout
-	void *arg;//ext arg
+	int expired;/*whether in the expired list*/
+	char type;/*FK_TMEV_CYCLE|FK_TMEV_ONCE*/
+	int interval;/*milliseconds*/
+	struct timeval when;/*save the trigger point time: now + timeout*/
+	void *arg;/*ext arg*/
 	fk_tmev_cb tmcb;
 
 	struct _fk_tmev *prev;
@@ -101,20 +101,20 @@ typedef struct _fk_mpxop {
 } fk_mpxop;
 
 typedef struct _fk_evmgr {
-	//use list to save timer ev
-	fk_list *timer_list;//
+	/*use list to save timer ev*/
+	fk_list *timer_list;
 	fk_heap *timer_heap;
 
-	//actived file ev
+	/*actived file ev*/
 	fk_ioev_list *act_ioev;
-	fk_tmev_list *exp_tmev;//when SINGLE expire, fk_mem_free()
+	fk_tmev_list *exp_tmev;/*when SINGLE expire, fk_mem_free()*/
 
-	//use array to save file ev
-	//conn + listen
-	fk_ioev **read_ev;//max_conn + 1
-	fk_ioev **write_ev;//max_conn + 1
+	/*use array to save file ev*/
+	/*conn + listen*/
+	fk_ioev **read_ev;/*max_conn + 1*/
+	fk_ioev **write_ev;/*max_conn + 1*/
 
-	//epoll/kqueue
+	/*epoll/kqueue*/
 	void *iompx;
 } fk_evmgr;
 
