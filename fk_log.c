@@ -24,7 +24,7 @@
 
 static void fk_log_fprint_str(int level, char *data);
 
-fk_log logger;
+static fk_log logger;
 
 void fk_log_init()
 {
