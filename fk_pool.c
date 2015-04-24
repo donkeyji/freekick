@@ -8,18 +8,18 @@
 #include <fk_mem.h>
 #include <fk_pool.h>
 
-#define FK_POOL_BLOCK_NOCONTAIN(blk, ptr)		((uintptr_t)(ptr) < (uintptr_t)(blk)->data || (uintptr_t)(ptr) > (uintptr_t)((blk)->data + (blk)->unit_size * (blk)->unit_cnt))
+#define fk_pool_block_nocontain(blk, ptr)		((uintptr_t)(ptr) < (uintptr_t)(blk)->data || (uintptr_t)(ptr) > (uintptr_t)((blk)->data + (blk)->unit_size * (blk)->unit_cnt))
 
-#define FK_POOL_BLOCK_ISFULL(blk)		((blk)->free_cnt == 0 ? 1:0)
-#define FK_POOL_BLOCK_ISEMPTY(blk)		((blk)->free_cnt == (blk)->unit_cnt ? 1:0)
+#define fk_pool_block_isfull(blk)		((blk)->free_cnt == 0 ? 1:0)
+#define fk_pool_block_isempty(blk)		((blk)->free_cnt == (blk)->unit_cnt ? 1:0)
 
-#define FK_POOL_BLOCK_ALLOC(blk, ptr)	{					\
+#define fk_pool_block_alloc(blk, ptr)	{					\
 	(blk)->free_cnt--;										\
 	(ptr) = (blk)->data + (blk)->unit_size * (blk)->first;	\
 	(blk)->first = *((uint16_t *)(ptr));				\
 }
 
-#define FK_POOL_BLOCK_FREE(blk, ptr) {											\
+#define fk_pool_block_free(blk, ptr) {											\
 	(blk)->free_cnt++;															\
 	*((uint16_t *)(ptr)) = (blk)->first;									\
 	(blk)->first = ((char*)(ptr) - (char*)(blk)->data) / (blk)->unit_size;		\
@@ -79,7 +79,7 @@ void *fk_pool_malloc(fk_pool *pool)
 	blk = pool->head;
 
 	//to find the first non-full block
-	while (blk != NULL && FK_POOL_BLOCK_ISFULL(blk)) {
+	while (blk != NULL && fk_pool_block_isfull(blk)) {
 		blk = blk->next;
 	}
 
@@ -93,7 +93,7 @@ void *fk_pool_malloc(fk_pool *pool)
 		pool->head = blk;//inset to the list as head
 	}
 
-	FK_POOL_BLOCK_ALLOC(blk, ptr);
+	fk_pool_block_alloc(blk, ptr);
 
 	return ptr;
 }
@@ -105,17 +105,17 @@ void fk_pool_free(fk_pool *pool, void *ptr)
 	cur_blk = pool->head;
 	prev_blk = cur_blk;//could not be 'NULL'
 
-	while (cur_blk != NULL && FK_POOL_BLOCK_NOCONTAIN(cur_blk, ptr)) {
+	while (cur_blk != NULL && fk_pool_block_nocontain(cur_blk, ptr)) {
 		prev_blk = cur_blk;
 		cur_blk = cur_blk->next;
 	}
 	if (cur_blk == NULL) {//there is no this block
 		return;
 	}
-	FK_POOL_BLOCK_FREE(cur_blk, ptr);
+	fk_pool_block_free(cur_blk, ptr);
 
 	//if the count of empty blocks beyond the upper limit
-	if (FK_POOL_BLOCK_ISEMPTY(cur_blk)) {
+	if (fk_pool_block_isempty(cur_blk)) {
 		if (pool->empty_blks == FK_POOL_MAX_EMPTY_BLOCKS) {
 			if (cur_blk == pool->head) {
 				pool->head = cur_blk->next;
