@@ -166,7 +166,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	return 0;
 }
 
-fk_ioev *fk_ev_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb)
+fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb)
 {
 	fk_ioev *ioev;
 
@@ -190,7 +190,7 @@ void fk_ev_ioev_destroy(fk_ioev *ioev)
 /* no need to delete timer
  * so fk_ev_timer_del not supplied
  */
-fk_tmev *fk_ev_tmev_create(int interval, char type, void *arg, fk_tmev_cb tmcb)
+fk_tmev *fk_tmev_create(int interval, char type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev *tmev;
 

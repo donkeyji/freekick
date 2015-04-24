@@ -565,13 +565,13 @@ void fk_svr_init()
 	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * FK_MAXCONN_2_MAXFILES(setting.max_conn));
 	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
 	fk_log_debug("listen fd: %d\n", server.listen_fd);
-	server.listen_ev = fk_ev_ioev_create(server.listen_fd, FK_IOEV_READ, NULL, fk_svr_listen_cb);
+	server.listen_ev = fk_ioev_create(server.listen_fd, FK_IOEV_READ, NULL, fk_svr_listen_cb);
 	fk_ev_ioev_add(server.listen_ev);
 
-	server.svr_timer = fk_ev_tmev_create(3000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb);
+	server.svr_timer = fk_tmev_create(3000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb);
 	fk_ev_tmev_add(server.svr_timer);
 #ifdef FK_DEBUG
-	server.svr_timer2 = fk_ev_tmev_create(4000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb2);
+	server.svr_timer2 = fk_tmev_create(4000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb2);
 	fk_ev_tmev_add(server.svr_timer2);
 #endif
 
