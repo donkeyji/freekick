@@ -69,12 +69,6 @@ void fk_ev_init()
 	}
 }
 
-void fk_ev_end()
-{
-	//fk_list_destroy(evmgr.timer_list);
-	//fk_list_destroy(evmgr.act_ioev);
-}
-
 int fk_ev_dispatch()
 {
 	fk_tmev *tmev;

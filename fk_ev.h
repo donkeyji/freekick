@@ -70,15 +70,15 @@ typedef struct _fk_evmgr {
 } fk_evmgr;
 
 void fk_ev_init();
-void fk_ev_end();
 int fk_ev_dispatch();
-fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
-void fk_ioev_destroy(fk_ioev *ioev);
 int fk_ev_ioev_add(fk_ioev *ioev);
 int fk_ev_ioev_remove(fk_ioev *ioev);
-fk_tmev *fk_tmev_create(int timeout, char type, void *arg, fk_tmev_cb tmcb);
-void fk_tmev_destroy(fk_tmev *tmev);
 int fk_ev_tmev_add(fk_tmev *tmev);
 int fk_ev_tmev_remove(fk_tmev *tmev);
+
+fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
+void fk_ioev_destroy(fk_ioev *ioev);
+fk_tmev *fk_tmev_create(int timeout, char type, void *arg, fk_tmev_cb tmcb);
+void fk_tmev_destroy(fk_tmev *tmev);
 
 #endif
