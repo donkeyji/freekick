@@ -34,7 +34,7 @@ static fk_node_op default_nop = {
 	NULL
 };
 
-//save free node
+/*save free node*/
 static fk_list *free_nodes = NULL;
 
 fk_list *fk_list_create(fk_node_op *nop)
@@ -174,7 +174,6 @@ void fk_list_free_node_put(fk_node *nd)
 }
 */
 
-//----------------------------------------------
 fk_node *fk_list_iter_begin(fk_list *lst, int dir)
 {
 	lst->iter.dir = dir;
@@ -241,7 +240,7 @@ void fk_list_remove(fk_list *lst, fk_node *nd)
 	fk_list_node_destroy(nd);
 }
 
-//remove the head from the list, and return the head
+/*remove the head from the list, and return the head*/
 fk_node *fk_list_head_pop(fk_list *lst)
 {
 	fk_node *nd;
