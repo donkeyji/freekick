@@ -15,11 +15,11 @@ typedef struct _fk_node {
 typedef struct _fk_iter {
 	fk_node *cur;
 	fk_node *end;
-	int dir;//0, 1
+	int dir;/*0, 1 */
 } fk_iter;
 
 typedef struct _fk_node_op {
-	// method specified
+	/* method specified */
 	void *(*data_copy)(void *);
 	void (*data_free)(void *);
 	int (*data_cmp)(void *, void *);
@@ -29,7 +29,7 @@ typedef struct _fk_list {
 	fk_node *head;
 	fk_node *tail;
 	int len;
-	//
+	
 	fk_iter iter;
 
 	fk_node_op *nop;
