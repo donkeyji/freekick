@@ -50,13 +50,9 @@ void fk_ev_init()
 	evmgr.write_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * max_files);
 
 	evmgr.exp_tmev = fk_ev_list_create(fk_tmev_list);
-	if (evmgr.exp_tmev != NULL) {
-		fk_ev_list_init(evmgr.exp_tmev);
-	}
+	fk_ev_list_init(evmgr.exp_tmev);
 	evmgr.act_ioev = fk_ev_list_create(fk_ioev_list);
-	if (evmgr.act_ioev) {
-		fk_ev_list_init(evmgr.act_ioev);
-	}
+	fk_ev_list_init(evmgr.act_ioev);
 	//io mode
 	evmgr.iompx = mpxop->iompx_create(max_files);
 
