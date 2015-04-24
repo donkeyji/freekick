@@ -5,10 +5,10 @@
 #define FK_LIST_ITER_T2H 0
 
 #define fk_rawlist_def(type, name)	\
-typedef struct {				\
-	type *head;					\
-	type *tail;					\
-	int len;					\
+typedef struct {					\
+	type *head;						\
+	type *tail;						\
+	int len;						\
 } name
 
 #define fk_rawlist_create(type)		(type *)fk_mem_alloc(sizeof(type))
@@ -21,20 +21,20 @@ typedef struct {				\
 
 /*insert to the head*/
 #define fk_rawlist_insert_head(lst, nd) {	\
-    if (lst->len == 0) {				\
-        nd->next = NULL;				\
-        nd->prev = NULL;				\
-        lst->tail = nd;					\
-    } else {							\
-        nd->prev = lst->head->prev;		\
-        nd->next = lst->head;			\
-    }									\
-    lst->head = nd;						\
-    lst->len++;							\
+    if (lst->len == 0) {					\
+        nd->next = NULL;					\
+        nd->prev = NULL;					\
+        lst->tail = nd;						\
+    } else {								\
+        nd->prev = lst->head->prev;			\
+        nd->next = lst->head;				\
+    }										\
+    lst->head = nd;							\
+    lst->len++;								\
 }
 
 /*remove specified node*/
-#define fk_rawlist_remove_any(lst, nd) {		\
+#define fk_rawlist_remove_any(lst, nd) {	\
     if (lst->len > 0) {						\
 		if (lst->len == 1) {				\
 			lst->head = NULL;				\
