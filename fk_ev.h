@@ -41,17 +41,17 @@ typedef struct _fk_tmev {
 	struct _fk_tmev *next;
 } fk_tmev;
 
-#define FK_EV_LIST_DEF(type, name)	\
+#define fk_ev_list_def(type, name)	\
 typedef struct {				\
 	type *head;					\
 	type *tail;					\
 	int len;					\
 } name
 
-FK_EV_LIST_DEF(fk_ioev, fk_ioev_list);
-FK_EV_LIST_DEF(fk_tmev, fk_tmev_list);
+fk_ev_list_def(fk_ioev, fk_ioev_list);
+fk_ev_list_def(fk_tmev, fk_tmev_list);
 
-#define FK_EV_LIST_INSERT(lst, nd) {	\
+#define fk_ev_list_insert(lst, nd) {	\
     if (lst->head == NULL) {			\
         nd->next = NULL;				\
         nd->prev = NULL;				\
@@ -64,7 +64,7 @@ FK_EV_LIST_DEF(fk_tmev, fk_tmev_list);
     lst->len++;							\
 }
 
-#define FK_EV_LIST_REMOVE(lst, nd) {		\
+#define fk_ev_list_remove(lst, nd) {		\
     if (lst->len > 0) {						\
 		if (lst->len == 1) {				\
 			lst->head = NULL;				\
@@ -85,9 +85,9 @@ FK_EV_LIST_DEF(fk_tmev, fk_tmev_list);
 	}										\
 }
 
-#define FK_EV_LIST_CREATE(type)		(type *)fk_mem_alloc(sizeof(type))
+#define fk_ev_list_create(type)		(type *)fk_mem_alloc(sizeof(type))
 
-#define FK_EV_LIST_INIT(lst)	{		\
+#define fk_ev_list_init(lst)	{		\
 	(lst)->head = NULL;					\
 	(lst)->tail = NULL;					\
 	(lst)->len = 0;						\
