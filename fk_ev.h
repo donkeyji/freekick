@@ -51,9 +51,9 @@ typedef struct {				\
 fk_rawlist_def(fk_ioev, fk_ioev_list);
 fk_rawlist_def(fk_tmev, fk_tmev_list);
 
-#define fk_ev_list_create(type)		(type *)fk_mem_alloc(sizeof(type))
+#define fk_rawlist_create(type)		(type *)fk_mem_alloc(sizeof(type))
 
-#define fk_ev_list_init(lst)	{		\
+#define fk_rawlist_init(lst)	{		\
 	(lst)->head = NULL;					\
 	(lst)->tail = NULL;					\
 	(lst)->len = 0;						\
