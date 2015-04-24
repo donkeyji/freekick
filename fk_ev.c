@@ -81,7 +81,7 @@ int fk_ev_dispatch()
 	struct timeval now, timeout;
 	struct timeval *pto;
 
-	pto = NULL;//indefinitely wait
+	pto = NULL;/*indefinitely wait*/
 
 	tmev = fk_ev_nearest_tmev_get(evmgr);
 	if (tmev != NULL) {
@@ -102,8 +102,10 @@ int fk_ev_dispatch()
 	 */
 	mpxop->iompx_dispatch((&evmgr)->iompx, pto);
 
-	//remove the nearest timer from timer_list,
-	//insert it to the exp_tmev
+	/*
+	 * remove the nearest timer from timer_list, 
+	 * insert it to the exp_tmev
+	 */
 	fk_ev_pending_tmev_update();
 
 	fk_ev_active_ioev_proc();
