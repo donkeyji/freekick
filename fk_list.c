@@ -126,7 +126,7 @@ void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
 //do not change node->data
 void fk_list_insert_head_only(fk_list *lst, fk_node *nd)
 {
-	if (lst->head == NULL) {//empty list
+	if (lst->len == 0) {//empty list
 		nd->next = NULL;
 		nd->prev = NULL;
 		lst->tail = nd;//also be the tail of this list

@@ -52,7 +52,7 @@ fk_ev_list_def(fk_ioev, fk_ioev_list);
 fk_ev_list_def(fk_tmev, fk_tmev_list);
 
 #define fk_ev_list_insert(lst, nd) {	\
-    if (lst->head == NULL) {			\
+    if (lst->len == 0) {				\
         nd->next = NULL;				\
         nd->prev = NULL;				\
         lst->tail = nd;					\
