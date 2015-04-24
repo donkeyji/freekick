@@ -4,8 +4,6 @@
 #define FK_LIST_ITER_H2T 1
 #define FK_LIST_ITER_T2H 0
 
-#define FK_NODE_DATA(nd) (nd->data)
-
 typedef struct _fk_node {
 	struct _fk_node *prev;
 	struct _fk_node *next;
