@@ -20,7 +20,7 @@ typedef struct {				\
 }
 
 /*insert to the head*/
-#define fk_rawlist_insert(lst, nd) {	\
+#define fk_rawlist_insert_head(lst, nd) {	\
     if (lst->len == 0) {				\
         nd->next = NULL;				\
         nd->prev = NULL;				\
@@ -34,7 +34,7 @@ typedef struct {				\
 }
 
 /*remove specified node*/
-#define fk_rawlist_remove(lst, nd) {		\
+#define fk_rawlist_remove_any(lst, nd) {		\
     if (lst->len > 0) {						\
 		if (lst->len == 1) {				\
 			lst->head = NULL;				\

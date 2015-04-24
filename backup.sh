@@ -1,8 +1,11 @@
 #!/bin/bash
 
+ver=$1
+
 git push origin master
 d=$(date "+%Y-%m-%d_%H:%M")
-name="hopex-$d.tar.gz"
+appendix=$d-$ver
+name="hopex-$appendix.tar.gz"
 
 dst_dir="/Users/huge/Work/VShared/freekick/code/release-hopex"
 test -d "$dst_dir" && git archive master --prefix='hopex/' | gzip > "$dst_dir"/$name
