@@ -41,15 +41,15 @@ typedef struct _fk_tmev {
 	struct _fk_tmev *next;
 } fk_tmev;
 
-#define fk_ev_list_def(type, name)	\
+#define fk_rawlist_def(type, name)	\
 typedef struct {				\
 	type *head;					\
 	type *tail;					\
 	int len;					\
 } name
 
-fk_ev_list_def(fk_ioev, fk_ioev_list);
-fk_ev_list_def(fk_tmev, fk_tmev_list);
+fk_rawlist_def(fk_ioev, fk_ioev_list);
+fk_rawlist_def(fk_tmev, fk_tmev_list);
 
 #define fk_ev_list_create(type)		(type *)fk_mem_alloc(sizeof(type))
 
