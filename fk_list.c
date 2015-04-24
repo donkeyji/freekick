@@ -126,7 +126,7 @@ void fk_list_inser_sorted_only(fk_list *lst, fk_node *nd)
 /*do not change node->data*/
 void fk_list_insert_head_only(fk_list *lst, fk_node *nd)
 {
-	fk_list_node_insert(lst, nd);
+	fk_rawlist_insert(lst, nd);
 }
 
 void fk_list_insert_only(fk_list *lst, fk_node *nd)
@@ -140,7 +140,7 @@ void fk_list_insert_only(fk_list *lst, fk_node *nd)
 
 void fk_list_remove_only(fk_list *lst, fk_node *nd)
 {
-	fk_list_node_remove(lst, nd);
+	fk_rawlist_remove(lst, nd);
 }
 
 /*

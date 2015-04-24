@@ -34,7 +34,7 @@ typedef struct _fk_list {
 } fk_list;
 
 /*insert to the head*/
-#define fk_list_node_insert(lst, nd) {	\
+#define fk_rawlist_insert(lst, nd) {	\
     if (lst->len == 0) {				\
         nd->next = NULL;				\
         nd->prev = NULL;				\
@@ -48,7 +48,7 @@ typedef struct _fk_list {
 }
 
 /*remove specified node*/
-#define fk_list_node_remove(lst, nd) {		\
+#define fk_rawlist_remove(lst, nd) {		\
     if (lst->len > 0) {						\
 		if (lst->len == 1) {				\
 			lst->head = NULL;				\
