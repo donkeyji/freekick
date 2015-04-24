@@ -703,6 +703,7 @@ void fk_svr_db_save()
 	fk_log_info("to save db\n");
 	rt = fork();
 	if (rt < 0) {
+		fk_log_error("fork: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	} else if (rt > 0) {
 		server.save_done = 0;
