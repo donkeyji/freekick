@@ -340,7 +340,7 @@ int fk_on_zadd(fk_conn *conn)
 			elt = fk_mem_alloc(sizeof(fk_elt));
 			elt->key = fk_conn_arg_get(conn, i);
 			elt->value = fk_conn_arg_get(conn, i+1);
-			fk_list_insert(lst, elt);
+			fk_list_sorted_insert(lst, elt);
 		}
 		fk_dict_add(server.db[conn->db_idx], skey, lst);
 		sprintf(fk_buf_free_start(conn->wbuf), ":%d\r\n", 1);
@@ -354,7 +354,7 @@ int fk_on_zadd(fk_conn *conn)
 			elt = fk_mem_alloc(sizeof(fk_elt));
 			elt->key = fk_conn_arg_get(conn, i);
 			elt->value = fk_conn_arg_get(conn, i+1);
-			fk_list_insert(lst, elt);
+			fk_list_sorted_insert(lst, elt);
 		}
 		fk_dict_add(server.db[conn->db_idx], skey, lst);
 		return 0;
@@ -365,7 +365,7 @@ int fk_on_zadd(fk_conn *conn)
 		elt = fk_mem_alloc(sizeof(fk_elt));
 		elt->key = fk_conn_arg_get(conn, i);
 		elt->value = fk_conn_arg_get(conn, i+1);
-		fk_list_insert(lst, elt);
+		fk_list_sorted_insert(lst, elt);
 	}
 	return 0;
 }

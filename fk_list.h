@@ -107,7 +107,9 @@ typedef struct _fk_list {
 
 fk_list *fk_list_create(fk_node_op *nop);
 void fk_list_destroy(fk_list *lst);
-void fk_list_insert(fk_list *lst, void *val);
+void fk_list_head_insert(fk_list *lst, void *val);
+void fk_list_tail_insert(fk_list *lst, void *val);
+void fk_list_sorted_insert(fk_list *lst, void *val);
 fk_node *fk_list_iter_next(fk_list *lst);
 fk_node *fk_list_iter_begin(fk_list *lst, int dir);
 int fk_list_iter_end(fk_list *lst);
@@ -116,7 +118,6 @@ void fk_list_init();
 void fk_list_free_display();
 fk_node *fk_list_head_pop(fk_list *lst);
 fk_node *fk_list_search(fk_list *lst, void *key);
-void fk_list_insert_only(fk_list *lst, fk_node *nd);
 void fk_list_tail_insert_only(fk_list *lst, fk_node *nd);
 void fk_list_head_insert_only(fk_list *lst, fk_node *nd);
 void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd);

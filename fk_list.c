@@ -132,15 +132,6 @@ void fk_list_tail_insert_only(fk_list *lst, fk_node *nd)
 	fk_rawlist_insert_tail(lst, nd);
 }
 
-void fk_list_insert_only(fk_list *lst, fk_node *nd)
-{
-	if (lst->nop->data_cmp == NULL) {
-		fk_list_head_insert_only(lst, nd);
-	} else {
-		fk_list_sorted_insert_only(lst, nd);
-	}
-}
-
 void fk_list_any_remove_only(fk_list *lst, fk_node *nd)
 {
 	fk_rawlist_remove_any(lst, nd);
@@ -209,24 +200,37 @@ int fk_list_iter_end(fk_list *lst)
 	return 0;
 }
 
-void fk_list_insert(fk_list *lst, void *val)
+void fk_list_head_insert(fk_list *lst, void *val)
 {
 	fk_node *nd;
 
-	//nd = fk_list_free_node_get();
-	//nd = (fk_node *)fk_mem_alloc(sizeof(fk_node));
 	nd = fk_node_create();
 
-	//initialize the node->data
-	//if (lst->nop->data_copy != NULL) {
-		//nd->data = lst->nop->data_copy(val);//do copy val memory
-	//} else {
-		//nd->data = val;//do not copy val memory
-	//}
 	fk_node_data_set(lst, nd, val);
 
-	//only insert this node to the list, only the prev/next field of the node changes
-	fk_list_insert_only(lst, nd);
+	fk_list_head_insert_only(lst, nd);
+}
+
+void fk_list_tail_insert(fk_list *lst, void *val)
+{
+	fk_node *nd;
+
+	nd = fk_node_create();
+
+	fk_node_data_set(lst, nd, val);
+
+	fk_list_tail_insert_only(lst, nd);
+}
+
+void fk_list_sorted_insert(fk_list *lst, void *val)
+{
+	fk_node *nd;
+
+	nd = fk_node_create();
+
+	fk_node_data_set(lst, nd, val);
+
+	fk_list_sorted_insert_only(lst, nd);
 }
 
 void fk_list_remove(fk_list *lst, fk_node *nd)

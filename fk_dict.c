@@ -190,7 +190,7 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 		fk_elt_key_set(dct, elt, key);
 		fk_elt_value_set(dct, elt, value);
 
-		fk_list_insert(lst, elt);
+		fk_list_head_insert(lst, elt);
 		dct->used++;
 		return 0;
 	}
@@ -284,7 +284,7 @@ int fk_dict_stretch(fk_dict *dct)
 					return -1;
 				}
 			}
-			fk_list_insert_only(bks[idx], nd);//then insert
+			fk_list_head_insert_only(bks[idx], nd);//then insert
 			nd = nxt;
 		}
 	}
