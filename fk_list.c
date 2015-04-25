@@ -121,22 +121,6 @@ void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 	return;
 }
 
-/*do not change node->data*/
-void fk_list_head_insert_only(fk_list *lst, fk_node *nd)
-{
-	fk_rawlist_insert_head(lst, nd);
-}
-
-void fk_list_tail_insert_only(fk_list *lst, fk_node *nd)
-{
-	fk_rawlist_insert_tail(lst, nd);
-}
-
-void fk_list_any_remove_only(fk_list *lst, fk_node *nd)
-{
-	fk_rawlist_remove_any(lst, nd);
-}
-
 /*
 fk_node *fk_list_free_node_get()
 {
