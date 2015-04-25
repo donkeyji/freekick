@@ -113,7 +113,7 @@ void fk_list_sorted_insert(fk_list *lst, void *val);
 fk_node *fk_list_iter_next(fk_list *lst);
 fk_node *fk_list_iter_begin(fk_list *lst, int dir);
 int fk_list_iter_end(fk_list *lst);
-void fk_list_remove(fk_list *lst, fk_node *nd);
+void fk_list_any_remove(fk_list *lst, fk_node *nd);
 void fk_list_init();
 void fk_list_free_display();
 fk_node *fk_list_head_pop(fk_list *lst);

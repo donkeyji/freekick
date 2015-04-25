@@ -233,7 +233,7 @@ void fk_list_sorted_insert(fk_list *lst, void *val)
 	fk_list_sorted_insert_only(lst, nd);
 }
 
-void fk_list_remove(fk_list *lst, fk_node *nd)
+void fk_list_any_remove(fk_list *lst, fk_node *nd)
 {
 	fk_list_any_remove_only(lst, nd);
 
@@ -255,7 +255,7 @@ fk_node *fk_list_head_pop(fk_list *lst)
 	nd = NULL;
 	if (lst->len > 0) {
 		nd = lst->head;
-		fk_list_remove(lst, nd);
+		fk_list_any_remove(lst, nd);
 	}
 	return nd;
 }
@@ -286,7 +286,7 @@ void fk_list_destroy(fk_list *lst)
 
 	nd = lst->head;
 	while (nd != NULL) {
-		fk_list_remove(lst, nd);
+		fk_list_any_remove(lst, nd);
 	}
 	fk_mem_free(lst);
 }
