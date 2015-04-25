@@ -57,11 +57,6 @@ void fk_list_init()
 	free_nodes = fk_list_create(NULL);
 }
 
-void fk_list_free_display()
-{
-	printf("free_nodes len: %d\n", free_nodes->len);
-}
-
 void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 {
 	int pos;
