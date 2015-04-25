@@ -175,13 +175,7 @@ void fk_list_any_remove(fk_list *lst, fk_node *nd)
 {
 	fk_list_any_remove_only(lst, nd);
 
-	//whether to free the node->data
-	//if (lst->nop->data_free != NULL) {
-		//lst->nop->data_free(nd->data);//free node->data
-	//}
 	fk_node_data_unset(lst, nd);
-	//fk_list_free_node_put(nd);
-	//fk_mem_free(nd);
 	fk_node_destroy(nd);
 }
 
