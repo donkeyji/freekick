@@ -119,6 +119,7 @@ fk_node *fk_list_search(fk_list *lst, void *key);
 void fk_list_insert_only(fk_list *lst, fk_node *nd);
 void fk_list_tail_insert_only(fk_list *lst, fk_node *nd);
 void fk_list_head_insert_only(fk_list *lst, fk_node *nd);
+void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd);
 void fk_list_any_remove_only(fk_list *lst, fk_node *nd);
 
 #endif
