@@ -4,9 +4,6 @@
 #include <fk_list.h>
 #include <fk_mem.h>
 
-//static fk_node *fk_list_free_node_get();
-//static void fk_list_free_node_put(fk_node *nd);
-
 #define fk_node_create()		(fk_node *)fk_mem_alloc(sizeof(fk_node))
 
 #define fk_node_destroy(nd)	fk_mem_free((nd))
@@ -32,9 +29,6 @@ static fk_node_op default_nop = {
 	NULL
 };
 
-/*save free node*/
-static fk_list *free_nodes = NULL;
-
 fk_list *fk_list_create(fk_node_op *nop)
 {
 	fk_list *lst;
@@ -52,10 +46,6 @@ fk_list *fk_list_create(fk_node_op *nop)
 	return lst;
 }
 
-void fk_list_init()
-{
-	free_nodes = fk_list_create(NULL);
-}
 
 void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 {
@@ -115,37 +105,6 @@ void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 
 	return;
 }
-
-/*
-fk_node *fk_list_free_node_get()
-{
-	fk_node *nd;
-
-	nd = NULL;
-	if (free_nodes->len > 0) {
-		nd = free_nodes->head;
-		fk_list_any_remove_only(free_nodes, nd);
-	}
-
-	if (nd == NULL) {
-		nd = fk_mem_alloc(sizeof(fk_node));
-		nd->prev = NULL;
-		nd->next = NULL;
-		nd->data = NULL;
-	}
-	return nd;
-}
-*/
-
-/*
-void fk_list_free_node_put(fk_node *nd)
-{
-	nd->prev = NULL;
-	nd->next = NULL;
-	nd->data = NULL;
-	fk_list_insert_only(free_nodes, nd);
-}
-*/
 
 fk_node *fk_list_iter_begin(fk_list *lst, int dir)
 {

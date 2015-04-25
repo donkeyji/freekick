@@ -27,6 +27,7 @@
 #include <fk_util.h>
 #include <fk_pool.h>
 #include <fk_dict.h>
+#include <fk_cache.h>
 #include <freekick.h>
 
 typedef struct _fk_server {
@@ -739,7 +740,7 @@ void fk_main_init(char *conf_path)
 
 	fk_signal_reg();
 
-	fk_list_init();
+	fk_cache_init();
 
 	fk_proto_init();
 

@@ -17,7 +17,7 @@ typedef struct {					\
 
 #define fk_rawlist_tail(lst)	((lst)->tail)
 
-#define fk_rawList_len(lst)		((lst)->len)
+#define fk_rawlist_len(lst)		((lst)->len)
 
 #define fk_rawlist_init(lst)	{		\
 	(lst)->head = NULL;					\
