@@ -13,6 +13,8 @@ typedef struct {					\
 
 #define fk_rawlist_create(type)		(type *)fk_mem_alloc(sizeof(type))
 
+#define fk_rawlist_destroy(lst)		fk_mem_free(lst)
+
 #define fk_rawlist_head(lst)	((lst)->head)
 
 #define fk_rawlist_tail(lst)	((lst)->tail)
