@@ -265,7 +265,8 @@ int fk_ev_expired_tmev_proc()
 	fk_tmev_cb tmcb;
 	char type;
 
-	tmev = evmgr.exp_tmev->head;
+	//tmev = evmgr.exp_tmev->head;
+	tmev = fk_rawlist_head(evmgr.exp_tmev);
 	while (tmev != NULL) {
 		arg = tmev->arg;
 		tmcb = tmev->tmcb;
@@ -299,7 +300,8 @@ int fk_ev_active_ioev_proc()
 	char type;
 	fk_ioev *ioev, *cur;
 
-	ioev = evmgr.act_ioev->head;
+	//ioev = evmgr.act_ioev->head;
+	ioev = fk_rawlist_head(evmgr.act_ioev);
 	while (ioev != NULL) {
 		fd = ioev->fd;
 		arg = ioev->arg;
