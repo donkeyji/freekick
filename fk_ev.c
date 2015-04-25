@@ -146,7 +146,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 
 	//maybe this ioev in active list
 	if (ioev->active == 1) {
-		fk_rawlist_remove_any(evmgr.act_ioev, ioev);
+		fk_rawlist_any_remove(evmgr.act_ioev, ioev);
 		ioev->active = 0;
 	}
 
@@ -226,7 +226,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 
 	//maybe this tmev in expired list
 	if (tmev->expired == 1) {
-		fk_rawlist_remove_any(evmgr.exp_tmev, tmev);
+		fk_rawlist_any_remove(evmgr.exp_tmev, tmev);
 	}
 
 	return 0;
@@ -276,7 +276,7 @@ int fk_ev_expired_tmev_proc()
 		cur = tmev;//save current position
 		tmev = tmev->next;//go to the next position
 		//step 1: remove the expired tmev from the expired list first!!!!
-		fk_rawlist_remove_any(evmgr.exp_tmev, cur);//remove current from the expired list
+		fk_rawlist_any_remove(evmgr.exp_tmev, cur);//remove current from the expired list
 		cur->expired = 0;
 		//step 2: call the callback of the expired tmev
 		rt = tmcb(interval, type, arg);
@@ -312,7 +312,7 @@ int fk_ev_active_ioev_proc()
 		ioev = ioev->next;//go to the next positon
 
 		//step 1: remove the active ioev from the active list first!!!!
-		fk_rawlist_remove_any(evmgr.act_ioev, cur);
+		fk_rawlist_any_remove(evmgr.act_ioev, cur);
 		cur->active = 0;//mark unactive
 		//step 2: call the callback of the active ioev
 		rt = iocb(fd, type, arg);

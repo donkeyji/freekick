@@ -55,7 +55,7 @@ typedef struct {					\
 }
 
 /*remove specified node*/
-#define fk_rawlist_remove_any(lst, nd) {	\
+#define fk_rawlist_any_remove(lst, nd) {	\
     if (lst->len > 0) {						\
 		if (lst->len == 1) {				\
 			lst->head = NULL;				\
@@ -116,7 +116,7 @@ void fk_list_any_remove(fk_list *lst, fk_node *nd);
 
 #define fk_list_head_insert_only	fk_rawlist_head_insert
 #define fk_list_tail_insert_only	fk_rawlist_tail_insert
-#define fk_list_any_remove_only		fk_rawlist_remove_any
+#define fk_list_any_remove_only		fk_rawlist_any_remove
 void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd);
 
 void fk_list_free_display();
