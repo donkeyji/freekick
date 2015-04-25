@@ -274,7 +274,7 @@ int fk_dict_stretch(fk_dict *dct)
 		nd = fk_list_iter_begin(lst, FK_LIST_ITER_H2T);
 		while (!fk_list_iter_end(lst)) {
 			nxt = fk_list_iter_next(lst);
-			fk_list_remove_only(lst, nd);//remove first
+			fk_list_any_remove_only(lst, nd);//remove first
 			key = ((fk_elt *)nd->data)->key;
 			hash = fk_dict_hash(key);
 			idx = hash & (new_size - 1);

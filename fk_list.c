@@ -129,6 +129,15 @@ void fk_list_insert_head_only(fk_list *lst, fk_node *nd)
 	fk_rawlist_insert_head(lst, nd);
 }
 
+void fk_list_tail_insert_only(fk_list *lst, fk_node *nd)
+{
+	fk_rawlist_insert_tail(lst, nd);
+}
+
+void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
+{
+}
+
 void fk_list_insert_only(fk_list *lst, fk_node *nd)
 {
 	if (lst->nop->data_cmp == NULL) {
@@ -138,7 +147,7 @@ void fk_list_insert_only(fk_list *lst, fk_node *nd)
 	}
 }
 
-void fk_list_remove_only(fk_list *lst, fk_node *nd)
+void fk_list_any_remove_only(fk_list *lst, fk_node *nd)
 {
 	fk_rawlist_remove_any(lst, nd);
 }
@@ -151,7 +160,7 @@ fk_node *fk_list_free_node_get()
 	nd = NULL;
 	if (free_nodes->len > 0) {
 		nd = free_nodes->head;
-		fk_list_remove_only(free_nodes, nd);
+		fk_list_any_remove_only(free_nodes, nd);
 	}
 
 	if (nd == NULL) {
@@ -228,7 +237,7 @@ void fk_list_insert(fk_list *lst, void *val)
 
 void fk_list_remove(fk_list *lst, fk_node *nd)
 {
-	fk_list_remove_only(lst, nd);
+	fk_list_any_remove_only(lst, nd);
 
 	//whether to free the node->data
 	//if (lst->nop->data_free != NULL) {

@@ -39,6 +39,21 @@ typedef struct {					\
     lst->len++;								\
 }
 
+/*insert to the tail*/
+#define fk_rawlist_insert_tail(lst, nd) {	\
+    if (lst->len == 0) {					\
+        nd->next = NULL;					\
+        nd->prev = NULL;					\
+        lst->head = nd;						\
+    } else {								\
+		nd->prev = lst->tail;				\
+		nd->next = NULL;					\
+		lst->tail->next = nd;				\
+    }										\
+    lst->tail = nd;							\
+    lst->len++;								\
+}
+
 /*remove specified node*/
 #define fk_rawlist_remove_any(lst, nd) {	\
     if (lst->len > 0) {						\
@@ -102,6 +117,8 @@ void fk_list_free_display();
 fk_node *fk_list_head_pop(fk_list *lst);
 fk_node *fk_list_search(fk_list *lst, void *key);
 void fk_list_insert_only(fk_list *lst, fk_node *nd);
-void fk_list_remove_only(fk_list *lst, fk_node *nd);
+void fk_list_tail_insert_only(fk_list *lst, fk_node *nd);
+void fk_list_head_insert_only(fk_list *lst, fk_node *nd);
+void fk_list_any_remove_only(fk_list *lst, fk_node *nd);
 
 #endif
