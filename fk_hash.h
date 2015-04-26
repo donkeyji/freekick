@@ -23,6 +23,7 @@ fk_rawlist_def(fk_elt, fk_elt_list);
 
 typedef struct _fk_dict {
 	int size;
+	int mask;
 	int used;
 	int limit;
 	fk_elt_list **buckets;
@@ -32,10 +33,13 @@ typedef struct _fk_dict {
 fk_dict *fk_dict_create();
 void fk_dict_destroy(fk_dict *dct);
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value);
+int fk_dict_replace(fk_dict *dct, fk_str *key, void *value);
 int fk_dict_remove(fk_dict *dct, fk_str *key);
+fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
+#define fk_dict_get(dct, key) fk_dict_search(dct, key, NULL)
+
 #ifdef FK_DEBUG
 void fk_dict_print(fk_dict *dct);
 #endif
-void *fk_dict_get(fk_dict *dct, fk_str *key);
 
 #endif
