@@ -414,8 +414,10 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 
 	fk_buf_shrink(conn->wbuf);
 
-	//if all the data in wbuf is sent, remove the write ioev
-	//but donot destroy the write ioev
+	/*
+	 * if all the data in wbuf is sent, remove the write ioev
+	 * but donot destroy the write ioev
+	 */
 	if (fk_buf_payload_len(conn->wbuf) == 0) {
 		fk_ev_ioev_remove(conn->write_ev);
 		conn->write_added = 0;

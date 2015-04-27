@@ -60,7 +60,7 @@ void fk_buf_print(fk_buf *buf);
 }
 
 #define fk_buf_shrink(buf)	{							\
-	if ((buf)->len >= FK_BUF_HIGHWAT					\
+	if ((buf)->len >= FK_BUF_INIT_LEN					\
 		&& (buf)->high - (buf)->low < FK_BUF_INIT_LEN) 	\
 	{													\
 		memmove((buf)->data,							\
