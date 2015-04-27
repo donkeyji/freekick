@@ -49,11 +49,15 @@ int fk_util_min_power(int n);
 		}									      			\
 	} while (0)
 
-#define fk_util_int_len(num, len)	\
-	len = 0;						\
-	while (num != 0) {				\
-		len++;						\
-		num /= 10;					\
-	}								\
+#define fk_util_int_len(num, len)		\
+	if ((num) > 0) {					\
+		(len) = 0;						\
+		while ((num) != 0) {			\
+			(len)++;					\
+			(num) /= 10;				\
+		}								\
+	} else {							\
+		(len) = 1;						\
+	}
 
 #endif
