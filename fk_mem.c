@@ -1,3 +1,6 @@
+#include <unistd.h>
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <jemalloc/jemalloc.h>
 
@@ -16,12 +19,23 @@ static size_t freed = 0;
 static size_t alloc_times = 0;
 static size_t free_times = 0;
 
+void fk_mem_oom()
+{
+	fprintf(stderr, "out of memory");
+	fflush(stderr);
+	sleep(1);
+	abort();
+}
+
 void *fk_mem_alloc(size_t size)
 {
 	void *ptr;
 	size_t real_size;
 
 	ptr = malloc(size);
+	if (ptr == NULL) {
+		fk_mem_oom();
+	}
 	if (ptr != NULL) {
 #ifdef __APPLE__
 		real_size = malloc_size(ptr);
@@ -46,6 +60,9 @@ void *fk_mem_realloc(void *ptr, size_t size)
 #endif
 
 	new_ptr = realloc(ptr, size);
+	if (new_ptr == NULL) {
+		fk_mem_oom();
+	}
 
 #ifdef __APPLE__
 	new_size = malloc_size(ptr);
