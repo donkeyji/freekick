@@ -108,3 +108,20 @@ int fk_util_min_power(int n)
 	}
 	return 1 << q;
 }
+
+int fk_util_decimal_digit(int num)
+{
+	int len;
+
+	len = 0;
+	if (num < 0) {
+		len++;
+	}
+
+	do {
+		len++;
+		num /= 10;
+	} while(num != 0);
+
+	return len;
+}

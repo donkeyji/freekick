@@ -442,10 +442,8 @@ int fk_conn_rsp_send(fk_conn *conn)
 int fk_conn_rsp_add_int(fk_conn *conn, int num)
 {
 	int len;
-	int tmp;
 
-	tmp = abs(num);
-	fk_util_int_len(tmp, len);
+	len = fk_util_decimal_digit(num);
 	len += 3;
 	if (num < 0) {
 		len += 1;//minus
@@ -499,10 +497,8 @@ int fk_conn_rsp_add_error(fk_conn *conn, char *error, int error_len)
 int fk_conn_rsp_add_bulk(fk_conn *conn, int bulk_len)
 {
 	int len;
-	int tmp;
 
-	tmp = abs(bulk_len);
-	fk_util_int_len(tmp, len);
+	len = fk_util_decimal_digit(bulk_len);
 	len += 3;
 	if (bulk_len < 0) {
 		len += 1;//minus
@@ -522,10 +518,8 @@ int fk_conn_rsp_add_bulk(fk_conn *conn, int bulk_len)
 int fk_conn_rsp_add_mbulk(fk_conn *conn, int bulk_cnt)
 {
 	int len;
-	int tmp;
 
-	tmp = abs(bulk_cnt);
-	fk_util_int_len(tmp, len);
+	len = fk_util_decimal_digit(bulk_cnt);
 	len += 3;
 	if (bulk_cnt < 0) {
 		len += 1;
