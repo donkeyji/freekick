@@ -12,7 +12,7 @@
 
 #include <fk_sock.h>
 
-static int fk_sock_set_noblocking(int sock);
+static int fk_sock_set_nonblock(int sock);
 
 int fk_sock_create_listen(char *addr, uint16_t port)
 {
@@ -26,7 +26,7 @@ int fk_sock_create_listen(char *addr, uint16_t port)
 		return -1;
 	}
 
-	if (fk_sock_set_noblocking(listen_sock) == -1) {
+	if (fk_sock_set_nonblock(listen_sock) == -1) {
 		return -1;
 	}
 
@@ -60,7 +60,7 @@ int fk_sock_accept(int listen_fd)
 	if (fd < 0) {
 		return -1;
 	}
-	fk_sock_set_noblocking(fd);
+	fk_sock_set_nonblock(fd);
 	return fd;
 }
 
@@ -79,7 +79,7 @@ int fk_sock_close(int fd)
 	return close(fd);
 }
 
-int fk_sock_set_noblocking(int sock)
+int fk_sock_set_nonblock(int sock)
 {
 	int rt;
 	rt = fcntl(sock, F_SETFL, O_NONBLOCK);
