@@ -77,11 +77,6 @@ size_t fk_mem_allocated()
 	return allocated;
 }
 
-size_t fk_mem_freed()
-{
-	return freed;
-}
-
 size_t fk_mem_alloc_times()
 {
 	return alloc_times;
