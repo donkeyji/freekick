@@ -710,7 +710,7 @@ void fk_svr_db_save()
 		return;
 	}
 
-	fk_log_info("to save db\n");
+	fk_log_debug("to save db\n");
 	rt = fork();
 	if (rt < 0) {
 		fk_log_error("fork: %s\n", strerror(errno));
