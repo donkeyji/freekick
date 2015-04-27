@@ -12,7 +12,7 @@
  
 #define fk_elt_destroy(elt)	fk_mem_free(elt)
 
-#define fk_elt_key_set(dct, elt, k)	{		\
+#define fk_elt_key_set(dct, elt, k)	{				\
 	if ((dct)->eop->key_copy != NULL) {				\
 		(elt)->key = (dct)->eop->key_copy((k));		\
 	} else {										\
@@ -20,7 +20,7 @@
 	}												\
 }
 
-#define fk_elt_value_set(dct, elt, v)	{		\
+#define fk_elt_value_set(dct, elt, v)	{			\
 	if ((dct)->eop->val_copy != NULL) {				\
 		(elt)->value = (dct)->eop->val_copy((v));	\
 	} else {										\
@@ -28,14 +28,14 @@
 	}												\
 }
 
-#define fk_elt_key_unset(dct, elt)	{			\
+#define fk_elt_key_unset(dct, elt)	{				\
 	if ((dct)->eop->key_free != NULL) {				\
 		(dct)->eop->key_free((elt)->key);			\
 	}												\
 	(elt)->key = NULL;								\
 }
 
-#define fk_elt_value_unset(dct, elt)	{		\
+#define fk_elt_value_unset(dct, elt)	{			\
 	if ((dct)->eop->val_free != NULL) {				\
 		(dct)->eop->val_free((elt)->value);			\
 	}												\
