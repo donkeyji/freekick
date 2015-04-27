@@ -87,7 +87,7 @@ int fk_conn_data_recv(fk_conn *conn)
 #ifdef FK_DEBUG
 	fk_log_debug("[before rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
 #endif
-	fk_buf_shrink(conn->rbuf);
+	//fk_buf_shrink(conn->rbuf);
 	if (fk_buf_free_len(conn->rbuf) <= conn->rbuf->len / 4) {
 		fk_buf_shift(conn->rbuf);
 	}
@@ -430,9 +430,7 @@ int fk_conn_rsp_send(fk_conn *conn)
 	fk_buf *wbuf;
 
 	wbuf = conn->wbuf;
-#ifdef FK_DEBUG
-	//fk_log_debug("[wbuf data]: %s\n", fk_buf_payload_start(wbuf));
-#endif
+	fk_buf_shrink(conn->rbuf);
 	//if any data in write buf and never add write ioev yet
 	if (fk_buf_payload_len(wbuf) > 0 && conn->write_added == 0) {
 		fk_ev_ioev_add(conn->write_ev);
