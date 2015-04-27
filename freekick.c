@@ -26,8 +26,7 @@
 #include <fk_macro.h>
 #include <fk_util.h>
 #include <fk_pool.h>
-//#include <fk_dict.h>
-#include <fk_hash.h>
+#include <fk_dict.h>
 #include <fk_cache.h>
 #include <freekick.h>
 

@@ -3,7 +3,7 @@
 #include <strings.h>
 #include <stdint.h>
 
-#include <fk_hash.h>
+#include <fk_dict.h>
 #include <fk_mem.h>
 
 #define FK_DICT_INIT_SIZE 4
@@ -44,7 +44,7 @@
 
 static uint32_t fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
-static fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
+static fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
 
 static fk_elt_op default_eop = {
 	NULL,
@@ -62,46 +62,61 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 	}
 	dct->eop = eop;
 	dct->size = FK_DICT_INIT_SIZE;
-	dct->size_mask = dct->size - 1;
 	dct->limit = dct->size / 2;//when up to 50%, it should extend space
 	dct->used = 0;
-	dct->buckets = (fk_elt_list **)fk_mem_alloc(sizeof(fk_elt_list) * FK_DICT_INIT_SIZE);
-	bzero(dct->buckets, sizeof(fk_elt_list *) * FK_DICT_INIT_SIZE);
+	dct->buckets = (fk_list **)fk_mem_alloc(sizeof(fk_list) * FK_DICT_INIT_SIZE);
+	bzero(dct->buckets, sizeof(fk_list *) * FK_DICT_INIT_SIZE);
 	return dct;
 }
 
 void fk_dict_destroy(fk_dict *dct)
 {
 	int i;
-	fk_elt *nd;
-	fk_elt_list *lst;
+	fk_elt *elt;
+	fk_list *lst;
+	fk_node *nd, *nxt;
 
 	for (i = 0; i < dct->size; i++) {
 		lst = dct->buckets[i];
 		if (lst == NULL) {
 			continue;
 		}
-		nd = fk_rawlist_head(lst);/*get the new head*/
-		while (nd != NULL) {
-			fk_rawlist_any_remove(lst, nd);
-			fk_elt_key_unset(dct, nd);
-			fk_elt_value_unset(dct, nd);
-			fk_elt_destroy(nd);
-			nd = fk_rawlist_head(lst);/*get the new head*/
+		nd = fk_list_iter_begin(lst, FK_LIST_ITER_H2T);
+		while (!fk_list_iter_end(lst)) {
+			elt = (fk_elt *)nd->data;		
+			nxt = fk_list_iter_next(lst);
+			fk_list_any_remove(lst, nd);//do not free nd->data
+			fk_elt_key_unset(dct, elt);
+			fk_elt_value_unset(dct, elt);
+			fk_elt_destroy(elt);//free nd->data
+			nd = nxt;
 		}
-		fk_rawlist_destroy(lst);
+		fk_mem_free(lst);//free the empty list
 	}
-	fk_mem_free(dct);
+	fk_mem_free(dct);//free the empty dict
 }
 
-fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
+void *fk_dict_get(fk_dict *dct, fk_str *key)
 {
-	fk_elt *nd;
-	fk_elt_list *lst;
+	fk_node *nd;
+	fk_elt *elt;
+	nd = fk_dict_search(dct, key, NULL);
+	if (nd == NULL) {
+		return NULL;
+	}
+	elt = (fk_elt *)nd->data;
+	return elt->value;
+}
+
+fk_node *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
+{
+	fk_node *nd;
+	fk_elt *elt;
+	fk_list *lst;
 	int idx, hash, cmp;
 
 	hash = fk_dict_hash(key);
-	idx = hash & (dct->size_mask);
+	idx = hash & (dct->size - 1);
 	if (bidx != NULL) {
 		*bidx = idx;
 	}
@@ -109,27 +124,16 @@ fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 	if (lst == NULL) {
 		return NULL;
 	}
-	nd = fk_rawlist_head(lst);
+	nd = lst->head;
 	while (nd != NULL) {
-		cmp = fk_str_cmp(nd->key, key);
+		elt = (fk_elt *)nd->data;
+		cmp = fk_str_cmp(elt->key, key);
 		if (cmp == 0) {
 			return nd;
 		}
 		nd = nd->next;
 	}
 	return NULL;
-}
-
-void *fk_dict_get(fk_dict *dct, fk_str *key)
-{
-	fk_elt *elt;
-
-	elt = fk_dict_search(dct, key, NULL);
-	if (elt == NULL){
-		return NULL;
-	}
-
-	return elt->value;
 }
 
 /*
@@ -164,122 +168,137 @@ uint32_t fk_dict_hash(fk_str *key)
     return hash;
 }
 
-/*if key already exists, return ERROR*/
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 {
-	int idx;
+	fk_node *nd;
 	fk_elt *elt;
-	fk_elt_list *lst;
-
-	elt = fk_dict_search(dct, key, &idx);
-	if (elt != NULL) {
-		return -1;
-	}
-
-	if (dct->used == dct->limit) {
-		fk_dict_stretch(dct);
-	}
-	lst = dct->buckets[idx];
-	if (lst == NULL) {
-		lst = fk_rawlist_create(fk_elt_list);
-		fk_rawlist_init(lst);
-		dct->buckets[idx] = lst;
-	}
-	elt = fk_elt_create();
-	fk_elt_key_set(dct, elt, key);
-	fk_elt_value_set(dct, elt, value);
-
-	fk_rawlist_head_insert(lst, elt);
-	dct->used++;
-
-	return 0;
-}
-
-int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
-{
+	void *old_val;
+	fk_list *lst;
 	int idx;
-	fk_elt *elt;
 
-	elt = fk_dict_search(dct, key, &idx);
-	if (elt == NULL) {
-		return fk_dict_add(dct, key, value);
+	nd = fk_dict_search(dct, key, &idx);
+	if (nd == NULL) {
+		if (dct->used == dct->limit) {
+			fk_dict_stretch(dct);//whether need to extend
+		}
+		lst = dct->buckets[idx];
+		if (lst == NULL) {//need to
+			dct->buckets[idx] = fk_list_create(NULL);
+			lst = dct->buckets[idx];
+		}
+		elt = fk_elt_create();
+		fk_elt_key_set(dct, elt, key);
+		fk_elt_value_set(dct, elt, value);
+
+		fk_list_head_insert(lst, elt);
+		dct->used++;
+		return 0;
 	}
-	/*free old value*/
-	fk_elt_value_unset(dct, elt);
-	/*use new value to replace*/
-	fk_elt_value_set(dct, elt, value);
+
+	//update the old value of the element
+	old_val = ((fk_elt *)nd->data)->value;
+	((fk_elt *)nd->data)->value = value;
+	if (dct->eop->key_free != NULL) {
+		dct->eop->key_free(key);
+	}
+	if (dct->eop->val_free != NULL) {
+		dct->eop->val_free(old_val);
+	}
 	return 0;
 }
 
 int fk_dict_remove(fk_dict *dct, fk_str *key)
 {
-	int idx;
+	fk_node *nd;
+	fk_list *lst;
 	fk_elt *elt;
-	fk_elt_list *lst;
+	int idx;
 
-	elt = fk_dict_search(dct, key, &idx);
-	if (elt == NULL) {
+	nd = fk_dict_search(dct, key, &idx);
+	if (nd == NULL) {
 		return -1;
 	}
 
 	lst = dct->buckets[idx];
+	elt = nd->data;
 
-	fk_rawlist_any_remove(lst, elt);
+	fk_list_any_remove(lst, nd);//do not free elt
 	fk_elt_key_unset(dct, elt);
 	fk_elt_value_unset(dct, elt);
-	fk_elt_destroy(elt);
+	fk_elt_destroy(elt);//free nd->data
 	dct->used--;
 
 	return 0;
 }
+
+#ifdef FK_DEBUG
+void fk_dict_print(fk_dict *dct)
+{
+	int i;
+	fk_node *nd;
+	fk_elt *elt;
+	fk_list *lst;
+
+	for (i = 0; i < dct->size; i++) {
+		lst = dct->buckets[i];
+		if (lst != NULL && lst->len > 0) {
+			nd = lst->head;
+			elt = nd->data;
+			fk_str_print(elt->key);
+		}
+	}
+}
+#endif
 
 int fk_dict_stretch(fk_dict *dct)
 {
 	fk_str *key;
 	int hash, idx;
 	int new_size, i;
-	fk_elt *nd;
-	fk_elt_list **bks, *lst;
+	fk_node *nd, *nxt;
+	fk_list **bks, *lst;
 
 	if (dct->used < dct->limit) {
 		return 0;
 	}
 	new_size = dct->size * 2;
-	bks = (fk_elt_list **)fk_mem_alloc(new_size * sizeof(fk_elt_list *));
-	bzero(bks, sizeof(fk_elt_list *) * new_size);
+	bks = (fk_list **)fk_mem_alloc(new_size * sizeof(fk_list *));
+	bzero(bks, sizeof(fk_list *) * new_size);
 
-	/*rehash to the new buckets*/
+	//rehash to the new buckets
 	for (i = 0; i < dct->size; i++) {
 		lst = dct->buckets[i];
 		if (lst == NULL) {
 			continue;
 		}
-		nd = fk_rawlist_head(lst);
-		while (nd != NULL) {
-			fk_rawlist_any_remove(lst, nd);
-			key = nd->key;
+		nd = fk_list_iter_begin(lst, FK_LIST_ITER_H2T);
+		while (!fk_list_iter_end(lst)) {
+			nxt = fk_list_iter_next(lst);
+			fk_list_any_remove_only(lst, nd);//remove first
+			key = ((fk_elt *)nd->data)->key;
 			hash = fk_dict_hash(key);
 			idx = hash & (new_size - 1);
 			if (bks[idx] == NULL) {
-				bks[idx] = fk_rawlist_create(fk_elt_list);
-				fk_rawlist_init(bks[idx]);
+				bks[idx] = fk_list_create(NULL);
+				if (bks[idx] == NULL) {
+					return -1;
+				}
 			}
-			fk_rawlist_head_insert(bks[idx], nd);
-			nd = fk_rawlist_head(lst);
+			fk_list_head_insert_only(bks[idx], nd);//then insert
+			nd = nxt;
 		}
 	}
 
-	/*free old buckets*/
+	//free old buckets
 	for (i = 0; i < dct->size; i++) {
 		if (dct->buckets[i] != NULL) {
-			fk_rawlist_destroy(dct->buckets[i]);
+			fk_list_destroy(dct->buckets[i]);
 		}
 	}
 	fk_mem_free(dct->buckets);
 
 	dct->buckets = bks;
 	dct->size = new_size;
-	dct->size_mask = new_size - 1;
 	dct->limit = new_size / 2;
 
 	return 0;

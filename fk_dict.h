@@ -15,23 +15,26 @@ typedef struct _fk_elt_op {
 typedef struct _fk_elt {
 	fk_str *key;
 	void *value;
+	struct _fk_elt *next;
+	struct _fk_elt *prev;
 } fk_elt;
+
+fk_rawlist_def(fk_elt, fk_elt_list);
 
 typedef struct _fk_dict {
 	int size;
+	int size_mask;
 	int used;
 	int limit;
-	fk_list **buckets;
+	fk_elt_list **buckets;
 	fk_elt_op *eop;
 } fk_dict;
 
 fk_dict *fk_dict_create();
 void fk_dict_destroy(fk_dict *dct);
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value);
+int fk_dict_replace(fk_dict *dct, fk_str *key, void *value);
 int fk_dict_remove(fk_dict *dct, fk_str *key);
-#ifdef FK_DEBUG
-void fk_dict_print(fk_dict *dct);
-#endif
 void *fk_dict_get(fk_dict *dct, fk_str *key);
 
 #endif
