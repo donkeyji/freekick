@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <strings.h>
+#include <string.h>
 
 #include <fk_conf.h>
 #include <fk_ev.h>
