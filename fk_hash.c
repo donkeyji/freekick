@@ -3,7 +3,7 @@
 #include <strings.h>
 #include <stdint.h>
 
-#include <fk_dict.h>
+#include <fk_hash.h>
 #include <fk_mem.h>
 
 #define FK_DICT_INIT_SIZE 4
@@ -199,7 +199,6 @@ int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 {
 	int idx;
 	fk_elt *elt;
-	fk_elt_list *lst;
 
 	elt = fk_dict_search(dct, key, &idx);
 	if (elt == NULL) {
@@ -239,7 +238,7 @@ int fk_dict_stretch(fk_dict *dct)
 	fk_str *key;
 	int hash, idx;
 	int new_size, i;
-	fk_elt *nd, *nxt;
+	fk_elt *nd;
 	fk_elt_list **bks, *lst;
 
 	if (dct->used < dct->limit) {
@@ -255,21 +254,18 @@ int fk_dict_stretch(fk_dict *dct)
 		if (lst == NULL) {
 			continue;
 		}
-		nd = lst->head;
+		nd = fk_rawlist_head(lst);
 		while (nd != NULL) {
-			nxt = nd->next;
 			fk_rawlist_any_remove(lst, nd);
 			key = nd->key;
 			hash = fk_dict_hash(key);
 			idx = hash & (new_size - 1);
 			if (bks[idx] == NULL) {
 				bks[idx] = fk_rawlist_create(fk_elt_list);
-				if (bks[idx] == NULL) {
-					return -1;
-				}
+				fk_rawlist_init(bks[idx]);
 			}
 			fk_rawlist_head_insert(bks[idx], nd);
-			nd = nxt;
+			nd = fk_rawlist_head(lst);
 		}
 	}
 
