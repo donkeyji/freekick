@@ -2,7 +2,8 @@
 
 ver=$1
 
-git push origin master
+#git push origin master
+
 d=$(date "+%Y-%m-%d_%H:%M")
 appendix=$d-$ver
 name="hopex-$appendix.tar.gz"
@@ -22,4 +23,3 @@ bak_dir="/Volumes/Nokia/Z-Music/hopex/"
 test -d "$bak_dir" && cd "$bak_dir" && git pull
 bak_dir="/Volumes/Macintosh/Users/huge/Pictures/hopex/"
 test -d "$bak_dir" && cd "$bak_dir" && git pull
-
