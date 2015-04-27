@@ -4,6 +4,9 @@
 #include <time.h>
 #include <stdint.h>
 
+#include <unistd.h>
+#include <sys/socket.h>
+
 #include <fk_macro.h>
 #include <fk_log.h>
 #include <fk_conn.h>
@@ -74,7 +77,7 @@ void fk_conn_destroy(fk_conn *conn)
 	fk_ev_tmev_remove(conn->timer);
 	fk_tmev_destroy(conn->timer);
 
-	fk_sock_close(conn->fd);
+	close(conn->fd);
 
 	fk_mem_free(conn);//should be the last step
 }
@@ -105,7 +108,7 @@ int fk_conn_data_recv(fk_conn *conn)
 		return -1;//need to close this connection
 	}
 
-	recv_len = fk_sock_recv(conn->fd, free_buf, free_len, 0);
+	recv_len = recv(conn->fd, free_buf, free_len, 0);
 #ifdef FK_DEBUG
 	fk_log_debug("free len: %d, recv_len: %d\n", free_len, recv_len);
 #endif
@@ -404,7 +407,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 #ifdef FK_DEBUG
 	fk_log_debug("write callback]wbuf  buf: %s, valid len: %d, low: %d, high: %d\n", buf, len, conn->wbuf->low, conn->wbuf->high);
 #endif
-	rt = fk_sock_send(fd, buf, len, 0);
+	rt = send(fd, buf, len, 0);
 	if (rt < 0) {
 		fk_log_error("send error\n");
 		return -1;
