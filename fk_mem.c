@@ -1,5 +1,5 @@
 #include <stdlib.h>
-//#include <jemalloc/jemalloc.h>
+#include <jemalloc/jemalloc.h>
 
 #ifdef __APPLE__
 #include <malloc/malloc.h>
