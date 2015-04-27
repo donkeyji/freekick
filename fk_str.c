@@ -41,7 +41,8 @@ int fk_str_cmp(fk_str *s1, fk_str *s2)
 	if (s1->len != s2->len) {
 		return s1->len - s2->len;
 	}
-	cmp = strcmp(s1->data, s2->data);
+	//cmp = strcmp(s1->data, s2->data);
+	cmp = memcmp(s1->data, s2->data, s1->len);
 	return cmp;
 }
 
