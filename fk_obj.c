@@ -4,7 +4,8 @@
 #include <fk_obj.h>
 #include <fk_list.h>
 #include <fk_str.h>
-#include <fk_dict.h>
+//#include <fk_dict.h>
+#include <fk_hash.h>
 
 #define FK_FREE_OBJS_MAX 1024
 
