@@ -44,6 +44,7 @@
 
 static uint32_t fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
+static fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
 
 static fk_elt_op default_eop = {
 	NULL,
@@ -61,7 +62,7 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 	}
 	dct->eop = eop;
 	dct->size = FK_DICT_INIT_SIZE;
-	dct->mask = dct->size - 1;
+	dct->size_mask = dct->size - 1;
 	dct->limit = dct->size / 2;//when up to 50%, it should extend space
 	dct->used = 0;
 	dct->buckets = (fk_elt_list **)fk_mem_alloc(sizeof(fk_elt_list) * FK_DICT_INIT_SIZE);
@@ -104,7 +105,7 @@ fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 	int idx, hash, cmp;
 
 	hash = fk_dict_hash(key);
-	idx = hash & (dct->mask);
+	idx = hash & (dct->size_mask);
 	if (bidx != NULL) {
 		*bidx = idx;
 	}
@@ -122,6 +123,18 @@ fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 		nd = nd->next;
 	}
 	return NULL;
+}
+
+void *fk_dict_get(fk_dict *dct, fk_str *key)
+{
+	fk_elt *elt;
+
+	elt = fk_dict_search(dct, key, NULL);
+	if (elt == NULL){
+		return NULL;
+	}
+
+	return elt->value;
 }
 
 /*
@@ -271,7 +284,7 @@ int fk_dict_stretch(fk_dict *dct)
 
 	dct->buckets = bks;
 	dct->size = new_size;
-	dct->mask = new_size - 1;
+	dct->size_mask = new_size - 1;
 	dct->limit = new_size / 2;
 
 	return 0;
