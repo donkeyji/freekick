@@ -5,7 +5,14 @@ SRCDIRS := .
 
 SRCEXTS := .c
 
-CFLAGS := -I . -std=gnu99 -Wall -D FK_DEBUG
+INC := -I .
+BASICOPT := -std=gnu99 -Wall -O2
+ifeq ($(release),y)
+CFLAGS := $(BASICOPT) $(INC)
+else
+CFLAGS := $(BASICOPT) $(INC) -D FK_DEBUG
+endif
+
 ifeq ($(gp),y)
 CFLAGS += -g -pg -lc_p
 endif
