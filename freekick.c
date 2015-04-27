@@ -26,7 +26,8 @@
 #include <fk_macro.h>
 #include <fk_util.h>
 #include <fk_pool.h>
-#include <fk_dict.h>
+//#include <fk_dict.h>
+#include <fk_hash.h>
 #include <fk_cache.h>
 #include <freekick.h>
 
@@ -145,39 +146,19 @@ int fk_on_set(fk_conn *conn)
 {
 	int rt;
 	fk_str *key;
-	fk_obj *value, *old_val;
+	fk_obj *value;
 
 	key = fk_conn_arg_get(conn, 1);
-	old_val = fk_dict_get(server.db[conn->db_idx], key);
-	if (old_val == NULL) {
-		value = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
-		rt = fk_dict_add(server.db[conn->db_idx], key, value);
-		fk_conn_arg_consume(conn, 1);
-		fk_conn_arg_consume(conn, 2);
-
-		rt = fk_conn_rsp_add_status(conn, "OK", sizeof("OK") - 1);
-		if (rt < 0) {//buf not enough, so free the conn
-			return -1;
-		}
-		return 0;
-	}
-	if (old_val->type != FK_OBJ_STR) {
-		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
-		if (rt < 0) {//buf not enough, so free the conn
-			return -1;
-		}
-		return 0;
-	}
-
 	value = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
-	rt = fk_dict_add(server.db[conn->db_idx], key, value);
-	fk_conn_arg_consume(conn, 1);
-	fk_conn_arg_consume(conn, 2);
+
+	fk_dict_replace(server.db[conn->db_idx], key, value);
 
 	rt = fk_conn_rsp_add_status(conn, "OK", sizeof("OK") - 1);
-	if (rt < 0) {//buf not enough, so free the conn
+	if (rt < 0) {
 		return -1;
 	}
+	fk_conn_arg_consume(conn, 1);
+	fk_conn_arg_consume(conn, 2);
 
 	return 0;
 }
