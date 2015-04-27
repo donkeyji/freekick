@@ -73,34 +73,30 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 void fk_dict_destroy(fk_dict *dct)
 {
 	int i;
-	fk_elt *elt;
+	fk_elt *nd;
 	fk_elt_list *lst;
-	fk_elt *nd, *nxt;
 
 	for (i = 0; i < dct->size; i++) {
 		lst = dct->buckets[i];
 		if (lst == NULL) {
 			continue;
 		}
-		nd = lst->head;
+		nd = fk_rawlist_head(lst);/*get the new head*/
 		while (nd != NULL) {
-			nxt = nd->next;
-			elt = nd;		
-			fk_rawlist_any_remove(lst, nd);//do not free nd->data
-			fk_elt_key_unset(dct, elt);
-			fk_elt_value_unset(dct, elt);
-			fk_elt_destroy(elt);//free nd->data
-			nd = nxt;
+			fk_rawlist_any_remove(lst, nd);
+			fk_elt_key_unset(dct, nd);
+			fk_elt_value_unset(dct, nd);
+			fk_elt_destroy(nd);
+			nd = fk_rawlist_head(lst);/*get the new head*/
 		}
-		fk_rawlist_destroy(lst);//free the empty list
+		fk_rawlist_destroy(lst);
 	}
-	fk_mem_free(dct);//free the empty dict
+	fk_mem_free(dct);
 }
 
 fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 {
 	fk_elt *nd;
-	fk_elt *elt;
 	fk_elt_list *lst;
 	int idx, hash, cmp;
 
@@ -113,10 +109,9 @@ fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
 	if (lst == NULL) {
 		return NULL;
 	}
-	nd = lst->head;
+	nd = fk_rawlist_head(lst);
 	while (nd != NULL) {
-		elt = nd;
-		cmp = fk_str_cmp(elt->key, key);
+		cmp = fk_str_cmp(nd->key, key);
 		if (cmp == 0) {
 			return nd;
 		}
@@ -169,6 +164,7 @@ uint32_t fk_dict_hash(fk_str *key)
     return hash;
 }
 
+/*if key already exists, return ERROR*/
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 {
 	int idx;
@@ -181,10 +177,10 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 	}
 
 	if (dct->used == dct->limit) {
-		fk_dict_stretch(dct);//whether need to extend
+		fk_dict_stretch(dct);
 	}
 	lst = dct->buckets[idx];
-	if (lst == NULL) {//need to
+	if (lst == NULL) {
 		lst = fk_rawlist_create(fk_elt_list);
 		fk_rawlist_init(lst);
 		dct->buckets[idx] = lst;
@@ -195,6 +191,7 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 
 	fk_rawlist_head_insert(lst, elt);
 	dct->used++;
+
 	return 0;
 }
 
@@ -208,7 +205,9 @@ int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 	if (elt == NULL) {
 		return fk_dict_add(dct, key, value);
 	}
+	/*free old value*/
 	fk_elt_value_unset(dct, elt);
+	/*use new value to replace*/
 	fk_elt_value_set(dct, elt, value);
 	return 0;
 }
