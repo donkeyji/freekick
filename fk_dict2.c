@@ -28,14 +28,14 @@
 	}												\
 }
 
-#define fk_elt_key_unset(dct, elt)	{			\
+#define fk_elt_key_free(dct, elt)	{			\
 	if ((dct)->eop->key_free != NULL) {				\
 		(dct)->eop->key_free((elt)->key);			\
 	}												\
 	(elt)->key = NULL;								\
 }
 
-#define fk_elt_value_unset(dct, elt)	{		\
+#define fk_elt_value_free(dct, elt)	{		\
 	if ((dct)->eop->val_free != NULL) {				\
 		(dct)->eop->val_free((elt)->value);			\
 	}												\
@@ -86,8 +86,8 @@ void fk_dict_destroy(fk_dict *dct)
 			elt = (fk_elt *)nd->data;		
 			nxt = fk_list_iter_next(lst);
 			fk_list_any_remove(lst, nd);//do not free nd->data
-			fk_elt_key_unset(dct, elt);
-			fk_elt_value_unset(dct, elt);
+			fk_elt_key_free(dct, elt);
+			fk_elt_value_free(dct, elt);
 			fk_elt_destroy(elt);//free nd->data
 			nd = nxt;
 		}
@@ -223,8 +223,8 @@ int fk_dict_remove(fk_dict *dct, fk_str *key)
 	elt = nd->data;
 
 	fk_list_any_remove(lst, nd);//do not free elt
-	fk_elt_key_unset(dct, elt);
-	fk_elt_value_unset(dct, elt);
+	fk_elt_key_free(dct, elt);
+	fk_elt_value_free(dct, elt);
 	fk_elt_destroy(elt);//free nd->data
 	dct->used--;
 

@@ -16,7 +16,7 @@
 	}												\
 }
 
-#define fk_node_data_unset(lst, nd)	{		\
+#define fk_node_data_free(lst, nd)	{		\
 	if ((lst)->nop->data_free != NULL) {			\
 		(lst)->nop->data_free((nd)->data);			\
 	}												\
@@ -175,7 +175,7 @@ void fk_list_any_remove(fk_list *lst, fk_node *nd)
 {
 	fk_list_any_remove_only(lst, nd);
 
-	fk_node_data_unset(lst, nd);
+	fk_node_data_free(lst, nd);
 	fk_node_destroy(nd);
 }
 

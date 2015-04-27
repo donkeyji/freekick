@@ -28,14 +28,14 @@
 	}												\
 }
 
-#define fk_elt_key_unset(dct, elt)	{				\
+#define fk_elt_key_free(dct, elt)	{				\
 	if ((dct)->eop->key_free != NULL) {				\
 		(dct)->eop->key_free((elt)->key);			\
 	}												\
 	(elt)->key = NULL;								\
 }
 
-#define fk_elt_value_unset(dct, elt)	{			\
+#define fk_elt_value_free(dct, elt)	{			\
 	if ((dct)->eop->val_free != NULL) {				\
 		(dct)->eop->val_free((elt)->value);			\
 	}												\
@@ -84,8 +84,8 @@ void fk_dict_destroy(fk_dict *dct)
 		nd = fk_rawlist_head(lst);/*get the new head*/
 		while (nd != NULL) {
 			fk_rawlist_any_remove(lst, nd);
-			fk_elt_key_unset(dct, nd);
-			fk_elt_value_unset(dct, nd);
+			fk_elt_key_free(dct, nd);
+			fk_elt_value_free(dct, nd);
 			fk_elt_destroy(nd);
 			nd = fk_rawlist_head(lst);/*get the new head*/
 		}
@@ -205,7 +205,7 @@ int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 		return fk_dict_add(dct, key, value);
 	}
 	/*free old value*/
-	fk_elt_value_unset(dct, elt);
+	fk_elt_value_free(dct, elt);
 	/*use new value to replace*/
 	fk_elt_value_set(dct, elt, value);
 	return 0;
@@ -225,8 +225,8 @@ int fk_dict_remove(fk_dict *dct, fk_str *key)
 	lst = dct->buckets[idx];
 
 	fk_rawlist_any_remove(lst, elt);
-	fk_elt_key_unset(dct, elt);
-	fk_elt_value_unset(dct, elt);
+	fk_elt_key_free(dct, elt);
+	fk_elt_value_free(dct, elt);
 	fk_elt_destroy(elt);
 	dct->used--;
 
