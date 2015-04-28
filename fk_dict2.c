@@ -3,7 +3,7 @@
 #include <strings.h>
 #include <stdint.h>
 
-#include <fk_dict.h>
+#include <fk_dict2.h>
 #include <fk_mem.h>
 
 #define FK_DICT_INIT_SIZE 4
@@ -171,9 +171,7 @@ uint32_t fk_dict_hash(fk_str *key)
 int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 {
 	fk_node *nd;
-	fk_elt *elt;
 	void *old_val;
-	fk_list *lst;
 	int idx;
 
 	nd = fk_dict_search(dct, key, &idx);
@@ -197,7 +195,6 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 {
 	fk_node *nd;
 	fk_elt *elt;
-	void *old_val;
 	fk_list *lst;
 	int idx;
 
