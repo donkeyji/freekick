@@ -28,6 +28,7 @@ typedef struct _fk_dict {
 fk_dict *fk_dict_create();
 void fk_dict_destroy(fk_dict *dct);
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value);
+int fk_dict_replace(fk_dict *dct, fk_str *key, void *value);
 int fk_dict_remove(fk_dict *dct, fk_str *key);
 #ifdef FK_DEBUG
 void fk_dict_print(fk_dict *dct);

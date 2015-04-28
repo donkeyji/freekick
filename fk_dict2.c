@@ -168,7 +168,7 @@ uint32_t fk_dict_hash(fk_str *key)
     return hash;
 }
 
-int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
+int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 {
 	fk_node *nd;
 	fk_elt *elt;
@@ -178,21 +178,7 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 
 	nd = fk_dict_search(dct, key, &idx);
 	if (nd == NULL) {
-		if (dct->used == dct->limit) {
-			fk_dict_stretch(dct);//whether need to extend
-		}
-		lst = dct->buckets[idx];
-		if (lst == NULL) {//need to
-			dct->buckets[idx] = fk_list_create(NULL);
-			lst = dct->buckets[idx];
-		}
-		elt = fk_elt_create();
-		fk_elt_key_set(dct, elt, key);
-		fk_elt_value_set(dct, elt, value);
-
-		fk_list_head_insert(lst, elt);
-		dct->used++;
-		return 0;
+		return fk_dict_add(dct, key, value);
 	}
 
 	//update the old value of the element
@@ -204,6 +190,37 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 	if (dct->eop->val_free != NULL) {
 		dct->eop->val_free(old_val);
 	}
+	return 0;
+}
+
+int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
+{
+	fk_node *nd;
+	fk_elt *elt;
+	void *old_val;
+	fk_list *lst;
+	int idx;
+
+	nd = fk_dict_search(dct, key, &idx);
+	if (nd != NULL) {
+		return -1;
+	}
+
+	if (dct->used == dct->limit) {
+		fk_dict_stretch(dct);//whether need to extend
+	}
+	lst = dct->buckets[idx];
+	if (lst == NULL) {//need to
+		dct->buckets[idx] = fk_list_create(NULL);
+		lst = dct->buckets[idx];
+	}
+	elt = fk_elt_create();
+	fk_elt_key_set(dct, elt, key);
+	fk_elt_value_set(dct, elt, value);
+
+	fk_list_head_insert(lst, elt);
+	dct->used++;
+
 	return 0;
 }
 
