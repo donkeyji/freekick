@@ -448,7 +448,7 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 
 	fd = fk_sock_accept(listen_fd);
 	if (server.conn_cnt == server.max_conn) {
-		fk_sock_close(fd);
+		close(fd);
 		return 0;
 	}
 	fk_svr_conn_add(fd);
