@@ -64,21 +64,6 @@ int fk_sock_accept(int listen_fd)
 	return fd;
 }
 
-int fk_sock_recv(int fd, void *buf, size_t len, int flags)
-{
-	return recv(fd, buf, len, flags);
-}
-
-int fk_sock_send(int fd, void *buf, size_t len, int flags)
-{
-	return send(fd, buf, len, flags);
-}
-
-int fk_sock_close(int fd)
-{
-	return close(fd);
-}
-
 int fk_sock_set_nonblock(int sock)
 {
 	int rt;
