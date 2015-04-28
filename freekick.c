@@ -25,7 +25,6 @@
 #include <fk_str.h>
 #include <fk_macro.h>
 #include <fk_util.h>
-#include <fk_pool.h>
 #include <fk_dict.h>
 #include <fk_cache.h>
 #include <freekick.h>
@@ -752,8 +751,6 @@ void fk_main_init(char *conf_path)
 	fk_cache_init();
 
 	fk_proto_init();
-
-	fk_pool_init();
 
 	fk_ev_init();
 

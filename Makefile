@@ -6,7 +6,7 @@ SRCDIRS := .
 SRCEXTS := .c
 
 INC := -I .
-BASICOPT := -std=gnu99 -Wall -O2
+BASICOPT := -std=gnu99 -Wall -O2 -D JEMALLOC_MANGLE
 ifeq ($(release),y)
 CFLAGS := $(BASICOPT) $(INC)
 else
@@ -25,7 +25,7 @@ endif
 CC = gcc
 
 #SVRSRCS = $(foreach d,$(SRCDIRS),$(wildcard $(addprefix $(d)/*,$(SRCEXTS)))) 
-SVRSRCS = fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_str.c fk_util.c fk_conn.c fk_heap.c fk_obj.c fk_pool.c fk_dict.c fk_vtr.c fk_cache.c freekick.c
+SVRSRCS = fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_str.c fk_util.c fk_conn.c fk_heap.c fk_obj.c fk_dict.c fk_vtr.c fk_cache.c freekick.c
 
 CLTSRCS = clt_test.c
 

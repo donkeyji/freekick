@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <jemalloc/jemalloc.h>
 
+/*
 #ifdef __APPLE__
 #include <malloc/malloc.h>
 #else
@@ -11,6 +12,7 @@
 #include <malloc.h>
 #endif
 #endif
+*/
 
 #include <fk_mem.h>
 
@@ -36,14 +38,12 @@ void *fk_mem_alloc(size_t size)
 	if (ptr == NULL) {
 		fk_mem_oom();
 	}
-	if (ptr != NULL) {
-#ifdef __APPLE__
-		real_size = malloc_size(ptr);
-#else
+//#ifdef __APPLE__
+		//real_size = malloc_size(ptr);
+//#else
 		real_size = malloc_usable_size(ptr);
-#endif
+//#endif
 		allocated += real_size;
-	}
 	alloc_times += 1;
 	return ptr;
 }
@@ -53,22 +53,22 @@ void *fk_mem_realloc(void *ptr, size_t size)
 	void *new_ptr;
 	size_t old_size, new_size;
 
-#ifdef __APPLE__
-	old_size = malloc_size(ptr);
-#else
+//#ifdef __APPLE__
+	//old_size = malloc_size(ptr);
+//#else
 	old_size = malloc_usable_size(ptr);
-#endif
+//#endif
 
 	new_ptr = realloc(ptr, size);
 	if (new_ptr == NULL) {
 		fk_mem_oom();
 	}
 
-#ifdef __APPLE__
-	new_size = malloc_size(ptr);
-#else
+//#ifdef __APPLE__
+	//new_size = malloc_size(ptr);
+//#else
 	new_size = malloc_usable_size(ptr);
-#endif
+//#endif
 	allocated = allocated - old_size + new_size;
 
 	return new_ptr;
@@ -77,11 +77,11 @@ void *fk_mem_realloc(void *ptr, size_t size)
 void fk_mem_free(void *ptr)
 {
 	size_t real_size;
-#ifdef __APPLE__
-	real_size = malloc_size(ptr);
-#else
+//#ifdef __APPLE__
+	//real_size = malloc_size(ptr);
+//#else
 	real_size = malloc_usable_size(ptr);
-#endif
+//#endif
 	allocated -= real_size;
 	freed += real_size;
 	free_times += 1;
