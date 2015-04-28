@@ -208,7 +208,7 @@ int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 	fk_elt_value_free(dct, elt);
 	/*use new value to replace*/
 	fk_elt_value_set(dct, elt, value);
-	return 0;
+	return 1;
 }
 
 int fk_dict_remove(fk_dict *dct, fk_str *key)
