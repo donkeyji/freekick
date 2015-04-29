@@ -182,9 +182,9 @@ int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 	//update the old value of the element
 	old_val = ((fk_elt *)nd->data)->value;
 	((fk_elt *)nd->data)->value = value;
-	if (dct->eop->key_free != NULL) {
-		dct->eop->key_free(key);
-	}
+	//if (dct->eop->key_free != NULL) {
+		//dct->eop->key_free(key);
+	//}
 	if (dct->eop->val_free != NULL) {
 		dct->eop->val_free(old_val);
 	}
