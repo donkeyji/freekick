@@ -43,8 +43,8 @@ void fk_buf_print(fk_buf *buf);
 
 #define fk_buf_stretch(buf)		{										\
 	if ((buf)->len < FK_BUF_HIGHWAT) {									\
-		(buf) = fk_mem_realloc((buf), sizeof(fk_buf) + (buf)->len * 2);	\
-		(buf)->len *= 2;												\
+		(buf)->len <<= 1;												\
+		(buf) = fk_mem_realloc((buf), sizeof(fk_buf) + (buf)->len);		\
 	}																	\
 }
 
