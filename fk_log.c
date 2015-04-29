@@ -64,7 +64,6 @@ void fk_log_fprint_str(int level, char *data)
 	time_t now;
 	char *level_name;
 	struct tm *tm_now;
-	char date_str[20];
 
 	switch (level) {
 	case FK_LOG_ERROR:
@@ -86,12 +85,15 @@ void fk_log_fprint_str(int level, char *data)
 		return;
 	}
 
-	sprintf(
-	    date_str, "%d-%.2d-%.2d %.2d:%.2d:%.2d",
-	    tm_now->tm_year + 1900, tm_now->tm_mon + 1,
-	    tm_now->tm_mday, tm_now->tm_hour,
-	    tm_now->tm_min, tm_now->tm_sec
+	fprintf(logger.log_file, 
+		"[%d-%.2d-%.2d %.2d:%.2d:%.2d]<%s>%s", 
+		tm_now->tm_year + 1900, 
+		tm_now->tm_mon + 1,
+		tm_now->tm_mday, 
+		tm_now->tm_hour,
+		tm_now->tm_min, 
+		tm_now->tm_sec,
+		level_name, 
+		data
 	);
-
-	fprintf(logger.log_file, "[%s]<%s>%s", date_str, level_name, data);
 }
