@@ -5,7 +5,11 @@ ver=$1
 #git push origin master
 
 d=$(date "+%Y-%m-%d_%H:%M")
-appendix=$d-$ver
+if [ -z $ver ]; then
+	appendix=$d
+else
+	appendix=$d-$ver
+fi
 name="hopex-$appendix.tar.gz"
 
 dst_dir="/Users/huge/Work/VShared/freekick/code/release-hopex"
