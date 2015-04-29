@@ -87,13 +87,11 @@ void fk_log_fprint_str(int level, char *data)
 	}
 
 	sprintf(
-	    date_str, "%d-%d-%d %d:%d:%d",
+	    date_str, "%d-%.2d-%.2d %.2d:%.2d:%.2d",
 	    tm_now->tm_year + 1900, tm_now->tm_mon + 1,
 	    tm_now->tm_mday, tm_now->tm_hour,
 	    tm_now->tm_min, tm_now->tm_sec
 	);
 
-	//??????why fprintf does not work???????
 	fprintf(logger.log_file, "[%s]<%s>%s", date_str, level_name, data);
-	//printf("[%s]<%s>%s", date_str, level_name, data);
 }
