@@ -55,7 +55,7 @@ void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 	low = lst->head;
 	high = lst->tail;
 
-	if (low == NULL && high == NULL) {//empty list
+	if (lst->len == 0) {
 		lst->head = nd;
 		lst->tail = nd;
 		nd->prev = NULL;
