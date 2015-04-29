@@ -200,7 +200,7 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 
 	nd = fk_dict_search(dct, key, &idx);
 	if (nd != NULL) {
-		return -1;
+		return 1;
 	}
 
 	if (dct->used == dct->limit) {
