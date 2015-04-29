@@ -462,7 +462,7 @@ int fk_svr_timer_cb(int interval, char type, void *arg)
 {
 	fk_log_info("[timer 1]conn cnt: %d\n", server.conn_cnt);
 	fk_log_info("[timer 1]dbdict size: %d, used: %d, limit: %d\n", server.db[0]->size, server.db[0]->used, server.db[0]->limit);
-	fk_log_info("[timer 1]obj_crt: %d, obj_des: %d\n", obj_crt, obj_des);
+	//fk_log_info("[timer 1]obj_crt: %d, obj_des: %d\n", obj_crt, obj_des);
 	//fk_log_info("[timer callback 1]protos len: %d\n", pdct->used);
 	//fk_log_info("[memory] alloc size: %lu\n", fk_mem_allocated());
 	//fk_log_info("[memory] alloc times: %lu\n", fk_mem_alloc_times());
