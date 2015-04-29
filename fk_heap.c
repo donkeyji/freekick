@@ -117,7 +117,7 @@ void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
 			hp->array[i / 2]->idx = i / 2;
 			hp->array[i] = tmp;
 			hp->array[i]->idx = i;
-			i = i / 2;
+			i >>= 1;
 		} else {
 			break;
 		}
