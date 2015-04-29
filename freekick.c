@@ -183,12 +183,13 @@ int fk_on_setnx(fk_conn *conn)
 
 	value = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
 	fk_dict_add(server.db[conn->db_idx], key, value);
+	fk_conn_arg_consume(conn, 1);
+	fk_conn_arg_consume(conn, 2);
+
 	rt = fk_conn_rsp_add_int(conn, 1);
 	if (rt < 0) {
 		return -1;
 	}
-	fk_conn_arg_consume(conn, 1);
-	fk_conn_arg_consume(conn, 2);
 	return 0;
 }
 
