@@ -166,8 +166,8 @@ uint32_t fk_dict_hash(fk_str *key)
 
 /*
  * return value:
- * -1: if key already exists
- * 0 : key not exists yet
+ * 1: key already exists
+ * 0: key not exists yet
  */
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 {
@@ -177,7 +177,7 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 
 	elt = fk_dict_search(dct, key, &idx);
 	if (elt != NULL) {
-		return -1;
+		return 1;
 	}
 
 	if (dct->used == dct->limit) {
@@ -201,8 +201,8 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 
 /*
  * return value:
- * 0: key not exists
- * 1: key exists yet
+ * 0: key not exists yet
+ * 1: key already exists
  */
 int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 {
@@ -217,7 +217,7 @@ int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 	fk_elt_value_free(dct, elt);
 	/*use new value to replace*/
 	fk_elt_value_set(dct, elt, value);
-	return 1;
+	return 1;/*the key exist already*/
 }
 
 int fk_dict_remove(fk_dict *dct, fk_str *key)
