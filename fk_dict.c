@@ -63,7 +63,7 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 	dct->eop = eop;
 	dct->size = FK_DICT_INIT_SIZE;
 	dct->size_mask = dct->size - 1;
-	dct->limit = dct->size / 2;//when up to 50%, it should extend space
+	dct->limit = dct->size / 2;/*when up to 50%, it should extend space */
 	dct->used = 0;
 	dct->buckets = (fk_elt_list **)fk_mem_alloc(sizeof(fk_elt_list) * FK_DICT_INIT_SIZE);
 	bzero(dct->buckets, sizeof(fk_elt_list *) * FK_DICT_INIT_SIZE);
