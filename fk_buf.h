@@ -10,8 +10,8 @@
 
 typedef struct _fk_buf {
 	int len;
-	int low;//valid begin, init: 0, range: [0-->len], <= high
-	int high;//free begin, init: 0, range: [0-->len], <= len
+	int low;/*valid begin, init: 0, range: [0-->len], <= high */
+	int high;/*free begin, init: 0, range: [0-->len], <= len */
 	char data[];
 } fk_buf;
 
