@@ -1,4 +1,4 @@
-to do:
+/*To Do*/
 1. to implement a better pool algrithm.现有的算法有问题，当分配的次数增大到一定程度时，还不如直接malloc/free来的快。
 
 2.container默认都不负责其中存放对象的生命周期。fk_list/fk_dict通过指定copy/free函数来定制是否管理对象的生命周期。
@@ -71,7 +71,13 @@ to do:
 
 32.malloc/realloc/free等产生的内存错误不必处理，因为如果出现了这样的错误，进程就无法运行下去了，无法处理这样的错误。需要错误处理的是那些人为导致的异常。
 
+33.在fk_mem_alloc/relloc里统一处理分配失败的问题，只要分配失败之际abort()，在外部逻辑里就不再需要判断分配是否成功了。
 
+34.为何换用新的dict后，反而速度比以前慢了，没有调用到的fk_obj_destroy为何会出现在profile里呢?
+
+35.能用移位代替*2或者/2的地方尽量代替。
+
+36.由于fk_on_set没有正确调用fk_conn_arg_consume，会导致memory leak。
 
 
 
