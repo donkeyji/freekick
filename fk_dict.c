@@ -164,7 +164,11 @@ uint32_t fk_dict_hash(fk_str *key)
     return hash;
 }
 
-/*if key already exists, return ERROR*/
+/*
+ * return value:
+ * -1: if key already exists
+ * 0 : key not exists yet
+ */
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 {
 	int idx;
@@ -195,6 +199,11 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 	return 0;
 }
 
+/*
+ * return value:
+ * 0: key not exists
+ * 1: key exists yet
+ */
 int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 {
 	int idx;
