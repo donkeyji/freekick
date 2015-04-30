@@ -71,6 +71,7 @@ static void fk_proto_init();
 static int fk_on_set(fk_conn *conn);
 static int fk_on_setnx(fk_conn *conn);
 static int fk_on_get(fk_conn *conn);
+static int fk_on_del(fk_conn *conn);
 static int fk_on_hset(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
 static int fk_on_zadd(fk_conn *conn);
@@ -102,12 +103,13 @@ static fk_node_op sortop = {
 
 /*all proto to deal*/
 static fk_proto protos[] = {
-	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_on_set},
-	{"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_on_setnx},
-	{"GET", 	FK_PROTO_READ, 		2, 					fk_on_get},
-	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_on_hset},
-	{"HGET", 	FK_PROTO_READ, 		3, 					fk_on_hget},
-	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_zadd},
+	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_on_set	},
+	{"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_on_setnx	},
+	{"GET", 	FK_PROTO_READ, 		2, 					fk_on_get	},
+	{"DEL", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_del	},
+	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_on_hset	},
+	{"HGET", 	FK_PROTO_READ, 		3, 					fk_on_hget	},
+	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_zadd	},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -226,6 +228,29 @@ int fk_on_get(fk_conn *conn)
 	if (rt < 0) {
 		return -1;
 	}
+	return 0;
+}
+
+int fk_on_del(fk_conn *conn)
+{
+	fk_str *key;
+	int i, deleted, rt;
+
+	deleted = 0;
+
+	for (i = 1; i < conn->arg_cnt; i++) {
+		key = fk_conn_arg_get(conn, i);
+		rt = fk_dict_remove(server.db[conn->db_idx], key);
+		if (rt == 0) {
+			deleted++;
+		}
+	}
+
+	rt = fk_conn_rsp_add_int(conn, deleted);
+	if (rt < 0) {
+		return -1;
+	}
+
 	return 0;
 }
 
@@ -783,7 +808,7 @@ int main(int argc, char **argv)
 	char *conf_path;
 
 	if (argc != 2) {
-		printf("no config specified, use default setting\n");
+		printf("no config file specified, using the default setting\n");
 		conf_path = NULL;
 	}
 	conf_path = argv[1];
