@@ -59,24 +59,17 @@ typedef struct {					\
 
 /*remove specified node*/
 #define fk_rawlist_any_remove(lst, nd) {	\
-    if (lst->len > 0) {						\
-		if (lst->len == 1) {				\
-			lst->head = NULL;				\
-			lst->tail = NULL;				\
-		} else {							\
-			if (nd == lst->head) {			\
-				nd->next->prev = nd->prev;	\
-				lst->head = nd->next;		\
-			} else if (nd == lst->tail) {	\
-				nd->prev->next = nd->next;	\
-				lst->tail = nd->prev;		\
-			} else {						\
-				nd->next->prev = nd->prev;	\
-				nd->prev->next = nd->next;	\
-			}								\
-		}									\
-		lst->len--;							\
+	if (nd->prev != NULL) {					\
+		nd->prev->next = nd->next;			\
+	} else {								\
+		lst->head = nd->next;				\
 	}										\
+	if (nd->next != NULL) {					\
+		nd->next->prev = nd->prev;			\
+	} else {								\
+		lst->tail = nd->prev;				\
+	}										\
+	lst->len--;								\
 }
 
 typedef struct _fk_node {
