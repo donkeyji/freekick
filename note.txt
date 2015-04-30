@@ -79,7 +79,7 @@
 
 36.由于fk_on_set没有正确调用fk_conn_arg_consume，会导致memory leak。
 
-
+37.可以用gdb来定位segment fault。发生segment fault时进程会收到SIGSEG信号，gdb会定位发生segment fault的准确位置。
 
 
 
