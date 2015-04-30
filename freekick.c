@@ -72,6 +72,7 @@ static int fk_on_set(fk_conn *conn);
 static int fk_on_setnx(fk_conn *conn);
 static int fk_on_get(fk_conn *conn);
 static int fk_on_del(fk_conn *conn);
+static int fk_on_mset(fk_conn *conn);
 static int fk_on_hset(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
 static int fk_on_zadd(fk_conn *conn);
@@ -105,6 +106,7 @@ static fk_node_op sortop = {
 static fk_proto protos[] = {
 	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_on_set	},
 	{"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_on_setnx	},
+	{"MSET", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_mset	},
 	{"GET", 	FK_PROTO_READ, 		2, 					fk_on_get	},
 	{"DEL", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_del	},
 	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_on_hset	},
@@ -189,6 +191,28 @@ int fk_on_setnx(fk_conn *conn)
 	fk_conn_arg_consume(conn, 2);
 
 	rt = fk_conn_rsp_add_int(conn, 1);
+	if (rt < 0) {
+		return -1;
+	}
+	return 0;
+}
+
+int fk_on_mset(fk_conn *conn)
+{
+	int i, rt;
+	fk_str *key;
+	fk_item *value;
+
+	for (i = 1; i < conn->arg_cnt; i += 2) {
+		key = fk_conn_arg_get(conn, i);
+		value = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, i + 1));
+		rt = fk_dict_replace(server.db[conn->db_idx], key, value);
+		fk_conn_arg_consume(conn, i + 1);
+		if (rt == 0) {
+			fk_conn_arg_consume(conn, i);
+		}
+	}
+	rt = fk_conn_rsp_add_status(conn, "OK", sizeof("OK") - 1);
 	if (rt < 0) {
 		return -1;
 	}

@@ -21,7 +21,7 @@
 #define FK_LOG_PATH "/tmp/freekick.log"
 #define FK_PID_PATH "/tmp/freekick.pid"
 #define FK_DB_PATH "/tmp/freekick.db"
-#define FK_DEFAULT_PORT 8210
+#define FK_DEFAULT_PORT 6379
 #define FK_DAEMON 1
 #define FK_NODAEMON 0
 #define FK_SVR_ADDR "0.0.0.0"
