@@ -34,8 +34,9 @@ typedef struct {					\
         nd->prev = NULL;					\
         lst->tail = nd;						\
     } else {								\
-        nd->prev = lst->head->prev;			\
+        nd->prev = NULL;					\
         nd->next = lst->head;				\
+		lst->head->prev = nd;				\
     }										\
     lst->head = nd;							\
     lst->len++;								\
