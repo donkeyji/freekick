@@ -20,7 +20,7 @@
 #include <fk_list.h>
 #include <fk_log.h>
 #include <fk_mem.h>
-#include <fk_obj.h>
+#include <fk_item.h>
 #include <fk_sock.h>
 #include <fk_str.h>
 #include <fk_macro.h>
@@ -146,10 +146,10 @@ int fk_on_set(fk_conn *conn)
 {
 	int rt;
 	fk_str *key;
-	fk_obj *value;
+	fk_item *value;
 
 	key = fk_conn_arg_get(conn, 1);
-	value = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
+	value = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
 
 	rt = fk_dict_replace(server.db[conn->db_idx], key, value);
 	fk_conn_arg_consume(conn, 2);
@@ -169,7 +169,7 @@ int fk_on_setnx(fk_conn *conn)
 {
 	int rt;
 	fk_str *key;
-	fk_obj *value;
+	fk_item *value;
 
 	key = fk_conn_arg_get(conn, 1);
 	value = fk_dict_get(server.db[conn->db_idx], key);
@@ -181,7 +181,7 @@ int fk_on_setnx(fk_conn *conn)
 		return 0;
 	}
 
-	value = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
+	value = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
 	fk_dict_add(server.db[conn->db_idx], key, value);
 	fk_conn_arg_consume(conn, 1);
 	fk_conn_arg_consume(conn, 2);
@@ -196,7 +196,7 @@ int fk_on_setnx(fk_conn *conn)
 int fk_on_get(fk_conn *conn)
 {
 	int rt;
-	fk_obj *obj;
+	fk_item *obj;
 	fk_str *key, *value;
 
 	key = fk_conn_arg_get(conn, 1);
@@ -234,16 +234,16 @@ int fk_on_hset(fk_conn *conn)
 	int rt;
 	fk_dict *dct;
 	fk_str *hkey, *key;
-	fk_obj *hobj, *obj;
+	fk_item *hobj, *obj;
 
 	hkey = fk_conn_arg_get(conn, 1);
 	key = fk_conn_arg_get(conn, 2);
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
 	if (hobj == NULL) {
 		dct = fk_dict_create(&dbeop);
-		obj = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 3));
+		obj = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, 3));
 		fk_dict_add(dct, key, obj);
-		hobj = fk_obj_create(FK_OBJ_DICT, dct);
+		hobj = fk_item_create(FK_OBJ_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hobj);
 		//consume all the args, except args[0]
 		fk_conn_arg_consume(conn, 1);
@@ -258,7 +258,7 @@ int fk_on_hset(fk_conn *conn)
 
 	if (hobj->type == FK_OBJ_DICT) {
 		dct = (fk_dict *)(hobj->data);
-		obj = fk_obj_create(FK_OBJ_STR, fk_conn_arg_get(conn, 3));
+		obj = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, 3));
 		fk_dict_add(dct, key, obj);
 		fk_conn_arg_consume(conn, 2);
 		fk_conn_arg_consume(conn, 3);
@@ -280,7 +280,7 @@ int fk_on_hget(fk_conn *conn)
 {
 	int rt;
 	fk_dict *dct;
-	fk_obj *hobj, *obj;
+	fk_item *hobj, *obj;
 	fk_str *hkey, *key, *value;
 
 	hkey = fk_conn_arg_get(conn, 1);
@@ -336,7 +336,7 @@ int fk_on_hget(fk_conn *conn)
 int fk_on_zadd(fk_conn *conn)
 {
 	int i;
-	fk_obj *sobj;
+	fk_item *sobj;
 	fk_str *skey;
 	fk_list *lst;
 	fk_elt *elt;
@@ -384,32 +384,32 @@ int fk_on_zadd(fk_conn *conn)
 
 void fk_dict_obj_free(void *val)
 {
-	fk_obj *obj;
-	obj = (fk_obj *)val;
-	fk_obj_destroy(obj);
+	fk_item *obj;
+	obj = (fk_item *)val;
+	fk_item_destroy(obj);
 }
 
 void fk_elt_free(void *e)
 {
 	fk_elt *elt;
-	fk_obj *obj;
+	fk_item *obj;
 
 	elt = (fk_elt *)e;
 
 	fk_str_destroy(elt->key);
 
-	obj = (fk_obj *)(elt->value);
-	fk_obj_destroy(obj);
+	obj = (fk_item *)(elt->value);
+	fk_item_destroy(obj);
 }
 
 int fk_elt_cmp(void *e1, void *e2)
 {
 	double d1, d2;
 	fk_str *v1, *v2;
-	fk_obj *o1, *o2;
+	fk_item *o1, *o2;
 
-	o1 = (fk_obj *)(((fk_elt *)e1)->value);
-	o2 = (fk_obj *)(((fk_elt *)e2)->value);
+	o1 = (fk_item *)(((fk_elt *)e1)->value);
+	o2 = (fk_item *)(((fk_elt *)e2)->value);
 
 	v1 = (fk_str *)o1->data;
 	v2 = (fk_str *)o2->data;

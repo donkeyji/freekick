@@ -1,7 +1,7 @@
 #ifndef _FK_DICT_H_
 #define _FK_DICT_H_
 
-#include <fk_obj.h>
+#include <fk_item.h>
 #include <fk_str.h>
 #include <fk_list.h>
 

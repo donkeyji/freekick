@@ -6,7 +6,7 @@
 #include <fk_mem.h>
 #include <fk_pool.h>
 #include <fk_dict.h>
-#include <fk_obj.h>
+#include <fk_item.h>
 #include <fk_list.h>
 
 
@@ -62,7 +62,7 @@ void t_dict()
 	fk_str *ss = fk_str_create("huge", 4);
 	fk_str *gg = fk_str_create("ooxx", 4);
 	printf("xxxxxxxx\n");
-	fk_obj *oo = fk_mem_alloc(sizeof(fk_obj));
+	fk_item *oo = fk_mem_alloc(sizeof(fk_item));
 	oo->type = FK_OBJ_STR;
 	oo->data = gg;
 	printf("yyyyyyyyyy\n");

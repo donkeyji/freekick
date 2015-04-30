@@ -4,7 +4,7 @@
 
 #include <fk_list.h>
 #include <fk_str.h>
-#include <fk_obj.h>
+#include <fk_item.h>
 #include <fk_mem.h>
 #include <fk_pool.h>
 
@@ -40,7 +40,7 @@ static fk_pool *str_pool = NULL;
 void fk_pool_init()
 {
 	node_pool = fk_pool_create(sizeof(fk_node), 1024);
-	obj_pool = fk_pool_create(sizeof(fk_obj), 1024);
+	obj_pool = fk_pool_create(sizeof(fk_item), 1024);
 	str_pool = fk_pool_create(sizeof(fk_str), 1024);
 }
 
