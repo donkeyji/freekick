@@ -87,13 +87,13 @@ void fk_item_ref_inc(fk_item *obj)
 void fk_item_destroy(fk_item *obj)
 {
 	switch (obj->type) {
-	case FK_OBJ_STR:
+	case FK_ITEM_STR:
 		fk_str_destroy(obj->data);
 		break;
-	case FK_OBJ_LIST:
+	case FK_ITEM_LIST:
 		fk_list_destroy(obj->data);
 		break;
-	case FK_OBJ_DICT:
+	case FK_ITEM_DICT:
 		fk_dict_destroy(obj->data);
 		break;
 	}

@@ -153,7 +153,7 @@ int fk_on_set(fk_conn *conn)
 	fk_item *value;
 
 	key = fk_conn_arg_get(conn, 1);
-	value = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
+	value = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 2));
 
 	rt = fk_dict_replace(server.db[conn->db_idx], key, value);
 	fk_conn_arg_consume(conn, 2);
@@ -185,7 +185,7 @@ int fk_on_setnx(fk_conn *conn)
 		return 0;
 	}
 
-	value = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, 2));
+	value = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 2));
 	fk_dict_add(server.db[conn->db_idx], key, value);
 	fk_conn_arg_consume(conn, 1);
 	fk_conn_arg_consume(conn, 2);
@@ -205,7 +205,7 @@ int fk_on_mset(fk_conn *conn)
 
 	for (i = 1; i < conn->arg_cnt; i += 2) {
 		key = fk_conn_arg_get(conn, i);
-		value = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, i + 1));
+		value = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, i + 1));
 		rt = fk_dict_replace(server.db[conn->db_idx], key, value);
 		fk_conn_arg_consume(conn, i + 1);
 		if (rt == 0) {
@@ -235,7 +235,7 @@ int fk_on_get(fk_conn *conn)
 		return 0;
 	} 
 
-	if (obj->type != FK_OBJ_STR) {
+	if (obj->type != FK_ITEM_STR) {
 		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
@@ -290,9 +290,9 @@ int fk_on_hset(fk_conn *conn)
 	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
 	if (hobj == NULL) {
 		dct = fk_dict_create(&dbeop);
-		obj = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, 3));
+		obj = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 3));
 		fk_dict_add(dct, key, obj);
-		hobj = fk_item_create(FK_OBJ_DICT, dct);
+		hobj = fk_item_create(FK_ITEM_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hobj);
 		//consume all the args, except args[0]
 		fk_conn_arg_consume(conn, 1);
@@ -305,9 +305,9 @@ int fk_on_hset(fk_conn *conn)
 		return 0;
 	}
 
-	if (hobj->type == FK_OBJ_DICT) {
+	if (hobj->type == FK_ITEM_DICT) {
 		dct = (fk_dict *)(hobj->data);
-		obj = fk_item_create(FK_OBJ_STR, fk_conn_arg_get(conn, 3));
+		obj = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 3));
 		fk_dict_add(dct, key, obj);
 		fk_conn_arg_consume(conn, 2);
 		fk_conn_arg_consume(conn, 3);
@@ -343,7 +343,7 @@ int fk_on_hget(fk_conn *conn)
 		return 0;
 	} 
 
-	if (hobj->type != FK_OBJ_DICT) {
+	if (hobj->type != FK_ITEM_DICT) {
 		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
@@ -361,7 +361,7 @@ int fk_on_hget(fk_conn *conn)
 		return 0;
 	} 
 
-	if (obj->type != FK_OBJ_STR) {
+	if (obj->type != FK_ITEM_STR) {
 		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
@@ -409,7 +409,7 @@ int fk_on_zadd(fk_conn *conn)
 		return 0;
 	}
 
-	if (sobj->type != FK_OBJ_LIST) {
+	if (sobj->type != FK_ITEM_LIST) {
 		lst = fk_list_create(&sortop);
 		for (i = 2; i < conn->arg_cnt; i += 2) {
 			elt = fk_mem_alloc(sizeof(fk_elt));

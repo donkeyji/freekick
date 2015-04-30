@@ -63,7 +63,7 @@ void t_dict()
 	fk_str *gg = fk_str_create("ooxx", 4);
 	printf("xxxxxxxx\n");
 	fk_item *oo = fk_mem_alloc(sizeof(fk_item));
-	oo->type = FK_OBJ_STR;
+	oo->type = FK_ITEM_STR;
 	oo->data = gg;
 	printf("yyyyyyyyyy\n");
 

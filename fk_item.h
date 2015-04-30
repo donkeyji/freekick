@@ -2,9 +2,9 @@
 #define _FK_OBJ_H_
 
 #define FK_OBJ_NIL 0
-#define FK_OBJ_STR  1
-#define FK_OBJ_LIST 2
-#define FK_OBJ_DICT 3
+#define FK_ITEM_STR  1
+#define FK_ITEM_LIST 2
+#define FK_ITEM_DICT 3
 
 typedef struct _fk_item {
 	int type;
