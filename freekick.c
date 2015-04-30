@@ -113,7 +113,7 @@ static fk_proto protos[] = {
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
-static fk_dict *pdct = NULL;
+static fk_dict *pmap = NULL;
 
 void fk_proto_init()
 {
@@ -122,8 +122,8 @@ void fk_proto_init()
 	fk_str *key;
 	void *value;
 
-	pdct = fk_dict_create(NULL);
-	if (pdct == NULL) {
+	pmap = fk_dict_create(NULL);
+	if (pmap == NULL) {
 		exit(EXIT_FAILURE);
 	}
 
@@ -131,7 +131,7 @@ void fk_proto_init()
 		name = protos[i].name;
 		value = protos + i;
 		key = fk_str_create(name, strlen(name));
-		fk_dict_add(pdct, key, value);
+		fk_dict_add(pmap, key, value);
 	}
 }
 
@@ -139,7 +139,7 @@ fk_proto *fk_proto_search(fk_str *name)
 {
 	fk_proto *pto;
 
-	pto = (fk_proto *)fk_dict_get(pdct, name);
+	pto = (fk_proto *)fk_dict_get(pmap, name);
 
 	return pto;
 }
@@ -488,7 +488,7 @@ int fk_svr_timer_cb(int interval, char type, void *arg)
 	fk_log_info("[timer 1]conn cnt: %d\n", server.conn_cnt);
 	fk_log_info("[timer 1]dbdict size: %d, used: %d, limit: %d\n", server.db[0]->size, server.db[0]->used, server.db[0]->limit);
 	//fk_log_info("[timer 1]obj_crt: %d, obj_des: %d\n", obj_crt, obj_des);
-	//fk_log_info("[timer callback 1]protos len: %d\n", pdct->used);
+	//fk_log_info("[timer callback 1]protos len: %d\n", pmap->used);
 	//fk_log_info("[memory] alloc size: %lu\n", fk_mem_allocated());
 	//fk_log_info("[memory] alloc times: %lu\n", fk_mem_alloc_times());
 	//fk_log_info("[memory] free times: %lu\n", fk_mem_free_times());
