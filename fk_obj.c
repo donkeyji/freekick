@@ -71,6 +71,19 @@ fk_obj *fk_obj_create(int type, void *data)
 	return obj;
 }
 
+void fk_obj_ref_dec(fk_obj *obj)
+{
+	obj->ref--;
+	if (obj->ref == 0) {
+		fk_obj_destroy(obj);
+	}
+}
+
+void fk_obj_ref_inc(fk_obj *obj)
+{
+	obj->ref++;
+}
+
 void fk_obj_destroy(fk_obj *obj)
 {
 	switch (obj->type) {
