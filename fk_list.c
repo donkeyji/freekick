@@ -8,7 +8,7 @@
 
 #define fk_node_destroy(nd)	fk_mem_free((nd))
 
-#define fk_node_data_set(lst, nd, dt)	{		\
+#define fk_node_data_set(lst, nd, dt)	{			\
 	if ((lst)->nop->data_copy != NULL) {			\
 		(nd)->data = (lst)->nop->data_copy((dt));	\
 	} else {										\
@@ -16,7 +16,7 @@
 	}												\
 }
 
-#define fk_node_data_free(lst, nd)	{		\
+#define fk_node_data_free(lst, nd)	{				\
 	if ((lst)->nop->data_free != NULL) {			\
 		(lst)->nop->data_free((nd)->data);			\
 	}												\
