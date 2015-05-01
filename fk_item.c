@@ -12,7 +12,7 @@ fk_list *free_objs = NULL;
 
 /*
 static fk_item *fk_item_free_obj_get();
-static void fk_item_free_obj_put(fk_item *obj);
+static void fk_item_free_obj_put(fk_item *itm);
 */
 
 void fk_item_init()
@@ -24,83 +24,83 @@ void fk_item_init()
 /*
 fk_item *fk_item_free_obj_get()
 {
-    fk_item *obj;
+    fk_item *itm;
     fk_node *nd;
 
     nd = fk_list_head_pop(free_objs);
-    obj = nd->data;
-    if (obj == NULL) {
-        obj = (fk_item *)fk_mem_alloc(sizeof(fk_item)); //really malloc memory here
-        obj->type = FK_OBJ_NIL;
-        obj->ref = 0;
-        obj->data = NULL;
+    itm = nd->data;
+    if (itm == NULL) {
+        itm = (fk_item *)fk_mem_alloc(sizeof(fk_item)); //really malloc memory here
+        itm->type = FK_OBJ_NIL;
+        itm->ref = 0;
+        itm->data = NULL;
     }
-    return obj;
+    return itm;
 }
 
-void fk_item_free_obj_put(fk_item *obj)
+void fk_item_free_obj_put(fk_item *itm)
 {
     if (free_objs->len < FK_FREE_OBJS_MAX) {
-        fk_list_insert(free_objs, obj);
+        fk_list_insert(free_objs, itm);
     } else {
-        fk_mem_free(obj);//really free memory
+        fk_mem_free(itm);//really free memory
     }
 }
 
-void fk_item_put_free(fk_item *obj)
+void fk_item_put_free(fk_item *itm)
 {
-    obj->type = FK_OBJ_NIL;
-    obj->data = NULL;
-    obj->ref = 0;
+    itm->type = FK_OBJ_NIL;
+    itm->data = NULL;
+    itm->ref = 0;
     if (free_objs->len < FK_FREE_OBJS_MAX) {
-        fk_list_insert(free_objs, obj);
+        fk_list_insert(free_objs, itm);
     } else {//beyond the upper limit
-        fk_mem_free(obj);//really free memory
+        fk_mem_free(itm);//really free memory
     }
 }
 */
 
 fk_item *fk_item_create(int type, void *data)
 {
-	fk_item *obj;
-	obj = (fk_item *)fk_mem_alloc(sizeof(fk_item));
-	obj->data = data;
-	obj->ref = 0;
-	obj->type = type;
+	fk_item *itm;
+	itm = (fk_item *)fk_mem_alloc(sizeof(fk_item));
+	itm->data = data;
+	itm->ref = 0;
+	itm->type = type;
 
-	return obj;
+	return itm;
 }
 
-void fk_item_ref_dec(fk_item *obj)
+void fk_item_ref_dec(fk_item *itm)
 {
-	obj->ref--;
-	if (obj->ref == 0) {
-		fk_item_destroy(obj);
+	itm->ref--;
+	if (itm->ref == 0) {
+		fk_item_destroy(itm);
 	}
 }
 
-void fk_item_ref_inc(fk_item *obj)
+void fk_item_ref_inc(fk_item *itm)
 {
-	obj->ref++;
+	itm->ref++;
 }
 
-void fk_item_destroy(fk_item *obj)
+void fk_item_destroy(fk_item *itm)
 {
-	switch (obj->type) {
+	switch (itm->type) {
 	case FK_ITEM_STR:
-		fk_str_destroy(obj->data);
+		fk_str_destroy(itm->data);
 		break;
 	case FK_ITEM_LIST:
-		fk_list_destroy(obj->data);
+		fk_list_destroy(itm->data);
 		break;
 	case FK_ITEM_DICT:
-		fk_dict_destroy(obj->data);
+		fk_dict_destroy(itm->data);
 		break;
 	}
-	obj->data = NULL;
-	obj->ref = 0;
-	obj->type = FK_OBJ_NIL;
-	fk_mem_free(obj);
+	itm->data = NULL;
+	itm->ref = 0;
+	itm->type = FK_OBJ_NIL;
+	fk_mem_free(itm);
 
 	return;
 }
