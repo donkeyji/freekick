@@ -81,7 +81,7 @@
 
 37.可以用gdb来定位segment fault。发生segment fault时进程会收到SIGSEG信号，gdb会定位发生segment fault的准确位置。
 
-
+38.container类型的struct增加一个fk_xxx_clear/fk_xxx_reset成员函数。
 
 
 
