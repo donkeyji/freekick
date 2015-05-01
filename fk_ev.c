@@ -46,7 +46,7 @@ void fk_ev_init()
 	evmgr.timer_list = fk_list_create(NULL);
 	evmgr.timer_heap = fk_heap_create(&tmev_op);
 
-	//use macro to initialize this two member
+	/*use macro to initialize this two member*/
 	evmgr.read_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * max_files);
 	evmgr.write_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * max_files);
 
@@ -54,17 +54,9 @@ void fk_ev_init()
 	fk_rawlist_init(evmgr.exp_tmev);
 	evmgr.act_ioev = fk_rawlist_create(fk_ioev_list);
 	fk_rawlist_init(evmgr.act_ioev);
-	//io mode
-	evmgr.iompx = mpxop->iompx_create(max_files);
 
-	if (evmgr.timer_list == NULL ||
-		evmgr.timer_heap == NULL ||
-		evmgr.exp_tmev == NULL 	 ||
-		evmgr.act_ioev == NULL 	 ||
-		evmgr.read_ev == NULL 	 ||
-		evmgr.write_ev == NULL 	 ||
-		evmgr.iompx == NULL)
-	{
+	evmgr.iompx = mpxop->iompx_create(max_files);
+	if (evmgr.iompx == NULL) {
 		fk_log_error("evmgr init failed\n");
 		exit(EXIT_FAILURE);
 	}
