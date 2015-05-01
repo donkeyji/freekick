@@ -250,7 +250,7 @@ int fk_on_mget(fk_conn *conn)
 					return -1;
 				}
 			} else {
-				ss = (fk_str *)(itm->data);
+				ss = (fk_str *)(itm->obj);
 				rt = fk_conn_rsp_add_bulk(conn, fk_str_len(ss) - 1);
 				if (rt < 0) {
 					return -1;
@@ -268,12 +268,12 @@ int fk_on_mget(fk_conn *conn)
 int fk_on_get(fk_conn *conn)
 {
 	int rt;
-	fk_item *obj;
+	fk_item *itm;
 	fk_str *key, *value;
 
 	key = fk_conn_arg_get(conn, 1);
-	obj = fk_dict_get(server.db[conn->db_idx], key);
-	if (obj == NULL) {
+	itm = fk_dict_get(server.db[conn->db_idx], key);
+	if (itm == NULL) {
 		rt = fk_conn_rsp_add_bulk(conn, -1);
 		if (rt < 0) {
 			return -1;
@@ -281,7 +281,7 @@ int fk_on_get(fk_conn *conn)
 		return 0;
 	} 
 
-	if (obj->type != FK_ITEM_STR) {
+	if (fk_item_type(itm) != FK_ITEM_STR) {
 		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
@@ -289,7 +289,7 @@ int fk_on_get(fk_conn *conn)
 		return 0;
 	} 
 
-	value = (fk_str *)(obj->data);
+	value = (fk_str *)(itm->obj);
 	rt = fk_conn_rsp_add_bulk(conn, fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
@@ -356,17 +356,17 @@ int fk_on_hset(fk_conn *conn)
 	int rt;
 	fk_dict *dct;
 	fk_str *hkey, *key;
-	fk_item *hobj, *obj;
+	fk_item *hitm, *itm;
 
 	hkey = fk_conn_arg_get(conn, 1);
 	key = fk_conn_arg_get(conn, 2);
-	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
-	if (hobj == NULL) {
+	hitm = fk_dict_get(server.db[conn->db_idx], hkey);
+	if (hitm == NULL) {
 		dct = fk_dict_create(&dbeop);
-		obj = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 3));
-		fk_dict_add(dct, key, obj);
-		hobj = fk_item_create(FK_ITEM_DICT, dct);
-		fk_dict_add(server.db[conn->db_idx], hkey, hobj);
+		itm = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 3));
+		fk_dict_add(dct, key, itm);
+		hitm = fk_item_create(FK_ITEM_DICT, dct);
+		fk_dict_add(server.db[conn->db_idx], hkey, hitm);
 		//consume all the args, except args[0]
 		fk_conn_arg_consume(conn, 1);
 		fk_conn_arg_consume(conn, 2);
@@ -378,10 +378,10 @@ int fk_on_hset(fk_conn *conn)
 		return 0;
 	}
 
-	if (hobj->type == FK_ITEM_DICT) {
-		dct = (fk_dict *)(hobj->data);
-		obj = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 3));
-		fk_dict_add(dct, key, obj);
+	if (fk_item_type(hitm) == FK_ITEM_DICT) {
+		dct = (fk_dict *)(hitm->obj);
+		itm = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 3));
+		fk_dict_add(dct, key, itm);
 		fk_conn_arg_consume(conn, 2);
 		fk_conn_arg_consume(conn, 3);
 		rt = fk_conn_rsp_add_int(conn, 1);
@@ -402,13 +402,13 @@ int fk_on_hget(fk_conn *conn)
 {
 	int rt;
 	fk_dict *dct;
-	fk_item *hobj, *obj;
+	fk_item *hitm, *itm;
 	fk_str *hkey, *key, *value;
 
 	hkey = fk_conn_arg_get(conn, 1);
 	key = fk_conn_arg_get(conn, 2);
-	hobj = fk_dict_get(server.db[conn->db_idx], hkey);
-	if (hobj == NULL) {
+	hitm = fk_dict_get(server.db[conn->db_idx], hkey);
+	if (hitm == NULL) {
 		rt = fk_conn_rsp_add_bulk(conn, -1);
 		if (rt < 0) {
 			return -1;
@@ -416,7 +416,7 @@ int fk_on_hget(fk_conn *conn)
 		return 0;
 	} 
 
-	if (hobj->type != FK_ITEM_DICT) {
+	if (fk_item_type(hitm) != FK_ITEM_DICT) {
 		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
@@ -424,9 +424,9 @@ int fk_on_hget(fk_conn *conn)
 		return 0;
 	} 
 
-	dct = (fk_dict *)(hobj->data);
-	obj = fk_dict_get(dct, key);
-	if (obj == NULL) {
+	dct = (fk_dict *)(hitm->obj);
+	itm = fk_dict_get(dct, key);
+	if (itm == NULL) {
 		rt = fk_conn_rsp_add_bulk(conn, -1);
 		if (rt < 0) {
 			return -1;
@@ -434,7 +434,7 @@ int fk_on_hget(fk_conn *conn)
 		return 0;
 	} 
 
-	if (obj->type != FK_ITEM_STR) {
+	if (itm->type != FK_ITEM_STR) {
 		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
 		if (rt < 0) {
 			return -1;
@@ -442,7 +442,7 @@ int fk_on_hget(fk_conn *conn)
 		return 0;
 	}
 
-	value = (fk_str *)obj->data;
+	value = (fk_str *)itm->obj;
 	rt = fk_conn_rsp_add_bulk(conn, fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
@@ -494,7 +494,7 @@ int fk_on_zadd(fk_conn *conn)
 		return 0;
 	}
 
-	lst = (fk_list *)sobj->data;
+	lst = (fk_list *)sobj->obj;
 	for (i = 2; i < conn->arg_cnt; i += 2) {
 		elt = fk_mem_alloc(sizeof(fk_elt));
 		elt->key = fk_conn_arg_get(conn, i);
@@ -506,22 +506,22 @@ int fk_on_zadd(fk_conn *conn)
 
 void fk_dict_obj_free(void *val)
 {
-	fk_item *obj;
-	obj = (fk_item *)val;
-	fk_item_destroy(obj);
+	fk_item *itm;
+	itm = (fk_item *)val;
+	fk_item_destroy(itm);
 }
 
 void fk_elt_free(void *e)
 {
 	fk_elt *elt;
-	fk_item *obj;
+	fk_item *itm;
 
 	elt = (fk_elt *)e;
 
 	fk_str_destroy(elt->key);
 
-	obj = (fk_item *)(elt->value);
-	fk_item_destroy(obj);
+	itm = (fk_item *)(elt->value);
+	fk_item_destroy(itm);
 }
 
 int fk_elt_cmp(void *e1, void *e2)
@@ -533,8 +533,8 @@ int fk_elt_cmp(void *e1, void *e2)
 	o1 = (fk_item *)(((fk_elt *)e1)->value);
 	o2 = (fk_item *)(((fk_elt *)e2)->value);
 
-	v1 = (fk_str *)o1->data;
-	v2 = (fk_str *)o2->data;
+	v1 = (fk_str *)o1->obj;
+	v2 = (fk_str *)o2->obj;
 
 	d1 = atof(fk_str_raw(v1));
 	d2 = atof(fk_str_raw(v2));

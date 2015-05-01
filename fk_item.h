@@ -9,11 +9,11 @@
 typedef struct _fk_item {
 	int type;
 	int ref;//reference count
-	void *data;//point to the real data of the itm
+	void *obj;//point to the real data of the itm
 } fk_item;
 
 void fk_item_init();
-fk_item *fk_item_create(int type, void *data);
+fk_item *fk_item_create(int type, void *obj);
 void fk_item_ref_dec(fk_item *itm);
 void fk_item_ref_inc(fk_item *itm);
 void fk_item_destroy(fk_item *itm);
