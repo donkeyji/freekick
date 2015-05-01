@@ -12,7 +12,7 @@ typedef struct _fk_buf {
 	int len;
 	int low;/*valid begin, init: 0, range: [0-->len], <= high */
 	int high;/*free begin, init: 0, range: [0-->len], <= len */
-	char data[];
+	char buffer[];
 } fk_buf;
 
 fk_buf *fk_buf_create();
@@ -23,9 +23,9 @@ void fk_buf_print(fk_buf *buf);
 
 #define fk_buf_payload_len(buf)	((buf)->high - (buf)->low)
 
-#define fk_buf_free_start(buf) 	((buf)->data + (buf)->high)
+#define fk_buf_free_start(buf) 	((buf)->buffer + (buf)->high)
 
-#define fk_buf_payload_start(buf) ((buf)->data + (buf)->low)
+#define fk_buf_payload_start(buf) ((buf)->buffer + (buf)->low)
 
 #define fk_buf_high_inc(buf, offset)	{	\
 	(buf)->high += (offset);				\
@@ -50,8 +50,8 @@ void fk_buf_print(fk_buf *buf);
 
 #define fk_buf_shift(buf) 	{			\
 	if ((buf)->low > 0) {				\
-		memmove((buf)->data, 			\
-			(buf)->data + (buf)->low, 	\
+		memmove((buf)->buffer, 			\
+			(buf)->buffer + (buf)->low,	\
 			(buf)->high - (buf)->low	\
 		);								\
 		(buf)->high -= (buf)->low;		\
@@ -63,8 +63,8 @@ void fk_buf_print(fk_buf *buf);
 	if ((buf)->len >= FK_BUF_INIT_LEN					\
 		&& (buf)->high - (buf)->low < FK_BUF_INIT_LEN) 	\
 	{													\
-		memmove((buf)->data,							\
-			(buf)->data + (buf)->low,					\
+		memmove((buf)->buffer,							\
+			(buf)->buffer + (buf)->low,					\
 			(buf)->high - (buf)->low					\
 		);												\
 		(buf)->high -= (buf)->low;						\
