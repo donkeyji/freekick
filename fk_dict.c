@@ -77,6 +77,11 @@ void fk_dict_reset(fk_dict *dct)
 	bzero(dct->buckets, sizeof(fk_elt_list *) * FK_DICT_INIT_SIZE);
 }
 
+/*
+ * free all the elements
+ * free all the buckets
+ * go back to initial state
+ */
 void fk_dict_clear(fk_dict *dct)
 {
 	int i;
@@ -108,7 +113,7 @@ void fk_dict_destroy(fk_dict *dct)
 {
 	fk_dict_clear(dct);
 
-	fk_mem_free(dct);
+	fk_mem_free(dct);/*free dict itself*/
 }
 
 fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
