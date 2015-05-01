@@ -285,11 +285,11 @@ int fk_ev_expired_tmev_proc()
 
 int fk_ev_active_ioev_proc()
 {
-	int fd, rt;
 	void *arg;
-	fk_ioev_cb iocb;
 	char type;
-	fk_ioev *ioev, *cur;
+	int fd, rt;
+	fk_ioev *ioev;
+	fk_ioev_cb iocb;
 
 	//ioev = evmgr.act_ioev->head;
 	ioev = fk_rawlist_head(evmgr.act_ioev);
@@ -299,18 +299,16 @@ int fk_ev_active_ioev_proc()
 		iocb = ioev->iocb;
 		type = ioev->type;
 
-		cur = ioev;//save the current position
-		ioev = ioev->next;//go to the next positon
-
-		//step 1: remove the active ioev from the active list first!!!!
-		fk_rawlist_any_remove(evmgr.act_ioev, cur);
-		cur->active = 0;//mark unactive
-		//step 2: call the callback of the active ioev
+		/*step 1: remove the active ioev from the active list first!!!!*/
+		fk_rawlist_any_remove(evmgr.act_ioev, ioev);
+		ioev->active = 0;//mark unactive
+		/*step 2: call the callback of the active ioev*/
 		rt = iocb(fd, type, arg);
-		//step 3: how to process the return value of the callback????
+		/*step 3: how to process the return value of the callback????*/
 		if (rt < 0) {
 			fk_log_error("error occurs when callback. fd: %d, type: %d\n", fd, type);
 		}
+		ioev = fk_rawlist_head(evmgr.act_ioev);
 	}
 
 	return 0;
