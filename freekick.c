@@ -632,8 +632,9 @@ void fk_write_pid_file()
 
 	pid_file = fopen(fk_str_raw(setting.pid_path), "w+");
 	pid = getpid();
-	fk_log_info("pid: %d\n", pid);
-	fk_log_info("pid path: %s\n", fk_str_raw(setting.pid_path));
+#ifdef FK_DEBUG
+	fk_log_debug("pid: %d, pid file: %s\n", pid, fk_str_raw(setting.pid_path));
+#endif
 	fprintf(pid_file, "%d\n", pid);
 	fclose(pid_file);
 }
@@ -656,7 +657,13 @@ void fk_svr_init()
 	server.conn_cnt = 0;
 	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * FK_MAXCONN_2_MAXFILES(setting.max_conn));
 	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
+	if (server.listen_fd < 0) {
+		fk_log_error("server listen socket creating failed\n");
+		exit(EXIT_FAILURE);
+	}
+#ifdef FK_DEBUG
 	fk_log_debug("listen fd: %d\n", server.listen_fd);
+#endif
 	server.listen_ev = fk_ioev_create(server.listen_fd, FK_IOEV_READ, NULL, fk_svr_listen_cb);
 	fk_ev_ioev_add(server.listen_ev);
 
@@ -668,21 +675,8 @@ void fk_svr_init()
 #endif
 
 	server.db = (fk_dict **)fk_mem_alloc(sizeof(fk_dict *) * server.dbcnt);
-	if (server.conns_tab == NULL ||
-		server.listen_fd < 0	 ||
-		server.listen_ev == NULL ||
-		server.db == NULL)
-	{
-		fk_log_error("[server init failed\n]");
-		exit(EXIT_FAILURE);
-	}
-
 	for (i = 0; i < server.dbcnt; i++) {
 		server.db[i] = fk_dict_create(&dbeop);
-		if (server.db[i] == NULL) {
-			fk_log_error("[db create failed\n]");
-			exit(EXIT_FAILURE);
-		}
 	}
 	/*load db from file*/
 	fk_svr_db_load(server.db_path);
