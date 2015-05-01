@@ -77,6 +77,7 @@ static int fk_on_flushall(fk_conn *conn);
 static int fk_on_mset(fk_conn *conn);
 static int fk_on_mget(fk_conn *conn);
 static int fk_on_hset(fk_conn *conn);
+static int fk_on_exists(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
 static int fk_on_zadd(fk_conn *conn);
 
@@ -114,6 +115,7 @@ static fk_proto protos[] = {
 	{"GET", 	FK_PROTO_READ, 		2, 					fk_on_get	 	},
 	{"DEL", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_del	 	},
 	{"FLUSHDB",	FK_PROTO_WRITE, 	1, 					fk_on_flushdb	},
+	{"EXISTS",	FK_PROTO_READ, 		2, 					fk_on_exists	},
 	{"FLUSHALL",FK_PROTO_WRITE, 	1, 					fk_on_flushall	},
 	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_on_hset	 	},
 	{"HGET", 	FK_PROTO_READ, 		3, 					fk_on_hget	 	},
@@ -344,6 +346,26 @@ int fk_on_flushall(fk_conn *conn)
 		fk_dict_empty(server.db[i]);
 	}
 	rt = fk_conn_rsp_add_status(conn, "OK", sizeof("OK") - 1);
+	if (rt < 0) {
+		return -1;
+	}
+
+	return 0;
+}
+
+int fk_on_exists(fk_conn *conn)
+{
+	int rt, n;
+	fk_str *key;
+	fk_item *itm;
+
+	key = fk_conn_arg_get(conn, 1);
+	itm = fk_dict_get(server.db[conn->db_idx], key);
+	n = 0;
+	if (itm != NULL) {
+		n = 1;
+	}
+	rt = fk_conn_rsp_add_int(conn, n);
 	if (rt < 0) {
 		return -1;
 	}
