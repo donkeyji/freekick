@@ -220,6 +220,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 	//maybe this tmev in expired list
 	if (tmev->expired == 1) {
 		fk_rawlist_any_remove(evmgr.exp_tmev, tmev);
+		tmev->expired = 0;
 	}
 
 	return 0;
@@ -266,18 +267,18 @@ int fk_ev_expired_tmev_proc()
 		interval = tmev->interval;
 
 		/*step 1: remove the expired tmev from the expired list first!!!!*/
-		fk_rawlist_any_remove(evmgr.exp_tmev, tmev);//remove current from the expired list
+		fk_rawlist_any_remove(evmgr.exp_tmev, tmev);
 		tmev->expired = 0;
 		/*step 2: call the callback of the expired tmev*/
 		rt = tmcb(interval, type, arg);
 		/*step 3: how to handle the return value of the callback???*/
 		if (rt == 0) {
 			if (type == FK_TMEV_CYCLE) {
-				fk_util_cal_expire(&(tmev->when), interval);/*calculate the trigger point time again*/
-				fk_heap_push(evmgr.timer_heap, (fk_leaf *)tmev);/*push into the heap once more*/
+				fk_util_cal_expire(&(tmev->when), interval);
+				fk_heap_push(evmgr.timer_heap, (fk_leaf *)tmev);
 			}
 		}
-		tmev = fk_rawlist_head(evmgr.exp_tmev);/*the new head*/
+		tmev = fk_rawlist_head(evmgr.exp_tmev);
 	}
 
 	return 0;
@@ -301,7 +302,7 @@ int fk_ev_active_ioev_proc()
 
 		/*step 1: remove the active ioev from the active list first!!!!*/
 		fk_rawlist_any_remove(evmgr.act_ioev, ioev);
-		ioev->active = 0;//mark unactive
+		ioev->active = 0;
 		/*step 2: call the callback of the active ioev*/
 		rt = iocb(fd, type, arg);
 		/*step 3: how to process the return value of the callback????*/
