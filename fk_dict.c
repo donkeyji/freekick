@@ -45,6 +45,7 @@
 static uint32_t fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
 static fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
+static void fk_dict_reset(fk_dict *dct);
 
 static fk_elt_op default_eop = {
 	NULL,
@@ -61,16 +62,22 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 		eop = &default_eop;
 	}
 	dct->eop = eop;
+	fk_dict_reset(dct);
+
+	return dct;
+}
+
+void fk_dict_reset(fk_dict *dct)
+{
 	dct->size = FK_DICT_INIT_SIZE;
 	dct->size_mask = dct->size - 1;
 	dct->limit = dct->size / 2;/*when up to 50%, it should extend space */
 	dct->used = 0;
 	dct->buckets = (fk_elt_list **)fk_mem_alloc(sizeof(fk_elt_list) * FK_DICT_INIT_SIZE);
 	bzero(dct->buckets, sizeof(fk_elt_list *) * FK_DICT_INIT_SIZE);
-	return dct;
 }
 
-void fk_dict_destroy(fk_dict *dct)
+void fk_dict_clear(fk_dict *dct)
 {
 	int i;
 	fk_elt *nd;
@@ -87,10 +94,20 @@ void fk_dict_destroy(fk_dict *dct)
 			fk_elt_key_free(dct, nd);
 			fk_elt_value_free(dct, nd);
 			fk_elt_destroy(nd);
+			dct->used--;
 			nd = fk_rawlist_head(lst);/*get the new head*/
 		}
 		fk_rawlist_destroy(lst);
 	}
+	fk_mem_free(dct->buckets);/*free buckets*/
+
+	fk_dict_reset(dct);/*go back to the initial status*/
+}
+
+void fk_dict_destroy(fk_dict *dct)
+{
+	fk_dict_clear(dct);
+
 	fk_mem_free(dct);
 }
 
