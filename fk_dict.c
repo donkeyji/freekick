@@ -35,7 +35,7 @@
 	(elt)->key = NULL;								\
 }
 
-#define fk_elt_value_free(dct, elt)	{			\
+#define fk_elt_value_free(dct, elt)	{				\
 	if ((dct)->eop->val_free != NULL) {				\
 		(dct)->eop->val_free((elt)->value);			\
 	}												\
@@ -96,15 +96,17 @@ void fk_dict_clear(fk_dict *dct)
 		nd = fk_rawlist_head(lst);/*get the new head*/
 		while (nd != NULL) {
 			fk_rawlist_any_remove(lst, nd);
-			fk_elt_key_free(dct, nd);
-			fk_elt_value_free(dct, nd);
-			fk_elt_destroy(nd);
-			dct->used--;
-			nd = fk_rawlist_head(lst);/*get the new head*/
+			fk_elt_key_free(dct, nd);/*free key*/
+			fk_elt_value_free(dct, nd);/*free value*/
+			fk_elt_destroy(nd);/*free element*/
+			dct->used--;/*unnecessary*/
+			nd = fk_rawlist_head(lst);/*go to the new head*/
 		}
-		fk_rawlist_destroy(lst);
+		fk_rawlist_destroy(lst);/*free element list*/
+		dct->buckets[i] = NULL;/*mark list NULL*/
 	}
 	fk_mem_free(dct->buckets);/*free buckets*/
+	dct->buckets = NULL;/*mark bucket NULL*/
 
 	fk_dict_reset(dct);/*go back to the initial status*/
 }
