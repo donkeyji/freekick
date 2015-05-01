@@ -83,7 +83,7 @@
 
 38.container类型的struct增加一个fk_xxx_clear/fk_xxx_reset成员函数。
 
-
+39.为何编译时加了优化选项-O2之后做profile时会出现莫名其妙的根本不会出现的函数调用?
 
 
 
