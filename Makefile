@@ -6,9 +6,9 @@ SRCDIRS := .
 SRCEXTS := .c
 
 INC := -I .
-BASICOPT := -std=gnu99 -Wall -O2 -D JEMALLOC_MANGLE
+BASICOPT := -std=gnu99 -Wall -D JEMALLOC_MANGLE
 ifeq ($(release),y)
-CFLAGS := $(BASICOPT) $(INC)
+CFLAGS := $(BASICOPT) $(INC) -O2
 else
 CFLAGS := $(BASICOPT) $(INC) -D FK_DEBUG
 endif
