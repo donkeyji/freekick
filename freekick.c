@@ -250,7 +250,7 @@ int fk_on_mget(fk_conn *conn)
 					return -1;
 				}
 			} else {
-				ss = (fk_str *)(itm->obj);
+				ss = (fk_str *)fk_item_raw(itm);
 				rt = fk_conn_rsp_add_bulk(conn, fk_str_len(ss) - 1);
 				if (rt < 0) {
 					return -1;
@@ -289,7 +289,7 @@ int fk_on_get(fk_conn *conn)
 		return 0;
 	} 
 
-	value = (fk_str *)(itm->obj);
+	value = (fk_str *)fk_item_raw(itm);
 	rt = fk_conn_rsp_add_bulk(conn, fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
@@ -379,7 +379,7 @@ int fk_on_hset(fk_conn *conn)
 	}
 
 	if (fk_item_type(hitm) == FK_ITEM_DICT) {
-		dct = (fk_dict *)(hitm->obj);
+		dct = (fk_dict *)fk_item_raw(hitm);
 		itm = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, 3));
 		fk_dict_add(dct, key, itm);
 		fk_conn_arg_consume(conn, 2);
@@ -424,7 +424,7 @@ int fk_on_hget(fk_conn *conn)
 		return 0;
 	} 
 
-	dct = (fk_dict *)(hitm->obj);
+	dct = (fk_dict *)fk_item_raw(hitm);
 	itm = fk_dict_get(dct, key);
 	if (itm == NULL) {
 		rt = fk_conn_rsp_add_bulk(conn, -1);
@@ -442,7 +442,7 @@ int fk_on_hget(fk_conn *conn)
 		return 0;
 	}
 
-	value = (fk_str *)itm->obj;
+	value = (fk_str *)fk_item_raw(itm);
 	rt = fk_conn_rsp_add_bulk(conn, fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
@@ -494,7 +494,7 @@ int fk_on_zadd(fk_conn *conn)
 		return 0;
 	}
 
-	lst = (fk_list *)sobj->obj;
+	lst = (fk_list *)fk_item_raw(sobj);
 	for (i = 2; i < conn->arg_cnt; i += 2) {
 		elt = fk_mem_alloc(sizeof(fk_elt));
 		elt->key = fk_conn_arg_get(conn, i);
@@ -533,8 +533,8 @@ int fk_elt_cmp(void *e1, void *e2)
 	o1 = (fk_item *)(((fk_elt *)e1)->value);
 	o2 = (fk_item *)(((fk_elt *)e2)->value);
 
-	v1 = (fk_str *)o1->obj;
-	v2 = (fk_str *)o2->obj;
+	v1 = (fk_str *)fk_item_raw(o1);
+	v2 = (fk_str *)fk_item_raw(o2);
 
 	d1 = atof(fk_str_raw(v1));
 	d2 = atof(fk_str_raw(v2));

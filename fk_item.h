@@ -20,5 +20,6 @@ void fk_item_destroy(fk_item *itm);
 
 #define fk_item_type(itm)	((itm)->type)
 #define fk_item_ref(itm)	((itm)->ref)
+#define fk_item_raw(itm)	((itm)->obj)
 
 #endif
