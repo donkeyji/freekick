@@ -244,7 +244,7 @@ int fk_on_mget(fk_conn *conn)
 				return -1;
 			}
 		} else {
-			if (itm->type != FK_ITEM_STR) {
+			if (fk_item_type(itm) != FK_ITEM_STR) {
 				rt = fk_conn_rsp_add_bulk(conn, -1);
 				if (rt < 0) {
 					return -1;

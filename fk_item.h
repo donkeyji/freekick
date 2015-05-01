@@ -18,4 +18,7 @@ void fk_item_ref_dec(fk_item *obj);
 void fk_item_ref_inc(fk_item *obj);
 void fk_item_destroy(fk_item *obj);
 
+#define fk_item_type(itm)	((itm)->type)
+#define fk_item_ref(itm)	((itm)->ref)
+
 #endif
