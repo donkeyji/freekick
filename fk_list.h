@@ -69,6 +69,8 @@ typedef struct {					\
 	} else {								\
 		lst->tail = nd->prev;				\
 	}										\
+	nd->prev = NULL;						\
+	nd->next = NULL;						\
 	lst->len--;								\
 }
 
