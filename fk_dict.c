@@ -45,7 +45,7 @@
 static uint32_t fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
 static fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
-static void fk_dict_reset(fk_dict *dct);
+static void fk_dict_init(fk_dict *dct);
 
 static fk_elt_op default_eop = {
 	NULL,
@@ -62,12 +62,12 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 	if (eop != NULL) {
 		dct->eop = eop;
 	}
-	fk_dict_reset(dct);
+	fk_dict_init(dct);
 
 	return dct;
 }
 
-void fk_dict_reset(fk_dict *dct)
+void fk_dict_init(fk_dict *dct)
 {
 	dct->size = FK_DICT_INIT_SIZE;
 	dct->size_mask = dct->size - 1;
@@ -108,7 +108,7 @@ void fk_dict_clear(fk_dict *dct)
 	fk_mem_free(dct->buckets);/*free buckets*/
 	dct->buckets = NULL;/*mark bucket NULL*/
 
-	fk_dict_reset(dct);/*go back to the initial status*/
+	fk_dict_init(dct);/*go back to the initial status*/
 }
 
 void fk_dict_destroy(fk_dict *dct)
