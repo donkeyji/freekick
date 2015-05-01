@@ -11,6 +11,7 @@
 #define FK_HEAP_INC_SIZE 64
 
 static void fk_heap_stretch(fk_heap *hp);
+static void fk_heap_reset(fk_heap *hp);
 
 fk_heap *fk_heap_create(fk_leaf_op *lop)
 {
@@ -19,16 +20,29 @@ fk_heap *fk_heap_create(fk_leaf_op *lop)
 	assert(lop != NULL);
 
    	hp = (fk_heap *)fk_mem_alloc(sizeof(fk_heap));
+	hp->lop = lop;
+
+	fk_heap_reset(hp);
+
+	return hp;
+}
+
+void fk_heap_reset(fk_heap *hp)
+{
 	hp->array = (fk_leaf **)fk_mem_alloc(sizeof(fk_leaf *) * FK_HEAP_INIT_SIZE);
 	bzero(hp->array, sizeof(fk_leaf *) * FK_HEAP_INIT_SIZE);
 	hp->last = 0;
 	hp->max = FK_HEAP_INIT_SIZE;
-	hp->lop = lop;
-	return hp;
+}
+
+void fk_heap_clear(fk_heap *hp)
+{
 }
 
 void fk_heap_destroy(fk_heap *hp)
 {
+	fk_heap_clear(hp);
+	fk_mem_free(hp);
 }
 
 void fk_heap_remove(fk_heap *hp, fk_leaf *leaf)
