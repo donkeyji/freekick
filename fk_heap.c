@@ -37,11 +37,18 @@ void fk_heap_reset(fk_heap *hp)
 
 void fk_heap_clear(fk_heap *hp)
 {
+	int i;
+
+	for (i = 0; i <= hp->last; i++) {
+		hp->array[i] = NULL;
+	}
+	fk_mem_free(hp->array);
 }
 
 void fk_heap_destroy(fk_heap *hp)
 {
 	fk_heap_clear(hp);
+	fk_mem_free(hp->array);
 	fk_mem_free(hp);
 }
 
