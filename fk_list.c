@@ -34,9 +34,8 @@ fk_list *fk_list_create(fk_node_op *nop)
 	fk_list *lst;
 
 	lst = (fk_list *)fk_mem_alloc(sizeof(fk_list));
-	if (nop == NULL) {
-		lst->nop = &default_nop;
-	} else {
+	lst->nop = &default_nop;
+	if (nop != NULL) {
 		lst->nop = nop;
 	}
 	lst->head = NULL;
@@ -212,6 +211,7 @@ fk_node *fk_list_search(fk_list *lst, void *key)
 	return NULL;
 }
 
+/*remove all nodes*/
 void fk_list_clear(fk_list *lst)
 {
 	fk_node *nd;

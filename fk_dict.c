@@ -58,10 +58,10 @@ fk_dict *fk_dict_create(fk_elt_op *eop)
 {
 	fk_dict *dct;
 	dct = (fk_dict *)fk_mem_alloc(sizeof(fk_dict));
-	if (eop == NULL) {
-		eop = &default_eop;
+	dct->eop = &default_eop;
+	if (eop != NULL) {
+		dct->eop = eop;
 	}
-	dct->eop = eop;
 	fk_dict_reset(dct);
 
 	return dct;
