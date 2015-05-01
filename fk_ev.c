@@ -252,11 +252,11 @@ int fk_ev_pending_tmev_update()
 
 int fk_ev_expired_tmev_proc()
 {
-	void *arg;
-	int interval, rt;
-	fk_tmev *tmev, *cur;
-	fk_tmev_cb tmcb;
 	char type;
+	void *arg;
+	fk_tmev *tmev;
+	fk_tmev_cb tmcb;
+	int interval, rt;
 
 	//tmev = evmgr.exp_tmev->head;
 	tmev = fk_rawlist_head(evmgr.exp_tmev);
@@ -266,20 +266,19 @@ int fk_ev_expired_tmev_proc()
 		type = tmev->type;
 		interval = tmev->interval;
 
-		cur = tmev;//save current position
-		tmev = tmev->next;//go to the next position
 		//step 1: remove the expired tmev from the expired list first!!!!
-		fk_rawlist_any_remove(evmgr.exp_tmev, cur);//remove current from the expired list
-		cur->expired = 0;
+		fk_rawlist_any_remove(evmgr.exp_tmev, tmev);//remove current from the expired list
+		tmev->expired = 0;
 		//step 2: call the callback of the expired tmev
 		rt = tmcb(interval, type, arg);
 		//step 3: how to handle the return value of the callback???
 		if (rt == 0) {
 			if (type == FK_TMEV_CYCLE) {
-				fk_util_cal_expire(&(cur->when), interval);//calculate the trigger point time again
-				fk_heap_push(evmgr.timer_heap, (fk_leaf *)cur);//push into the heap once more
+				fk_util_cal_expire(&(tmev->when), interval);//calculate the trigger point time again
+				fk_heap_push(evmgr.timer_heap, (fk_leaf *)tmev);//push into the heap once more
 			}
 		}
+		tmev = fk_rawlist_head(evmgr.exp_tmev);/*the new head*/
 	}
 
 	return 0;
