@@ -1,5 +1,4 @@
 SVRBIN := freekick
-CLTBIN := clt_test
 
 SRCDIRS := .
 
@@ -27,24 +26,17 @@ CC = gcc
 #SVRSRCS = $(foreach d,$(SRCDIRS),$(wildcard $(addprefix $(d)/*,$(SRCEXTS)))) 
 SVRSRCS = fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_str.c fk_util.c fk_conn.c fk_heap.c fk_item.c fk_dict.c fk_vtr.c fk_cache.c freekick.c
 
-CLTSRCS = clt_test.c
-
 SVROBJS = $(foreach x,$(SRCEXTS), $(patsubst %$(x),%.o,$(filter %$(x),$(SVRSRCS)))) 
-CLTOBJS = $(foreach x,$(SRCEXTS), $(patsubst %$(x),%.o,$(filter %$(x),$(CLTSRCS)))) 
 
 #SVRDEPS = $(patsubst %.o,%.d,$(SVROBJS)) 
-#CLTDEPS = $(patsubst %.o,%.d,$(CLTOBJS)) 
 DEPS = Makefile.dep
 
 .PHONY : all clean rebuild
 
-all : $(SVRBIN) $(CLTBIN)
+all : $(SVRBIN)
 
 $(SVRBIN) : $(SVROBJS) 
 	$(CC) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS)
-
-$(CLTBIN) : $(CLTOBJS) 
-	$(CC) -o $(CLTBIN) $(CLTOBJS) $(LDFLAGS)
 
 #-include $(SVRDEPS) $(CLTDEPS)
 -include $(DEPS)
@@ -85,4 +77,4 @@ $(DEPS): $(SVRSRCS) $(CLTSRCS)
 rebuild: clean all
 
 clean :
-	@$(RM) $(SVROBJS) $(CLTOBJS) $(SVRBIN) $(CLTBIN) $(DEPS)
+	@$(RM) $(SVROBJS) $(SVRBIN) $(DEPS)
