@@ -23,8 +23,8 @@
 	(nd)->data = NULL;								\
 }
 
+#define fk_list_init	fk_rawlist_init
 static void fk_list_clear(fk_list *lst);
-static void fk_list_init(fk_list *lst);
 
 static fk_node_op default_nop = {
 	NULL,
@@ -210,13 +210,6 @@ fk_node *fk_list_search(fk_list *lst, void *key)
 		nd = nd->next;
 	}
 	return NULL;
-}
-
-void fk_list_init(fk_list *lst)
-{
-	lst->head = NULL;
-	lst->tail = NULL;
-	lst->len = 0;
 }
 
 void fk_list_empty(fk_list *lst)
