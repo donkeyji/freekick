@@ -101,9 +101,8 @@ typedef struct _fk_list {
 	fk_node_op *nop;
 } fk_list;
 
-void fk_list_init();
 fk_list *fk_list_create(fk_node_op *nop);
-void fk_list_clear(fk_list *lst);
+void fk_list_empty(fk_list *lst);
 void fk_list_destroy(fk_list *lst);
 
 void fk_list_head_insert(fk_list *lst, void *val);

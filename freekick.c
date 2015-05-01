@@ -328,7 +328,7 @@ int fk_on_flushdb(fk_conn *conn)
 {
 	int rt;
 
-	fk_dict_clear(server.db[conn->db_idx]);
+	fk_dict_empty(server.db[conn->db_idx]);
 	rt = fk_conn_rsp_add_status(conn, "OK", sizeof("OK") - 1);
 	if (rt < 0) {
 		return -1;
@@ -341,7 +341,7 @@ int fk_on_flushall(fk_conn *conn)
 	int i, rt;
 
 	for (i = 0; i < server.dbcnt; i++) {
-		fk_dict_clear(server.db[i]);
+		fk_dict_empty(server.db[i]);
 	}
 	rt = fk_conn_rsp_add_status(conn, "OK", sizeof("OK") - 1);
 	if (rt < 0) {

@@ -24,6 +24,6 @@ fk_leaf *fk_heap_pop(fk_heap *hp);
 void fk_heap_push(fk_heap *hp, fk_leaf *data);
 fk_leaf *fk_heap_root(fk_heap *hp);
 void fk_heap_remove(fk_heap *hp, fk_leaf *leaf);
-void fk_heap_clear(fk_heap *hp);
+void fk_heap_empty(fk_heap *hp);
 
 #endif

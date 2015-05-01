@@ -36,6 +36,6 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value);
 int fk_dict_replace(fk_dict *dct, fk_str *key, void *value);
 int fk_dict_remove(fk_dict *dct, fk_str *key);
 void *fk_dict_get(fk_dict *dct, fk_str *key);
-void fk_dict_clear(fk_dict *dct);
+void fk_dict_empty(fk_dict *dct);
 
 #endif

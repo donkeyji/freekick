@@ -46,6 +46,7 @@ static uint32_t fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
 static fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
 static void fk_dict_init(fk_dict *dct);
+static void fk_dict_clear(fk_dict *dct);
 
 static fk_elt_op default_eop = {
 	NULL,
@@ -80,7 +81,6 @@ void fk_dict_init(fk_dict *dct)
 /*
  * free all the elements
  * free all the buckets
- * go back to initial state
  */
 void fk_dict_clear(fk_dict *dct)
 {
@@ -107,15 +107,19 @@ void fk_dict_clear(fk_dict *dct)
 	}
 	fk_mem_free(dct->buckets);/*free buckets*/
 	dct->buckets = NULL;/*mark bucket NULL*/
+}
 
-	fk_dict_init(dct);/*go back to the initial status*/
+void fk_dict_empty(fk_dict *dct)
+{
+	fk_dict_clear(dct);/*only clear all the elements*/
+
+	fk_dict_init(dct);/*go back to the initial state*/
 }
 
 void fk_dict_destroy(fk_dict *dct)
 {
 	fk_dict_clear(dct);
 
-	fk_mem_free(dct->buckets);/*to do: */
 	fk_mem_free(dct);/*free dict itself*/
 }
 
