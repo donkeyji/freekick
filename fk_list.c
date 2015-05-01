@@ -23,7 +23,6 @@
 	(nd)->data = NULL;								\
 }
 
-static void fk_list_reset(fk_list *lst);
 static fk_node_op default_nop = {
 	NULL,
 	NULL,
@@ -40,7 +39,9 @@ fk_list *fk_list_create(fk_node_op *nop)
 	} else {
 		lst->nop = nop;
 	}
-	fk_list_reset(lst);
+	lst->head = NULL;
+	lst->tail = NULL;
+	lst->len = 0;
 
 	return lst;
 }
@@ -211,13 +212,6 @@ fk_node *fk_list_search(fk_list *lst, void *key)
 	return NULL;
 }
 
-void fk_list_reset(fk_list *lst)
-{
-	lst->head = NULL;
-	lst->tail = NULL;
-	lst->len = 0;
-}
-
 void fk_list_clear(fk_list *lst)
 {
 	fk_node *nd;
@@ -226,8 +220,6 @@ void fk_list_clear(fk_list *lst)
 	while (nd != NULL) {
 		fk_list_any_remove(lst, nd);
 	}
-
-	fk_list_reset(lst);
 }
 
 void fk_list_destroy(fk_list *lst)

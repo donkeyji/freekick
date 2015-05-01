@@ -115,7 +115,7 @@ void fk_dict_destroy(fk_dict *dct)
 {
 	fk_dict_clear(dct);
 
-	fk_mem_free(dct->buckets);
+	fk_mem_free(dct->buckets);/*to do: */
 	fk_mem_free(dct);/*free dict itself*/
 }
 
