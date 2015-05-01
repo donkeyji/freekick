@@ -20,5 +20,6 @@ int fk_str_is_digit(fk_str *str);
 int fk_str_is_positive(fk_str *str);
 int fk_str_is_nonminus(fk_str *str);
 void fk_str_2upper(fk_str *str);
+void fk_str_2lower(fk_str *str);
 
 #endif

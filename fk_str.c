@@ -106,3 +106,16 @@ void fk_str_2upper(fk_str *str)
 		}
 	}
 }
+
+void fk_str_2lower(fk_str *str)
+{
+	int i;
+	char c;
+
+	for (i = 0; i < str->len - 1; i++) {
+		c = str->seq[i];
+		if (c >= 'A' && c <= 'Z') {
+			str->seq[i] += 32;
+		}
+	}
+}
