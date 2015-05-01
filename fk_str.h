@@ -3,16 +3,16 @@
 
 typedef struct _fk_str {
 	int len;//full length, including '\0'
-	char data[];
+	char seq[];
 } fk_str;
 
-#define fk_str_raw(str) ((str)->data)
+#define fk_str_raw(str) ((str)->seq)
 
 #define fk_str_len(str) ((str)->len)
 
-#define fk_str_print(str) printf("%s\n", (str)->data)
+#define fk_str_print(str) printf("%s\n", (str)->seq)
 
-fk_str *fk_str_create(char *data, int len);
+fk_str *fk_str_create(char *seq, int len);
 void fk_str_destroy(fk_str *src);
 fk_str *fk_str_clone(fk_str *src);
 int fk_str_cmp(fk_str *s1, fk_str *s2);
