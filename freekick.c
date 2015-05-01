@@ -236,13 +236,25 @@ int fk_on_mget(fk_conn *conn)
 		itm = fk_dict_get(server.db[conn->db_idx], key);
 		if (itm == NULL) {
 			rt = fk_conn_rsp_add_bulk(conn, -1);
+			if (rt < 0) {
+				return -1;
+			}
 		} else {
 			if (itm->type != FK_ITEM_STR) {
-				fk_conn_rsp_add_bulk(conn, -1);
+				rt = fk_conn_rsp_add_bulk(conn, -1);
+				if (rt < 0) {
+					return -1;
+				}
 			} else {
 				ss = (fk_str *)(itm->data);
-				fk_conn_rsp_add_bulk(conn, fk_str_len(ss) - 1);
-				fk_conn_rsp_add_content(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+				rt = fk_conn_rsp_add_bulk(conn, fk_str_len(ss) - 1);
+				if (rt < 0) {
+					return -1;
+				}
+				rt = fk_conn_rsp_add_content(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+				if (rt < 0) {
+					return -1;
+				}
 			}
 		}
 	}
