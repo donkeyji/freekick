@@ -80,6 +80,7 @@ static int fk_on_hset(fk_conn *conn);
 static int fk_on_exists(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
 static int fk_on_zadd(fk_conn *conn);
+static int fk_on_info(fk_conn *conn);
 
 /*global variable*/
 static fk_server server;
@@ -120,6 +121,7 @@ static fk_proto protos[] = {
 	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_on_hset	 	},
 	{"HGET", 	FK_PROTO_READ, 		3, 					fk_on_hget	 	},
 	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_zadd	 	},
+	{"INFO", 	FK_PROTO_READ, 		1, 					fk_on_info	 	},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -474,6 +476,23 @@ int fk_on_hget(fk_conn *conn)
 		return -1;
 	}
 
+	return 0;
+}
+
+int fk_on_info(fk_conn *conn)
+{
+	int rt;
+	char *info;
+
+	info = "it's freekick written by huge\n";
+	rt = fk_conn_rsp_add_bulk(conn, strlen(info));
+	if (rt < 0) {
+		return -1;
+	}
+	rt = fk_conn_rsp_add_content(conn, info, strlen(info));
+	if (rt < 0) {
+		return -1;
+	}
 	return 0;
 }
 
