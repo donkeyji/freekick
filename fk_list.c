@@ -179,17 +179,6 @@ void fk_list_any_remove(fk_list *lst, fk_node *nd)
 	fk_node_destroy(nd);
 }
 
-/*remove the head from the list, and return the head*/
-void fk_list_head_pop(fk_list *lst)
-{
-	fk_node *nd;
-
-	if (lst->len > 0) {
-		nd = lst->head;
-		fk_list_any_remove(lst, nd);
-	}
-}
-
 fk_node *fk_list_search(fk_list *lst, void *key)
 {
 	int cmp;

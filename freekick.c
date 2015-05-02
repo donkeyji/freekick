@@ -604,32 +604,50 @@ int fk_on_lpop(fk_conn *conn)
 {
 	int rt;
 	fk_list *lst;
+	fk_node *head;
 	fk_str *key, *ss;
 	fk_item *itm, *nd;
 
 	key = fk_conn_arg_get(conn, 1);
 	itm = fk_dict_get(server.db[conn->db_idx], key);
 	if (itm == NULL) {
-		fk_conn_rsp_add_bulk(conn, -1);
+		rt = fk_conn_rsp_add_bulk(conn, -1);
+		if (rt < 0) {
+			return -1;
+		}
 		return 0;
 	}
 
 	if (fk_item_type(itm) != FK_ITEM_LIST) {
-		fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
+		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
+		if (rt < 0) {
+			return -1;
+		}
 		return 0;
 	}
 
 	lst = fk_item_raw(itm);
 	if (fk_list_len(lst) == 0) {
-		fk_conn_rsp_add_bulk(conn, -1);
+		rt = fk_conn_rsp_add_bulk(conn, -1);
+		if (rt < 0) {
+			return -1;
+		}
 		return 0;
 	}
-	nd = (fk_item *)fk_node_raw(fk_list_head(lst));
 
+	head = fk_list_head(lst);
+	nd = (fk_item *)fk_node_raw(head);
 	ss = fk_item_raw(nd);
-	fk_conn_rsp_add_bulk(conn, fk_str_len(ss) - 1);
-	fk_conn_rsp_add_content(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
-	fk_list_head_pop(lst);
+	rt = fk_conn_rsp_add_bulk(conn, fk_str_len(ss) - 1);
+	if (rt < 0) {
+		return -1;
+	}
+	rt = fk_conn_rsp_add_content(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+	if (rt < 0) {
+		return -1;
+	}
+	fk_list_any_remove(lst, head);
+
 	return 0;
 }
 
