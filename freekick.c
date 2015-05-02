@@ -62,7 +62,8 @@ static void fk_svr_db_save();
 static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
-static void fk_dict_obj_free(void *elt);
+static void fk_dict_item_free(void *elt);
+static void fk_stack_item_free(void *ptr);
 static int fk_elt_cmp(void *e1, void *e2);
 static void fk_elt_free(void *e);
 static void fk_proto_init();
@@ -81,6 +82,8 @@ static int fk_on_exists(fk_conn *conn);
 static int fk_on_hget(fk_conn *conn);
 static int fk_on_zadd(fk_conn *conn);
 static int fk_on_info(fk_conn *conn);
+static int fk_on_lpush(fk_conn *conn);
+static int fk_on_lpop(fk_conn *conn);
 
 /*global variable*/
 static fk_server server;
@@ -89,7 +92,7 @@ static fk_elt_op dbeop = {
 	NULL,
 	fk_str_destroy,
 	NULL,
-	fk_dict_obj_free
+	fk_dict_item_free
 };
 
 /*
@@ -107,6 +110,14 @@ static fk_node_op sortop = {
 	fk_elt_cmp
 };
 
+/*for lpush/lpop*/
+static fk_node_op stack_op = {
+	NULL,
+	fk_stack_item_free,
+	NULL
+};
+
+
 /*all proto to deal*/
 static fk_proto protos[] = {
 	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_on_set	 	},
@@ -122,6 +133,8 @@ static fk_proto protos[] = {
 	{"HGET", 	FK_PROTO_READ, 		3, 					fk_on_hget	 	},
 	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_zadd	 	},
 	{"INFO", 	FK_PROTO_READ, 		1, 					fk_on_info	 	},
+	{"LPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_lpush	 	},
+	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_on_lpop	 	},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -545,7 +558,84 @@ int fk_on_zadd(fk_conn *conn)
 	return 0;
 }
 
-void fk_dict_obj_free(void *val)
+int fk_on_lpush(fk_conn *conn)
+{
+	int i, rt;
+	fk_str *key;
+	fk_list *lst;
+	fk_item *stack, *nd;
+
+	key = fk_conn_arg_get(conn, 1);
+	stack = fk_dict_get(server.db[conn->db_idx], key);
+	if (stack == NULL) {
+		lst = fk_list_create(&stack_op);
+		for (i = 2; i < conn->arg_cnt; i++) {
+			nd = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, i));
+			fk_list_head_insert(lst, nd);
+			fk_conn_arg_consume(conn, i);
+		}
+		stack = fk_item_create(FK_ITEM_LIST, lst);
+		fk_dict_add(server.db[conn->db_idx], key, stack);
+		fk_conn_arg_consume(conn, 1);
+		fk_conn_rsp_add_int(conn, conn->arg_cnt - 2);
+
+		return 0;
+	}
+
+	if (fk_item_type(stack) != FK_ITEM_LIST) {
+		rt = fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	}
+
+	lst = fk_item_raw(stack);
+	for (i = 2; i < conn->arg_cnt; i++) {
+		nd = fk_item_create(FK_ITEM_STR, fk_conn_arg_get(conn, i));
+		fk_list_head_insert(lst, nd);
+		fk_conn_arg_consume(conn, i);
+	}
+	fk_conn_rsp_add_int(conn, conn->arg_cnt - 2);
+	return 0;
+}
+
+int fk_on_lpop(fk_conn *conn)
+{
+	int rt;
+	fk_list *lst;
+	fk_str *key, *ss;
+	fk_item *itm, *nd;
+
+	key = fk_conn_arg_get(conn, 1);
+	itm = fk_dict_get(server.db[conn->db_idx], key);
+	if (itm == NULL) {
+		fk_conn_rsp_add_bulk(conn, -1);
+		return 0;
+	}
+
+	if (fk_item_type(itm) != FK_ITEM_LIST) {
+		fk_conn_rsp_add_error(conn, "Type Error", sizeof("Type Error") - 1);
+		return 0;
+	}
+
+	lst = fk_item_raw(itm);
+	if (fk_list_len(lst) == 0) {
+		fk_conn_rsp_add_bulk(conn, -1);
+		return 0;
+	}
+	nd = (fk_item *)fk_node_raw(fk_list_head(lst));
+
+	ss = fk_item_raw(nd);
+	fk_conn_rsp_add_bulk(conn, fk_str_len(ss) - 1);
+	fk_conn_rsp_add_content(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+	fk_list_head_pop(lst);
+	return 0;
+}
+
+
+/*--------------------------------------------*/
+void fk_dict_item_free(void *val)
 {
 	fk_item *itm;
 	itm = (fk_item *)val;
@@ -582,6 +672,17 @@ int fk_elt_cmp(void *e1, void *e2)
 
 	return d1 - d2;
 }
+
+/*for lpush/lpop*/
+void fk_stack_item_free(void *ptr)
+{
+	fk_item *itm;
+
+	itm = (fk_item *)ptr;
+
+	fk_item_destroy(itm);
+}
+
 
 /*server interface*/
 void fk_svr_conn_add(int fd)

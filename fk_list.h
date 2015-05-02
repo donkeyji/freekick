@@ -117,11 +117,17 @@ void fk_list_any_remove(fk_list *lst, fk_node *nd);
 #define fk_list_any_remove_only		fk_rawlist_any_remove
 void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd);
 
-fk_node *fk_list_head_pop(fk_list *lst);
+void fk_list_head_pop(fk_list *lst);
 fk_node *fk_list_search(fk_list *lst, void *key);
 
 fk_node *fk_list_iter_next(fk_list *lst);
 fk_node *fk_list_iter_begin(fk_list *lst, int dir);
 int fk_list_iter_end(fk_list *lst);
+
+#define fk_list_head fk_rawlist_head
+#define fk_list_tail fk_rawlist_tail
+#define fk_list_len fk_rawlist_len
+
+#define fk_node_raw(nd)		((nd)->data)
 
 #endif
