@@ -38,4 +38,8 @@ int fk_dict_remove(fk_dict *dct, fk_str *key);
 void *fk_dict_get(fk_dict *dct, fk_str *key);
 void fk_dict_empty(fk_dict *dct);
 
+#ifdef FK_DEBUG
+void fk_dict_print(fk_dict *dct);
+#endif
+
 #endif

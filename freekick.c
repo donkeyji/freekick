@@ -64,8 +64,8 @@ static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
 static void fk_db_dict_val_free(void *elt);
 static void fk_db_list_val_free(void *ptr);
-//static int fk_elt_cmp(void *e1, void *e2);
-//static void fk_elt_free(void *e);
+static int fk_elt_cmp(void *e1, void *e2);
+static void fk_elt_free(void *e);
 static void fk_proto_init();
 
 /*all the proto handlers*/
@@ -80,7 +80,7 @@ static int fk_cmd_mget(fk_conn *conn);
 static int fk_cmd_hset(fk_conn *conn);
 static int fk_cmd_exists(fk_conn *conn);
 static int fk_cmd_hget(fk_conn *conn);
-//static int fk_cmd_zadd(fk_conn *conn);
+static int fk_cmd_zadd(fk_conn *conn);
 static int fk_cmd_info(fk_conn *conn);
 static int fk_cmd_lpush(fk_conn *conn);
 static int fk_cmd_rpush(fk_conn *conn);
@@ -110,13 +110,11 @@ static fk_elt_op seteop = {
 };
 */
 
-/*
 static fk_node_op sortop = {
 	NULL,
 	fk_elt_free,
 	fk_elt_cmp
 };
-*/
 
 /*for lpush/lpop*/
 static fk_node_op db_list_op = {
@@ -139,7 +137,7 @@ static fk_proto protos[] = {
 	{"FLUSHALL",FK_PROTO_WRITE, 	1, 					fk_cmd_flushall	},
 	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_cmd_hset	 	},
 	{"HGET", 	FK_PROTO_READ, 		3, 					fk_cmd_hget	 	},
-	//{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_zadd	 	},
+	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_zadd	 	},
 	{"LPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_lpush 	},
 	{"RPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_rpush 	},
 	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_lpop	 	},
@@ -165,11 +163,12 @@ void fk_proto_init()
 	for (i = 0; protos[i].type != FK_PROTO_INVALID; i++) {
 		name = protos[i].name;
 		value = protos + i;
-		printf("---%s\n", name);
 		key = fk_str_create(name, strlen(name));
 		fk_dict_add(pmap, key, value);
 	}
-	printf("---size: %d\n", pmap->used);
+#ifdef FK_DEBUG
+	fk_dict_print(pmap);
+#endif
 }
 
 fk_proto *fk_proto_search(fk_str *name)
@@ -521,7 +520,6 @@ int fk_cmd_info(fk_conn *conn)
 	return 0;
 }
 
-/*
 int fk_cmd_zadd(fk_conn *conn)
 {
 	int i;
@@ -570,7 +568,6 @@ int fk_cmd_zadd(fk_conn *conn)
 	}
 	return 0;
 }
-*/
 
 int fk_cmd_generic_push(fk_conn *conn, int pos)
 {
@@ -704,7 +701,6 @@ void fk_db_dict_val_free(void *val)
 	fk_item_destroy(itm);
 }
 
-/*
 void fk_elt_free(void *e)
 {
 	fk_elt *elt;
@@ -717,9 +713,7 @@ void fk_elt_free(void *e)
 	itm = (fk_item *)(elt->value);
 	fk_item_destroy(itm);
 }
-*/
 
-/*
 int fk_elt_cmp(void *e1, void *e2)
 {
 	double d1, d2;
@@ -737,7 +731,6 @@ int fk_elt_cmp(void *e1, void *e2)
 
 	return d1 - d2;
 }
-*/
 
 /*for lpush/lpop*/
 void fk_db_list_val_free(void *ptr)

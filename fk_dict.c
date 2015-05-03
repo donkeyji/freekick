@@ -47,6 +47,9 @@ static int fk_dict_stretch(fk_dict *dct);
 static fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
 static void fk_dict_init(fk_dict *dct);
 static void fk_dict_clear(fk_dict *dct);
+#ifdef FK_DEBUG
+static void fk_dict_buckets_print(int idx, fk_elt_list *lst);
+#endif
 
 static fk_elt_op default_eop = {
 	NULL,
@@ -204,14 +207,20 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 	fk_elt *elt;
 	fk_elt_list *lst;
 
+	/*
+	 * should be called before fk_dict_search
+	 * if fk_dict_search called first, the idx 
+	 * maybe need to be calculated once more
+	 */
+	if (dct->used == dct->limit) {
+		fk_dict_stretch(dct);
+	}
+
 	elt = fk_dict_search(dct, key, &idx);
 	if (elt != NULL) {
 		return 1;
 	}
 
-	if (dct->used == dct->limit) {
-		fk_dict_stretch(dct);
-	}
 	lst = dct->buckets[idx];
 	if (lst == NULL) {
 		lst = fk_rawlist_create(fk_elt_list);
@@ -322,3 +331,38 @@ int fk_dict_stretch(fk_dict *dct)
 
 	return 0;
 }
+
+#ifdef FK_DEBUG
+void fk_dict_buckets_print(int idx, fk_elt_list *lst)
+{
+	fk_elt *elt;
+
+	printf("%d: ", idx);
+	elt = lst->head;
+	while (elt != NULL) {
+		printf("%s-->", elt->key->seq);
+		elt = elt->next;
+	}
+	printf("\n");
+}
+
+void fk_dict_print(fk_dict *dct)
+{
+	int i;
+	fk_elt_list *lst;
+
+	printf("size: %d, size_mask: %d, limit: %d, used: %d\n", 
+			dct->size, 
+			dct->size_mask,
+			dct->limit,
+			dct->used
+	);
+	for (i = 0; i < dct->size; i++) {
+		lst = dct->buckets[i];
+		if (lst == NULL) {
+			continue;
+		}
+		fk_dict_buckets_print(i, lst);
+	}
+}
+#endif

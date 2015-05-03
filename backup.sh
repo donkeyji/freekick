@@ -4,7 +4,8 @@ ver=$1
 
 #git push origin master
 
-d=$(date "+%Y-%m-%d_%H:%M")
+#d=$(date "+%Y-%m-%d_%H:%M")
+d=$(date "+%Y-%m-%d_%H")
 if [ -z $ver ]; then
 	appendix=$d
 else
