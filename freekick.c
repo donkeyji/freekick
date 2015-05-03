@@ -48,6 +48,7 @@ typedef struct _fk_server {
 	int save_done;
 } fk_server;
 
+/*----------------------------------------------------*/
 static void fk_main_init(char *conf_path);
 static void fk_main_end();
 static void fk_setrlimit();
@@ -68,6 +69,14 @@ static int fk_elt_cmp(void *e1, void *e2);
 static void fk_elt_free(void *e);
 static void fk_proto_init();
 
+/*----------------------------------------------------*/
+#define FK_RSP_OK				"OK"
+#define FK_RSP_TYPE_ERR		"Type Error"
+#define FK_RSP_NIL				(-1)
+#define FK_RSP_OK				"OK"
+#define FK_RSP_TYPE_ERR		"Type Error"
+#define FK_RSP_NIL				(-1)
+/*----------------------------------------------------*/
 /*all the proto handlers*/
 static int fk_cmd_set(fk_conn *conn);
 static int fk_cmd_setnx(fk_conn *conn);
@@ -86,9 +95,6 @@ static int fk_cmd_lpush(fk_conn *conn);
 static int fk_cmd_rpush(fk_conn *conn);
 static int fk_cmd_lpop(fk_conn *conn);
 static int fk_cmd_rpop(fk_conn *conn);
-#define FK_RSP_OK				"OK"
-#define FK_RSP_TYPE_ERR		"Type Error"
-#define FK_RSP_NIL				(-1)
 /*----------------------------------------------------*/
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);
