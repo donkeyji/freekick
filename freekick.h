@@ -20,6 +20,7 @@ typedef struct _fk_proto {
 
 void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);
+fk_conn *fk_svr_conn_get(int fd);
 fk_proto *fk_proto_search(fk_str *name);
 
 #endif

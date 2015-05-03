@@ -783,16 +783,26 @@ void fk_svr_conn_remove(fk_conn *conn)
 #endif
 }
 
+fk_conn *fk_svr_conn_get(int fd)
+{
+	return server.conns_tab[fd];
+}
+
 int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 {
 	int fd;
 
 	fd = fk_sock_accept(listen_fd);
-	if (server.conn_cnt == server.max_conn) {
-		close(fd);
+	fk_svr_conn_add(fd);
+#ifdef FK_DEBUG
+	fk_log_debug("conn_cnt: %d, max_conn: %d\n", server.conn_cnt, server.max_conn);
+#endif
+	/*why close(fd) directly will cause error?*/
+	if (server.conn_cnt > server.max_conn) {
+		fk_log_info("beyond max connections\n");
+		fk_svr_conn_remove(fk_svr_conn_get(fd));
 		return 0;
 	}
-	fk_svr_conn_add(fd);
 	fk_log_info("new conn fd: %d\n", fd);
 	return 0;
 }
