@@ -123,7 +123,7 @@ static fk_node_op stack_op = {
 /*all proto to deal*/
 static fk_proto protos[] = {
 	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_cmd_set	 	},
-	{"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_cmd_setnx	 	},
+	{"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_cmd_setnx	},
 	{"MSET", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_mset	 	},
 	{"MGET", 	FK_PROTO_READ, 		FK_PROTO_VARLEN, 	fk_cmd_mget	 	},
 	{"GET", 	FK_PROTO_READ, 		2, 					fk_cmd_get	 	},
@@ -135,8 +135,8 @@ static fk_proto protos[] = {
 	{"HGET", 	FK_PROTO_READ, 		3, 					fk_cmd_hget	 	},
 	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_zadd	 	},
 	{"INFO", 	FK_PROTO_READ, 		1, 					fk_cmd_info	 	},
-	{"LPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_lpush	 	},
-	{"RPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_rpush	 	},
+	{"LPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_lpush 	},
+	{"RPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_rpush 	},
 	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_lpop	 	},
 	{"RPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_rpop	 	},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
