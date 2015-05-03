@@ -774,13 +774,7 @@ void fk_svr_conn_remove(fk_conn *conn)
 {
 	server.conns_tab[conn->fd] = NULL;
 	server.conn_cnt -= 1;
-#ifdef FK_DEBUG
-	fk_log_debug("before free conn: %d\n", conn->fd);
-#endif
 	fk_conn_destroy(conn);
-#ifdef FK_DEBUG
-	fk_log_debug("after free conn\n");
-#endif
 }
 
 fk_conn *fk_svr_conn_get(int fd)

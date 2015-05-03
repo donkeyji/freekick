@@ -4,11 +4,11 @@ ver=$1
 
 #git push origin master
 
-#d=$(date "+%Y-%m-%d_%H:%M")
-d=$(date "+%Y-%m-%d_%H")
 if [ -z $ver ]; then
+	d=$(date "+%Y-%m-%d_%H:%M")
 	appendix=$d
 else
+	d=$(date "+%Y-%m-%d")
 	appendix=$d-$ver
 fi
 name="hopex-$appendix.tar.gz"
