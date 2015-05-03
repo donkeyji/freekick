@@ -69,23 +69,23 @@ static void fk_elt_free(void *e);
 static void fk_proto_init();
 
 /*all the proto handlers*/
-static int fk_on_set(fk_conn *conn);
-static int fk_on_setnx(fk_conn *conn);
-static int fk_on_get(fk_conn *conn);
-static int fk_on_del(fk_conn *conn);
-static int fk_on_flushdb(fk_conn *conn);
-static int fk_on_flushall(fk_conn *conn);
-static int fk_on_mset(fk_conn *conn);
-static int fk_on_mget(fk_conn *conn);
-static int fk_on_hset(fk_conn *conn);
-static int fk_on_exists(fk_conn *conn);
-static int fk_on_hget(fk_conn *conn);
-static int fk_on_zadd(fk_conn *conn);
-static int fk_on_info(fk_conn *conn);
-static int fk_on_lpush(fk_conn *conn);
-static int fk_on_rpush(fk_conn *conn);
-static int fk_on_lpop(fk_conn *conn);
-static int fk_on_rpop(fk_conn *conn);
+static int fk_cmd_set(fk_conn *conn);
+static int fk_cmd_setnx(fk_conn *conn);
+static int fk_cmd_get(fk_conn *conn);
+static int fk_cmd_del(fk_conn *conn);
+static int fk_cmd_flushdb(fk_conn *conn);
+static int fk_cmd_flushall(fk_conn *conn);
+static int fk_cmd_mset(fk_conn *conn);
+static int fk_cmd_mget(fk_conn *conn);
+static int fk_cmd_hset(fk_conn *conn);
+static int fk_cmd_exists(fk_conn *conn);
+static int fk_cmd_hget(fk_conn *conn);
+static int fk_cmd_zadd(fk_conn *conn);
+static int fk_cmd_info(fk_conn *conn);
+static int fk_cmd_lpush(fk_conn *conn);
+static int fk_cmd_rpush(fk_conn *conn);
+static int fk_cmd_lpop(fk_conn *conn);
+static int fk_cmd_rpop(fk_conn *conn);
 
 /*global variable*/
 static fk_server server;
@@ -122,23 +122,23 @@ static fk_node_op stack_op = {
 
 /*all proto to deal*/
 static fk_proto protos[] = {
-	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_on_set	 	},
-	{"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_on_setnx	 	},
-	{"MSET", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_mset	 	},
-	{"MGET", 	FK_PROTO_READ, 		FK_PROTO_VARLEN, 	fk_on_mget	 	},
-	{"GET", 	FK_PROTO_READ, 		2, 					fk_on_get	 	},
-	{"DEL", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_del	 	},
-	{"FLUSHDB",	FK_PROTO_WRITE, 	1, 					fk_on_flushdb	},
-	{"EXISTS",	FK_PROTO_READ, 		2, 					fk_on_exists	},
-	{"FLUSHALL",FK_PROTO_WRITE, 	1, 					fk_on_flushall	},
-	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_on_hset	 	},
-	{"HGET", 	FK_PROTO_READ, 		3, 					fk_on_hget	 	},
-	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_zadd	 	},
-	{"INFO", 	FK_PROTO_READ, 		1, 					fk_on_info	 	},
-	{"LPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_lpush	 	},
-	{"RPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_on_rpush	 	},
-	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_on_lpop	 	},
-	{"RPOP", 	FK_PROTO_READ, 		2, 					fk_on_rpop	 	},
+	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_cmd_set	 	},
+	{"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_cmd_setnx	 	},
+	{"MSET", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_mset	 	},
+	{"MGET", 	FK_PROTO_READ, 		FK_PROTO_VARLEN, 	fk_cmd_mget	 	},
+	{"GET", 	FK_PROTO_READ, 		2, 					fk_cmd_get	 	},
+	{"DEL", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_del	 	},
+	{"FLUSHDB",	FK_PROTO_WRITE, 	1, 					fk_cmd_flushdb	},
+	{"EXISTS",	FK_PROTO_READ, 		2, 					fk_cmd_exists	},
+	{"FLUSHALL",FK_PROTO_WRITE, 	1, 					fk_cmd_flushall	},
+	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_cmd_hset	 	},
+	{"HGET", 	FK_PROTO_READ, 		3, 					fk_cmd_hget	 	},
+	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_zadd	 	},
+	{"INFO", 	FK_PROTO_READ, 		1, 					fk_cmd_info	 	},
+	{"LPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_lpush	 	},
+	{"RPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_rpush	 	},
+	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_lpop	 	},
+	{"RPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_rpop	 	},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -175,7 +175,7 @@ fk_proto *fk_proto_search(fk_str *name)
 	return pto;
 }
 
-int fk_on_set(fk_conn *conn)
+int fk_cmd_set(fk_conn *conn)
 {
 	int rt;
 	fk_str *key;
@@ -198,7 +198,7 @@ int fk_on_set(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_setnx(fk_conn *conn)
+int fk_cmd_setnx(fk_conn *conn)
 {
 	int rt;
 	fk_str *key;
@@ -226,7 +226,7 @@ int fk_on_setnx(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_mset(fk_conn *conn)
+int fk_cmd_mset(fk_conn *conn)
 {
 	int i, rt;
 	fk_str *key;
@@ -248,7 +248,7 @@ int fk_on_mset(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_mget(fk_conn *conn)
+int fk_cmd_mget(fk_conn *conn)
 {
 	int i, rt;
 	fk_item *itm;
@@ -288,7 +288,7 @@ int fk_on_mget(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_get(fk_conn *conn)
+int fk_cmd_get(fk_conn *conn)
 {
 	int rt;
 	fk_item *itm;
@@ -324,7 +324,7 @@ int fk_on_get(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_del(fk_conn *conn)
+int fk_cmd_del(fk_conn *conn)
 {
 	fk_str *key;
 	int i, deleted, rt;
@@ -347,7 +347,7 @@ int fk_on_del(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_flushdb(fk_conn *conn)
+int fk_cmd_flushdb(fk_conn *conn)
 {
 	int rt;
 
@@ -359,7 +359,7 @@ int fk_on_flushdb(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_flushall(fk_conn *conn)
+int fk_cmd_flushall(fk_conn *conn)
 {
 	int i, rt;
 
@@ -374,7 +374,7 @@ int fk_on_flushall(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_exists(fk_conn *conn)
+int fk_cmd_exists(fk_conn *conn)
 {
 	int rt, n;
 	fk_str *key;
@@ -394,7 +394,7 @@ int fk_on_exists(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_hset(fk_conn *conn)
+int fk_cmd_hset(fk_conn *conn)
 {
 	int rt;
 	fk_dict *dct;
@@ -441,7 +441,7 @@ int fk_on_hset(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_hget(fk_conn *conn)
+int fk_cmd_hget(fk_conn *conn)
 {
 	int rt;
 	fk_dict *dct;
@@ -498,7 +498,7 @@ int fk_on_hget(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_info(fk_conn *conn)
+int fk_cmd_info(fk_conn *conn)
 {
 	int rt;
 	char *info;
@@ -515,7 +515,7 @@ int fk_on_info(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_zadd(fk_conn *conn)
+int fk_cmd_zadd(fk_conn *conn)
 {
 	int i;
 	fk_item *sobj;
@@ -564,7 +564,7 @@ int fk_on_zadd(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_lpush(fk_conn *conn)
+int fk_cmd_lpush(fk_conn *conn)
 {
 	int i, rt;
 	fk_str *key;
@@ -606,7 +606,7 @@ int fk_on_lpush(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_rpush(fk_conn *conn)
+int fk_cmd_rpush(fk_conn *conn)
 {
 	int i, rt;
 	fk_str *key;
@@ -648,7 +648,7 @@ int fk_on_rpush(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_lpop(fk_conn *conn)
+int fk_cmd_lpop(fk_conn *conn)
 {
 	int rt;
 	fk_list *lst;
@@ -699,7 +699,7 @@ int fk_on_lpop(fk_conn *conn)
 	return 0;
 }
 
-int fk_on_rpop(fk_conn *conn)
+int fk_cmd_rpop(fk_conn *conn)
 {
 	int rt;
 	fk_list *lst;
