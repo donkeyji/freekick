@@ -129,7 +129,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	int fd, rt;
 	char type;
 
-	//must be in the read/write event array
+	/*must be in the read/write event array*/
 	fd = ioev->fd;
 	type = ioev->type;
 	rt = mpxop->iompx_remove((&evmgr)->iompx, fd, type);
@@ -137,7 +137,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 		return -1;
 	}
 
-	//maybe this ioev in active list
+	/*maybe this ioev in active list*/
 	if (ioev->active == 1) {
 		fk_rawlist_any_remove(evmgr.act_ioev, ioev);
 		ioev->active = 0;
@@ -197,7 +197,7 @@ fk_tmev *fk_tmev_create(int interval, char type, void *arg, fk_tmev_cb tmcb)
 
 void fk_tmev_destroy(fk_tmev *tmev)
 {
-	//just free memory, no other things to do
+	/*just free memory, no other things to do*/
 	fk_mem_free(tmev);
 }
 
@@ -212,12 +212,12 @@ int fk_ev_tmev_add(fk_tmev *tmev)
 
 int fk_ev_tmev_remove(fk_tmev *tmev)
 {
-	//in the min heap
+	/*in the min heap*/
 	if (tmev->expired == 0) {
 		fk_heap_remove(evmgr.timer_heap, (fk_leaf *)tmev);
 	}
 
-	//maybe this tmev in expired list
+	/*maybe this tmev in expired list*/
 	if (tmev->expired == 1) {
 		fk_rawlist_any_remove(evmgr.exp_tmev, tmev);
 		tmev->expired = 0;
@@ -240,11 +240,11 @@ int fk_ev_pending_tmev_update()
 		tmev = (fk_tmev *)root;
 		cmp = fk_util_tmval_cmp(&now, &(tmev->when));
 		if (cmp >= 0) {
-			fk_heap_pop(evmgr.timer_heap);//pop root from the heap
-			fk_rawlist_head_insert(evmgr.exp_tmev, tmev);//add to the exp list
+			fk_heap_pop(evmgr.timer_heap);/*pop root from the heap*/
+			fk_rawlist_head_insert(evmgr.exp_tmev, tmev);/*add to the exp list*/
 			tmev->expired = 1;
-			root = fk_heap_root(evmgr.timer_heap);//get new root
-		} else {//break directly
+			root = fk_heap_root(evmgr.timer_heap);/*get new root*/
+		} else {/*break directly*/
 			break;
 		}
 	}
@@ -292,7 +292,6 @@ int fk_ev_active_ioev_proc()
 	fk_ioev *ioev;
 	fk_ioev_cb iocb;
 
-	//ioev = evmgr.act_ioev->head;
 	ioev = fk_rawlist_head(evmgr.act_ioev);
 	while (ioev != NULL) {
 		fd = ioev->fd;
@@ -335,9 +334,9 @@ int fk_ev_ioev_activate(int fd, char type)
 	 * */
 	if (type & FK_IOEV_READ) {
 		rioev = evmgr.read_ev[fd];
-		if (rioev != NULL) {//when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null
+		if (rioev != NULL) {/*when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null*/
 			if (rioev->active == 0) {
-				fk_rawlist_head_insert(evmgr.act_ioev, rioev);//add to the exp list
+				fk_rawlist_head_insert(evmgr.act_ioev, rioev);/*add to the exp list*/
 				rioev->active = 1;
 			}
 		}
@@ -346,7 +345,7 @@ int fk_ev_ioev_activate(int fd, char type)
 		wioev = evmgr.write_ev[fd];
 		if (wioev != NULL) {
 			if (wioev->active == 0) {
-				fk_rawlist_head_insert(evmgr.act_ioev, wioev);//add to the exp list
+				fk_rawlist_head_insert(evmgr.act_ioev, wioev);/*add to the exp list*/
 				wioev->active = 1;
 			}
 		}
