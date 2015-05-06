@@ -51,9 +51,6 @@ typedef struct _fk_server {
 /*----------------------------------------------------*/
 static void fk_main_init(char *conf_path);
 static void fk_main_end();
-static void fk_setrlimit();
-static void fk_daemon_run();
-static void fk_write_pid_file();
 static void fk_main_loop();
 static void fk_svr_init();
 static int fk_svr_timer_cb(int interval, char type, void *arg);
@@ -63,20 +60,20 @@ static void fk_svr_db_save();
 static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
+static void fk_setrlimit();
+static void fk_daemon_run();
+static void fk_write_pid_file();
+static void fk_proto_init();
+
 static void fk_db_dict_val_free(void *elt);
 static void fk_db_list_val_free(void *ptr);
-static int fk_elt_cmp(void *e1, void *e2);
-static void fk_elt_free(void *e);
-static void fk_proto_init();
 
 /*----------------------------------------------------*/
 #define FK_RSP_OK				"OK"
-#define FK_RSP_TYPE_ERR		"Type Error"
-#define FK_RSP_NIL				(-1)
-#define FK_RSP_OK				"OK"
-#define FK_RSP_TYPE_ERR		"Type Error"
+#define FK_RSP_TYPE_ERR			"Type Error"
 #define FK_RSP_NIL				(-1)
 /*----------------------------------------------------*/
+
 /*all the proto handlers*/
 static int fk_cmd_set(fk_conn *conn);
 static int fk_cmd_setnx(fk_conn *conn);
@@ -89,7 +86,6 @@ static int fk_cmd_mget(fk_conn *conn);
 static int fk_cmd_hset(fk_conn *conn);
 static int fk_cmd_exists(fk_conn *conn);
 static int fk_cmd_hget(fk_conn *conn);
-static int fk_cmd_zadd(fk_conn *conn);
 static int fk_cmd_info(fk_conn *conn);
 static int fk_cmd_lpush(fk_conn *conn);
 static int fk_cmd_rpush(fk_conn *conn);
@@ -110,28 +106,12 @@ static fk_elt_op db_dict_eop = {
 	fk_db_dict_val_free
 };
 
-/*
-static fk_elt_op seteop = {
-	NULL,
-	fk_str_destroy,
-	NULL,
-	NULL
-};
-*/
-
-static fk_node_op sortop = {
-	NULL,
-	fk_elt_free,
-	fk_elt_cmp
-};
-
 /*for lpush/lpop*/
 static fk_node_op db_list_op = {
 	NULL,
 	fk_db_list_val_free,
 	NULL
 };
-
 
 /*all proto to deal*/
 static fk_proto protos[] = {
@@ -146,7 +126,6 @@ static fk_proto protos[] = {
 	{"FLUSHALL",FK_PROTO_WRITE, 	1, 					fk_cmd_flushall	},
 	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_cmd_hset	 	},
 	{"HGET", 	FK_PROTO_READ, 		3, 					fk_cmd_hget	 	},
-	{"ZADD", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_zadd	 	},
 	{"LPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_lpush 	},
 	{"RPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_rpush 	},
 	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_lpop	 	},
@@ -424,7 +403,7 @@ int fk_cmd_hset(fk_conn *conn)
 		fk_dict_add(dct, key, itm);
 		hitm = fk_item_create(FK_ITEM_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hitm);
-		//consume all the args, except args[0]
+		/*consume all the args, except args[0]*/
 		fk_conn_arg_consume(conn, 1);
 		fk_conn_arg_consume(conn, 2);
 		fk_conn_arg_consume(conn, 3);
@@ -525,55 +504,6 @@ int fk_cmd_info(fk_conn *conn)
 	rt = fk_conn_rsp_add_content(conn, info, strlen(info));
 	if (rt < 0) {
 		return -1;
-	}
-	return 0;
-}
-
-int fk_cmd_zadd(fk_conn *conn)
-{
-	int i;
-	fk_item *sobj;
-	fk_str *skey;
-	fk_list *lst;
-	fk_elt *elt;
-
-	fk_log_debug("zadd\n");
-	skey = fk_conn_arg_get(conn, 1);
-
-	sobj = fk_dict_get(server.db[conn->db_idx], skey);
-
-	if (sobj == NULL) {
-		lst = fk_list_create(&sortop);
-		for (i = 2; i < conn->arg_cnt; i += 2) {
-			elt = fk_mem_alloc(sizeof(fk_elt));
-			elt->key = fk_conn_arg_get(conn, i);
-			elt->value = fk_conn_arg_get(conn, i+1);
-			fk_list_sorted_insert(lst, elt);
-		}
-		fk_dict_add(server.db[conn->db_idx], skey, lst);
-		sprintf(fk_buf_free_start(conn->wbuf), ":%d\r\n", 1);
-		fk_log_debug("after sprintf\n");
-		return 0;
-	}
-
-	if (sobj->type != FK_ITEM_LIST) {
-		lst = fk_list_create(&sortop);
-		for (i = 2; i < conn->arg_cnt; i += 2) {
-			elt = fk_mem_alloc(sizeof(fk_elt));
-			elt->key = fk_conn_arg_get(conn, i);
-			elt->value = fk_conn_arg_get(conn, i+1);
-			fk_list_sorted_insert(lst, elt);
-		}
-		fk_dict_add(server.db[conn->db_idx], skey, lst);
-		return 0;
-	}
-
-	lst = (fk_list *)fk_item_raw(sobj);
-	for (i = 2; i < conn->arg_cnt; i += 2) {
-		elt = fk_mem_alloc(sizeof(fk_elt));
-		elt->key = fk_conn_arg_get(conn, i);
-		elt->value = fk_conn_arg_get(conn, i+1);
-		fk_list_sorted_insert(lst, elt);
 	}
 	return 0;
 }
@@ -717,37 +647,6 @@ void fk_db_dict_val_free(void *val)
 	fk_item_destroy(itm);
 }
 
-void fk_elt_free(void *e)
-{
-	fk_elt *elt;
-	fk_item *itm;
-
-	elt = (fk_elt *)e;
-
-	fk_str_destroy(elt->key);
-
-	itm = (fk_item *)(elt->value);
-	fk_item_destroy(itm);
-}
-
-int fk_elt_cmp(void *e1, void *e2)
-{
-	double d1, d2;
-	fk_str *v1, *v2;
-	fk_item *o1, *o2;
-
-	o1 = (fk_item *)(((fk_elt *)e1)->value);
-	o2 = (fk_item *)(((fk_elt *)e2)->value);
-
-	v1 = (fk_str *)fk_item_raw(o1);
-	v2 = (fk_str *)fk_item_raw(o2);
-
-	d1 = atof(fk_str_raw(v1));
-	d2 = atof(fk_str_raw(v2));
-
-	return d1 - d2;
-}
-
 /*for lpush/lpop*/
 void fk_db_list_val_free(void *ptr)
 {
@@ -757,7 +656,6 @@ void fk_db_list_val_free(void *ptr)
 
 	fk_item_destroy(itm);
 }
-
 
 /*server interface*/
 void fk_svr_conn_add(int fd)
@@ -820,7 +718,7 @@ int fk_svr_timer_cb2(int interval, char type, void *arg)
 	fk_log_info("[timer 2]\n");
 	fk_ev_tmev_remove(tmev);
 
-	return -1;//do not cycle once more
+	return -1;/*do not cycle once more*/
 }
 #endif
 
@@ -847,14 +745,14 @@ void fk_daemon_run()
 	case -1:
 		fk_log_error("fork: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
-	case 0://child continue
+	case 0:/*child continue*/
 		break;
 	default:
 		fk_log_info("parent exit, to run as a daemon\n");
-		exit(EXIT_SUCCESS);//parent exit
+		exit(EXIT_SUCCESS);/*parent exit*/
 	}
 
-	if (setsid() == -1) {//create a new session
+	if (setsid() == -1) {/*create a new session*/
 		fk_log_error("setsid: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
@@ -867,17 +765,17 @@ void fk_daemon_run()
 		exit(EXIT_FAILURE);
 	}
 
-	if (dup2(fd, STDIN_FILENO) == -1) {//close STDIN
+	if (dup2(fd, STDIN_FILENO) == -1) {/*close STDIN*/
 		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
-	if (dup2(fd, STDOUT_FILENO) == -1) {//close STDOUT
+	if (dup2(fd, STDOUT_FILENO) == -1) {/*close STDOUT*/
 		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
-	if (fd > STDERR_FILENO) {//why???
+	if (fd > STDERR_FILENO) {/*why???*/
 		if (close(fd) == -1) {
 			fk_log_error("close: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
@@ -958,7 +856,7 @@ void fk_setrlimit()
 
 	if (max_files > lmt.rlim_max) {
 		euid = geteuid();
-		if (euid == 0) {//root
+		if (euid == 0) {/*root*/
 #ifdef FK_DEBUG
 			fk_log_debug("running as root\n");
 #endif
@@ -970,11 +868,11 @@ void fk_setrlimit()
 				exit(EXIT_FAILURE);
 			}
 			fk_log_info("new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
-		} else {//non-root
+		} else {/*non-root*/
 #ifdef FK_DEBUG
 			fk_log_debug("running as non-root\n");
 #endif
-			max_files = lmt.rlim_max;//open as many as possible files
+			max_files = lmt.rlim_max;/*open as many as possible files*/
 			lmt.rlim_cur = lmt.rlim_max;
 			rt = setrlimit(RLIMIT_NOFILE, &lmt);
 			if (rt < 0) {
