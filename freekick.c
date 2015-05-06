@@ -676,6 +676,7 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 #ifdef FK_DEBUG
 	fk_log_debug("conn_cnt: %d, max_conn: %d\n", server.conn_cnt, server.max_conn);
 #endif
+	/*why redis do like below?*/
 	//if (server.conn_cnt > server.max_conn) {
 		//fk_log_info("beyond max connections\n");
 		//fk_svr_conn_remove(fk_svr_conn_get(fd));
