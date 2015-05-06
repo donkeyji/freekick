@@ -13,7 +13,7 @@ typedef struct {					\
 
 #define fk_rawlist_create(type)		(type *)fk_mem_alloc(sizeof(type))
 
-#define fk_rawlist_destroy(lst)		fk_mem_free(lst)
+#define fk_rawlist_destroy(lst)		fk_mem_free((lst))
 
 #define fk_rawlist_head(lst)	((lst)->head)
 
@@ -29,49 +29,49 @@ typedef struct {					\
 
 /*insert to the head*/
 #define fk_rawlist_head_insert(lst, nd) {	\
-    if (lst->len == 0) {					\
-        nd->next = NULL;					\
-        nd->prev = NULL;					\
-        lst->tail = nd;						\
+    if ((lst)->len == 0) {					\
+        (nd)->next = NULL;					\
+        (nd)->prev = NULL;					\
+        (lst)->tail = (nd);					\
     } else {								\
-        nd->prev = NULL;					\
-        nd->next = lst->head;				\
-		lst->head->prev = nd;				\
+        (nd)->prev = NULL;					\
+        (nd)->next = (lst)->head;			\
+		(lst)->head->prev = (nd);			\
     }										\
-    lst->head = nd;							\
-    lst->len++;								\
+    (lst)->head = (nd);						\
+    (lst)->len++;							\
 }
 
 /*insert to the tail*/
 #define fk_rawlist_tail_insert(lst, nd) {	\
-    if (lst->len == 0) {					\
-        nd->next = NULL;					\
-        nd->prev = NULL;					\
-        lst->head = nd;						\
+    if ((lst)->len == 0) {					\
+        (nd)->next = NULL;					\
+        (nd)->prev = NULL;					\
+        (lst)->head = (nd);					\
     } else {								\
-		nd->prev = lst->tail;				\
-		nd->next = NULL;					\
-		lst->tail->next = nd;				\
+		(nd)->prev = (lst)->tail;			\
+		(nd)->next = NULL;					\
+		(lst)->tail->next = (nd);			\
     }										\
-    lst->tail = nd;							\
-    lst->len++;								\
+    (lst)->tail = (nd);						\
+    (lst)->len++;							\
 }
 
 /*remove specified node*/
 #define fk_rawlist_any_remove(lst, nd) {	\
-	if (nd->prev != NULL) {					\
-		nd->prev->next = nd->next;			\
+	if ((nd)->prev != NULL) {				\
+		(nd)->prev->next = (nd)->next;		\
 	} else {								\
-		lst->head = nd->next;				\
+		(lst)->head = (nd)->next;			\
 	}										\
-	if (nd->next != NULL) {					\
-		nd->next->prev = nd->prev;			\
+	if ((nd)->next != NULL) {				\
+		(nd)->next->prev = (nd)->prev;		\
 	} else {								\
-		lst->tail = nd->prev;				\
+		(lst)->tail = (nd)->prev;			\
 	}										\
-	nd->prev = NULL;						\
-	nd->next = NULL;						\
-	lst->len--;								\
+	(nd)->prev = NULL;						\
+	(nd)->next = NULL;						\
+	(lst)->len--;							\
 }
 
 typedef struct _fk_node {
