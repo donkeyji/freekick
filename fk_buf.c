@@ -2,7 +2,6 @@
 
 #include <fk_buf.h>
 #include <fk_mem.h>
-#include <fk_log.h>
 
 fk_buf *fk_buf_create()
 {
