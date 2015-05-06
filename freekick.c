@@ -50,7 +50,7 @@ typedef struct _fk_server {
 
 /*----------------------------------------------------*/
 static void fk_main_init(char *conf_path);
-static void fk_main_end();
+static void fk_main_finalize();
 static void fk_main_loop();
 static void fk_svr_init();
 static int fk_svr_timer_cb(int interval, char type, void *arg);
@@ -980,7 +980,7 @@ void fk_main_loop()
 	}
 }
 
-void fk_main_end()
+void fk_main_finalize()
 {
 	/*to do: free resource*/
 	while (server.save_done == 0) {
@@ -1004,7 +1004,7 @@ int main(int argc, char **argv)
 
 	fk_main_loop();
 
-	fk_main_end();
+	fk_main_finalize();
 
 	return 0;
 }
