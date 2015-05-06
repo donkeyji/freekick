@@ -6,12 +6,12 @@
 #include <fk_heap.h>
 
 /*for file ev*/
-#define FK_IOEV_READ 		0x01
+#define FK_IOEV_READ 	0x01
 #define FK_IOEV_WRITE 	0x02
 
 /*for timer ev*/
 #define FK_TMEV_CYCLE 	1
-#define FK_TMEV_ONCE		2
+#define FK_TMEV_ONCE	2
 
 typedef int (*fk_ioev_cb) (int, char, void *);
 typedef int (*fk_tmev_cb) (int, char, void *);
