@@ -86,7 +86,6 @@ static int fk_cmd_mget(fk_conn *conn);
 static int fk_cmd_hset(fk_conn *conn);
 static int fk_cmd_exists(fk_conn *conn);
 static int fk_cmd_hget(fk_conn *conn);
-static int fk_cmd_info(fk_conn *conn);
 static int fk_cmd_lpush(fk_conn *conn);
 static int fk_cmd_rpush(fk_conn *conn);
 static int fk_cmd_lpop(fk_conn *conn);
@@ -130,7 +129,6 @@ static fk_proto protos[] = {
 	{"RPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_rpush 	},
 	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_lpop	 	},
 	{"RPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_rpop	 	},
-	{"INFO", 	FK_PROTO_READ, 		1, 					fk_cmd_info	 	},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -488,23 +486,6 @@ int fk_cmd_hget(fk_conn *conn)
 		return -1;
 	}
 
-	return 0;
-}
-
-int fk_cmd_info(fk_conn *conn)
-{
-	int rt;
-	char *info;
-
-	info = "it's freekick written by huge\n";
-	rt = fk_conn_rsp_add_bulk(conn, strlen(info));
-	if (rt < 0) {
-		return -1;
-	}
-	rt = fk_conn_rsp_add_content(conn, info, strlen(info));
-	if (rt < 0) {
-		return -1;
-	}
 	return 0;
 }
 
