@@ -41,7 +41,7 @@ void fk_ev_init()
 {
 	int max_files;
 
-	max_files = FK_MAXCONN_2_MAXFILES(setting.max_conn); 
+	max_files = fk_maxconn_2_maxfiles(setting.max_conn); 
 
 	evmgr.timer_list = fk_list_create(NULL);
 	evmgr.timer_heap = fk_heap_create(&tmev_op);

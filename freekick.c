@@ -915,7 +915,7 @@ void fk_svr_init()
 	server.start_time = time(NULL);
 	server.stop = 0;
 	server.conn_cnt = 0;
-	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * FK_MAXCONN_2_MAXFILES(setting.max_conn));
+	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_maxconn_2_maxfiles(setting.max_conn));
 	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
 	if (server.listen_fd < 0) {
 		fk_log_error("server listen socket creating failed\n");
@@ -948,7 +948,7 @@ void fk_setrlimit()
 	struct rlimit lmt;
 	int rt, max_files;
 
-	max_files = FK_MAXCONN_2_MAXFILES(setting.max_conn);
+	max_files = fk_maxconn_2_maxfiles(setting.max_conn);
 	rt = getrlimit(RLIMIT_NOFILE, &lmt);
 	if (rt < 0) {
 		fk_log_error("getrlimit: %s\n", strerror(errno));
@@ -982,7 +982,7 @@ void fk_setrlimit()
 				exit(EXIT_FAILURE);
 			}
 			/*set current limit to the original setting*/
-			setting.max_conn = FK_MAXFILES_2_MAXCONN(max_files);
+			setting.max_conn = fk_maxfiles_2_maxconn(max_files);
 			fk_log_error("change the setting.max_conn according the current file number limit: %d\n", setting.max_conn);
 		}
 	}

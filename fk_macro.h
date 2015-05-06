@@ -30,8 +30,8 @@
 /*timeout of conn, unit: second*/
 #define FK_CONN_TIMEOUT 300
 
-#define FK_MAXCONN_2_MAXFILES(max_conn)		((max_conn) + 1 + (FK_SAVED_FDS))
-#define FK_MAXFILES_2_MAXCONN(max_files)	((max_files) - 1 - (FK_SAVED_FDS))
+#define fk_maxconn_2_maxfiles(max_conn)		((max_conn) + 1 + (FK_SAVED_FDS))
+#define fk_maxfiles_2_maxconn(max_files)	((max_files) - 1 - (FK_SAVED_FDS))
 
 /*high water*/
 #define FK_BUF_HIGHWAT		128
