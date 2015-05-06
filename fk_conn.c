@@ -323,8 +323,8 @@ int fk_conn_timer_cb(int interval, char type, void *ext)
 	time_t now;
 	fk_conn *conn;
 
-	FK_UNUSE(type);
-	FK_UNUSE(interval);
+	fk_unuse(type);
+	fk_unuse(interval);
 
 	conn = (fk_conn *)ext;
 
@@ -347,8 +347,8 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	int rt;
 	fk_conn *conn;
 
-	FK_UNUSE(fd);
-	FK_UNUSE(type);
+	fk_unuse(fd);
+	fk_unuse(type);
 
 	conn = (fk_conn *)ext;
 
@@ -398,7 +398,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 	char *buf;
 	fk_conn *conn;
 
-	FK_UNUSE(type);
+	fk_unuse(type);
 
 	conn = (fk_conn *)ext;
 	buf = fk_buf_payload_start(conn->wbuf);

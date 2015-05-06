@@ -11,7 +11,7 @@
 #define FK_ARG_MAX 4
 
 /*unused var*/
-#define FK_UNUSE(var) (void)(var)
+#define fk_unuse(var) (void)(var)
 
 /*default setting*/
 #define FK_MAX_CONN 10240
