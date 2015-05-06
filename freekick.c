@@ -994,11 +994,22 @@ int main(int argc, char **argv)
 {
 	char *conf_path;
 
-	if (argc != 2) {
-		printf("no config file specified, using the default setting\n");
-		conf_path = NULL;
+	if (argc > 2) {
+		printf("usage:\n");
+		printf("1: no config specifed\n");
+		printf("\tfreekick\n");
+		printf("2: specify a config file\n");
+		printf("\tfreekick /path/freekick.conf\n");
+		exit(EXIT_FAILURE);
 	}
-	conf_path = argv[1];
+
+	conf_path = NULL;
+	if (argc == 2) {
+		conf_path = argv[1];
+	}
+	if (conf_path == NULL) {
+		printf("no config file specified, using the default setting\n");
+	}
 
 	fk_main_init(conf_path);
 
