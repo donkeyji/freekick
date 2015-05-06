@@ -13,9 +13,6 @@
 /*unused var*/
 #define FK_UNUSE(var) (void)(var)
 
-/*saved fd*/
-#define FK_SAVED_FDS 16
-
 /*default setting*/
 #define FK_MAX_CONN 10240
 #define FK_LOG_PATH "/tmp/freekick.log"
@@ -30,8 +27,8 @@
 /*timeout of conn, unit: second*/
 #define FK_CONN_TIMEOUT 300
 
-#define fk_maxconn_2_maxfiles(max_conn)		((max_conn) + 1 + (FK_SAVED_FDS))
-#define fk_maxfiles_2_maxconn(max_files)	((max_files) - 1 - (FK_SAVED_FDS))
+#define fk_maxconn_2_maxfiles(max_conn)		((max_conn) + 1 + 16)
+#define fk_maxfiles_2_maxconn(max_files)	((max_files) - 1 - 16)
 
 /*high water*/
 #define FK_BUF_HIGHWAT		128
