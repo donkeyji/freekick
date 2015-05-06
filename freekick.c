@@ -797,7 +797,7 @@ void fk_svr_init()
 	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_maxconn_2_maxfiles(setting.max_conn));
 	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
 	if (server.listen_fd < 0) {
-		fk_log_error("server listen socket creating failed\n");
+		fk_log_error("server listen socket creating failed: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 #ifdef FK_DEBUG
