@@ -7,9 +7,6 @@
 #define FK_LOG_INFO 	2
 #define FK_LOG_DEBUG 	3
 
-/*arg max*/
-#define FK_ARG_MAX 4
-
 /*unused var*/
 #define fk_unuse(var) (void)(var)
 
