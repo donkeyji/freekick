@@ -553,7 +553,7 @@ int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
 	return 0;
 }
 
-int fk_conn_rsp_add_content(fk_conn *conn, char *content, int content_len)
+int fk_conn_content_rsp_add(fk_conn *conn, char *content, int content_len)
 {
 	int len;
 

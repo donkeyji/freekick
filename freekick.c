@@ -269,7 +269,7 @@ int fk_cmd_mget(fk_conn *conn)
 				if (rt < 0) {
 					return -1;
 				}
-				rt = fk_conn_rsp_add_content(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+				rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
 				if (rt < 0) {
 					return -1;
 				}
@@ -308,7 +308,7 @@ int fk_cmd_get(fk_conn *conn)
 	if (rt < 0) {
 		return -1;
 	}
-	rt = fk_conn_rsp_add_content(conn, fk_str_raw(value), fk_str_len(value) - 1);
+	rt = fk_conn_content_rsp_add(conn, fk_str_raw(value), fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
 	}
@@ -481,7 +481,7 @@ int fk_cmd_hget(fk_conn *conn)
 	if (rt < 0) {
 		return -1;
 	}
-	rt = fk_conn_rsp_add_content(conn, fk_str_raw(value), fk_str_len(value) - 1);
+	rt = fk_conn_content_rsp_add(conn, fk_str_raw(value), fk_str_len(value) - 1);
 	if (rt < 0) {
 		return -1;
 	}
@@ -601,7 +601,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	if (rt < 0) {
 		return -1;
 	}
-	rt = fk_conn_rsp_add_content(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
 	if (rt < 0) {
 		return -1;
 	}
