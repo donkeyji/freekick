@@ -1,10 +1,8 @@
 #include <sys/epoll.h>
 
-/*
- * I use emask to track the existing ev associated to fd because of 
+/* I use emask to track the existing ev associated to fd because of 
  * the limitation of the interface of epoll, and I think it's better 
- * than using 2 array of fk_tmev pointer which used in libevent^_^
- */
+ * than using 2 array of fk_tmev pointer which used in libevent^_^ */
 
 typedef struct _fk_epoll {
 	int efd;
