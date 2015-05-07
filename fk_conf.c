@@ -10,19 +10,19 @@
 #include <fk_mem.h>
 #include <fk_str.h>
 
-#define FK_CONF_MAX_FIELDS 5
-#define FK_CONF_MAX_LEN 1024
+#define FK_CONF_MAX_FIELDS 	5
+#define FK_CONF_MAX_LEN 	1024
 
 typedef struct _fk_line {
-	int no;//line number
-	int cnt;//the cnt field to parse
+	int no;/*line number*/
+	int cnt;/*the cnt field to parse*/
 	size_t len;
 	char *buf;
 	char err[FK_CONF_MAX_LEN];
 	fk_str *fields[FK_CONF_MAX_FIELDS];
 } fk_line;
 
-typedef struct _fk_itv {//instructive
+typedef struct _fk_itv {/*instructive*/
 	char *name;
 	int field_cnt;
 	int (*handler) (fk_line *line);
@@ -58,13 +58,13 @@ static fk_itv itv_map[] = {
 	{NULL, 0, NULL}
 };
 
-//global variable, referencd by other modules
+/*global variable, referencd by other modules*/
 fk_conf setting;
 
 fk_line *fk_conf_line_create()
 {
 	fk_line *line = (fk_line *)fk_mem_alloc(sizeof(fk_line));
-	line->no = 0;//line number
+	line->no = 0;/*line number*/
 	line->cnt = 0;
 	line->buf = NULL;
 	line->len = 0;
@@ -79,7 +79,7 @@ void fk_conf_line_destroy(fk_line *line)
 	int i;
 
 	if (line->buf != NULL) {
-		free(line->buf);//could not use fk_mem_free
+		free(line->buf);/*could not use fk_mem_free*/
 	}
 	for (i = 0; i < FK_CONF_MAX_FIELDS; i++) {
 		if (line->fields[i] != NULL) {
@@ -92,7 +92,7 @@ void fk_conf_line_destroy(fk_line *line)
 void fk_conf_init(char *conf_path)
 {
 	int rt;
-	//step 1: set default first
+	/*step 1: set default first*/
 	setting.port = FK_DEFAULT_PORT;
 	setting.daemon = FK_NODAEMON;
 	setting.max_conn = FK_MAX_CONN;
@@ -103,7 +103,7 @@ void fk_conf_init(char *conf_path)
 	setting.db_path = fk_str_create(FK_DB_PATH, sizeof(FK_DB_PATH) - 1);
 	setting.addr = fk_str_create(FK_SVR_ADDR, sizeof(FK_SVR_ADDR) - 1);
 
-	//setp 2: parse config file
+	/*setp 2: parse config file*/
 	if (conf_path != NULL) {
 		rt = fk_conf_parse_file(conf_path);
 		if (rt < 0) {
@@ -128,11 +128,11 @@ int fk_conf_parse_file(char *conf_path)
 	line = fk_conf_line_create();
 
 	while (1) {
-		line_num++;//it begins from 1, not 0
+		line_num++;/*it begins from 1, not 0*/
 		fk_conf_line_reset(line);
 		line->no = line_num;
 		rt = fk_conf_line_read(line, fp);
-		if (rt > 0) {//end of file
+		if (rt > 0) {/*end of file*/
 			break;
 		} else if (rt < 0) {
 			printf("%s", line->err);
@@ -204,15 +204,15 @@ int fk_conf_line_parse(fk_line *line)
 			sprintf(line->err, "the max fields of one line should not be more than %d, line: %d\n", FK_CONF_MAX_FIELDS, line->no);
 			return -1;
 		}
-		while (buf[i] == ' ' || buf[i] == '\t') {//fint the first no empty character
+		while (buf[i] == ' ' || buf[i] == '\t') {/*fint the first no empty character*/
 			i++;
 		}
-		if (buf[i] == '#' || buf[i] == '\n') {//this line end
+		if (buf[i] == '#' || buf[i] == '\n') {/*this line end*/
 			break;
 		}
 		start = i;
 		end = i;
-		//find a completed token
+		/*find a completed token*/
 		while (buf[end] != ' ' && buf[end] != '\t'
 		        && buf[end] != '\n' && buf[end] != '#') {
 			end++;
@@ -223,11 +223,10 @@ int fk_conf_line_parse(fk_line *line)
 		//}
 		//printf("start %d, end %d, cnt %d\n", start, end, line->cnt);
 		line->fields[line->cnt] = fk_str_create(buf + start, end - start);
-		line->cnt += 1;//a new token found
+		line->cnt += 1;/*a new token found*/
 
 		i = end;
 	}
-	//printf("line %d: fields cnt %d\n", line->no, line->cnt);
 
 	return 0;
 }
