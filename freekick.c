@@ -999,6 +999,7 @@ int main(int argc, char **argv)
 	char *conf_path;
 
 	if (argc > 2) {
+		printf("illegal argument!!!\n");
 		printf("usage:\n");
 		printf("1: no config specifed\n");
 		printf("\tfreekick\n");
