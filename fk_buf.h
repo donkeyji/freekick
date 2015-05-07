@@ -68,15 +68,10 @@ void fk_buf_print(fk_buf *buf);
 }
 
 #define fk_buf_shrink(buf)	{							\
-	if ((buf)->len >= FK_BUF_INIT_LEN					\
-		&& (buf)->high - (buf)->low < FK_BUF_INIT_LEN) 	\
+	if ((buf)->len >= FK_BUF_INIT_LEN &&				\
+		fk_buf_payload_len((buf)) < FK_BUF_INIT_LEN)	\
 	{													\
-		memmove((buf)->buffer,							\
-			(buf)->buffer + (buf)->low,					\
-			(buf)->high - (buf)->low					\
-		);												\
-		(buf)->high -= (buf)->low;						\
-		(buf)->low = 0;									\
+		fk_buf_shift((buf));							\
 		(buf) = fk_mem_realloc((buf), 					\
 				sizeof(fk_buf) + FK_BUF_INIT_LEN		\
 		);												\
