@@ -119,7 +119,8 @@ int fk_conn_data_recv(fk_conn *conn)
 	} else if (recv_len < 0) {
 		if (errno != EAGAIN) {/*nonblocking sock*/
 			fk_log_error("[recv error] %s\n", strerror(errno));
-			return -2;
+			return -1;
+			//return -2;
 		} else {
 			return 0;
 		}
@@ -355,9 +356,9 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	if (rt == -1) {/*conn closed*/
 		fk_svr_conn_remove(conn);
 		return 0;
-	} else if (rt == -2) {/*how to handle read error?????*/
-		return 0;
-	}
+	} //else if (rt == -2) {/*how to handle read error?????*/
+	//	return 0;
+	//}
 
 	/*
 	 * maybe more than one complete protocol were received
