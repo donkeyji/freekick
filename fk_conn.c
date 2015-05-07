@@ -312,13 +312,13 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	if (pto == NULL) {
 		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg_get(conn, 0)));
 		fk_conn_args_free(conn);
-		fk_conn_rsp_add_error(conn, "Invalid Protocol", strlen("Invalid Protocol"));
+		fk_conn_error_rsp_add(conn, "Invalid Protocol", strlen("Invalid Protocol"));
 		return 0;
 	}
 	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_args_free(conn);
-		fk_conn_rsp_add_error(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
+		fk_conn_error_rsp_add(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
 		return 0;
 	}
 	rt = pto->handler(conn);
@@ -465,7 +465,7 @@ int fk_conn_rsp_send(fk_conn *conn)
 	return 0;
 }
 
-int fk_conn_rsp_add_int(fk_conn *conn, int num)
+int fk_conn_int_rsp_add(fk_conn *conn, int num)
 {
 	int len;
 
@@ -483,7 +483,7 @@ int fk_conn_rsp_add_int(fk_conn *conn, int num)
 	return 0;
 }
 
-int fk_conn_rsp_add_status(fk_conn *conn, char *stat, int stat_len)
+int fk_conn_status_rsp_add(fk_conn *conn, char *stat, int stat_len)
 {
 	int len;
 
@@ -500,7 +500,7 @@ int fk_conn_rsp_add_status(fk_conn *conn, char *stat, int stat_len)
 	return 0;
 }
 
-int fk_conn_rsp_add_error(fk_conn *conn, char *error, int error_len)
+int fk_conn_error_rsp_add(fk_conn *conn, char *error, int error_len)
 {
 	int len;
 
@@ -517,7 +517,7 @@ int fk_conn_rsp_add_error(fk_conn *conn, char *error, int error_len)
 	return 0;
 }
 
-int fk_conn_rsp_add_bulk(fk_conn *conn, int bulk_len)
+int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
 {
 	int len;
 
@@ -535,7 +535,7 @@ int fk_conn_rsp_add_bulk(fk_conn *conn, int bulk_len)
 	return 0;
 }
 
-int fk_conn_rsp_add_mbulk(fk_conn *conn, int bulk_cnt)
+int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
 {
 	int len;
 
