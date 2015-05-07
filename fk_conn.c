@@ -347,11 +347,9 @@ int fk_conn_timer_cb(int interval, char type, void *ext)
 	return 0;
 }
 
-/*
- * callback for conn read event
+/* callback for conn read event
  * evmgr do not care the return value of this callback
- * so this callback itself should handle all error occurs
- */
+ * so this callback itself should handle all error occurs */
 int fk_conn_read_cb(int fd, char type, void *ext)
 {
 	int rt;
@@ -368,10 +366,8 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 		return 0;
 	}
 
-	/*
-	 * maybe more than one complete protocol were received
-	 * parse all the complete protocol received yet
-	 */
+	/* maybe more than one complete protocol were received
+	 * parse all the complete protocol received yet */
 	while (fk_buf_payload_len(conn->rbuf) > 0) {
 		rt = fk_conn_req_parse(conn);
 		if (rt < 0) {/*error when parsing*/
