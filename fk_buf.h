@@ -23,6 +23,10 @@ void fk_buf_print(fk_buf *buf);
 
 #define fk_buf_len(buf)		((buf)->len)
 
+#define fk_buf_low(buf)		((buf)->low)
+
+#define fk_buf_high(buf)	((buf)->high)
+
 #define fk_buf_free_len(buf) 	((buf)->len - (buf)->high)
 
 #define fk_buf_payload_len(buf)	((buf)->high - (buf)->low)
