@@ -99,6 +99,9 @@ int fk_conn_data_recv(fk_conn *conn)
 	}
 
 	while (1) {
+#ifdef FK_DEBUG
+		fk_log_debug("[before rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
+#endif
 		if (fk_buf_free_len(conn->rbuf) < fk_buf_len(conn->rbuf) / 4) {
 			fk_buf_shift(conn->rbuf);
 		}
@@ -108,12 +111,14 @@ int fk_conn_data_recv(fk_conn *conn)
 		if (fk_buf_free_len(conn->rbuf) == 0) {/*could not receive data this time*/
 			break;
 		}
+#ifdef FK_DEBUG
+	fk_log_debug("[after rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
+#endif
 
 		free_buf = fk_buf_free_start(conn->rbuf);
 		free_len = fk_buf_free_len(conn->rbuf);
 
 		recv_len = recv(conn->fd, free_buf, free_len, 0);
-
 		if (recv_len == 0) {/*conn disconnected*/
 			fk_log_info("[conn socket closed] fd: %d\n", conn->fd);
 			return -1;
@@ -125,8 +130,14 @@ int fk_conn_data_recv(fk_conn *conn)
 				break;
 			}
 		} else {/*succeed*/
+#ifdef FK_DEBUG
+			fk_log_debug("[conn data] fd: %d, recv_len: %d, data: %s\n", conn->fd, recv_len, free_buf);
+#endif
 			conn->last_recv = time(NULL);
 			fk_buf_high_inc(conn->rbuf, recv_len);
+#ifdef FK_DEBUG
+			fk_log_debug("[after recv]rbuf->low: %d, rbuf->high: %d\n", conn->rbuf->low, conn->rbuf->high);
+#endif
 			if (recv_len < free_len) {/*no extra data left*/
 				break;
 			} else {/*maybe there is still data in socket buffer*/
