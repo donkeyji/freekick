@@ -956,10 +956,8 @@ void fk_main_init(char *conf_path)
 	/*the first to init*/
 	fk_conf_init(conf_path);
 
-	/* 
-	 * the second to init, so that all the 
-	 * ther module can call fk_log_xxx()
-	 */
+	/* the second to init, so that all the 
+	 * ther module can call fk_log_xxx() */
 	fk_log_init();
 
 	fk_setrlimit();
