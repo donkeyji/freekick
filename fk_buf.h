@@ -17,7 +17,9 @@ typedef struct _fk_buf {
 
 fk_buf *fk_buf_create();
 void fk_buf_destroy(fk_buf *buf);
+#ifdef FK_DEBUG
 void fk_buf_print(fk_buf *buf);
+#endif
 
 #define fk_buf_len(buf)		((buf)->len)
 

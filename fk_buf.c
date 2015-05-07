@@ -19,6 +19,7 @@ void fk_buf_destroy(fk_buf *buf)
 	fk_mem_free(buf);
 }
 
+#ifdef FK_DEBUG
 void fk_buf_print(fk_buf *buf)
 {
 	int len;
@@ -29,3 +30,4 @@ void fk_buf_print(fk_buf *buf)
 	ps[len] = '\0';
 	printf("%s\n", ps);
 }
+#endif
