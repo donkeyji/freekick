@@ -87,10 +87,8 @@ int fk_conn_data_recv(fk_conn *conn)
 	char *free_buf;
 	int free_len, recv_len;
 
-	/*
-	 * a complete line was not received, but the read buffer has reached
-	 * its upper limit, so just close this connection
-	 */
+	/* a complete line was not received, but the read buffer has reached
+	 * its upper limit, so just close this connection */
 	if (fk_buf_len(conn->rbuf) == FK_BUF_HIGHWAT &&
 		fk_buf_free_len(conn->rbuf) == 0) 
 	{
@@ -123,10 +121,10 @@ int fk_conn_data_recv(fk_conn *conn)
 			fk_log_info("[conn socket closed] fd: %d\n", conn->fd);
 			return -1;
 		} else if (recv_len < 0) {
-			if (errno != EAGAIN) {/*nonblocking sock*/
+			if (errno != EAGAIN) {
 				fk_log_error("[recv error] %s\n", strerror(errno));
 				return -1;
-			} else {/*all data in the socket buffer has been read*/
+			} else {/*no data left in the read buffer of the socket*/
 				break;
 			}
 		} else {/*succeed*/
@@ -429,7 +427,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 				fk_log_error("send error: %s\n", strerror(errno));
 				fk_svr_conn_remove(conn);/*close the connection directly*/
 				return 0;
-			} else {
+			} else {/*no free space in this write buffer of the socket*/
 				break;
 			}
 		}
