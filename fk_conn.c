@@ -404,37 +404,50 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 
 int fk_conn_write_cb(int fd, char type, void *ext)
 {
-	int rt, len;
-	char *buf;
+	char *pbuf;
 	fk_conn *conn;
+	int sent_len, plen;
 
 	fk_unuse(type);
 
 	conn = (fk_conn *)ext;
-	buf = fk_buf_payload_start(conn->wbuf);
-	len = fk_buf_payload_len(conn->wbuf);
 
 #ifdef FK_DEBUG
-	fk_log_debug("write callback]wbuf  buf: %s, valid len: %d, low: %d, high: %d\n", buf, len, conn->wbuf->low, conn->wbuf->high);
+	fk_log_debug("data to sent: paylen: %d, data: %s\n", fk_buf_payload_len(conn->wbuf), fk_buf_payload_start(conn->wbuf));
 #endif
-	rt = send(fd, buf, len, 0);
-	if (rt < 0) {
-		fk_log_error("send error\n");
-		return -1;
-	}
 
-	fk_buf_low_inc(conn->wbuf, rt);
+	while (fk_buf_payload_len(conn->wbuf) > 0) {
+		plen = fk_buf_payload_len(conn->wbuf);
+		pbuf = fk_buf_payload_start(conn->wbuf);
+#ifdef FK_DEBUG
+		fk_log_debug("[before send]low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
+#endif
+
+		sent_len = send(fd, pbuf, plen, 0);
+		if (sent_len < 0) {
+			if (errno != EAGAIN) {
+				fk_log_error("send error: %s\n", strerror(errno));
+				fk_svr_conn_remove(conn);/*close the connection directly*/
+				return 0;
+			} else {
+				break;
+			}
+		}
+		fk_buf_low_inc(conn->wbuf, sent_len);
+#ifdef FK_DEBUG
+		fk_log_debug("[after send]low: %d, high: %d\n", conn->wbuf->low, conn->wbuf->high);
+#endif
+	}
 
 	fk_buf_shrink(conn->wbuf);
 
-	/*
-	 * if all the data in wbuf is sent, remove the write ioev
-	 * but donot destroy the write ioev
-	 */
+	/* if all the data in wbuf is sent, remove the write ioev
+	 * but donot destroy the write ioev */
 	if (fk_buf_payload_len(conn->wbuf) == 0) {
 		fk_ev_ioev_remove(conn->write_ev);
 		conn->write_added = 0;
 	}
+
 	return 0;
 }
 
