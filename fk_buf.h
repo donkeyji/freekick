@@ -88,12 +88,8 @@ void fk_buf_print(fk_buf *buf);
 	if (fk_buf_free_len((buf)) < (length)) {			\
 		fk_buf_shift((buf));							\
 	}													\
-	while (fk_buf_free_len((buf)) < (length) && 		\
-		   (buf)->len < FK_BUF_HIGHWAT) 				\
-	{													\
-		(buf)->len <<= 1;								\
-		(buf) = (fk_buf *)fk_mem_realloc((buf), 		\
-			sizeof(fk_buf) + (buf)->len);				\
+	while (fk_buf_free_len((buf)) < (length)) { 		\
+		fk_buf_stretch((buf));							\
 	}													\
 }
 

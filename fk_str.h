@@ -2,15 +2,13 @@
 #define _FK_STR_H_
 
 typedef struct _fk_str {
-	int len;//full length, including '\0'
+	int len;/*full length, including '\0' */
 	char seq[];
 } fk_str;
 
 #define fk_str_raw(str) ((str)->seq)
 
 #define fk_str_len(str) ((str)->len)
-
-#define fk_str_print(str) printf("%s\n", (str)->seq)
 
 fk_str *fk_str_create(char *seq, int len);
 void fk_str_destroy(fk_str *src);
