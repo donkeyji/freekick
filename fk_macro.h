@@ -28,7 +28,7 @@
 #define fk_files_to_conns(max_files)	((max_files) - 1 - 16)
 
 /*high water*/
-#define FK_BUF_HIGHWAT		128
+#define FK_BUF_HIGHWAT		512
 #define FK_ARG_HIGHWAT 		(FK_BUF_HIGHWAT - 2)
 #define FK_STR_HIGHWAT 		(FK_ARG_HIGHWAT + 1)
 #define FK_ARG_CNT_HIGHWAT 	128

@@ -87,53 +87,54 @@ int fk_conn_data_recv(fk_conn *conn)
 	char *free_buf;
 	int free_len, recv_len;
 
-#ifdef FK_DEBUG
-	fk_log_debug("[before rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
-#endif
-	if (fk_buf_free_len(conn->rbuf) <= conn->rbuf->len / 4) {
-		fk_buf_shift(conn->rbuf);
-	}
-	if (fk_buf_free_len(conn->rbuf) == 0) {
-		fk_buf_stretch(conn->rbuf);
-	}
-#ifdef FK_DEBUG
-	fk_log_debug("[after rbuf adjust]rbuf->low: %d, rbuf->high: %d, rbuf->len: %d\n", conn->rbuf->low, conn->rbuf->high, conn->rbuf->len);
-#endif
-
-	free_buf = fk_buf_free_start(conn->rbuf);
-	free_len = fk_buf_free_len(conn->rbuf);
-	if (free_len == 0) {
-		fk_log_info("beyond max buf len\n");
+	/*
+	 * a complete line was not received, but the read buffer has reached
+	 * its upper limit, so just close this connection
+	 */
+	if (fk_buf_len(conn->rbuf) == FK_BUF_HIGHWAT &&
+		fk_buf_free_len(conn->rbuf) == 0) 
+	{
+		fk_log_info("beyond max buffer length\n");
 		return -1;/*need to close this connection*/
 	}
 
-	recv_len = recv(conn->fd, free_buf, free_len, 0);
-#ifdef FK_DEBUG
-	fk_log_debug("free len: %d, recv_len: %d\n", free_len, recv_len);
-#endif
-	conn->last_recv = time(NULL);
-
-	if (recv_len == 0) {/*conn disconnected*/
-		fk_log_info("[conn socket closed] fd: %d\n", conn->fd);
-		return -1;
-	} else if (recv_len < 0) {
-		if (errno != EAGAIN) {/*nonblocking sock*/
-			fk_log_error("[recv error] %s\n", strerror(errno));
-			return -1;
-			//return -2;
-		} else {
-			return 0;
+	while (1) {
+		if (fk_buf_free_len(conn->rbuf) < fk_buf_len(conn->rbuf) / 4) {
+			fk_buf_shift(conn->rbuf);
 		}
-	} else {/*succeed*/
-#ifdef FK_DEBUG
-		fk_log_debug("[conn data] fd: %d, recv_len: %d, data: %s\n", conn->fd, recv_len, free_buf);
-#endif
-		fk_buf_high_inc(conn->rbuf, recv_len);
-#ifdef FK_DEBUG
-		fk_log_debug("[after recv]rbuf->low: %d, rbuf->high: %d\n", conn->rbuf->low, conn->rbuf->high);
-#endif
-		return 0;
+		if (fk_buf_free_len(conn->rbuf) == 0) {
+			fk_buf_stretch(conn->rbuf);
+		}
+		if (fk_buf_free_len(conn->rbuf) == 0) {/*could not receive data this time*/
+			break;
+		}
+
+		free_buf = fk_buf_free_start(conn->rbuf);
+		free_len = fk_buf_free_len(conn->rbuf);
+
+		recv_len = recv(conn->fd, free_buf, free_len, 0);
+
+		if (recv_len == 0) {/*conn disconnected*/
+			fk_log_info("[conn socket closed] fd: %d\n", conn->fd);
+			return -1;
+		} else if (recv_len < 0) {
+			if (errno != EAGAIN) {/*nonblocking sock*/
+				fk_log_error("[recv error] %s\n", strerror(errno));
+				return -1;
+			} else {/*all data in the socket buffer has been read*/
+				break;
+			}
+		} else {/*succeed*/
+			conn->last_recv = time(NULL);
+			fk_buf_high_inc(conn->rbuf, recv_len);
+			if (recv_len < free_len) {/*no extra data left*/
+				break;
+			} else {/*maybe there is still data in socket buffer*/
+				continue;/*rbuf is full now*/
+			}
+		}
 	}
+
 	return 0;
 }
 
@@ -356,9 +357,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	if (rt == -1) {/*conn closed*/
 		fk_svr_conn_remove(conn);
 		return 0;
-	} //else if (rt == -2) {/*how to handle read error?????*/
-	//	return 0;
-	//}
+	}
 
 	/*
 	 * maybe more than one complete protocol were received
