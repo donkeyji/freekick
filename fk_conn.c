@@ -196,8 +196,6 @@ int fk_conn_req_parse(fk_conn *conn)
 			}
 #ifdef FK_DEBUG
 			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
-#endif
-#ifdef FK_DEBUG
 			fk_log_debug("before arg_vtr stretch: len: %d\n", fk_vtr_len(conn->arg_vtr));
 			fk_log_debug("before len_vtr stretch: len: %d\n", fk_vtr_len(conn->len_vtr));
 #endif
@@ -457,10 +455,12 @@ int fk_conn_rsp_send(fk_conn *conn)
 {
 	fk_buf *wbuf;
 
-	wbuf = conn->wbuf;
+	/*maybe it's not so good to shrink vtr/buf here*/
 	fk_buf_shrink(conn->rbuf);
 	fk_vtr_shrink(conn->arg_vtr);
 	fk_vtr_shrink(conn->len_vtr);
+
+	wbuf = conn->wbuf;
 	/*if any data in write buf and never add write ioev yet*/
 	if (fk_buf_payload_len(wbuf) > 0 && conn->write_added == 0) {
 		fk_ev_ioev_add(conn->write_ev);
