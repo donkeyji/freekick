@@ -197,8 +197,8 @@ int fk_conn_req_parse(fk_conn *conn)
 #ifdef FK_DEBUG
 			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
 #endif
-			fk_vtr_adjust(conn->arg_vtr, conn->arg_cnt);
-			fk_vtr_adjust(conn->len_vtr, conn->arg_cnt);
+			fk_vtr_stretch(conn->arg_vtr, conn->arg_cnt);
+			fk_vtr_stretch(conn->len_vtr, conn->arg_cnt);
 
 			fk_buf_low_inc(rbuf, end - start + 1);
 		}
@@ -451,6 +451,8 @@ int fk_conn_rsp_send(fk_conn *conn)
 
 	wbuf = conn->wbuf;
 	fk_buf_shrink(conn->rbuf);
+	fk_vtr_shrink(conn->arg_vtr);
+	fk_vtr_shrink(conn->len_vtr);
 	/*if any data in write buf and never add write ioev yet*/
 	if (fk_buf_payload_len(wbuf) > 0 && conn->write_added == 0) {
 		fk_ev_ioev_add(conn->write_ev);
