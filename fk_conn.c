@@ -197,8 +197,16 @@ int fk_conn_req_parse(fk_conn *conn)
 #ifdef FK_DEBUG
 			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
 #endif
+#ifdef FK_DEBUG
+			fk_log_debug("before arg_vtr stretch: len: %d\n", fk_vtr_len(conn->arg_vtr));
+			fk_log_debug("before len_vtr stretch: len: %d\n", fk_vtr_len(conn->len_vtr));
+#endif
 			fk_vtr_stretch(conn->arg_vtr, conn->arg_cnt);
 			fk_vtr_stretch(conn->len_vtr, conn->arg_cnt);
+#ifdef FK_DEBUG
+			fk_log_debug("after arg_vtr stretch: len: %d\n", fk_vtr_len(conn->arg_vtr));
+			fk_log_debug("after len_vtr stretch: len: %d\n", fk_vtr_len(conn->len_vtr));
+#endif
 
 			fk_buf_low_inc(rbuf, end - start + 1);
 		}

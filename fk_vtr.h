@@ -11,6 +11,8 @@ typedef struct _fk_vtr {
 fk_vtr *fk_vtr_create();
 void fk_vtr_destroy(fk_vtr *vtr);
 
+#define fk_vtr_len(vtr)		((vtr)->len)
+
 #define fk_vtr_set(vtr, idx, val)	((vtr)->array)[(idx)] = (val);
 
 #define fk_vtr_get(vtr, idx)	((vtr)->array)[(idx)]
