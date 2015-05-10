@@ -49,11 +49,12 @@ void fk_buf_print(fk_buf *buf);
 	}										\
 }
 
-#define fk_buf_stretch(buf)		{										\
-	if ((buf)->len < FK_BUF_HIGHWAT) {									\
-		(buf)->len <<= 1;												\
-		(buf) = fk_mem_realloc((buf), sizeof(fk_buf) + (buf)->len);		\
-	}																	\
+#define fk_buf_stretch(buf)		{				\
+	if ((buf)->len < FK_BUF_HIGHWAT) {			\
+		(buf)->len <<= 1;						\
+		(buf) = (fk_buf *)fk_mem_realloc((buf),	\
+				sizeof(fk_buf) + (buf)->len);	\
+	}											\
 }
 
 #define fk_buf_shift(buf) 	{			\
@@ -72,7 +73,7 @@ void fk_buf_print(fk_buf *buf);
 		fk_buf_payload_len((buf)) < FK_BUF_INIT_LEN)	\
 	{													\
 		fk_buf_shift((buf));							\
-		(buf) = fk_mem_realloc((buf), 					\
+		(buf) = (fk_buf *)fk_mem_realloc((buf), 		\
 				sizeof(fk_buf) + FK_BUF_INIT_LEN		\
 		);												\
 		(buf)->len = FK_BUF_INIT_LEN;					\
@@ -83,8 +84,11 @@ void fk_buf_print(fk_buf *buf);
 	if (fk_buf_free_len((buf)) < (length)) {			\
 		fk_buf_shift((buf));							\
 	}													\
-	while (fk_buf_free_len((buf)) < (length)) { 		\
-		fk_buf_stretch((buf));							\
+	if (fk_buf_free_len((buf)) < (length)) {			\
+		(buf)->len = fk_util_min_power((buf)->len 		\
+			+ (length) - fk_buf_free_len((buf)));		\
+		(buf) = (fk_buf *)fk_mem_realloc((buf), 		\
+				sizeof(fk_buf) + (buf)->len);			\
 	}													\
 }
 
