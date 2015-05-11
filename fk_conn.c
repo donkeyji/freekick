@@ -286,7 +286,7 @@ int fk_conn_req_parse(fk_conn *conn)
 
 void fk_conn_args_free(fk_conn *conn)
 {
-	int i;
+	uint32_t i;
 
 	for (i = 0; i < conn->arg_cnt; i++) {
 		if (fk_conn_arg_get(conn, i) != NULL) {
