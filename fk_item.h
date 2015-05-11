@@ -8,7 +8,7 @@
 
 typedef struct _fk_item {
 	int type;
-	int ref;//reference count
+	unsigned ref;//reference count
 	void *entity;//point to the real data of the itm
 } fk_item;
 
