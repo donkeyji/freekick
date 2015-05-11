@@ -9,7 +9,7 @@ typedef struct _fk_conf {
 	uint16_t port;
 	fk_str *addr;
 	int daemon;
-	int max_conn;
+	unsigned max_conn;
 	int log_level;
 	fk_str *log_path;
 	fk_str *pid_path;

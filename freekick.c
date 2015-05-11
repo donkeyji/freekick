@@ -33,8 +33,8 @@ typedef struct _fk_server {
 	int port;
 	fk_str *addr;
 	int listen_fd;
-	int max_conn;/*max connections*/
-	int conn_cnt;/*connection count*/
+	unsigned max_conn;/*max connections*/
+	unsigned conn_cnt;/*connection count*/
 	time_t start_time;
 	int stop;
 	fk_ioev *listen_ev;
