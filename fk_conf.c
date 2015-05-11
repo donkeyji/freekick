@@ -14,8 +14,8 @@
 #define FK_CONF_MAX_LEN 	1024
 
 typedef struct _fk_line {
-	int no;/*line number*/
-	int cnt;/*the cnt field to parse*/
+	unsigned no;/*line number*/
+	unsigned cnt;/*the cnt field to parse*/
 	size_t len;
 	char *buf;
 	char err[FK_CONF_MAX_LEN];
@@ -24,7 +24,7 @@ typedef struct _fk_line {
 
 typedef struct _fk_itv {/*instructive*/
 	char *name;
-	int field_cnt;
+	unsigned field_cnt;
 	int (*handler) (fk_line *line);
 } fk_itv;
 
@@ -76,7 +76,7 @@ fk_line *fk_conf_line_create()
 
 void fk_conf_line_destroy(fk_line *line)
 {
-	int i;
+	unsigned i;
 
 	if (line->buf != NULL) {
 		free(line->buf);/*could not use fk_mem_free*/
@@ -115,9 +115,10 @@ void fk_conf_init(char *conf_path)
 
 int fk_conf_parse_file(char *conf_path)
 {
+	int rt;
 	FILE *fp;
-	int line_num, rt;
 	fk_line *line;
+	unsigned line_num;
 
 	fp = fopen(conf_path, "r");
 	if (fp == NULL) {
@@ -194,7 +195,7 @@ int fk_conf_line_read(fk_line *line, FILE *fp)
 int fk_conf_line_parse(fk_line *line)
 {
 	char *buf;
-	int i, start, end;
+	size_t i, start, end;
 
 	i = 0;
 	buf = line->buf;
@@ -228,7 +229,7 @@ int fk_conf_line_parse(fk_line *line)
 
 fk_itv *fk_conf_search(fk_str *name)
 {
-	int i;
+	unsigned i;
 
 	for (i = 0; itv_map[i].name != NULL; i++) {
 		if (strcmp(fk_str_raw(name), itv_map[i].name) == 0) {
@@ -268,7 +269,7 @@ int fk_conf_line_proc(fk_line *line)
 
 void fk_conf_line_reset(fk_line *line)
 {
-	int i;
+	unsigned i;
 
 	line->no = 0;
 	line->cnt = 0;
