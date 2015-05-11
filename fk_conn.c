@@ -17,7 +17,7 @@
 
 static int fk_conn_read_cb(int fd, char type, void *ext);
 static int fk_conn_write_cb(int fd, char type, void *ext);
-static int fk_conn_timer_cb(int interval, char type, void *ext);
+static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
 static void fk_conn_args_free(fk_conn *conn);
 static int fk_conn_req_parse(fk_conn *conn);
 static int fk_conn_data_recv(fk_conn *conn);
@@ -86,7 +86,7 @@ int fk_conn_data_recv(fk_conn *conn)
 {
 	char *free_buf;
 	size_t free_len;
-	int recv_len;
+	ssize_t recv_len;
 
 	/* a complete line was not received, but the read buffer has reached
 	 * its upper limit, so just close this connection */
@@ -335,7 +335,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	return 0;
 }
 
-int fk_conn_timer_cb(int interval, char type, void *ext)
+int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 {
 	time_t now;
 	fk_conn *conn;
@@ -407,7 +407,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 {
 	char *pbuf;
 	size_t plen;
-	int sent_len;
+	ssize_t sent_len;
 	fk_conn *conn;
 
 	fk_unuse(type);
