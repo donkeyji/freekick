@@ -143,7 +143,7 @@ void fk_pool_destroy(fk_pool *pool)
 
 fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
-	int i;
+	uint16_t i;
 	char *ptr;
 	fk_block *blk;
 

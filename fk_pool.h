@@ -16,7 +16,7 @@ typedef struct _fk_pool {
 	fk_block *head;
 	uint16_t unit_size;
 	uint16_t init_cnt;
-	int empty_blks;
+	uint32_t empty_blks;
 } fk_pool;
 
 void fk_pool_init();
