@@ -167,6 +167,7 @@ fk_leaf *fk_heap_root(fk_heap *hp)
 void fk_heap_stretch(fk_heap *hp)
 {
 	unsigned inc_size, total_size;
+
 	inc_size = sizeof(fk_leaf *) * FK_HEAP_INC_SIZE;
 	total_size = inc_size + hp->max * sizeof(fk_leaf *);
 	hp->tree = (fk_leaf **)fk_mem_realloc(hp->tree, total_size);
