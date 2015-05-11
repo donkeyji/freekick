@@ -4,7 +4,7 @@
 #define FK_VTR_INIT_LEN	4
 
 typedef struct _fk_vtr {
-	int len;
+	size_t len;
 	void **array;
 } fk_vtr;
 
