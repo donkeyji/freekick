@@ -339,7 +339,7 @@ int fk_conf_handle_maxconn(fk_line *line)
 		sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
 		return -1;
 	}
-	setting.max_conn = max_conn;
+	setting.max_conn = (unsigned)max_conn;
 	return 0;
 }
 
@@ -357,7 +357,7 @@ int fk_conf_handle_dbcnt(fk_line *line)
 		sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
 		return -1;
 	}
-	setting.dbcnt = dbcnt;
+	setting.dbcnt = (unsigned)dbcnt;
 	return 0;
 }
 
