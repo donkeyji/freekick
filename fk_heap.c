@@ -46,7 +46,7 @@ void fk_heap_empty(fk_heap *hp)
 /*only remove all the existing leaves*/
 void fk_heap_clear(fk_heap *hp)
 {
-	unsigned i;
+	size_t i;
 
 	for (i = 0; i <= hp->last; i++) {
 		hp->tree[i] = NULL;
@@ -63,8 +63,8 @@ void fk_heap_destroy(fk_heap *hp)
 void fk_heap_remove(fk_heap *hp, fk_leaf *leaf)
 {
 	int cmp;
-	long idx;
-	unsigned i, j;
+	size_t i, j;
+	long long idx;
 	fk_leaf *parent, *tmp, *min, *left, *right;
 
 	idx = leaf->idx;
@@ -130,7 +130,7 @@ fk_leaf *fk_heap_pop(fk_heap *hp)
 void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
 {
 	int cmp;
-	unsigned i;
+	size_t i;
 	fk_leaf *tmp;
 
 	if (hp->last == (hp->max - 1)) {//heap is full
@@ -166,7 +166,7 @@ fk_leaf *fk_heap_root(fk_heap *hp)
 
 void fk_heap_stretch(fk_heap *hp)
 {
-	unsigned inc_size, total_size;
+	size_t inc_size, total_size;
 
 	inc_size = sizeof(fk_leaf *) * FK_HEAP_INC_SIZE;
 	total_size = inc_size + hp->max * sizeof(fk_leaf *);
