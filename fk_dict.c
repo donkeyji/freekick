@@ -44,11 +44,11 @@
 
 static uint32_t fk_dict_hash(fk_str *key);
 static int fk_dict_stretch(fk_dict *dct);
-static fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx);
+static fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, size_t *bidx);
 static void fk_dict_init(fk_dict *dct);
 static void fk_dict_clear(fk_dict *dct);
 #ifdef FK_DEBUG
-static void fk_dict_buckets_print(int idx, fk_elt_list *lst);
+static void fk_dict_buckets_print(size_t idx, fk_elt_list *lst);
 #endif
 
 static fk_elt_op default_eop = {
@@ -87,7 +87,7 @@ void fk_dict_init(fk_dict *dct)
  */
 void fk_dict_clear(fk_dict *dct)
 {
-	int i;
+	size_t i;
 	fk_elt *nd;
 	fk_elt_list *lst;
 
@@ -126,7 +126,7 @@ void fk_dict_destroy(fk_dict *dct)
 	fk_mem_free(dct);/*free dict itself*/
 }
 
-fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, int *bidx)
+fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, size_t *bidx)
 {
 	fk_elt *nd;
 	fk_elt_list *lst;
@@ -203,7 +203,7 @@ uint32_t fk_dict_hash(fk_str *key)
  */
 int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
 {
-	int idx;
+	size_t idx;
 	fk_elt *elt;
 	fk_elt_list *lst;
 
@@ -244,7 +244,7 @@ int fk_dict_add(fk_dict *dct, fk_str *key, void *value)
  */
 int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 {
-	int idx;
+	size_t idx;
 	fk_elt *elt;
 
 	elt = fk_dict_search(dct, key, &idx);
@@ -260,7 +260,7 @@ int fk_dict_replace(fk_dict *dct, fk_str *key, void *value)
 
 int fk_dict_remove(fk_dict *dct, fk_str *key)
 {
-	int idx;
+	size_t idx;
 	fk_elt *elt;
 	fk_elt_list *lst;
 
@@ -333,11 +333,11 @@ int fk_dict_stretch(fk_dict *dct)
 }
 
 #ifdef FK_DEBUG
-void fk_dict_buckets_print(int idx, fk_elt_list *lst)
+void fk_dict_buckets_print(size_t idx, fk_elt_list *lst)
 {
 	fk_elt *elt;
 
-	printf("%d: ", idx);
+	printf("%lu: ", idx);
 	elt = lst->head;
 	while (elt != NULL) {
 		printf("%s-->", elt->key->seq);
@@ -348,10 +348,10 @@ void fk_dict_buckets_print(int idx, fk_elt_list *lst)
 
 void fk_dict_print(fk_dict *dct)
 {
-	int i;
+	size_t i;
 	fk_elt_list *lst;
 
-	printf("size: %d, size_mask: %d, limit: %d, used: %d\n", 
+	printf("size: %lu, size_mask: %lu, limit: %lu, used: %lu\n", 
 			dct->size, 
 			dct->size_mask,
 			dct->limit,

@@ -22,10 +22,10 @@ typedef struct _fk_elt {
 fk_rawlist_def(fk_elt, fk_elt_list);
 
 typedef struct _fk_dict {
-	int size;
-	int size_mask;
-	int used;
-	int limit;
+	size_t size;
+	size_t size_mask;
+	size_t used;
+	size_t limit;
 	fk_elt_list **buckets;
 	fk_elt_op *eop;
 } fk_dict;
