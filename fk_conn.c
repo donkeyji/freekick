@@ -150,8 +150,8 @@ int fk_conn_data_recv(fk_conn *conn)
 int fk_conn_req_parse(fk_conn *conn)
 {
 	int rt;
+	size_t len;
 	fk_buf *rbuf;
-	intptr_t len;
 	char *start, *end;
 
 	rbuf = conn->rbuf;
@@ -251,7 +251,7 @@ int fk_conn_req_parse(fk_conn *conn)
 
 		if (conn->idx_flag == 1) {
 			start = fk_buf_payload_start(rbuf);
-			len = (intptr_t)fk_conn_arglen_get(conn, conn->arg_idx);
+			len = (size_t)fk_conn_arglen_get(conn, conn->arg_idx);
 			fk_log_debug("saved arg_len: %lu\n", len);
 
 			if (fk_buf_payload_len(rbuf) >= len + 2) {

@@ -8,7 +8,7 @@
 
 // copy memory from src
 // len: not including '\0'
-fk_str *fk_str_create(char *src, int len)
+fk_str *fk_str_create(char *src, size_t len)
 {
 	fk_str *new_one;
 
