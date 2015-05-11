@@ -14,7 +14,7 @@
 #define FK_TMEV_ONCE	2
 
 typedef int (*fk_ioev_cb) (int, char, void *);
-typedef int (*fk_tmev_cb) (int, char, void *);
+typedef int (*fk_tmev_cb) (unsigned, char, void *);
 
 typedef struct _fk_ioev {
 	int fd;
