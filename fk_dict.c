@@ -128,9 +128,11 @@ void fk_dict_destroy(fk_dict *dct)
 
 fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, size_t *bidx)
 {
+	int cmp;
+	size_t idx;
 	fk_elt *nd;
+	uint32_t hash;
 	fk_elt_list *lst;
-	int idx, hash, cmp;
 
 	hash = fk_dict_hash(key);
 	idx = hash & (dct->size_mask);
@@ -183,8 +185,8 @@ uint32_t fk_dict_hash(fk_str *key)
 
 uint32_t fk_dict_hash(fk_str *key)
 {
-	int len;
 	char *buf;
+	size_t len;
     uint32_t hash;
 
 	hash = 5381;
@@ -282,10 +284,10 @@ int fk_dict_remove(fk_dict *dct, fk_str *key)
 
 int fk_dict_stretch(fk_dict *dct)
 {
-	fk_str *key;
-	int hash, idx;
-	int new_size, i;
 	fk_elt *nd;
+	fk_str *key;
+	uint32_t hash;
+	size_t new_size, i, idx;
 	fk_elt_list **bks, *lst;
 
 	if (dct->used < dct->limit) {
