@@ -30,7 +30,7 @@
 #include <freekick.h>
 
 typedef struct _fk_server {
-	int port;
+	uint16_t port;
 	fk_str *addr;
 	int listen_fd;
 	unsigned max_conn;/*max connections*/
@@ -42,7 +42,7 @@ typedef struct _fk_server {
 	fk_tmev *svr_timer2;
 	fk_conn **conns_tab;
 	fk_str *pid_path;
-	int dbcnt;
+	unsigned dbcnt;
 	fk_dict **db;
 	fk_str *db_path;
 	int save_done;
@@ -352,7 +352,8 @@ int fk_cmd_flushdb(fk_conn *conn)
 
 int fk_cmd_flushall(fk_conn *conn)
 {
-	int i, rt;
+	int rt;
+	unsigned i;
 
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_dict_empty(server.db[i]);

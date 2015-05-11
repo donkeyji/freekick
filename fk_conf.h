@@ -14,7 +14,7 @@ typedef struct _fk_conf {
 	fk_str *log_path;
 	fk_str *pid_path;
 	fk_str *db_path;
-	int dbcnt;
+	unsigned dbcnt;
 } fk_conf;
 
 extern fk_conf setting;
