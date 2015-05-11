@@ -96,8 +96,8 @@ int fk_str_is_digit(fk_str *str)
 
 void fk_str_2upper(fk_str *str)
 {
-	int i;
 	char c;
+	size_t i;
 
 	for (i = 0; i < str->len - 1; i++) {
 		c = str->seq[i];
@@ -109,8 +109,8 @@ void fk_str_2upper(fk_str *str)
 
 void fk_str_2lower(fk_str *str)
 {
-	int i;
 	char c;
+	size_t i;
 
 	for (i = 0; i < str->len - 1; i++) {
 		c = str->seq[i];
