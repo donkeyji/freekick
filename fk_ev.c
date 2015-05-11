@@ -1,9 +1,10 @@
-#include <sys/time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <strings.h>
 #include <string.h>
+
+#include <sys/time.h>
 
 #include <fk_conf.h>
 #include <fk_ev.h>
