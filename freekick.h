@@ -14,7 +14,7 @@
 typedef struct _fk_proto {
 	char *name;
 	int type;
-	int arg_cnt;
+	unsigned arg_cnt;
 	int (*handler) (fk_conn *conn);
 } fk_proto;
 

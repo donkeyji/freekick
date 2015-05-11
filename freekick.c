@@ -219,7 +219,8 @@ int fk_cmd_setnx(fk_conn *conn)
 
 int fk_cmd_mset(fk_conn *conn)
 {
-	int i, rt;
+	int rt;
+	unsigned i;
 	fk_str *key;
 	fk_item *value;
 
@@ -241,7 +242,8 @@ int fk_cmd_mset(fk_conn *conn)
 
 int fk_cmd_mget(fk_conn *conn)
 {
-	int i, rt;
+	int rt;
+	unsigned i;
 	fk_item *itm;
 	fk_str *key, *ss;
 
@@ -318,7 +320,8 @@ int fk_cmd_get(fk_conn *conn)
 int fk_cmd_del(fk_conn *conn)
 {
 	fk_str *key;
-	int i, deleted, rt;
+	unsigned i;
+	int deleted, rt;
 
 	deleted = 0;
 
@@ -492,7 +495,8 @@ int fk_cmd_hget(fk_conn *conn)
 
 int fk_cmd_generic_push(fk_conn *conn, int pos)
 {
-	int i, rt;
+	int rt;
+	unsigned i;
 	fk_str *key;
 	fk_list *lst;
 	fk_item *lst_itm, *str_itm;
@@ -763,18 +767,16 @@ void fk_daemon_run()
 		exit(EXIT_FAILURE);
 	}
 
-	if (fd > STDERR_FILENO) {/*why???*/
-		if (close(fd) == -1) {
-			fk_log_error("close: %s\n", strerror(errno));
-			exit(EXIT_FAILURE);
-		}
+	if (close(fd) == -1) {
+		fk_log_error("close: %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
 	}
 }
 
 void fk_write_pid_file()
 {
-	FILE *pid_file;
 	pid_t pid;
+	FILE *pid_file;
 
 	pid_file = fopen(fk_str_raw(setting.pid_path), "w+");
 	pid = getpid();
@@ -787,7 +789,7 @@ void fk_write_pid_file()
 
 void fk_svr_init()
 {
-	int i;
+	unsigned i;
 
 	/*copy setting from conf to server*/
 	server.port = setting.port;
