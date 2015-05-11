@@ -84,7 +84,9 @@ void fk_buf_print(fk_buf *buf);
 	if (fk_buf_free_len((buf)) < (length)) {			\
 		fk_buf_shift((buf));							\
 	}													\
-	if (fk_buf_free_len((buf)) < (length)) {			\
+	if (fk_buf_free_len((buf)) < (length) &&			\
+		(buf)->len < FK_BUF_HIGHWAT)					\
+	{													\
 		(buf)->len = fk_util_min_power((buf)->len 		\
 			+ (length) - fk_buf_free_len((buf)));		\
 		(buf) = (fk_buf *)fk_mem_realloc((buf), 		\
