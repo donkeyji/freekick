@@ -6,7 +6,7 @@
 
 typedef struct _fk_epoll {
 	int efd;
-	int max_evs;
+	unsigned max_evs;
 	struct epoll_event ev;//temporary variable
 	struct epoll_event *evlist;
 	char *emask;//to track event associated to fd

@@ -830,9 +830,10 @@ void fk_svr_init()
 
 void fk_setrlimit()
 {
+	int rt;
 	pid_t euid;
 	struct rlimit lmt;
-	int rt, max_files;
+	unsigned max_files;
 
 	max_files = fk_conns_to_files(setting.max_conn);
 	rt = getrlimit(RLIMIT_NOFILE, &lmt);

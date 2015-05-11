@@ -6,7 +6,7 @@
 
 typedef struct _fk_kqueue {
 	int kfd;
-	int max_evs;
+	unsigned max_evs;
 	struct kevent kev;
 	struct kevent *evlist;
 	//char *emask;//no need for kqueue
