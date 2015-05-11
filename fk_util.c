@@ -17,7 +17,7 @@ void fk_util_cal_expire(struct timeval *tv, unsigned interval)
 	fk_util_tmval_add(&now, &itv, tv);
 }
 
-int fk_util_is_positive_seq(char *start, int len)
+int fk_util_is_positive_seq(char *start, size_t len)
 {
 	char *p;
 
@@ -38,7 +38,7 @@ int fk_util_is_positive_seq(char *start, int len)
 	return 1;
 }
 
-int fk_util_is_nonminus_seq(char *start, int len)
+int fk_util_is_nonminus_seq(char *start, size_t len)
 {
 	char *p;
 
@@ -67,7 +67,7 @@ int fk_util_is_nonminus_seq(char *start, int len)
 	return 1;
 }
 
-int fk_util_is_digit_seq(char *start, int len)
+int fk_util_is_digit_seq(char *start, size_t len)
 {
 	int i;
 	char c;
@@ -97,6 +97,7 @@ int fk_util_is_digit_seq(char *start, int len)
 	return 1;
 }
 
+/*if n < 0, return 1*/
 int fk_util_min_power(int n)
 {
 	uint32_t q;

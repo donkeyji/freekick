@@ -4,9 +4,9 @@
 #include <sys/time.h>
 
 void fk_util_cal_expire(struct timeval *tv, unsigned interval);
-int fk_util_is_positive_seq(char *start, int len);
-int fk_util_is_nonminus_seq(char *start, int len);
-int fk_util_is_digit_seq(char *start, int len);
+int fk_util_is_positive_seq(char *start, size_t len);
+int fk_util_is_nonminus_seq(char *start, size_t len);
+int fk_util_is_digit_seq(char *start, size_t len);
 int fk_util_min_power(int n);
 int fk_util_decimal_digit(int num);
 
