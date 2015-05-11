@@ -1,6 +1,8 @@
 #ifndef _FK_CLIENT_H_
 #define _FK_CLIENT_H_
 
+#include <stdint.h>
+
 #include <sys/types.h>
 
 #include <fk_macro.h>
@@ -22,10 +24,10 @@ typedef struct _fk_conn {
 
 	fk_vtr *arg_vtr;
 	fk_vtr *len_vtr;
-	int		arg_cnt;/*the number of arg_vtr of the current protocol, original 0;*/
-	int		arg_idx;/*the arg_idx arg is being parsing, original 0*/
-	int 	idx_flag;/*arg_len or arg*/
-	int 	parse_done;/*original 0*/
+	uint32_t arg_cnt;/*the number of arg_vtr of the current protocol, original 0;*/
+	uint32_t arg_idx;/*the arg_idx arg is being parsing, original 0*/
+	int idx_flag;/*arg_len or arg*/
+	int parse_done;/*original 0*/
 
 	int db_idx;
 } fk_conn;
