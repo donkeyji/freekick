@@ -286,7 +286,7 @@ int fk_conn_req_parse(fk_conn *conn)
 
 void fk_conn_args_free(fk_conn *conn)
 {
-	uint32_t i;
+	unsigned i;
 
 	for (i = 0; i < conn->arg_cnt; i++) {
 		if (fk_conn_arg_get(conn, i) != NULL) {
@@ -407,8 +407,8 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 {
 	char *pbuf;
 	size_t plen;
-	ssize_t sent_len;
 	fk_conn *conn;
+	ssize_t sent_len;
 
 	fk_unuse(type);
 
