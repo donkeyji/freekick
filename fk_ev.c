@@ -39,7 +39,7 @@ static fk_leaf_op tmev_op = {
 
 void fk_ev_init()
 {
-	int max_files;
+	unsigned max_files;
 
 	max_files = fk_conns_to_files(setting.max_conn); 
 
@@ -65,8 +65,7 @@ void fk_ev_init()
 int fk_ev_dispatch()
 {
 	fk_tmev *tmev;
-	struct timeval now, timeout;
-	struct timeval *pto;
+	struct timeval *pto, now, timeout;
 
 	pto = NULL;/*indefinitely wait*/
 
@@ -101,8 +100,8 @@ int fk_ev_dispatch()
 
 int fk_ev_ioev_add(fk_ioev *ioev)
 {
-	int fd, rt;
 	char type;
+	int fd, rt;
 
 	fd = ioev->fd;
 	type = ioev->type;
@@ -123,8 +122,8 @@ int fk_ev_ioev_add(fk_ioev *ioev)
 
 int fk_ev_ioev_remove(fk_ioev *ioev)
 {
-	int fd, rt;
 	char type;
+	int fd, rt;
 
 	/*must be in the read/write event array*/
 	fd = ioev->fd;
