@@ -61,7 +61,7 @@ static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
 static void fk_setrlimit();
-static void fk_daemon_run();
+static void fk_daemonize();
 static void fk_write_pid_file();
 static void fk_proto_init();
 
@@ -725,7 +725,7 @@ static void fk_daemon_run_old()
 }
 */
 
-void fk_daemon_run()
+void fk_daemonize()
 {
 	int  fd;
 
@@ -739,9 +739,9 @@ void fk_daemon_run()
 		exit(EXIT_FAILURE);
 	case 0:/*child continue*/
 		break;
-	default:
+	default:/*parent exit*/
 		fk_log_info("parent exit, to run as a daemon\n");
-		exit(EXIT_SUCCESS);/*parent exit*/
+		exit(EXIT_SUCCESS);
 	}
 
 	if (setsid() == -1) {/*create a new session*/
@@ -767,9 +767,16 @@ void fk_daemon_run()
 		exit(EXIT_FAILURE);
 	}
 
-	if (close(fd) == -1) {
-		fk_log_error("close: %s\n", strerror(errno));
+	if (dup2(fd, STDERR_FILENO) == -1) {/*close STDERR*/
+		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
+	}
+
+	if (fd > STDERR_FILENO) {
+		if (close(fd) == -1) {
+			fk_log_error("close: %s\n", strerror(errno));
+			exit(EXIT_FAILURE);
+		}
 	}
 }
 
@@ -966,7 +973,7 @@ void fk_main_init(char *conf_path)
 
 	fk_setrlimit();
 
-	fk_daemon_run();
+	fk_daemonize();
 
 	fk_write_pid_file();
 

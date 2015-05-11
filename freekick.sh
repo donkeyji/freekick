@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ACTION=$1
-if [ -z $ACTION]; then
+if [ -z $ACTION ]; then
 	ACTION='start'
 fi
 
