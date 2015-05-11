@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <limits.h>
 
 #include <sys/types.h>
 
@@ -294,7 +295,7 @@ int fk_conf_handle_port(fk_line *line)
 		return -1;
 	}
 	port = atoi(fk_str_raw(line->fields[1]));
-	if (port <= 0 || port > 65536) {
+	if (port <= 0 || port > USHRT_MAX) {
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
 		return -1;
 	}
