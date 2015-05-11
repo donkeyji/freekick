@@ -32,7 +32,7 @@ typedef struct _fk_tmev {
 
 	int expired;/*whether in the expired list*/
 	char type;/*FK_TMEV_CYCLE|FK_TMEV_ONCE*/
-	int interval;/*milliseconds*/
+	unsigned interval;/*milliseconds*/
 	struct timeval when;/*save the trigger point time: now + timeout*/
 	void *arg;/*ext arg*/
 	fk_tmev_cb tmcb;
@@ -78,7 +78,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev);
 
 fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
 void fk_ioev_destroy(fk_ioev *ioev);
-fk_tmev *fk_tmev_create(int timeout, char type, void *arg, fk_tmev_cb tmcb);
+fk_tmev *fk_tmev_create(unsigned timeout, char type, void *arg, fk_tmev_cb tmcb);
 void fk_tmev_destroy(fk_tmev *tmev);
 
 #endif

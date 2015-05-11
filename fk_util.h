@@ -3,7 +3,7 @@
 
 #include <sys/time.h>
 
-void fk_util_cal_expire(struct timeval *tv, int interval);
+void fk_util_cal_expire(struct timeval *tv, unsigned interval);
 int fk_util_is_positive_seq(char *start, int len);
 int fk_util_is_nonminus_seq(char *start, int len);
 int fk_util_is_digit_seq(char *start, int len);

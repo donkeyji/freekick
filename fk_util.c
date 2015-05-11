@@ -7,7 +7,7 @@
 #include <fk_util.h>
 
 //interval: millisecond ( 1/1000 sec )
-void fk_util_cal_expire(struct timeval *tv, int interval)
+void fk_util_cal_expire(struct timeval *tv, unsigned interval)
 {
 	struct timeval now, itv;
 

@@ -173,7 +173,7 @@ void fk_ioev_destroy(fk_ioev *ioev)
 
 /* no need to delete timer
  * so fk_ev_timer_del not supplied */
-fk_tmev *fk_tmev_create(int interval, char type, void *arg, fk_tmev_cb tmcb)
+fk_tmev *fk_tmev_create(unsigned interval, char type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev *tmev;
 
@@ -249,11 +249,12 @@ int fk_ev_pending_tmev_update()
 
 int fk_ev_expired_tmev_proc()
 {
+	int rt;
 	char type;
 	void *arg;
 	fk_tmev *tmev;
 	fk_tmev_cb tmcb;
-	int interval, rt;
+	unsigned interval;
 
 	tmev = fk_rawlist_head(evmgr.exp_tmev);
 	while (tmev != NULL) {
