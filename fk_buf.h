@@ -10,8 +10,8 @@
 
 typedef struct _fk_buf {
 	size_t len;
-	off_t low;/*valid begin, init: 0, range: [0-->len], <= high */
-	off_t high;/*free begin, init: 0, range: [0-->len], <= len */
+	size_t low;/*valid begin, init: 0, range: [0-->len], <= high */
+	size_t high;/*free begin, init: 0, range: [0-->len], <= len */
 	char buffer[];
 } fk_buf;
 
