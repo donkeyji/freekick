@@ -337,10 +337,10 @@ int fk_conf_handle_maxconn(fk_line *line)
 		return -1;
 	}
 	max_conn = atoi(fk_str_raw(line->fields[1]));
-	if (max_conn == 0) {
-		sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
-		return -1;
-	}
+	//if (max_conn == 0) {
+		//sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
+		//return -1;
+	//}
 	setting.max_conn = (unsigned)max_conn;
 	return 0;
 }
@@ -355,10 +355,10 @@ int fk_conf_handle_dbcnt(fk_line *line)
 		return -1;
 	}
 	dbcnt = atoi(fk_str_raw(line->fields[1]));
-	if (dbcnt == 0) {
-		sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
-		return -1;
-	}
+	//if (dbcnt == 0) {
+		//sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
+		//return -1;
+	//}
 	setting.dbcnt = (unsigned)dbcnt;
 	return 0;
 }
