@@ -43,9 +43,9 @@ void fk_conn_destroy(fk_conn *conn);
 
 #define fk_conn_arglen_get(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
 
-int fk_conn_status_rsp_add(fk_conn *conn, char *stat, int stat_len);
-int fk_conn_error_rsp_add(fk_conn *conn, char *error, int error_len);
-int fk_conn_content_rsp_add(fk_conn *conn, char *content, int content_len);
+int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len);
+int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len);
+int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len);
 int fk_conn_int_rsp_add(fk_conn *conn, int num);
 int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len);
 int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt);

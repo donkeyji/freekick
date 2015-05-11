@@ -22,7 +22,7 @@ void fk_buf_destroy(fk_buf *buf)
 #ifdef FK_DEBUG
 void fk_buf_print(fk_buf *buf)
 {
-	int len;
+	size_t len;
 	char ps[4096];
 
 	len = fk_buf_payload_len(buf);

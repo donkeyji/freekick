@@ -9,9 +9,9 @@
 #define FK_BUF_INIT_LEN 	16
 
 typedef struct _fk_buf {
-	int len;
-	int low;/*valid begin, init: 0, range: [0-->len], <= high */
-	int high;/*free begin, init: 0, range: [0-->len], <= len */
+	size_t len;
+	size_t low;/*valid begin, init: 0, range: [0-->len], <= high */
+	size_t high;/*free begin, init: 0, range: [0-->len], <= len */
 	char buffer[];
 } fk_buf;
 

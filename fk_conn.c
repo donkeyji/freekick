@@ -27,10 +27,10 @@ static int fk_conn_rsp_send(fk_conn *conn);
 /*response format*/
 static char *rsp_status 	= "+%s\r\n";
 static char *rsp_error 		= "-%s\r\n";
+static char *rsp_content	= "%s\r\n" ;
 static char *rsp_int 		= ":%d\r\n";
 static char *rsp_bulk		= "$%d\r\n";
 static char *rsp_mbulk		= "*%d\r\n";
-static char *rsp_content	= "%s\r\n" ;
 
 fk_conn *fk_conn_create(int fd)
 {
@@ -85,7 +85,8 @@ void fk_conn_destroy(fk_conn *conn)
 int fk_conn_data_recv(fk_conn *conn)
 {
 	char *free_buf;
-	int free_len, recv_len;
+	size_t free_len;
+	int recv_len;
 
 	/* a complete line was not received, but the read buffer has reached
 	 * its upper limit, so just close this connection */
@@ -405,8 +406,9 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 int fk_conn_write_cb(int fd, char type, void *ext)
 {
 	char *pbuf;
+	size_t plen;
+	int sent_len;
 	fk_conn *conn;
-	int sent_len, plen;
 
 	fk_unuse(type);
 
@@ -469,9 +471,60 @@ int fk_conn_rsp_send(fk_conn *conn)
 	return 0;
 }
 
+int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len)
+{
+	size_t len;
+
+	len = stat_len + 3;
+
+	fk_buf_adjust(conn->wbuf, len);
+	if (fk_buf_free_len(conn->wbuf) < len) {
+		return -1;
+	}
+
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_status, stat);
+	fk_buf_high_inc(conn->wbuf, len);
+
+	return 0;
+}
+
+int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len)
+{
+	size_t len;
+
+	len = error_len + 3;
+
+	fk_buf_adjust(conn->wbuf, len);
+	if (fk_buf_free_len(conn->wbuf) < len) {
+		return -1;
+	}
+
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_error, error);
+	fk_buf_high_inc(conn->wbuf, len);
+
+	return 0;
+}
+
+int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len)
+{
+	size_t len;
+
+	len = content_len + 2;
+
+	fk_buf_adjust(conn->wbuf, len);
+	if (fk_buf_free_len(conn->wbuf) < len) {
+		return -1;
+	}
+
+	sprintf(fk_buf_free_start(conn->wbuf), rsp_content, content);
+	fk_buf_high_inc(conn->wbuf, len);
+
+	return 0;
+}
+
 int fk_conn_int_rsp_add(fk_conn *conn, int num)
 {
-	int len;
+	size_t len;
 
 	len = fk_util_decimal_digit(num);
 	len += 3;
@@ -487,43 +540,9 @@ int fk_conn_int_rsp_add(fk_conn *conn, int num)
 	return 0;
 }
 
-int fk_conn_status_rsp_add(fk_conn *conn, char *stat, int stat_len)
-{
-	int len;
-
-	len = stat_len + 3;
-
-	fk_buf_adjust(conn->wbuf, len);
-	if (fk_buf_free_len(conn->wbuf) < len) {
-		return -1;
-	}
-
-	sprintf(fk_buf_free_start(conn->wbuf), rsp_status, stat);
-	fk_buf_high_inc(conn->wbuf, len);
-
-	return 0;
-}
-
-int fk_conn_error_rsp_add(fk_conn *conn, char *error, int error_len)
-{
-	int len;
-
-	len = error_len + 3;
-
-	fk_buf_adjust(conn->wbuf, len);
-	if (fk_buf_free_len(conn->wbuf) < len) {
-		return -1;
-	}
-
-	sprintf(fk_buf_free_start(conn->wbuf), rsp_error, error);
-	fk_buf_high_inc(conn->wbuf, len);
-
-	return 0;
-}
-
 int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
 {
-	int len;
+	size_t len;
 
 	len = fk_util_decimal_digit(bulk_len);
 	len += 3;
@@ -541,7 +560,7 @@ int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
 
 int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
 {
-	int len;
+	size_t len;
 
 	len = fk_util_decimal_digit(bulk_cnt);
 	len += 3;
@@ -552,23 +571,6 @@ int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
 	}
 
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_mbulk, bulk_cnt);
-	fk_buf_high_inc(conn->wbuf, len);
-
-	return 0;
-}
-
-int fk_conn_content_rsp_add(fk_conn *conn, char *content, int content_len)
-{
-	int len;
-
-	len = content_len + 2;
-
-	fk_buf_adjust(conn->wbuf, len);
-	if (fk_buf_free_len(conn->wbuf) < len) {
-		return -1;
-	}
-
-	sprintf(fk_buf_free_start(conn->wbuf), rsp_content, content);
 	fk_buf_high_inc(conn->wbuf, len);
 
 	return 0;
