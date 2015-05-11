@@ -143,8 +143,8 @@ void fk_pool_destroy(fk_pool *pool)
 
 fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
-	uint16_t i;
 	char *ptr;
+	uint16_t i;
 	fk_block *blk;
 
 	blk = (fk_block *)fk_mem_alloc(sizeof(fk_block) + unit_size * unit_cnt);
