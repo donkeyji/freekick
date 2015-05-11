@@ -8,7 +8,7 @@
 typedef struct {					\
 	type *head;						\
 	type *tail;						\
-	int len;						\
+	size_t len;						\
 } name
 
 #define fk_rawlist_create(type)		(type *)fk_mem_alloc(sizeof(type))
@@ -96,7 +96,7 @@ typedef struct _fk_node_op {
 typedef struct _fk_list {
 	fk_node *head;
 	fk_node *tail;
-	int len;
+	size_t len;
 	
 	fk_iter iter;
 
