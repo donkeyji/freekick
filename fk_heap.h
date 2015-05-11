@@ -13,8 +13,8 @@ typedef struct _fk_leaf_op {
 
 //do not copy memory from outside, just save a pointer to the field of tree
 typedef struct _fk_heap {
-	int max;//the total length of the tree
-	int last;//current the last item index
+	size_t max;//the total length of the tree
+	off_t last;//current the last item index
 	fk_leaf **tree;//can save any type of obj
 	fk_leaf_op *lop;
 } fk_heap;
