@@ -233,7 +233,7 @@ fk_itv *fk_conf_search(fk_str *name)
 	unsigned i;
 
 	for (i = 0; itv_map[i].name != NULL; i++) {
-		if (strcmp(fk_str_raw(name), itv_map[i].name) == 0) {
+		if (strcasecmp(fk_str_raw(name), itv_map[i].name) == 0) {
 			return &itv_map[i];
 		}
 	}
@@ -374,13 +374,13 @@ int fk_conf_handle_loglevel(fk_line *line)
 	char *level;
 
 	level = fk_str_raw(line->fields[1]);
-	if (strcmp(level, "debug") == 0) {
+	if (strcasecmp(level, "debug") == 0) {
 		setting.log_level = FK_LOG_DEBUG;
-	} else if (strcmp(level, "info") == 0) {
+	} else if (strcasecmp(level, "info") == 0) {
 		setting.log_level = FK_LOG_INFO;
-	} else if (strcmp(level, "warnning") == 0) {
+	} else if (strcasecmp(level, "warnning") == 0) {
 		setting.log_level = FK_LOG_WARN;
-	} else if (strcmp(level, "error") == 0) {
+	} else if (strcasecmp(level, "error") == 0) {
 		setting.log_level = FK_LOG_ERROR;
 	} else {
 		sprintf(line->err, "no this log level: %s, line: %d", level, line->no);
