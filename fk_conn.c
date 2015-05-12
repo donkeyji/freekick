@@ -185,6 +185,9 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
+			/*a variable of integer type can hold the argument 
+			 * count, because the FK_ARG_CNT_HIGHWAT == 128, 
+			 * and INT_MAX > FK_ARG_CNT_HIGHWAT*/
 			argc = atoi(start + 1);
 			if (argc <= 0 || argc > FK_ARG_CNT_HIGHWAT) {
 				fk_log_debug("invalid argument count\n");
@@ -231,6 +234,9 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
+			/*argl of integer type can hold the argument length,
+			 * because the FK_ARG_HIGHWAT == (64 * 1024 - 2), and
+			 * INT_MAX > FK_ARG_HIGHWAT*/
 			argl = atoi(start + 1);//argument length
 			if (argl < 0 || argl > FK_ARG_HIGHWAT) {
 				fk_log_debug("invalid argument length\n");
