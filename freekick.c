@@ -971,6 +971,7 @@ void fk_main_init(char *conf_path)
 	/*the first to init*/
 	fk_conf_init(conf_path);
 
+	/*could not use fk_log_xxx in fk_daemonize()*/
 	fk_daemonize();
 
 	/* the second to init, so that all the 
