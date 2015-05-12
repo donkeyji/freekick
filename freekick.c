@@ -785,6 +785,10 @@ void fk_write_pid_file()
 	pid_t pid;
 	FILE *pid_file;
 
+	if (setting.daemon == 0) {
+		return;
+	}
+
 	pid_file = fopen(fk_str_raw(setting.pid_path), "w+");
 	pid = getpid();
 #ifdef FK_DEBUG
