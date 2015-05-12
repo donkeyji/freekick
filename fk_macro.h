@@ -19,7 +19,7 @@
 #define FK_DEFAULT_DB_CNT 8
 
 /*timeout of conn, unit: second*/
-#define FK_CONN_TIMEOUT 300
+#define FK_DEFAULT_CONN_TIMEOUT 300
 
 /*high water*/
 #define FK_BUF_HIGHWAT		512

@@ -346,7 +346,7 @@ int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 
 	now = time(NULL);
 
-	if (now - conn->last_recv > FK_CONN_TIMEOUT) {
+	if (now - conn->last_recv > FK_DEFAULT_CONN_TIMEOUT) {
 		fk_svr_conn_remove(conn);
 		return -1;/*tell evmgr not to add this timer again*/
 	}
