@@ -219,8 +219,7 @@ int fk_cmd_setnx(fk_conn *conn)
 
 int fk_cmd_mset(fk_conn *conn)
 {
-	int rt;
-	unsigned i;
+	int rt, i;
 	fk_str *key;
 	fk_item *value;
 
@@ -242,8 +241,7 @@ int fk_cmd_mset(fk_conn *conn)
 
 int fk_cmd_mget(fk_conn *conn)
 {
-	int rt;
-	unsigned i;
+	int rt, i;
 	fk_item *itm;
 	fk_str *key, *ss;
 
@@ -320,8 +318,7 @@ int fk_cmd_get(fk_conn *conn)
 int fk_cmd_del(fk_conn *conn)
 {
 	fk_str *key;
-	unsigned i;
-	int deleted, rt;
+	int deleted, rt, i;
 
 	deleted = 0;
 
@@ -495,8 +492,7 @@ int fk_cmd_hget(fk_conn *conn)
 
 int fk_cmd_generic_push(fk_conn *conn, int pos)
 {
-	int rt;
-	unsigned i;
+	int rt, i;
 	fk_str *key;
 	fk_list *lst;
 	fk_item *lst_itm, *str_itm;

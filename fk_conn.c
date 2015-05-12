@@ -151,10 +151,10 @@ int fk_conn_data_recv(fk_conn *conn)
 
 int fk_conn_req_parse(fk_conn *conn)
 {
+	int rt, argl;
 	fk_buf *rbuf;
 	size_t arg_len;
 	char *start, *end;
-	int rt, argc, argl;
 
 	rbuf = conn->rbuf;
 
@@ -189,12 +189,11 @@ int fk_conn_req_parse(fk_conn *conn)
 			/*a variable of integer type can hold the argument 
 			 * count, because the FK_ARG_CNT_HIGHWAT == 128, 
 			 * and INT_MAX > FK_ARG_CNT_HIGHWAT*/
-			argc = atoi(start + 1);
-			if (argc <= 0 || argc > FK_ARG_CNT_HIGHWAT) {
+			conn->arg_cnt = atoi(start + 1);
+			if (conn->arg_cnt <= 0 || conn->arg_cnt > FK_ARG_CNT_HIGHWAT) {
 				fk_log_debug("invalid argument count\n");
 				return -1;
 			}
-			conn->arg_cnt = (unsigned)argc;
 #ifdef FK_DEBUG
 			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
 			fk_log_debug("before arg_vtr stretch: len: %d\n", fk_vtr_len(conn->arg_vtr));
@@ -286,7 +285,7 @@ int fk_conn_req_parse(fk_conn *conn)
 
 void fk_conn_args_free(fk_conn *conn)
 {
-	unsigned i;
+	int i;
 
 	for (i = 0; i < conn->arg_cnt; i++) {
 		if (fk_conn_arg_get(conn, i) != NULL) {
