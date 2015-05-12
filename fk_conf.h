@@ -10,7 +10,7 @@ typedef struct _fk_conf {
 	fk_str *addr;
 	int daemon;
 	unsigned max_conn;
-	unsigned timeout;
+	time_t timeout;
 	int log_level;
 	fk_str *log_path;
 	fk_str *pid_path;

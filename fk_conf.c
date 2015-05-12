@@ -405,7 +405,7 @@ int fk_conf_handle_timeout(fk_line *line)
 		return -1;
 	}
 	timeout = atoi(fk_str_raw(line->fields[1]));
-	setting.timeout = (unsigned)timeout;
+	setting.timeout = (time_t)timeout;
 
 	return 0;
 }
