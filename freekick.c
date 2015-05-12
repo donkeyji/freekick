@@ -735,17 +735,17 @@ void fk_daemonize()
 
 	switch (fork()) {
 	case -1:
-		fk_log_error("fork: %s\n", strerror(errno));
+		fprintf(stderr, "fork: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	case 0:/*child continue*/
 		break;
 	default:/*parent exit*/
-		fk_log_info("parent exit, to run as a daemon\n");
+		fprintf(stdout, "parent exit, to run as a daemon\n");
 		exit(EXIT_SUCCESS);
 	}
 
 	if (setsid() == -1) {/*create a new session*/
-		fk_log_error("setsid: %s\n", strerror(errno));
+		fprintf(stderr, "setsid: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -753,28 +753,28 @@ void fk_daemonize()
 
 	fd = open("/dev/null", O_RDWR);
 	if (fd == -1) {
-		fk_log_error("open /dev/null: %s\n", strerror(errno));
+		fprintf(stderr, "open /dev/null: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	if (dup2(fd, STDIN_FILENO) == -1) {/*close STDIN*/
-		fk_log_error("dup2: %s\n", strerror(errno));
+		fprintf(stderr, "dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	if (dup2(fd, STDOUT_FILENO) == -1) {/*close STDOUT*/
-		fk_log_error("dup2: %s\n", strerror(errno));
+		fprintf(stderr, "dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	if (dup2(fd, STDERR_FILENO) == -1) {/*close STDERR*/
-		fk_log_error("dup2: %s\n", strerror(errno));
+		fprintf(stderr, "dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	if (fd > STDERR_FILENO) {
 		if (close(fd) == -1) {
-			fk_log_error("close: %s\n", strerror(errno));
+			fprintf(stderr, "close: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -971,13 +971,13 @@ void fk_main_init(char *conf_path)
 	/*the first to init*/
 	fk_conf_init(conf_path);
 
+	fk_daemonize();
+
 	/* the second to init, so that all the 
 	 * ther module can call fk_log_xxx() */
 	fk_log_init();
 
 	fk_setrlimit();
-
-	fk_daemonize();
 
 	fk_write_pid_file();
 
