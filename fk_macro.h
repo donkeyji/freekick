@@ -8,15 +8,15 @@
 #define FK_LOG_DEBUG 	3
 
 /*default setting*/
-#define FK_MAX_CONN 10240
-#define FK_LOG_PATH "/tmp/freekick.log"
-#define FK_PID_PATH "/tmp/freekick.pid"
-#define FK_DB_PATH "/tmp/freekick.db"
+#define FK_DEFAULT_MAX_CONN 10240
+#define FK_DEFAULT_LOG_PATH "/tmp/freekick.log"
+#define FK_DEFAULT_LOG_LEVEL (FK_LOG_DEBUG)
+#define FK_DEFAULT_PID_PATH "/tmp/freekick.pid"
+#define FK_DEFAULT_DB_PATH "/tmp/freekick.db"
 #define FK_DEFAULT_PORT 6379
-#define FK_DAEMON 1
-#define FK_NODAEMON 0
-#define FK_SVR_ADDR "0.0.0.0"
-#define FK_DB_CNT 8
+#define FK_DEFAULT_DAEMON 0
+#define FK_DEFAULT_SVR_ADDR "0.0.0.0"
+#define FK_DEFAULT_DB_CNT 8
 
 /*timeout of conn, unit: second*/
 #define FK_CONN_TIMEOUT 300

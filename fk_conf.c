@@ -95,14 +95,14 @@ void fk_conf_init(char *conf_path)
 	int rt;
 	/*step 1: set default first*/
 	setting.port = FK_DEFAULT_PORT;
-	setting.daemon = FK_NODAEMON;
-	setting.max_conn = FK_MAX_CONN;
-	setting.log_level = FK_LOG_DEBUG;
-	setting.dbcnt = FK_DB_CNT;
-	setting.log_path = fk_str_create(FK_LOG_PATH, sizeof(FK_LOG_PATH) - 1);
-	setting.pid_path = fk_str_create(FK_PID_PATH, sizeof(FK_PID_PATH) - 1);
-	setting.db_path = fk_str_create(FK_DB_PATH, sizeof(FK_DB_PATH) - 1);
-	setting.addr = fk_str_create(FK_SVR_ADDR, sizeof(FK_SVR_ADDR) - 1);
+	setting.daemon = FK_DEFAULT_DAEMON;
+	setting.max_conn = FK_DEFAULT_MAX_CONN;
+	setting.log_level = FK_DEFAULT_LOG_LEVEL;
+	setting.dbcnt = FK_DEFAULT_DB_CNT;
+	setting.log_path = fk_str_create(FK_DEFAULT_LOG_PATH, sizeof(FK_DEFAULT_LOG_PATH) - 1);
+	setting.pid_path = fk_str_create(FK_DEFAULT_PID_PATH, sizeof(FK_DEFAULT_PID_PATH) - 1);
+	setting.db_path = fk_str_create(FK_DEFAULT_DB_PATH, sizeof(FK_DEFAULT_DB_PATH) - 1);
+	setting.addr = fk_str_create(FK_DEFAULT_SVR_ADDR, sizeof(FK_DEFAULT_SVR_ADDR) - 1);
 
 	/*setp 2: parse config file*/
 	if (conf_path != NULL) {
@@ -308,7 +308,7 @@ int fk_conf_handle_port(fk_line *line)
 
 int fk_conf_handle_daemon(fk_line *line)
 {
-	setting.daemon = FK_DAEMON;
+	setting.daemon = 1;
 	return 0;
 }
 
