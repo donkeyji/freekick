@@ -150,10 +150,10 @@ int fk_conn_data_recv(fk_conn *conn)
 
 int fk_conn_req_parse(fk_conn *conn)
 {
-	int rt;
-	size_t len;
 	fk_buf *rbuf;
+	size_t arg_len;
 	char *start, *end;
+	int rt, argc, argl;
 
 	rbuf = conn->rbuf;
 
@@ -185,16 +185,12 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			conn->arg_cnt = atoi(start + 1);
-			/*no need to check arg_cnt <= 0 again*/
-			//if (conn->arg_cnt == 0) {
-				//fk_log_debug("wrong client data\n");
-				//return -1;
-			//}
-			if (conn->arg_cnt > FK_ARG_CNT_HIGHWAT) {
-				fk_log_debug("too many arguments\n");
+			argc = atoi(start + 1);
+			if (argc <= 0 || argc > FK_ARG_CNT_HIGHWAT) {
+				fk_log_debug("invalid argument count\n");
 				return -1;
 			}
+			conn->arg_cnt = (unsigned)argc;
 #ifdef FK_DEBUG
 			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
 			fk_log_debug("before arg_vtr stretch: len: %d\n", fk_vtr_len(conn->arg_vtr));
@@ -235,37 +231,34 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			len = atoi(start + 1);//arg len
-			/*no need to check len < 0*/
-			//if (len < 0) {
-				//fk_log_debug("wrong client data\n");
-				//return -1;
-			//}
-			if (len > FK_ARG_HIGHWAT) {
-				fk_log_debug("too long argument\n");
+			argl = atoi(start + 1);//argument length
+			if (argl < 0 || argl > FK_ARG_HIGHWAT) {
+				fk_log_debug("invalid argument length\n");
 				return -1;
 			}
-			fk_conn_arglen_set(conn, conn->arg_idx, (void *)len);
+			arg_len = (size_t)argl;
+			fk_conn_arglen_set(conn, conn->arg_idx, (void *)arg_len);
 			conn->idx_flag = 1;/*need to parse arg*/
 			fk_buf_low_inc(rbuf, end - start + 1);
 		}
 
 		if (conn->idx_flag == 1) {
 			start = fk_buf_payload_start(rbuf);
-			len = (size_t)fk_conn_arglen_get(conn, conn->arg_idx);
-			fk_log_debug("saved arg_len: %lu\n", len);
-
-			if (fk_buf_payload_len(rbuf) >= len + 2) {
-				if (*(start + len) != '\r' ||
-					*(start + len + 1) != '\n') 
+			arg_len = (size_t)fk_conn_arglen_get(conn, conn->arg_idx);
+#ifdef FK_DEBUG
+			fk_log_debug("saved arg_len: %lu\n", arg_len);
+#endif
+			if (fk_buf_payload_len(rbuf) >= arg_len + 2) {
+				if (*(start + arg_len) != '\r' ||
+					*(start + arg_len + 1) != '\n') 
 				{
 					fk_log_debug("wrong client data\n");
 					return -1;
 				}
-				fk_conn_arg_set(conn, conn->arg_idx, fk_str_create(start, len));
+				fk_conn_arg_set(conn, conn->arg_idx, fk_str_create(start, arg_len));
 				conn->arg_idx += 1;
 				conn->idx_flag = 0;
-				fk_buf_low_inc(rbuf, len + 2);
+				fk_buf_low_inc(rbuf, arg_len + 2);
 			} else {/*not received yet*/
 				return 1;
 			}
