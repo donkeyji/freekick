@@ -45,6 +45,7 @@ static int fk_conf_handle_dbcnt(fk_line *line);
 static int fk_conf_handle_addr(fk_line *line);
 static int fk_conf_handle_loglevel(fk_line *line);
 static int fk_conf_handle_dbpath(fk_line *line);
+static int fk_conf_handle_timeout(fk_line *line);
 
 static fk_itv itv_map[] = {
 	{"port", 2, fk_conf_handle_port},
@@ -55,6 +56,7 @@ static fk_itv itv_map[] = {
 	{"loglevel", 2, fk_conf_handle_loglevel},
 	{"maxconn", 2, fk_conf_handle_maxconn},
 	{"dbcnt", 2, fk_conf_handle_dbcnt},
+	{"timeout", 2, fk_conf_handle_timeout},
 	{"addr", 2, fk_conf_handle_addr},
 	{NULL, 0, NULL}
 };
@@ -103,6 +105,7 @@ void fk_conf_init(char *conf_path)
 	setting.pid_path = fk_str_create(FK_DEFAULT_PID_PATH, sizeof(FK_DEFAULT_PID_PATH) - 1);
 	setting.db_path = fk_str_create(FK_DEFAULT_DB_PATH, sizeof(FK_DEFAULT_DB_PATH) - 1);
 	setting.addr = fk_str_create(FK_DEFAULT_SVR_ADDR, sizeof(FK_DEFAULT_SVR_ADDR) - 1);
+	setting.timeout = FK_DEFAULT_CONN_TIMEOUT;
 
 	/*setp 2: parse config file*/
 	if (conf_path != NULL) {
@@ -389,5 +392,20 @@ int fk_conf_handle_loglevel(fk_line *line)
 		sprintf(line->err, "no this log level: %s, line: %d", level, line->no);
 		return -1;
 	}
+	return 0;
+}
+
+int fk_conf_handle_timeout(fk_line *line)
+{
+	int rt, timeout;
+
+	rt = fk_str_is_positive(line->fields[1]);
+	if (rt == 0) {//not a positive integer
+		sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
+		return -1;
+	}
+	timeout = atoi(fk_str_raw(line->fields[1]));
+	setting.timeout = (unsigned)timeout;
+
 	return 0;
 }

@@ -13,6 +13,7 @@
 #include <fk_mem.h>
 #include <fk_sock.h>
 #include <fk_util.h>
+#include <fk_conf.h>
 #include <freekick.h>/*it's OK to do so*/
 
 static int fk_conn_read_cb(int fd, char type, void *ext);
@@ -346,7 +347,8 @@ int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 
 	now = time(NULL);
 
-	if (now - conn->last_recv > FK_DEFAULT_CONN_TIMEOUT) {
+	if (now - conn->last_recv > setting.timeout) {
+		fk_log_debug("connection timeout\n");
 		fk_svr_conn_remove(conn);
 		return -1;/*tell evmgr not to add this timer again*/
 	}
