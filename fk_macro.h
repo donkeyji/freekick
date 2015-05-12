@@ -7,9 +7,6 @@
 #define FK_LOG_INFO 	2
 #define FK_LOG_DEBUG 	3
 
-/*unused var*/
-#define fk_unuse(var) (void)(var)
-
 /*default setting*/
 #define FK_MAX_CONN 10240
 #define FK_LOG_PATH "/tmp/freekick.log"

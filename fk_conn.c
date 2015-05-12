@@ -339,8 +339,8 @@ int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 	time_t now;
 	fk_conn *conn;
 
-	fk_unuse(type);
-	fk_unuse(interval);
+	fk_util_unuse(type);
+	fk_util_unuse(interval);
 
 	conn = (fk_conn *)ext;
 
@@ -361,8 +361,8 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	int rt;
 	fk_conn *conn;
 
-	fk_unuse(fd);
-	fk_unuse(type);
+	fk_util_unuse(fd);
+	fk_util_unuse(type);
 
 	conn = (fk_conn *)ext;
 
@@ -409,7 +409,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 	fk_conn *conn;
 	ssize_t sent_len;
 
-	fk_unuse(type);
+	fk_util_unuse(type);
 
 	conn = (fk_conn *)ext;
 
