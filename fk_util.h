@@ -51,4 +51,8 @@ int fk_util_decimal_digit(int num);
 	} while (0)
 
 
+#define fk_util_conns_to_files(max_conns)		((max_conns) + 1 + 16)
+
+#define fk_util_files_to_conns(max_files)		((max_files) - 1 - 16)
+
 #endif
