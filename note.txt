@@ -85,5 +85,6 @@
 
 39.为何编译时加了优化选项-O2之后做profile时会出现莫名其妙的根本不会出现的函数调用?
 
-
-
+40.由于定义fk_util_conns_to_files宏没有加括号()，导致在server.conns_tab分配内存时计算错误: server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_util_conns_to     _files(setting.max_conn));
+当将max_conn设置为2时，第一个connection的fd为6，将第一个connection存入conns_tab时，由于内存越界，刚好将server.listen_ev的内存给覆盖，造成了诡异的错误。
+ server.conns_tab[conn->fd] = conn;
