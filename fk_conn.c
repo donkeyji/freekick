@@ -206,7 +206,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			fk_log_debug("after len_vtr stretch: len: %lu\n", fk_vtr_len(conn->len_vtr));
 #endif
 
-			fk_buf_low_inc(rbuf, end - start + 1);
+			fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
 		}
 	}
 
@@ -245,7 +245,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			arg_len = (size_t)argl;
 			fk_conn_arglen_set(conn, conn->arg_idx, (void *)arg_len);
 			conn->idx_flag = 1;/*need to parse arg*/
-			fk_buf_low_inc(rbuf, end - start + 1);
+			fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
 		}
 
 		if (conn->idx_flag == 1) {
@@ -435,7 +435,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 				break;
 			}
 		}
-		fk_buf_low_inc(conn->wbuf, sent_len);
+		fk_buf_low_inc(conn->wbuf, (size_t)(sent_len));
 #ifdef FK_DEBUG
 		fk_log_debug("[after send]low: %lu, high: %lu\n", fk_buf_low(conn->wbuf), fk_buf_high(conn->wbuf));
 #endif
