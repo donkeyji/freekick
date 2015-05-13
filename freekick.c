@@ -265,7 +265,7 @@ int fk_cmd_mget(fk_conn *conn)
 				}
 			} else {
 				ss = (fk_str *)fk_item_raw(itm);
-				rt = fk_conn_bulk_rsp_add(conn, fk_str_len(ss) - 1);
+				rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss) - 1));
 				if (rt < 0) {
 					return -1;
 				}
@@ -304,7 +304,7 @@ int fk_cmd_get(fk_conn *conn)
 	} 
 
 	value = (fk_str *)fk_item_raw(itm);
-	rt = fk_conn_bulk_rsp_add(conn, fk_str_len(value) - 1);
+	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(value) - 1));
 	if (rt < 0) {
 		return -1;
 	}
@@ -478,7 +478,7 @@ int fk_cmd_hget(fk_conn *conn)
 	}
 
 	value = (fk_str *)fk_item_raw(itm);
-	rt = fk_conn_bulk_rsp_add(conn, fk_str_len(value) - 1);
+	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(value) - 1));
 	if (rt < 0) {
 		return -1;
 	}
@@ -598,7 +598,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	}
 	itm = (fk_item *)fk_node_raw(nd_itm);
 	ss = fk_item_raw(itm);
-	rt = fk_conn_bulk_rsp_add(conn, fk_str_len(ss) - 1);
+	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss) - 1));
 	if (rt < 0) {
 		return -1;
 	}
