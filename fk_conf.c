@@ -222,7 +222,7 @@ int fk_conf_line_parse(fk_line *line)
 		        && buf[end] != '\n' && buf[end] != '#') {
 			end++;
 		}
-		line->fields[line->cnt] = fk_str_create(buf + start, end - start);
+		line->fields[line->cnt] = fk_str_create(buf + start, (size_t)(end - start));
 		line->cnt += 1;/*a new token found*/
 
 		i = end;
