@@ -199,8 +199,8 @@ int fk_conn_req_parse(fk_conn *conn)
 			fk_log_debug("before arg_vtr stretch: len: %lu\n", fk_vtr_len(conn->arg_vtr));
 			fk_log_debug("before len_vtr stretch: len: %lu\n", fk_vtr_len(conn->len_vtr));
 #endif
-			fk_vtr_stretch(conn->arg_vtr, (size_t)conn->arg_cnt);
-			fk_vtr_stretch(conn->len_vtr, (size_t)conn->arg_cnt);
+			fk_vtr_stretch(conn->arg_vtr, (size_t)(conn->arg_cnt));
+			fk_vtr_stretch(conn->len_vtr, (size_t)(conn->arg_cnt));
 #ifdef FK_DEBUG
 			fk_log_debug("after arg_vtr stretch: len: %lu\n", fk_vtr_len(conn->arg_vtr));
 			fk_log_debug("after len_vtr stretch: len: %lu\n", fk_vtr_len(conn->len_vtr));
