@@ -110,9 +110,9 @@ int fk_util_min_power(int n)
 	return 1 << q;
 }
 
-int fk_util_decimal_digit(int num)
+size_t fk_util_decimal_digit(int num)
 {
-	int len;
+	size_t len;
 
 	len = 0;
 	if (num < 0) {

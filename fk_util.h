@@ -8,7 +8,7 @@ int fk_util_is_positive_seq(char *start, size_t len);
 int fk_util_is_nonminus_seq(char *start, size_t len);
 int fk_util_is_digit_seq(char *start, size_t len);
 int fk_util_min_power(int n);
-int fk_util_decimal_digit(int num);
+size_t fk_util_decimal_digit(int num);
 
 #define fk_util_tv2millis(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
