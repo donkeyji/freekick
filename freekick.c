@@ -847,39 +847,39 @@ void fk_setrlimit()
 	max_files = fk_util_conns_to_files(setting.max_conn);
 	rt = getrlimit(RLIMIT_NOFILE, &lmt);
 	if (rt < 0) {
-		fk_log_error("getrlimit: %s\n", strerror(errno));
+		fprintf(stderr, "getrlimit: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	fk_log_info("original file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
+	fprintf(stdout, "original file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
 
 	if (max_files > lmt.rlim_max) {
 		euid = geteuid();
 		if (euid == 0) {/*root*/
 #ifdef FK_DEBUG
-			fk_log_debug("running as root\n");
+			fprintf(stdout, "running as root\n");
 #endif
 			lmt.rlim_max = max_files;
 			lmt.rlim_cur = max_files;
 			rt = setrlimit(RLIMIT_NOFILE, &lmt);
 			if (rt < 0) {
-				fk_log_error("setrlimit: %s\n", strerror(errno));
+				fprintf(stderr, "setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
-			fk_log_info("new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
+			fprintf(stdout, "new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
 		} else {/*non-root*/
 #ifdef FK_DEBUG
-			fk_log_debug("running as non-root\n");
+			fprintf(stdout, "running as non-root\n");
 #endif
 			max_files = lmt.rlim_max;/*open as many as possible files*/
 			lmt.rlim_cur = lmt.rlim_max;
 			rt = setrlimit(RLIMIT_NOFILE, &lmt);
 			if (rt < 0) {
-				fk_log_error("setrlimit: %s\n", strerror(errno));
+				fprintf(stderr, "setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
 			/*set current limit to the original setting*/
 			setting.max_conn = fk_util_files_to_conns(max_files);
-			fk_log_error("change the setting.max_conn according the current file number limit: %d\n", setting.max_conn);
+			fprintf(stdout, "change the setting.max_conn according the current file number limit: %d\n", setting.max_conn);
 		}
 	}
 }
@@ -970,11 +970,11 @@ void fk_main_init(char *conf_path)
 	/*could not use fk_log_xxx in fk_daemonize()*/
 	fk_daemonize();
 
+	fk_setrlimit();
+
 	/* the second to init, so that all the 
 	 * ther module can call fk_log_xxx() */
 	fk_log_init();
-
-	fk_setrlimit();
 
 	fk_write_pid_file();
 
