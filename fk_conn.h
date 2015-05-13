@@ -29,7 +29,7 @@ typedef struct _fk_conn {
 	int idx_flag;/*arg_len or arg*/
 	int parse_done;/*original 0*/
 
-	unsigned db_idx;
+	int db_idx;
 } fk_conn;
 
 fk_conn *fk_conn_create(int fd);
