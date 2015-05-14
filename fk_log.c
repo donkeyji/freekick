@@ -24,7 +24,10 @@
 
 static void fk_log_fprint_str(int level, char *data);
 
-static fk_log logger;
+static fk_log logger = {
+	FK_LOG_DEBUG,
+	NULL
+};
 
 void fk_log_init()
 {
@@ -85,7 +88,7 @@ void fk_log_fprint_str(int level, char *data)
 		return;
 	}
 
-	fprintf(logger.log_file, 
+	fprintf(logger.log_file == NULL ? stdout : logger.log_file, 
 		"[%d-%.2d-%.2d %.2d:%.2d:%.2d]<%s>%s", 
 		tm_now->tm_year + 1900, 
 		tm_now->tm_mon + 1,

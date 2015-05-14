@@ -46,6 +46,7 @@ static int fk_conf_handle_addr(fk_line *line);
 static int fk_conf_handle_loglevel(fk_line *line);
 static int fk_conf_handle_dbpath(fk_line *line);
 static int fk_conf_handle_timeout(fk_line *line);
+static int fk_conf_handle_dir(fk_line *line);
 
 static fk_itv itv_map[] = {
 	{"port", 2, fk_conf_handle_port},
@@ -53,6 +54,7 @@ static fk_itv itv_map[] = {
 	{"pidpath", 2, fk_conf_handle_pidpath},
 	{"logpath", 2, fk_conf_handle_logpath},
 	{"dbpath", 2, fk_conf_handle_dbpath},
+	{"dir", 2, fk_conf_handle_dir},
 	{"loglevel", 2, fk_conf_handle_loglevel},
 	{"maxconn", 2, fk_conf_handle_maxconn},
 	{"dbcnt", 2, fk_conf_handle_dbcnt},
@@ -106,6 +108,7 @@ void fk_conf_init(char *conf_path)
 	setting.db_path = fk_str_create(FK_DEFAULT_DB_PATH, sizeof(FK_DEFAULT_DB_PATH) - 1);
 	setting.addr = fk_str_create(FK_DEFAULT_SVR_ADDR, sizeof(FK_DEFAULT_SVR_ADDR) - 1);
 	setting.timeout = FK_DEFAULT_CONN_TIMEOUT;
+	setting.dir = fk_str_create(FK_DEFAULT_DIR, sizeof(FK_DEFAULT_DIR) - 1);
 
 	/*setp 2: parse config file*/
 	if (conf_path != NULL) {
@@ -407,5 +410,11 @@ int fk_conf_handle_timeout(fk_line *line)
 	timeout = atoi(fk_str_raw(line->fields[1]));
 	setting.timeout = (time_t)timeout;
 
+	return 0;
+}
+
+int fk_conf_handle_dir(fk_line *line)
+{
+	setting.dir = fk_str_clone(line->fields[1]);
 	return 0;
 }

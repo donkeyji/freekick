@@ -61,6 +61,7 @@ static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
 static void fk_setrlimit();
+static void fk_set_pwd();
 static void fk_daemonize();
 static void fk_write_pid_file();
 static void fk_proto_init();
@@ -731,17 +732,17 @@ void fk_daemonize()
 
 	switch (fork()) {
 	case -1:
-		fprintf(stderr, "fork: %s\n", strerror(errno));
+		fk_log_error("fork: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	case 0:/*child continue*/
 		break;
 	default:/*parent exit*/
-		fprintf(stdout, "parent exit, to run as a daemon\n");
+		fk_log_info("parent exit, to run as a daemon\n");
 		exit(EXIT_SUCCESS);
 	}
 
 	if (setsid() == -1) {/*create a new session*/
-		fprintf(stderr, "setsid: %s\n", strerror(errno));
+		fk_log_error("setsid: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -749,28 +750,28 @@ void fk_daemonize()
 
 	fd = open("/dev/null", O_RDWR);
 	if (fd == -1) {
-		fprintf(stderr, "open /dev/null: %s\n", strerror(errno));
+		fk_log_error("open /dev/null: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	if (dup2(fd, STDIN_FILENO) == -1) {/*close STDIN*/
-		fprintf(stderr, "dup2: %s\n", strerror(errno));
+		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	if (dup2(fd, STDOUT_FILENO) == -1) {/*close STDOUT*/
-		fprintf(stderr, "dup2: %s\n", strerror(errno));
+		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	if (dup2(fd, STDERR_FILENO) == -1) {/*close STDERR*/
-		fprintf(stderr, "dup2: %s\n", strerror(errno));
+		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	if (fd > STDERR_FILENO) {
 		if (close(fd) == -1) {
-			fprintf(stderr, "close: %s\n", strerror(errno));
+			fk_log_error("close: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -884,6 +885,18 @@ void fk_setrlimit()
 	}
 }
 
+void fk_set_pwd()
+{
+	int rt;
+
+	rt = chdir(fk_str_raw(setting.dir));
+	if (rt < 0) {
+		fk_log_error("chdir failed: %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	fk_log_info("change working diretory to %s\n", fk_str_raw(setting.dir));
+}
+
 void fk_sigint(int sig)
 {
 	fk_log_info("to exit by sigint\n");
@@ -969,6 +982,8 @@ void fk_main_init(char *conf_path)
 
 	/* it must be done before fk_log_init() */
 	fk_daemonize();
+
+	fk_set_pwd();
 
 	fk_setrlimit();
 
