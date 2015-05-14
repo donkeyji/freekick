@@ -147,7 +147,7 @@ fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt)
 	uint16_t i;
 	fk_block *blk;
 
-	blk = (fk_block *)fk_mem_alloc(sizeof(fk_block) + unit_size * unit_cnt);
+	blk = (fk_block *)fk_mem_alloc(sizeof(fk_block) + (size_t)(unit_size * unit_cnt));
 	blk->free_cnt = unit_cnt;
 	blk->unit_cnt = unit_cnt;
 	blk->unit_size = unit_size;
