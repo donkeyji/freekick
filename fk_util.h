@@ -26,9 +26,11 @@ size_t fk_util_decimal_digit(int num);
  * <0: t1<t2 
  * =0: t1=t2
  */
-#define fk_util_tmval_cmp(t1, t2)	\
-	(t1)->tv_sec == (t2)->tv_sec ? 	\
-	(t1)->tv_usec - (t2)->tv_usec : (t1)->tv_sec - (t2)->tv_sec
+#define fk_util_tmval_cmp(t1, t2)	(	\
+	(t1)->tv_sec == (t2)->tv_sec  ? 	\
+	(t1)->tv_usec - (t2)->tv_usec : 	\
+	(t1)->tv_sec - (t2)->tv_sec			\
+)
 
 #define fk_util_tmval_add(a, b, result)						\
 	do {                                					\
