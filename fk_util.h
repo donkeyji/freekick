@@ -12,10 +12,10 @@ size_t fk_util_decimal_digit(int num);
 
 #define fk_util_tv2millis(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
-#define fk_util_millis2tv(ms, tv)	{			\
+#define fk_util_millis2tv(ms, tv)	do {	\
 	(tv)->tv_sec = (ms) / 1000;				\
 	(tv)->tv_usec = ((ms) % 1000) * 1000;	\
-}
+} while (0)
 
 #define fk_util_tv2ts(tv, ts)	TIMEVAL_TO_TIMESPEC((tv), (ts))
 
