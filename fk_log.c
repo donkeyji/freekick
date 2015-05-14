@@ -26,7 +26,7 @@ static void fk_log_fprint_str(int level, char *data);
 
 static fk_log logger = {
 	FK_LOG_DEBUG,
-	NULL
+	NULL/*could not be "stdout" here, because "stdout" is not a compile-time constant*/
 };
 
 void fk_log_init()
