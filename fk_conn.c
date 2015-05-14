@@ -181,7 +181,7 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			rt = fk_util_is_positive_seq(start + 1, end - 2 - start);
+			rt = fk_util_is_positive_seq(start + 1, (size_t)(end - 2 - start));
 			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
@@ -229,7 +229,7 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			rt = fk_util_is_nonminus_seq(start + 1, end - 2 - start);
+			rt = fk_util_is_nonminus_seq(start + 1, (size_t)(end - 2 - start));
 			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
 				return -1;
