@@ -135,7 +135,7 @@ fk_elt *fk_dict_search(fk_dict *dct, fk_str *key, size_t *bidx)
 	fk_elt_list *lst;
 
 	hash = fk_dict_hash(key);
-	idx = hash & (dct->size_mask);
+	idx = (size_t)hash & (dct->size_mask);
 	if (bidx != NULL) {
 		*bidx = idx;
 	}
@@ -308,7 +308,7 @@ int fk_dict_stretch(fk_dict *dct)
 			fk_rawlist_any_remove(lst, nd);
 			key = nd->key;
 			hash = fk_dict_hash(key);
-			idx = hash & (new_size - 1);
+			idx = (size_t)hash & (new_size - 1);
 			if (bks[idx] == NULL) {
 				bks[idx] = fk_rawlist_create(fk_elt_list);
 				fk_rawlist_init(bks[idx]);
