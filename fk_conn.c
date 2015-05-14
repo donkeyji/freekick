@@ -234,16 +234,15 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			/*argl of integer type can hold the argument length,
+			/* argl of integer type can hold the argument length,
 			 * because the FK_ARG_HIGHWAT == (64 * 1024 - 2), and
-			 * INT_MAX > FK_ARG_HIGHWAT*/
+			 * INT_MAX > FK_ARG_HIGHWAT */
 			argl = atoi(start + 1);//argument length
 			if (argl < 0 || argl > FK_ARG_HIGHWAT) {
 				fk_log_debug("invalid argument length\n");
 				return -1;
 			}
-			arg_len = (size_t)argl;
-			fk_conn_arglen_set(conn, conn->arg_idx, (void *)arg_len);
+			fk_conn_arglen_set(conn, conn->arg_idx, (void *)((size_t)argl));
 			conn->idx_flag = 1;/*need to parse arg*/
 			fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
 		}
