@@ -50,7 +50,7 @@ typedef struct _fk_server {
 
 /*----------------------------------------------------*/
 static void fk_main_init(char *conf_path);
-static void fk_main_finalize();
+static void fk_main_final();
 static void fk_main_loop();
 static void fk_svr_init();
 static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
@@ -967,7 +967,7 @@ void fk_main_init(char *conf_path)
 	/*the first to init*/
 	fk_conf_init(conf_path);
 
-	/*could not use fk_log_xxx in fk_daemonize()*/
+	/* it must be done before fk_log_init() */
 	fk_daemonize();
 
 	fk_setrlimit();
@@ -996,7 +996,7 @@ void fk_main_loop()
 	}
 }
 
-void fk_main_finalize()
+void fk_main_final()
 {
 	/*to do: free resource*/
 	while (server.save_done == 0) {
@@ -1032,7 +1032,7 @@ int main(int argc, char **argv)
 
 	fk_main_loop();
 
-	fk_main_finalize();
+	fk_main_final();
 
 	return 0;
 }
