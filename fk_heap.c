@@ -83,18 +83,18 @@ void fk_heap_remove(fk_heap *hp, fk_leaf *leaf)
 	leaf->idx = 0;
 
 	i = idx;
-	while (2 * i <= hp->last) {/*donot reach the last leaf*/
+	while ((i << 1) <= hp->last) {/*donot reach the last leaf*/
 		parent = hp->tree[i];
 		/*to search the smallest in left, right*/
-		left = hp->tree[2 * i];
+		left = hp->tree[i << 1];
 		min = left;
-		j = 2 * i;
-		if (2 * i + 1 <= hp->last) {/*if right child exists*/
-			right = hp->tree[2 * i + 1];
+		j = i << 1;
+		if ((i << 1) + 1 <= hp->last) {/*if right child exists*/
+			right = hp->tree[(i << 1) + 1];
 			cmp = hp->lop->leaf_cmp(left, right);
 			if (cmp > 0) {
 				min = right;
-				j = 2 * i + 1;
+				j = (i << 1) + 1;
 			}
 		}
 		/*compare the parent with min(left, right)*/
