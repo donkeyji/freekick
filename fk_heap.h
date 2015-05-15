@@ -1,7 +1,7 @@
 #ifndef _FK_HEAP_H_
 #define _FK_HEAP_H_
 
-#define FK_HEAP_LEAF_HEADER		long long idx
+#define FK_HEAP_LEAF_HEADER		size_t idx
 
 typedef struct _fk_leaf {
 	FK_HEAP_LEAF_HEADER;

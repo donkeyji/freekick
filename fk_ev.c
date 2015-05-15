@@ -187,7 +187,7 @@ fk_tmev *fk_tmev_create(unsigned interval, char type, void *arg, fk_tmev_cb tmcb
 
 	tmev->prev = NULL;
 	tmev->next = NULL;
-	tmev->idx = -1;
+	tmev->idx = 0;/*0 was not used in min_heap*/
 	return tmev;
 }
 

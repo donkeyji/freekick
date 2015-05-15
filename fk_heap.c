@@ -7,8 +7,8 @@
 #include <fk_mem.h>
 #include <fk_log.h>
 
-#define FK_HEAP_INIT_SIZE 65
-#define FK_HEAP_INC_SIZE 64
+#define FK_HEAP_INIT_SIZE 64
+//#define FK_HEAP_INC_SIZE 64
 
 static void fk_heap_stretch(fk_heap *hp);
 static void fk_heap_init(fk_heap *hp);
@@ -30,10 +30,10 @@ fk_heap *fk_heap_create(fk_leaf_op *lop)
 
 void fk_heap_init(fk_heap *hp)
 {
-	hp->tree = (fk_leaf **)fk_mem_alloc(sizeof(fk_leaf *) * FK_HEAP_INIT_SIZE);
-	bzero(hp->tree, sizeof(fk_leaf *) * FK_HEAP_INIT_SIZE);
-	hp->last = 0;
 	hp->max = FK_HEAP_INIT_SIZE;
+	hp->tree = (fk_leaf **)fk_mem_alloc(sizeof(fk_leaf *) * hp->max);
+	bzero(hp->tree, sizeof(fk_leaf *) * hp->max);
+	hp->last = 0;
 }
 
 void fk_heap_empty(fk_heap *hp)
@@ -63,34 +63,34 @@ void fk_heap_destroy(fk_heap *hp)
 void fk_heap_remove(fk_heap *hp, fk_leaf *leaf)
 {
 	int cmp;
-	size_t i, j;
-	long long idx;
+	size_t i, j, idx;
 	fk_leaf *parent, *tmp, *min, *left, *right;
 
 	idx = leaf->idx;
-	if (idx < 1 || idx > hp->last) {//not in this heap, necessary????
+	/*index 0 is not used*/
+	if (idx < 1 || idx > hp->last) {/*not in this heap, necessary????*/
 		return;
 	}
 
-	//step 1: move [hp->last] to [idx]
+	/*step 1: move [hp->last] to [idx]*/
 	hp->tree[idx] = hp->tree[hp->last];
 	hp->tree[idx]->idx = idx;
-	//step 2: clear [hp->last]
+	/*step 2: clear [hp->last]*/
 	hp->tree[hp->last] = NULL;
-	//step 3: decrease hp->last
+	/*step 3: decrease hp->last*/
 	hp->last -= 1;
-	//step 4: mark the removed leaf as -1,
-	//if step 4 is before step 1, when idx == hp->last, it will cause error
-	leaf->idx = -1;
+	/*step 4: mark the removed leaf as 0,
+	 *if step 4 is before step 1, when idx == hp->last, it will cause error*/
+	leaf->idx = 0;
 
 	i = idx;
-	while (2 * i <= hp->last) {//donot reach the last leaf
+	while (2 * i <= hp->last) {/*donot reach the last leaf*/
 		parent = hp->tree[i];
-		//to search the smallest in left, right
+		/*to search the smallest in left, right*/
 		left = hp->tree[2 * i];
 		min = left;
 		j = 2 * i;
-		if (2 * i + 1 <= hp->last) {//if right child exists
+		if (2 * i + 1 <= hp->last) {/*if right child exists*/
 			right = hp->tree[2 * i + 1];
 			cmp = hp->lop->leaf_cmp(left, right);
 			if (cmp > 0) {
@@ -98,7 +98,7 @@ void fk_heap_remove(fk_heap *hp, fk_leaf *leaf)
 				j = 2 * i + 1;
 			}
 		}
-		//compare the parent with min(left, right)
+		/*compare the parent with min(left, right)*/
 		cmp = hp->lop->leaf_cmp(parent, min);
 		if (cmp > 0) {
 			tmp = hp->tree[i];
@@ -133,17 +133,17 @@ void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
 	size_t i;
 	fk_leaf *tmp;
 
-	if (hp->last == (hp->max - 1)) {//heap is full
+	if (hp->last == (hp->max - 1)) {/*heap is full*/
 		fk_heap_stretch(hp);
 	}
-	hp->last += 1;//from 1 on
+	hp->last += 1;/*from index 1 on, index 0 is not used*/
 	hp->tree[hp->last] = leaf;
 	hp->tree[hp->last]->idx = hp->last;
 
 	i = hp->last;
-	while (i / 2 > 0) { //donot reach the root
+	while (i / 2 > 0) { /*donot reach the root*/
 		cmp = hp->lop->leaf_cmp(hp->tree[i], hp->tree[i / 2]);
-		if (cmp < 0) {//swap position
+		if (cmp < 0) {/*swap position*/
 			tmp = hp->tree[i / 2];
 			hp->tree[i / 2] = hp->tree[i];
 			hp->tree[i / 2]->idx = i / 2;
@@ -161,9 +161,10 @@ fk_leaf *fk_heap_root(fk_heap *hp)
 	if (hp->last == 0) {
 		return NULL;
 	}
-	return hp->tree[1];//the first item as the root
+	return hp->tree[1];/*the first item as the root*/
 }
 
+/*
 void fk_heap_stretch(fk_heap *hp)
 {
 	size_t inc_size, total_size;
@@ -172,6 +173,17 @@ void fk_heap_stretch(fk_heap *hp)
 	total_size = inc_size + hp->max * sizeof(fk_leaf *);
 	hp->tree = (fk_leaf **)fk_mem_realloc(hp->tree, total_size);
 	hp->max += FK_HEAP_INC_SIZE;
-	//to initialize the new alloc memory
 	bzero(hp->tree + hp->max, inc_size);
+}
+*/
+
+void fk_heap_stretch(fk_heap *hp)
+{
+	size_t new_size;
+
+	new_size = hp->max * 2;/*double size*/
+	hp->tree = (fk_leaf **)fk_mem_realloc(hp->tree, sizeof(fk_leaf *) * new_size);
+	/*initialize the new allocated memory*/
+	bzero(hp->tree + hp->max, sizeof(fk_leaf *) * hp->max);
+	hp->max = new_size;
 }
