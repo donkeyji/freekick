@@ -99,6 +99,13 @@ int fk_ev_dispatch()
 	return 0;
 }
 
+void fk_ev_cycle()
+{
+	while (1) {
+		fk_ev_dispatch();
+	}
+}
+
 int fk_ev_ioev_add(fk_ioev *ioev)
 {
 	char type;
