@@ -51,7 +51,7 @@ typedef struct _fk_server {
 /*----------------------------------------------------*/
 static void fk_main_init(char *conf_path);
 static void fk_main_final();
-static void fk_main_loop();
+static void fk_main_cycle();
 static void fk_svr_init();
 static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
 static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
@@ -1004,7 +1004,7 @@ void fk_main_init(char *conf_path)
 	fk_svr_init();
 }
 
-void fk_main_loop()
+void fk_main_cycle()
 {
 	while (!server.stop) {
 		fk_ev_dispatch();
@@ -1045,7 +1045,7 @@ int main(int argc, char **argv)
 
 	fk_main_init(conf_path);
 
-	fk_main_loop();
+	fk_main_cycle();
 
 	fk_main_final();
 
