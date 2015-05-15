@@ -167,7 +167,7 @@ void fk_heap_stretch(fk_heap *hp)
 {
 	size_t new_size;
 
-	new_size = hp->size * 2;/*double size*/
+	new_size = hp->size << 1;/*double size*/
 	hp->tree = (fk_leaf **)fk_mem_realloc(hp->tree, sizeof(fk_leaf *) * new_size);
 	/*initialize the new allocated memory*/
 	bzero(hp->tree + hp->size, sizeof(fk_leaf *) * hp->size);
