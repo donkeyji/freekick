@@ -30,9 +30,9 @@ fk_heap *fk_heap_create(fk_leaf_op *lop)
 
 void fk_heap_init(fk_heap *hp)
 {
-	hp->max = FK_HEAP_INIT_SIZE;
-	hp->tree = (fk_leaf **)fk_mem_alloc(sizeof(fk_leaf *) * hp->max);
-	bzero(hp->tree, sizeof(fk_leaf *) * hp->max);
+	hp->size = FK_HEAP_INIT_SIZE;
+	hp->tree = (fk_leaf **)fk_mem_alloc(sizeof(fk_leaf *) * hp->size);
+	bzero(hp->tree, sizeof(fk_leaf *) * hp->size);
 	hp->last = 0;
 }
 
@@ -133,7 +133,7 @@ void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
 	size_t i;
 	fk_leaf *tmp;
 
-	if (hp->last == (hp->max - 1)) {/*heap is full*/
+	if (hp->last == (hp->size - 1)) {/*heap is full*/
 		fk_heap_stretch(hp);
 	}
 	hp->last += 1;/*from index 1 on, index 0 is not used*/
@@ -170,10 +170,10 @@ void fk_heap_stretch(fk_heap *hp)
 	size_t inc_size, total_size;
 
 	inc_size = sizeof(fk_leaf *) * FK_HEAP_INC_SIZE;
-	total_size = inc_size + hp->max * sizeof(fk_leaf *);
+	total_size = inc_size + hp->size * sizeof(fk_leaf *);
 	hp->tree = (fk_leaf **)fk_mem_realloc(hp->tree, total_size);
-	hp->max += FK_HEAP_INC_SIZE;
-	bzero(hp->tree + hp->max, inc_size);
+	hp->size += FK_HEAP_INC_SIZE;
+	bzero(hp->tree + hp->size, inc_size);
 }
 */
 
@@ -181,9 +181,9 @@ void fk_heap_stretch(fk_heap *hp)
 {
 	size_t new_size;
 
-	new_size = hp->max * 2;/*double size*/
+	new_size = hp->size * 2;/*double size*/
 	hp->tree = (fk_leaf **)fk_mem_realloc(hp->tree, sizeof(fk_leaf *) * new_size);
 	/*initialize the new allocated memory*/
-	bzero(hp->tree + hp->max, sizeof(fk_leaf *) * hp->max);
-	hp->max = new_size;
+	bzero(hp->tree + hp->size, sizeof(fk_leaf *) * hp->size);
+	hp->size = new_size;
 }
