@@ -140,7 +140,7 @@ void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
 	hp->tree[hp->last]->idx = hp->last;
 
 	i = hp->last;
-	while (i >> 1 > 0) {/*donot reach the root*/
+	while ((i >> 1) > 0) {/*donot reach the root*/
 		cmp = hp->lop->leaf_cmp(hp->tree[i], hp->tree[i >> 1]);
 		if (cmp < 0) {/*swap position*/
 			tmp = hp->tree[i >> 1];
