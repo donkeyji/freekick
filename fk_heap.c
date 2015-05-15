@@ -8,7 +8,6 @@
 #include <fk_log.h>
 
 #define FK_HEAP_INIT_SIZE 64
-//#define FK_HEAP_INC_SIZE 64
 
 static void fk_heap_stretch(fk_heap *hp);
 static void fk_heap_init(fk_heap *hp);
@@ -163,19 +162,6 @@ fk_leaf *fk_heap_root(fk_heap *hp)
 	}
 	return hp->tree[1];/*the first item as the root*/
 }
-
-/*
-void fk_heap_stretch(fk_heap *hp)
-{
-	size_t inc_size, total_size;
-
-	inc_size = sizeof(fk_leaf *) * FK_HEAP_INC_SIZE;
-	total_size = inc_size + hp->size * sizeof(fk_leaf *);
-	hp->tree = (fk_leaf **)fk_mem_realloc(hp->tree, total_size);
-	hp->size += FK_HEAP_INC_SIZE;
-	bzero(hp->tree + hp->size, inc_size);
-}
-*/
 
 void fk_heap_stretch(fk_heap *hp)
 {
