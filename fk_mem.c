@@ -49,6 +49,25 @@ void *fk_mem_alloc(size_t size)
 	return ptr;
 }
 
+void *fk_mem_calloc(size_t count, size_t size)
+{
+	void *ptr;
+	size_t real_size;
+
+	ptr = malloc(size * count);
+	if (ptr == NULL) {
+		fk_mem_oom();
+	}
+//#ifdef __APPLE__
+		//real_size = malloc_size(ptr);
+//#else
+		real_size = malloc_usable_size(ptr);
+//#endif
+		allocated += real_size;
+	alloc_times += 1;
+	return ptr;
+}
+
 void *fk_mem_realloc(void *ptr, size_t size)
 {
 	void *new_ptr;
