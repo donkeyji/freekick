@@ -44,7 +44,7 @@ void fk_pool_init()
 	str_pool = fk_pool_create(sizeof(fk_str), 1024);
 }
 
-void fk_pool_end()
+void fk_pool_final()
 {
 	fk_pool_destroy(node_pool);
 	fk_pool_destroy(obj_pool);
