@@ -54,7 +54,7 @@ void *fk_mem_calloc(size_t count, size_t size)
 	void *ptr;
 	size_t real_size;
 
-	ptr = malloc(size * count);
+	ptr = calloc(count, size);
 	if (ptr == NULL) {
 		fk_mem_oom();
 	}
