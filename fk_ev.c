@@ -99,9 +99,13 @@ int fk_ev_dispatch()
 	return 0;
 }
 
-void fk_ev_cycle()
+void fk_ev_cycle(int *stop)
 {
-	while (1) {
+	int flag = 0;/*default: never stop cycling*/
+	if (stop == NULL) {
+		stop = &flag;
+	}
+	while (*stop != 1) {
 		fk_ev_dispatch();
 	}
 }

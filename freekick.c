@@ -1006,9 +1006,10 @@ void fk_main_init(char *conf_path)
 
 void fk_main_cycle()
 {
-	while (!server.stop) {
-		fk_ev_dispatch();
-	}
+	fk_ev_cycle(&(server.stop));
+	//while (!server.stop) {
+		//fk_ev_dispatch();
+	//}
 }
 
 void fk_main_final()
