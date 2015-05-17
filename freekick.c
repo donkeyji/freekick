@@ -73,6 +73,7 @@ static void fk_db_dict_key_free(void *key);
 static void *fk_db_dict_val_copy(void *val);
 static void fk_db_dict_val_free(void *elt);
 
+static void *fk_db_list_val_copy(void *ptr);
 static void fk_db_list_val_free(void *ptr);
 
 /*----------------------------------------------------*/
@@ -91,8 +92,8 @@ static int fk_cmd_flushall(fk_conn *conn);
 static int fk_cmd_mset(fk_conn *conn);
 static int fk_cmd_mget(fk_conn *conn);
 static int fk_cmd_hset(fk_conn *conn);
-static int fk_cmd_exists(fk_conn *conn);
 static int fk_cmd_hget(fk_conn *conn);
+static int fk_cmd_exists(fk_conn *conn);
 static int fk_cmd_lpush(fk_conn *conn);
 static int fk_cmd_rpush(fk_conn *conn);
 static int fk_cmd_lpop(fk_conn *conn);
@@ -116,7 +117,7 @@ static fk_elt_op db_dict_eop = {
 
 /*for lpush/lpop*/
 static fk_node_op db_list_op = {
-	NULL,
+	fk_db_list_val_copy,
 	fk_db_list_val_free,
 	NULL
 };
@@ -527,9 +528,8 @@ int fk_cmd_hget(fk_conn *conn)
 int fk_cmd_generic_push(fk_conn *conn, int pos)
 {
 	int rt, i;
-	fk_item *key;
 	fk_list *lst;
-	fk_item *lst_itm, *str_itm;
+	fk_item *key, *lst_itm, *str_itm;
 
 	key = fk_conn_arg_get(conn, 1);
 	lst_itm = fk_dict_get(server.db[conn->db_idx], key);
@@ -593,10 +593,10 @@ int fk_cmd_rpush(fk_conn *conn)
 int fk_cmd_generic_pop(fk_conn *conn, int pos)
 {
 	int rt;
-	fk_node *nd_itm;
+	fk_str *ss;
 	fk_list *lst;
-	fk_str *key, *ss;
-	fk_item *lst_itm, *itm;
+	fk_node *nd_itm;
+	fk_item *key, *lst_itm, *itm;
 
 	key = fk_conn_arg_get(conn, 1);
 	lst_itm = fk_dict_get(server.db[conn->db_idx], key);
@@ -631,7 +631,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 		nd_itm = fk_list_tail(lst);
 	}
 	itm = (fk_item *)fk_node_raw(nd_itm);
-	ss = fk_item_raw(itm);
+	ss = (fk_str *)fk_item_raw(itm);
 	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss) - 1));
 	if (rt < 0) {
 		return -1;
@@ -716,6 +716,17 @@ void fk_db_dict_val_free(void *val)
 	itm = (fk_item *)val;
 
 	fk_item_ref_dec(itm);
+}
+
+void *fk_db_list_val_copy(void *ptr)
+{
+	fk_item *itm;
+
+	itm = (fk_item *)ptr;
+
+	fk_item_ref_inc(itm);
+
+	return ptr;
 }
 
 /*for lpush/lpop*/
