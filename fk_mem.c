@@ -22,7 +22,7 @@ static size_t freed = 0;
 static size_t alloc_times = 0;
 static size_t free_times = 0;
 
-void fk_mem_oom()
+static void fk_mem_panic()
 {
 	fprintf(stderr, "out of memory");
 	fflush(stderr);
@@ -37,7 +37,7 @@ void *fk_mem_alloc(size_t size)
 
 	ptr = malloc(size);
 	if (ptr == NULL) {
-		fk_mem_oom();
+		fk_mem_panic();
 	}
 //#ifdef __APPLE__
 		//real_size = malloc_size(ptr);
@@ -56,7 +56,7 @@ void *fk_mem_calloc(size_t count, size_t size)
 
 	ptr = calloc(count, size);
 	if (ptr == NULL) {
-		fk_mem_oom();
+		fk_mem_panic();
 	}
 //#ifdef __APPLE__
 		//real_size = malloc_size(ptr);
@@ -81,7 +81,7 @@ void *fk_mem_realloc(void *ptr, size_t size)
 
 	new_ptr = realloc(ptr, size);
 	if (new_ptr == NULL) {
-		fk_mem_oom();
+		fk_mem_panic();
 	}
 
 //#ifdef __APPLE__
