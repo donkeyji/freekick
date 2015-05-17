@@ -1006,7 +1006,9 @@ void fk_main_init(char *conf_path)
 
 void fk_main_cycle()
 {
+	/*use server.stop to indicate whether to continue cycling*/
 	fk_ev_cycle(&(server.stop));
+
 	//while (!server.stop) {
 		//fk_ev_dispatch();
 	//}
