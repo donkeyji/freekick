@@ -666,7 +666,7 @@ void *fk_db_dict_key_copy(void *key)
 
 	itm = (fk_item *)key;
 
-	fk_item_ref_inc(itm);
+	fk_item_ref_inc(itm);/*increase the ref here*/
 
 	return key;
 }
@@ -677,7 +677,7 @@ void fk_db_dict_key_free(void *key)
 
 	itm = (fk_item *)key;
 
-	fk_item_ref_dec(itm);
+	fk_item_ref_dec(itm);/*decrease the ref here*/
 }
 
 void *fk_db_dict_val_copy(void *val)
