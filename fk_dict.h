@@ -1,19 +1,23 @@
 #ifndef _FK_DICT_H_
 #define _FK_DICT_H_
 
+#include <stdint.h>
+
 #include <fk_item.h>
-#include <fk_str.h>
 #include <fk_list.h>
+#include <fk_str.h>
 
 typedef struct _fk_elt_op {
-	fk_str *(*key_copy)(fk_str *key);
-	void (*key_free)(fk_str *key);
+	uint32_t (*key_hash)(void *key);/* gen hash */
+	int (*key_cmp)(void *k1, void *k2);/* key compare */
+	void *(*key_copy)(void *key);
+	void (*key_free)(void *key);
 	void *(*val_copy)(void *val);
 	void (*val_free)(void *val);
 } fk_elt_op;
 
 typedef struct _fk_elt {
-	fk_str *key;
+	void *key;
 	void *value;
 	struct _fk_elt *next;
 	struct _fk_elt *prev;
@@ -32,14 +36,16 @@ typedef struct _fk_dict {
 
 fk_dict *fk_dict_create();
 void fk_dict_destroy(fk_dict *dct);
-int fk_dict_add(fk_dict *dct, fk_str *key, void *value);
-int fk_dict_replace(fk_dict *dct, fk_str *key, void *value);
-int fk_dict_remove(fk_dict *dct, fk_str *key);
-void *fk_dict_get(fk_dict *dct, fk_str *key);
+int fk_dict_add(fk_dict *dct, void *key, void *value);
+int fk_dict_replace(fk_dict *dct, void *key, void *value);
+int fk_dict_remove(fk_dict *dct, void *key);
+void *fk_dict_get(fk_dict *dct, void *key);
 void fk_dict_empty(fk_dict *dct);
 
 #ifdef FK_DEBUG
 void fk_dict_print(fk_dict *dct);
 #endif
+
+uint32_t fk_hash_str(fk_str *key);
 
 #endif

@@ -14,6 +14,7 @@
 #include <fk_sock.h>
 #include <fk_util.h>
 #include <fk_conf.h>
+#include <fk_item.h>
 #include <freekick.h>/*it's OK to do so*/
 
 static int fk_conn_read_cb(int fd, char type, void *ext);
@@ -153,6 +154,7 @@ int fk_conn_req_parse(fk_conn *conn)
 {
 	int rt, argl;
 	fk_buf *rbuf;
+	fk_item *itm;
 	size_t arg_len;
 	char *start, *end;
 
@@ -260,7 +262,9 @@ int fk_conn_req_parse(fk_conn *conn)
 					fk_log_debug("wrong client data\n");
 					return -1;
 				}
-				fk_conn_arg_set(conn, conn->arg_idx, fk_str_create(start, arg_len));
+				itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
+				fk_conn_arg_set(conn, conn->arg_idx, itm);
+				fk_item_ref_inc(itm);
 				conn->arg_idx += 1;
 				conn->idx_flag = 0;
 				fk_buf_low_inc(rbuf, arg_len + 2);
@@ -287,10 +291,7 @@ void fk_conn_args_free(fk_conn *conn)
 	int i;
 
 	for (i = 0; i < conn->arg_cnt; i++) {
-		if (fk_conn_arg_get(conn, i) != NULL) {
-			fk_str_destroy((fk_str *)fk_conn_arg_get(conn, i));
-			fk_conn_arg_set(conn, i, NULL);
-		}
+		fk_item_ref_dec(fk_conn_arg_get(conn, i));
 		fk_conn_arglen_set(conn, i, (void *)0);
 	}
 	conn->arg_cnt = 0;
@@ -302,6 +303,8 @@ void fk_conn_args_free(fk_conn *conn)
 int fk_conn_cmd_proc(fk_conn *conn)
 {
 	int rt;
+	fk_str *cmd;
+	fk_item *itm;
 	fk_proto *pto;
 
 	if (conn->parse_done == 0) {
@@ -310,8 +313,10 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #endif
 		return 0;
 	}
-	fk_str_2upper((fk_str *)fk_conn_arg_get(conn, 0));
-	pto = fk_proto_search((fk_str *)fk_conn_arg_get(conn, 0));
+	itm = (fk_item *)fk_conn_arg_get(conn, 0);
+	cmd = (fk_str *)fk_item_raw(itm);
+	fk_str_2upper(cmd);
+	pto = fk_proto_search(cmd);
 	if (pto == NULL) {
 		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg_get(conn, 0)));
 		fk_conn_args_free(conn);

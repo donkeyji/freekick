@@ -73,34 +73,29 @@ fk_item *fk_item_create(int type, void *entity)
 
 void fk_item_ref_dec(fk_item *itm)
 {
-	itm->ref--;
+	if (itm->ref > 0) {
+		itm->ref--;
+	}
 	if (itm->ref == 0) {
-		fk_item_destroy(itm);
+		switch (itm->type) {
+		case FK_ITEM_STR:
+			fk_str_destroy(itm->entity);
+			break;
+		case FK_ITEM_LIST:
+			fk_list_destroy(itm->entity);
+			break;
+		case FK_ITEM_DICT:
+			fk_dict_destroy(itm->entity);
+			break;
+		}
+		itm->entity = NULL;
+		itm->ref = 0;
+		itm->type = FK_OBJ_NIL;
+		fk_mem_free(itm);
 	}
 }
 
 void fk_item_ref_inc(fk_item *itm)
 {
 	itm->ref++;
-}
-
-void fk_item_destroy(fk_item *itm)
-{
-	switch (itm->type) {
-	case FK_ITEM_STR:
-		fk_str_destroy(itm->entity);
-		break;
-	case FK_ITEM_LIST:
-		fk_list_destroy(itm->entity);
-		break;
-	case FK_ITEM_DICT:
-		fk_dict_destroy(itm->entity);
-		break;
-	}
-	itm->entity = NULL;
-	itm->ref = 0;
-	itm->type = FK_OBJ_NIL;
-	fk_mem_free(itm);
-
-	return;
 }
