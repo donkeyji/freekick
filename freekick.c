@@ -213,11 +213,7 @@ int fk_cmd_set(fk_conn *conn)
 	key = fk_conn_arg_get(conn, 1);
 	value = fk_conn_arg_get(conn, 2);
 
-	rt = fk_dict_replace(server.db[conn->db_idx], key, value);
-	//fk_conn_arg_consume(conn, 2);
-	if (rt == 0) {
-		//fk_conn_arg_consume(conn, 1);
-	}
+	fk_dict_replace(server.db[conn->db_idx], key, value);
 
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
@@ -244,8 +240,6 @@ int fk_cmd_setnx(fk_conn *conn)
 
 	value = fk_conn_arg_get(conn, 2);
 	fk_dict_add(server.db[conn->db_idx], key, value);
-	//fk_conn_arg_consume(conn, 1);
-	//fk_conn_arg_consume(conn, 2);
 
 	rt = fk_conn_int_rsp_add(conn, 1);
 	if (rt < 0) {
@@ -262,11 +256,7 @@ int fk_cmd_mset(fk_conn *conn)
 	for (i = 1; i < conn->arg_cnt; i += 2) {
 		key = fk_conn_arg_get(conn, i);
 		value = fk_conn_arg_get(conn, i + 1);
-		rt = fk_dict_replace(server.db[conn->db_idx], key, value);
-		//fk_conn_arg_consume(conn, i + 1);
-		if (rt == 0) {
-			//fk_conn_arg_consume(conn, i);
-		}
+		fk_dict_replace(server.db[conn->db_idx], key, value);
 	}
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
@@ -437,10 +427,6 @@ int fk_cmd_hset(fk_conn *conn)
 		fk_dict_add(dct, key, itm);
 		hitm = fk_item_create(FK_ITEM_DICT, dct);
 		fk_dict_add(server.db[conn->db_idx], hkey, hitm);
-		/*consume all the args, except args[0]*/
-		//fk_conn_arg_consume(conn, 1);
-		//fk_conn_arg_consume(conn, 2);
-		//fk_conn_arg_consume(conn, 3);
 		rt = fk_conn_int_rsp_add(conn, 1);
 		if (rt < 0) {
 			return -1;
@@ -452,8 +438,6 @@ int fk_cmd_hset(fk_conn *conn)
 		dct = (fk_dict *)fk_item_raw(hitm);
 		itm = fk_conn_arg_get(conn, 3);
 		fk_dict_add(dct, key, itm);
-		//fk_conn_arg_consume(conn, 2);
-		//fk_conn_arg_consume(conn, 3);
 		rt = fk_conn_int_rsp_add(conn, 1);
 		if (rt < 0) {
 			return -1;
@@ -542,11 +526,9 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 			} else {/*rpush*/
 				fk_list_tail_insert(lst, str_itm);
 			}
-			//fk_conn_arg_consume(conn, i);
 		}
 		lst_itm = fk_item_create(FK_ITEM_LIST, lst);
 		fk_dict_add(server.db[conn->db_idx], key, lst_itm);
-		//fk_conn_arg_consume(conn, 1);
 		rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);
 		if (rt < 0) {
 			return -1;
@@ -571,7 +553,6 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 		} else {/*rpush*/
 			fk_list_tail_insert(lst, str_itm);
 		}
-		//fk_conn_arg_consume(conn, i);
 	}
 	rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);
 	if (rt < 0) {
