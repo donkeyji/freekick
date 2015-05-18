@@ -27,7 +27,7 @@ typedef struct {					\
 	(lst)->len = 0;						\
 }
 
-/*insert to the head*/
+/* insert to the head */
 #define fk_rawlist_head_insert(lst, nd) {	\
     if ((lst)->len == 0) {					\
         (nd)->next = NULL;					\
@@ -42,7 +42,7 @@ typedef struct {					\
     (lst)->len++;							\
 }
 
-/*insert to the tail*/
+/* insert to the tail */
 #define fk_rawlist_tail_insert(lst, nd) {	\
     if ((lst)->len == 0) {					\
         (nd)->next = NULL;					\
@@ -57,7 +57,7 @@ typedef struct {					\
     (lst)->len++;							\
 }
 
-/*remove specified node*/
+/* remove specified node */
 #define fk_rawlist_any_remove(lst, nd) {	\
 	if ((nd)->prev != NULL) {				\
 		(nd)->prev->next = (nd)->next;		\
@@ -83,7 +83,7 @@ typedef struct _fk_node {
 typedef struct _fk_iter {
 	fk_node *cur;
 	fk_node *end;
-	int dir;/*0, 1 */
+	int dir;/* 0, 1 */
 } fk_iter;
 
 typedef struct _fk_node_op {

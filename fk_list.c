@@ -206,7 +206,7 @@ void fk_list_empty(fk_list *lst)
 	fk_list_init(lst);
 }
 
-/*remove all nodes*/
+/* remove all nodes */
 void fk_list_clear(fk_list *lst)
 {
 	fk_node *nd;
