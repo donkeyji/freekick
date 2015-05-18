@@ -31,7 +31,7 @@ fk_item *fk_item_free_obj_get()
     itm = nd->entity;
     if (itm == NULL) {
         itm = (fk_item *)fk_mem_alloc(sizeof(fk_item)); //really malloc memory here
-        itm->type = FK_OBJ_NIL;
+        itm->type = FK_ITEM_NIL;
         itm->ref = 0;
         itm->entity = NULL;
     }
@@ -49,7 +49,7 @@ void fk_item_free_obj_put(fk_item *itm)
 
 void fk_item_put_free(fk_item *itm)
 {
-    itm->type = FK_OBJ_NIL;
+    itm->type = FK_ITEM_NIL;
     itm->entity = NULL;
     itm->ref = 0;
     if (free_objs->len < FK_FREE_OBJS_MAX) {
@@ -90,7 +90,7 @@ void fk_item_ref_dec(fk_item *itm)
 		}
 		itm->entity = NULL;
 		itm->ref = 0;
-		itm->type = FK_OBJ_NIL;
+		itm->type = FK_ITEM_NIL;
 		fk_mem_free(itm);
 	}
 }

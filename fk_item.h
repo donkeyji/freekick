@@ -1,7 +1,7 @@
-#ifndef _FK_OBJ_H_
-#define _FK_OBJ_H_
+#ifndef _FK_ITEM_H_
+#define _FK_ITEM_H_
 
-#define FK_OBJ_NIL 0
+#define FK_ITEM_NIL 0
 #define FK_ITEM_STR  1
 #define FK_ITEM_LIST 2
 #define FK_ITEM_DICT 3
