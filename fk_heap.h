@@ -11,11 +11,11 @@ typedef struct _fk_leaf_op {
 	int (*leaf_cmp)(fk_leaf *, fk_leaf *);
 } fk_leaf_op;
 
-/*do not copy memory from outside, just save a pointer to the field of tree*/
+/* do not copy memory from outside, just save a pointer to the field of tree */
 typedef struct _fk_heap {
-	size_t size;/*the total length of the tree*/
-	size_t last;/*current the last item index*/
-	fk_leaf **tree;/*can save any type of obj*/
+	size_t size;/* the total length of the tree */
+	size_t last;/* current the last item index */
+	fk_leaf **tree;/* can save any type of obj */
 	fk_leaf_op *lop;
 } fk_heap;
 
