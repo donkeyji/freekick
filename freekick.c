@@ -425,7 +425,7 @@ int fk_cmd_hset(fk_conn *conn)
 		dct = fk_dict_create(&db_dict_eop);
 		itm = fk_conn_arg_get(conn, 3);
 		fk_dict_add(dct, key, itm);
-		hitm = fk_item_create(FK_ITEM_DICT, dct);
+		hitm = fk_item_create(FK_ITEM_DICT, dct);/* do not increase ref for local var*/
 		fk_dict_add(server.db[conn->db_idx], hkey, hitm);
 		rt = fk_conn_int_rsp_add(conn, 1);
 		if (rt < 0) {
@@ -527,7 +527,7 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 				fk_list_tail_insert(lst, str_itm);
 			}
 		}
-		lst_itm = fk_item_create(FK_ITEM_LIST, lst);
+		lst_itm = fk_item_create(FK_ITEM_LIST, lst);/* do not increase ref for local var*/
 		fk_dict_add(server.db[conn->db_idx], key, lst_itm);
 		rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);
 		if (rt < 0) {
