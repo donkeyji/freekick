@@ -23,8 +23,8 @@ dst_dir="/Volumes/Nokia/Z-Music/release-freekick"
 test -d "$dst_dir" && git archive master --prefix='freekick/' | gzip > "$dst_dir"/$name
 
 bak_dir="/Volumes/SDCard/X-STARS/freekick/"
-test -d "$bak_dir" && cd "$bak_dir" && git pull
+test -d "$bak_dir" && cd "$bak_dir" && git fetch && git pull
 bak_dir="/Volumes/Nokia/Z-Music/freekick/"
-test -d "$bak_dir" && cd "$bak_dir" && git pull
+test -d "$bak_dir" && cd "$bak_dir" && git fetch && git pull
 bak_dir="/Volumes/Macintosh/Users/huge/Pictures/freekick/"
-test -d "$bak_dir" && cd "$bak_dir" && git pull
+test -d "$bak_dir" && cd "$bak_dir" && git fetch && git pull
