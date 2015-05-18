@@ -69,7 +69,7 @@ void fk_dict_init(fk_dict *dct)
 {
 	dct->size = FK_DICT_INIT_SIZE;
 	dct->size_mask = dct->size - 1;
-	dct->limit = dct->size >> 1;/*when up to 50%, it should extend space */
+	dct->limit = dct->size >> 1;/* when up to 50%, it should extend space */
 	dct->used = 0;
 	dct->buckets = (fk_elt_list **)fk_mem_alloc(sizeof(fk_elt_list) * FK_DICT_INIT_SIZE);
 	bzero(dct->buckets, sizeof(fk_elt_list *) * FK_DICT_INIT_SIZE);
@@ -90,34 +90,34 @@ void fk_dict_clear(fk_dict *dct)
 		if (lst == NULL) {
 			continue;
 		}
-		nd = fk_rawlist_head(lst);/*get the new head*/
+		nd = fk_rawlist_head(lst);/* get the new head */
 		while (nd != NULL) {
 			fk_rawlist_any_remove(lst, nd);
-			fk_elt_key_free(dct, nd);/*free key*/
-			fk_elt_value_free(dct, nd);/*free value*/
-			fk_elt_destroy(nd);/*free element*/
-			dct->used--;/*unnecessary*/
-			nd = fk_rawlist_head(lst);/*go to the new head*/
+			fk_elt_key_free(dct, nd);/* free key */
+			fk_elt_value_free(dct, nd);/* free value */
+			fk_elt_destroy(nd);/* free element */
+			dct->used--;/* unnecessary */
+			nd = fk_rawlist_head(lst);/* go to the new head */
 		}
-		fk_rawlist_destroy(lst);/*free element list*/
-		dct->buckets[i] = NULL;/*mark list NULL*/
+		fk_rawlist_destroy(lst);/* free element list */
+		dct->buckets[i] = NULL;/* mark list NULL */
 	}
-	fk_mem_free(dct->buckets);/*free buckets*/
-	dct->buckets = NULL;/*mark bucket NULL*/
+	fk_mem_free(dct->buckets);/* free buckets */
+	dct->buckets = NULL;/* mark bucket NULL */
 }
 
 void fk_dict_empty(fk_dict *dct)
 {
-	fk_dict_clear(dct);/*only clear all the elements*/
+	fk_dict_clear(dct);/* only clear all the elements */
 
-	fk_dict_init(dct);/*go back to the initial state*/
+	fk_dict_init(dct);/* go back to the initial state */
 }
 
 void fk_dict_destroy(fk_dict *dct)
 {
 	fk_dict_clear(dct);
 
-	fk_mem_free(dct);/*free dict itself*/
+	fk_mem_free(dct);/* free dict itself */
 }
 
 fk_elt *fk_dict_search(fk_dict *dct, void *key, size_t *bidx)
@@ -215,11 +215,11 @@ int fk_dict_replace(fk_dict *dct, void *key, void *value)
 	if (elt == NULL) {
 		return fk_dict_add(dct, key, value);
 	}
-	/*free old value*/
+	/* free old value */
 	fk_elt_value_free(dct, elt);
-	/*use new value to replace*/
+	/* use new value to replace */
 	fk_elt_value_set(dct, elt, value);
-	return 1;/*the key exist already*/
+	return 1;/* the key exist already */
 }
 
 int fk_dict_remove(fk_dict *dct, void *key)
@@ -259,7 +259,7 @@ int fk_dict_stretch(fk_dict *dct)
 	bks = (fk_elt_list **)fk_mem_alloc(new_size * sizeof(fk_elt_list *));
 	bzero(bks, sizeof(fk_elt_list *) * new_size);
 
-	/*rehash to the new buckets*/
+	/* rehash to the new buckets */
 	for (i = 0; i < dct->size; i++) {
 		lst = dct->buckets[i];
 		if (lst == NULL) {
@@ -280,7 +280,7 @@ int fk_dict_stretch(fk_dict *dct)
 		}
 	}
 
-	/*free old buckets*/
+	/* free old buckets */
 	for (i = 0; i < dct->size; i++) {
 		if (dct->buckets[i] != NULL) {
 			fk_rawlist_destroy(dct->buckets[i]);
