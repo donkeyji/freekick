@@ -333,19 +333,3 @@ void fk_dict_print(fk_dict *dct)
 #endif
 */
 
-/*-------------------string hash-------------------*/
-uint32_t fk_hash_str(fk_str *key)
-{
-	char *buf;
-	size_t len;
-    uint32_t hash;
-
-	hash = 5381;
-	buf = fk_str_raw(key);
-	len = fk_str_len(key);
-    while (len--) {
-		hash = ((hash << 5) + hash) + (*buf++);
-	}
-    return hash;
-}
-

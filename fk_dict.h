@@ -46,6 +46,5 @@ void fk_dict_empty(fk_dict *dct);
 void fk_dict_print(fk_dict *dct);
 #endif
 
-uint32_t fk_hash_str(fk_str *key);
 
 #endif

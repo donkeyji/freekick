@@ -149,7 +149,7 @@ uint32_t fk_dict_pto_key_hash(void *key)
 	fk_str *s;
 
 	s = (fk_str *)key;
-	return fk_hash_str(s);
+	return fk_str_hash(s);
 }
 
 int fk_dict_pto_key_cmp(void *k1, void *k2)
@@ -644,7 +644,7 @@ uint32_t fk_db_dict_key_hash(void *key)
 
 	itm = (fk_item *)key;
 	s = (fk_str *)fk_item_raw(itm);
-	return fk_hash_str(s);
+	return fk_str_hash(s);
 }
 
 int fk_db_dict_key_cmp(void *k1, void *k2)
