@@ -2,7 +2,7 @@
 #define _FK_STR_H_
 
 typedef struct _fk_str {
-	size_t len;/*full length, including '\0' */
+	size_t len;/* full length, including '\0' */
 	char seq[];
 } fk_str;
 
