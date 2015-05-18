@@ -6,7 +6,7 @@
 
 #include <fk_util.h>
 
-/*interval: millisecond ( 1/1000 sec )*/
+/* interval: millisecond ( 1/1000 sec ) */
 void fk_util_cal_expire(struct timeval *tv, unsigned interval)
 {
 	struct timeval now, itv;
@@ -97,7 +97,7 @@ int fk_util_is_digit_seq(char *start, size_t len)
 	return 1;
 }
 
-/*if n < 0, return 1*/
+/* if n < 0, return 1 */
 int fk_util_min_power(int n)
 {
 	uint32_t q;

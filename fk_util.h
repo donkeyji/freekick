@@ -58,7 +58,7 @@ size_t fk_util_decimal_digit(int num);
 
 #define fk_util_files_to_conns(max_files)		((max_files) - 1 - 16)
 
-/*unused var*/
+/* unused var */
 #define fk_util_unuse(var)		(void)(var)
 
 #endif
