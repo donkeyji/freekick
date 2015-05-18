@@ -33,8 +33,8 @@ typedef struct _fk_server {
 	uint16_t port;
 	fk_str *addr;
 	int listen_fd;
-	unsigned max_conn;/*max connections*/
-	unsigned conn_cnt;/*connection count*/
+	unsigned max_conn;/* max connections */
+	unsigned conn_cnt;/* connection count */
 	time_t start_time;
 	int stop;
 	fk_ioev *listen_ev;
@@ -48,7 +48,7 @@ typedef struct _fk_server {
 	int save_done;
 } fk_server;
 
-/*----------------------------------------------------*/
+/* ---------------------------------------------------- */
 static void fk_main_init(char *conf_path);
 static void fk_main_final();
 static void fk_main_cycle();
@@ -76,13 +76,13 @@ static void fk_db_dict_val_free(void *elt);
 static void *fk_db_list_val_copy(void *ptr);
 static void fk_db_list_val_free(void *ptr);
 
-/*----------------------------------------------------*/
+/* ---------------------------------------------------- */
 #define FK_RSP_OK				"OK"
 #define FK_RSP_TYPE_ERR			"Type Error"
 #define FK_RSP_NIL				(-1)
-/*----------------------------------------------------*/
+/* ---------------------------------------------------- */
 
-/*all the proto handlers*/
+/* all the proto handlers */
 static int fk_cmd_set(fk_conn *conn);
 static int fk_cmd_setnx(fk_conn *conn);
 static int fk_cmd_get(fk_conn *conn);
@@ -98,12 +98,12 @@ static int fk_cmd_lpush(fk_conn *conn);
 static int fk_cmd_rpush(fk_conn *conn);
 static int fk_cmd_lpop(fk_conn *conn);
 static int fk_cmd_rpop(fk_conn *conn);
-/*----------------------------------------------------*/
+/* ---------------------------------------------------- */
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);
-/*----------------------------------------------------*/
+/* ---------------------------------------------------- */
 
-/*global variable*/
+/* global variable */
 static fk_server server;
 
 static fk_elt_op db_dict_eop = {
@@ -115,14 +115,14 @@ static fk_elt_op db_dict_eop = {
 	fk_db_dict_val_free
 };
 
-/*for lpush/lpop*/
+/* for lpush/lpop */
 static fk_node_op db_list_op = {
 	fk_db_list_val_copy,
 	fk_db_list_val_free,
 	NULL
 };
 
-/*all proto to deal*/
+/* all proto to deal */
 static fk_proto protos[] = {
 	{"SET", 	FK_PROTO_WRITE, 	3, 					fk_cmd_set	 	},
 	{"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_cmd_setnx	},
@@ -425,7 +425,7 @@ int fk_cmd_hset(fk_conn *conn)
 		dct = fk_dict_create(&db_dict_eop);
 		itm = fk_conn_arg_get(conn, 3);
 		fk_dict_add(dct, key, itm);
-		hitm = fk_item_create(FK_ITEM_DICT, dct);/* do not increase ref for local var*/
+		hitm = fk_item_create(FK_ITEM_DICT, dct);/* do not increase ref for local var */
 		fk_dict_add(server.db[conn->db_idx], hkey, hitm);
 		rt = fk_conn_int_rsp_add(conn, 1);
 		if (rt < 0) {
@@ -521,13 +521,13 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 		lst = fk_list_create(&db_list_op);
 		for (i = 2; i < conn->arg_cnt; i++) {
 			str_itm = fk_conn_arg_get(conn, i);
-			if (pos == 0) {/*lpush*/
+			if (pos == 0) {/* lpush */
 				fk_list_head_insert(lst, str_itm);
-			} else {/*rpush*/
+			} else {/* rpush */
 				fk_list_tail_insert(lst, str_itm);
 			}
 		}
-		lst_itm = fk_item_create(FK_ITEM_LIST, lst);/* do not increase ref for local var*/
+		lst_itm = fk_item_create(FK_ITEM_LIST, lst);/* do not increase ref for local var */
 		fk_dict_add(server.db[conn->db_idx], key, lst_itm);
 		rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);
 		if (rt < 0) {
@@ -548,9 +548,9 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 	lst = fk_item_raw(lst_itm);
 	for (i = 2; i < conn->arg_cnt; i++) {
 		str_itm = fk_conn_arg_get(conn, i);
-		if (pos == 0) {/*lpush*/
+		if (pos == 0) {/* lpush */
 			fk_list_head_insert(lst, str_itm);
-		} else {/*rpush*/
+		} else {/* rpush */
 			fk_list_tail_insert(lst, str_itm);
 		}
 	}
@@ -636,7 +636,7 @@ int fk_cmd_rpop(fk_conn *conn)
 	return fk_cmd_generic_pop(conn, 1);
 }
 
-/*--------------------------------------------*/
+/* -------------------------------------------- */
 uint32_t fk_db_dict_key_hash(void *key)
 {
 	fk_str *s;
@@ -666,7 +666,7 @@ void *fk_db_dict_key_copy(void *key)
 
 	itm = (fk_item *)key;
 
-	fk_item_ref_inc(itm);/*increase the ref here*/
+	fk_item_ref_inc(itm);/* increase the ref here */
 
 	return key;
 }
@@ -677,7 +677,7 @@ void fk_db_dict_key_free(void *key)
 
 	itm = (fk_item *)key;
 
-	fk_item_ref_dec(itm);/*decrease the ref here*/
+	fk_item_ref_dec(itm);/* decrease the ref here */
 }
 
 void *fk_db_dict_val_copy(void *val)
@@ -710,7 +710,7 @@ void *fk_db_list_val_copy(void *ptr)
 	return ptr;
 }
 
-/*for lpush/lpop*/
+/* for lpush/lpop */
 void fk_db_list_val_free(void *ptr)
 {
 	fk_item *itm;
@@ -720,7 +720,7 @@ void fk_db_list_val_free(void *ptr)
 	fk_item_ref_dec(itm);
 }
 
-/*server interface*/
+/* server interface */
 void fk_svr_conn_add(int fd)
 {
 	fk_conn *conn;
@@ -730,7 +730,7 @@ void fk_svr_conn_add(int fd)
 	server.conn_cnt += 1;
 }
 
-/*call when conn disconnect*/
+/* call when conn disconnect */
 void fk_svr_conn_remove(fk_conn *conn)
 {
 	server.conns_tab[conn->fd] = NULL;
@@ -748,7 +748,7 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 	int fd;
 
 	fd = fk_sock_accept(listen_fd);
-	/*anything wrong by closing the fd directly?*/
+	/* anything wrong by closing the fd directly? */
 	if (server.conn_cnt == server.max_conn) {
 		fk_log_warn("beyond max connections\n");
 		close(fd);
@@ -758,7 +758,7 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 #ifdef FK_DEBUG
 	fk_log_debug("conn_cnt: %u, max_conn: %u\n", server.conn_cnt, server.max_conn);
 #endif
-	/*why redis do like below?*/
+	/* why redis do like below? */
 	//if (server.conn_cnt > server.max_conn) {
 		//fk_log_info("beyond max connections\n");
 		//fk_svr_conn_remove(fk_svr_conn_get(fd));
@@ -787,7 +787,7 @@ int fk_svr_timer_cb2(unsigned interval, char type, void *arg)
 	fk_log_info("[timer 2]\n");
 	fk_ev_tmev_remove(tmev);
 
-	return -1;/*do not cycle once more*/
+	return -1;/* do not cycle once more */
 }
 #endif
 
@@ -814,14 +814,14 @@ void fk_daemonize()
 	case -1:
 		fk_log_error("fork: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
-	case 0:/*child continue*/
+	case 0:/* child continue */
 		break;
-	default:/*parent exit*/
+	default:/* parent exit */
 		fk_log_info("parent exit, to run as a daemon\n");
 		exit(EXIT_SUCCESS);
 	}
 
-	if (setsid() == -1) {/*create a new session*/
+	if (setsid() == -1) {/* create a new session */
 		fk_log_error("setsid: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
@@ -834,17 +834,17 @@ void fk_daemonize()
 		exit(EXIT_FAILURE);
 	}
 
-	if (dup2(fd, STDIN_FILENO) == -1) {/*close STDIN*/
+	if (dup2(fd, STDIN_FILENO) == -1) {/* close STDIN */
 		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
-	if (dup2(fd, STDOUT_FILENO) == -1) {/*close STDOUT*/
+	if (dup2(fd, STDOUT_FILENO) == -1) {/* close STDOUT */
 		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
-	if (dup2(fd, STDERR_FILENO) == -1) {/*close STDERR*/
+	if (dup2(fd, STDERR_FILENO) == -1) {/* close STDERR */
 		fk_log_error("dup2: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
@@ -879,7 +879,7 @@ void fk_svr_init()
 {
 	unsigned i;
 
-	/*copy setting from conf to server*/
+	/* copy setting from conf to server */
 	server.port = setting.port;
 	server.max_conn = setting.max_conn;
 	server.dbcnt = setting.dbcnt;
@@ -887,7 +887,7 @@ void fk_svr_init()
 	server.save_done = 1;
 	server.addr = fk_str_clone(setting.addr);
 
-	/*create global environment*/
+	/* create global environment */
 	server.start_time = time(NULL);
 	server.stop = 0;
 	server.conn_cnt = 0;
@@ -914,7 +914,7 @@ void fk_svr_init()
 	for (i = 0; i < server.dbcnt; i++) {
 		server.db[i] = fk_dict_create(&db_dict_eop);
 	}
-	/*load db from file*/
+	/* load db from file */
 	fk_svr_db_load(server.db_path);
 }
 
@@ -935,7 +935,7 @@ void fk_setrlimit()
 
 	if (max_files > lmt.rlim_max) {
 		euid = geteuid();
-		if (euid == 0) {/*root*/
+		if (euid == 0) {/* root */
 #ifdef FK_DEBUG
 			fprintf(stdout, "running as root\n");
 #endif
@@ -947,18 +947,18 @@ void fk_setrlimit()
 				exit(EXIT_FAILURE);
 			}
 			fprintf(stdout, "new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
-		} else {/*non-root*/
+		} else {/* non-root */
 #ifdef FK_DEBUG
 			fprintf(stdout, "running as non-root\n");
 #endif
-			max_files = lmt.rlim_max;/*open as many as possible files*/
+			max_files = lmt.rlim_max;/* open as many as possible files */
 			lmt.rlim_cur = lmt.rlim_max;
 			rt = setrlimit(RLIMIT_NOFILE, &lmt);
 			if (rt < 0) {
 				fprintf(stderr, "setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
-			/*set current limit to the original setting*/
+			/* set current limit to the original setting */
 			setting.max_conn = fk_util_files_to_conns(max_files);
 			fprintf(stdout, "change the setting.max_conn according the current file number limit: %u\n", setting.max_conn);
 		}
@@ -1057,7 +1057,7 @@ void fk_svr_db_load(fk_str *db_path)
 
 void fk_main_init(char *conf_path)
 {
-	/*the first to init*/
+	/* the first to init */
 	fk_conf_init(conf_path);
 
 	/* it must be done before fk_log_init() */
@@ -1086,7 +1086,7 @@ void fk_main_init(char *conf_path)
 
 void fk_main_cycle()
 {
-	/*use server.stop to indicate whether to continue cycling*/
+	/* use server.stop to indicate whether to continue cycling */
 	fk_ev_cycle(&(server.stop));
 
 	//while (!server.stop) {
@@ -1096,11 +1096,11 @@ void fk_main_cycle()
 
 void fk_main_final()
 {
-	/*to do: free resource*/
+	/* to do: free resource */
 	while (server.save_done == 0) {
 		sleep(1);
 	}
-	/*save db once more*/
+	/* save db once more */
 	fk_svr_db_save_exec();
 }
 
