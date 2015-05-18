@@ -292,6 +292,7 @@ void fk_conn_args_free(fk_conn *conn)
 
 	for (i = 0; i < conn->arg_cnt; i++) {
 		fk_item_ref_dec(fk_conn_arg_get(conn, i));/* just decrease the ref */
+		fk_conn_arg_set(conn, i, NULL);/* do not ref to this item */
 		fk_conn_arglen_set(conn, i, (void *)0);
 	}
 	conn->arg_cnt = 0;
