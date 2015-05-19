@@ -75,7 +75,6 @@ fk_line *fk_conf_line_create()
 	line->cnt = 0;
 	line->buf = NULL;
 	line->len = 0;
-	//bzero(line->buf, FK_CONF_MAX_LEN);
 	bzero(line->err, FK_CONF_MAX_LEN);
 	bzero(line->fields, sizeof(fk_str *) * FK_CONF_MAX_FIELDS);
 	return line;
@@ -167,24 +166,6 @@ int fk_conf_parse_file(char *conf_path)
 
 	return 0;
 }
-
-/*
-int fk_conf_line_read(fk_line *line, FILE *fp)
-{
-	char *p;
-
-	p = fgets(line->buf, FK_CONF_MAX_LEN, fp);
-	if (p == NULL) {
-		if (feof(fp) != 1) {//error occur
-			sprintf(line->err, "error occurs when read line %d\n", line->no);
-			return -1;
-		}
-		return 1;//file end
-	}
-
-	return 0;
-}
-*/
 
 int fk_conf_line_read(fk_line *line, FILE *fp)
 {
@@ -286,7 +267,6 @@ void fk_conf_line_reset(fk_line *line)
 	line->cnt = 0;
 	line->buf = NULL;
 	line->len = 0;
-	//bzero(line->buf, FK_CONF_MAX_LEN);
 	for (i = 0; i < FK_CONF_MAX_FIELDS; i++) {
 		if (line->fields[i] != NULL) {
 			fk_str_destroy(line->fields[i]);
@@ -358,10 +338,6 @@ int fk_conf_handle_maxconn(fk_line *line)
 		return -1;
 	}
 	max_conn = atoi(fk_str_raw(line->fields[1]));
-	//if (max_conn == 0) {
-		//sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
-		//return -1;
-	//}
 	setting.max_conn = (unsigned)max_conn;
 	return 0;
 }
@@ -376,10 +352,6 @@ int fk_conf_handle_dbcnt(fk_line *line)
 		return -1;
 	}
 	dbcnt = atoi(fk_str_raw(line->fields[1]));
-	//if (dbcnt == 0) {
-		//sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
-		//return -1;
-	//}
 	setting.dbcnt = (unsigned)dbcnt;
 	return 0;
 }
