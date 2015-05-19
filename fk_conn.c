@@ -90,8 +90,10 @@ int fk_conn_data_recv(fk_conn *conn)
 	size_t free_len;
 	ssize_t recv_len;
 
-	/* a complete line was not received, but the read buffer has reached
-	 * its upper limit, so just close this connection */
+	/* 
+	 * a complete line was not received, but the read buffer has reached
+	 * its upper limit, so just close this connection 
+	 */
 	if (fk_buf_len(conn->rbuf) == FK_BUF_HIGHWAT &&
 		fk_buf_free_len(conn->rbuf) == 0) 
 	{
@@ -188,9 +190,11 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			/* a variable of integer type can hold the argument 
+			/* 
+			 * a variable of integer type can hold the argument 
 			 * count, because the FK_ARG_CNT_HIGHWAT == 128, 
-			 * and INT_MAX > FK_ARG_CNT_HIGHWAT */
+			 * and INT_MAX > FK_ARG_CNT_HIGHWAT 
+			 */
 			conn->arg_cnt = atoi(start + 1);
 			if (conn->arg_cnt <= 0 || conn->arg_cnt > FK_ARG_CNT_HIGHWAT) {
 				fk_log_debug("invalid argument count\n");
@@ -236,9 +240,11 @@ int fk_conn_req_parse(fk_conn *conn)
 				fk_log_debug("wrong client data\n");
 				return -1;
 			}
-			/* argl of integer type can hold the argument length,
+			/* 
+			 * argl of integer type can hold the argument length,
 			 * because the FK_ARG_HIGHWAT == (64 * 1024 - 2), and
-			 * INT_MAX > FK_ARG_HIGHWAT */
+			 * INT_MAX > FK_ARG_HIGHWAT 
+			 */
 			argl = atoi(start + 1);//argument length
 			if (argl < 0 || argl > FK_ARG_HIGHWAT) {
 				fk_log_debug("invalid argument length\n");
@@ -359,9 +365,11 @@ int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 	return 0;
 }
 
-/* callback for conn read event
+/* 
+ * callback for conn read event
  * evmgr do not care the return value of this callback
- * so this callback itself should handle all error occurs */
+ * so this callback itself should handle all error occurs 
+ */
 int fk_conn_read_cb(int fd, char type, void *ext)
 {
 	int rt;
@@ -378,8 +386,10 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 		return 0;
 	}
 
-	/* maybe more than one complete protocol were received
-	 * parse all the complete protocol received yet */
+	/* 
+	 * maybe more than one complete protocol were received
+	 * parse all the complete protocol received yet 
+	 */
 	while (fk_buf_payload_len(conn->rbuf) > 0) {
 		rt = fk_conn_req_parse(conn);
 		if (rt < 0) {/* error when parsing */
@@ -448,8 +458,10 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 
 	fk_buf_shrink(conn->wbuf);
 
-	/* if all the data in wbuf is sent, remove the write ioev
-	 * but donot destroy the write ioev */
+	/* 
+	 * if all the data in wbuf is sent, remove the write ioev
+	 * but donot destroy the write ioev 
+	 */
 	if (fk_buf_payload_len(conn->wbuf) == 0) {
 		fk_ev_ioev_remove(conn->write_ev);
 		conn->write_added = 0;
