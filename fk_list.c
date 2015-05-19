@@ -64,23 +64,23 @@ void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 		return;
 	}
 
-	pos = 0;//low
+	pos = 0;/* low */
 	//while (low != NULL && high != NULL) {
 	//while (high != NULL) {
 	while (low != NULL) {
 		if (lst->nop->data_cmp(low->data, nd->data) >= 0) {
-			pos = 0;//use low as position
+			pos = 0;/* use low as position */
 			break;
 		}
 		if (lst->nop->data_cmp(high->data, nd->data) <= 0) {
-			pos = 1;//use high as position
+			pos = 1;/* use high as position */
 			break;
 		}
 		low = low->next;
 		high = high->prev;
 	}
 
-	if (pos == 0) {//use low: before low
+	if (pos == 0) {/* use low: before low */
 		if (low == lst->head) {
 			lst->head = nd;
 			nd->prev = NULL;
@@ -90,7 +90,7 @@ void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 		}
 		low->prev = nd;
 		nd->next = low;
-	} else {//use high: behind high
+	} else {/* use high: behind high */
 		if (high == lst->tail) {
 			lst->tail = nd;
 			nd->next = NULL;
@@ -189,7 +189,7 @@ fk_node *fk_list_search(fk_list *lst, void *key)
 		if (lst->nop->data_cmp != NULL) {
 			cmp = lst->nop->data_cmp(nd->data, key);
 		} else {
-			cmp = nd->data - key;//compare the address
+			cmp = nd->data - key;/* compare the address */
 		}
 		if (cmp == 0) {
 			return nd;
