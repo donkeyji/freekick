@@ -98,6 +98,7 @@ static int fk_cmd_lpush(fk_conn *conn);
 static int fk_cmd_rpush(fk_conn *conn);
 static int fk_cmd_lpop(fk_conn *conn);
 static int fk_cmd_rpop(fk_conn *conn);
+static int fk_cmd_llen(fk_conn *conn);
 /* ---------------------------------------------------- */
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);
@@ -139,6 +140,7 @@ static fk_proto protos[] = {
 	{"RPUSH", 	FK_PROTO_WRITE, 	FK_PROTO_VARLEN, 	fk_cmd_rpush 	},
 	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_lpop	 	},
 	{"RPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_rpop	 	},
+	{"LLEN",	FK_PROTO_READ,		2,					fk_cmd_llen		},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -636,6 +638,37 @@ int fk_cmd_rpop(fk_conn *conn)
 	return fk_cmd_generic_pop(conn, 1);
 }
 
+int fk_cmd_llen(fk_conn *conn)
+{
+	int rt, len;
+	fk_list *lst;
+	fk_item *key, *value;
+
+	key = fk_conn_arg_get(conn, 1);
+	value = fk_dict_get(server.db[conn->db_idx], key);
+	if (value == NULL) {
+		rt = fk_conn_int_rsp_add(conn, 0);
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	}
+	if (fk_item_type(value) != FK_ITEM_LIST) {
+		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	}
+
+	lst = (fk_list *)fk_item_raw(value);
+	len = fk_list_len(lst);
+	rt = fk_conn_int_rsp_add(conn, len);
+	if (rt < 0) {
+		return -1;
+	}
+	return 0;
+}
 /* -------------------------------------------- */
 uint32_t fk_db_dict_key_hash(void *key)
 {
