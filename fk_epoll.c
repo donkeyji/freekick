@@ -1,15 +1,17 @@
 #include <sys/epoll.h>
 
-/* I use emask to track the existing ev associated to fd because of 
+/* 
+ * I use emask to track the existing ev associated to fd because of 
  * the limitation of the interface of epoll, and I think it's better 
- * than using 2 array of fk_tmev pointer which used in libevent^_^ */
+ * than using 2 array of fk_tmev pointer which used in libevent^_^
+ */
 
 typedef struct _fk_epoll {
 	int efd;
 	unsigned max_evs;
-	struct epoll_event ev;//temporary variable
+	struct epoll_event ev;/* temporary variable */
 	struct epoll_event *evlist;
-	char *emask;//to track event associated to fd
+	char *emask;/* to track event associated to fd */
 } fk_epoll;
 
 static void *fk_epoll_create(unsigned max_files);
@@ -172,7 +174,6 @@ int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 	for (i = 0; i < nfds; i++) {
 		fd = iompx->evlist[i].data.fd;
 		type = 0x00;
-		//printf("i: %d	fd: %d	type:%u\n", i, fd, iompx->evlist[i].events);
 		if (iompx->evlist[i].events & (EPOLLIN | EPOLLHUP | EPOLLERR)) {
 			type |= FK_IOEV_READ;
 		}
