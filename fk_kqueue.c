@@ -1,8 +1,10 @@
 #include <sys/event.h>
 
-/* no need to keep tracking the existing ev associated to fd, 
+/* 
+ * no need to keep tracking the existing ev associated to fd, 
  * which should be done in epoll. If an existing/non-existing 
- * ev is added/removed, just return -1 to the caller */
+ * ev is added/removed, just return -1 to the caller 
+ */
 
 typedef struct _fk_kqueue {
 	int kfd;
