@@ -38,6 +38,7 @@ static fk_itv *fk_conf_search(fk_str *name);
 
 static int fk_conf_handle_port(fk_line *line);
 static int fk_conf_handle_daemon(fk_line *line);
+static int fk_conf_handle_dump(fk_line *line);
 static int fk_conf_handle_pidpath(fk_line *line);
 static int fk_conf_handle_logpath(fk_line *line);
 static int fk_conf_handle_maxconn(fk_line *line);
@@ -53,6 +54,7 @@ static fk_itv itv_map[] = {
 	{"daemon", 1, fk_conf_handle_daemon},
 	{"pidpath", 2, fk_conf_handle_pidpath},
 	{"logpath", 2, fk_conf_handle_logpath},
+	{"dump", 1, fk_conf_handle_dump},
 	{"dbpath", 2, fk_conf_handle_dbpath},
 	{"dir", 2, fk_conf_handle_dir},
 	{"loglevel", 2, fk_conf_handle_loglevel},
@@ -105,6 +107,7 @@ void fk_conf_init(char *conf_path)
 	setting.dbcnt = FK_DEFAULT_DB_CNT;
 	setting.log_path = fk_str_create(FK_DEFAULT_LOG_PATH, sizeof(FK_DEFAULT_LOG_PATH) - 1);
 	setting.pid_path = fk_str_create(FK_DEFAULT_PID_PATH, sizeof(FK_DEFAULT_PID_PATH) - 1);
+	setting.dump = FK_DEFAULT_DUMP;
 	setting.db_path = fk_str_create(FK_DEFAULT_DB_PATH, sizeof(FK_DEFAULT_DB_PATH) - 1);
 	setting.addr = fk_str_create(FK_DEFAULT_SVR_ADDR, sizeof(FK_DEFAULT_SVR_ADDR) - 1);
 	setting.timeout = FK_DEFAULT_CONN_TIMEOUT;
@@ -315,6 +318,12 @@ int fk_conf_handle_port(fk_line *line)
 int fk_conf_handle_daemon(fk_line *line)
 {
 	setting.daemon = 1;
+	return 0;
+}
+
+int fk_conf_handle_dump(fk_line *line)
+{
+	setting.dump = 1;
 	return 0;
 }
 

@@ -12,6 +12,7 @@
 #define FK_DEFAULT_LOG_PATH 		"/tmp/freekick.log"
 #define FK_DEFAULT_LOG_LEVEL 		(FK_LOG_DEBUG)
 #define FK_DEFAULT_PID_PATH 		"/tmp/freekick.pid"
+#define FK_DEFAULT_DUMP				0
 #define FK_DEFAULT_DB_PATH 			"/tmp/freekick.db"
 #define FK_DEFAULT_PORT 			6379
 #define FK_DEFAULT_DAEMON 			0

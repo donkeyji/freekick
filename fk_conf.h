@@ -14,6 +14,7 @@ typedef struct _fk_conf {
 	int log_level;
 	fk_str *log_path;
 	fk_str *pid_path;
+	int dump;
 	fk_str *db_path;
 	fk_str *dir;
 	unsigned dbcnt;
