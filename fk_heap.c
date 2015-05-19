@@ -116,10 +116,10 @@ fk_leaf *fk_heap_pop(fk_heap *hp)
 {
 	fk_leaf *root;
 
-	if (hp->last < 1) {//null heap
+	if (hp->last < 1) {/* null heap */
 		return NULL;
 	}
-	root = hp->tree[1];//the root to return
+	root = hp->tree[1];/* the root to return */
 
 	fk_heap_remove(hp, root);
 
