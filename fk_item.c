@@ -17,7 +17,7 @@ static void fk_item_free_obj_put(fk_item *itm);
 
 void fk_item_init()
 {
-	//create a null list for free objs
+	/* create a null list for free objs */
 	free_objs = fk_list_create(NULL);
 }
 
