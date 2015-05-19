@@ -256,7 +256,7 @@ int fk_conf_line_proc(fk_line *line)
 	fk_str *cmd;
 	fk_itv *itv;
 
-	if (line->cnt == 0) {//the current line is a comment or empty line
+	if (line->cnt == 0) {/* the current line is a comment or empty line */
 		return 0;
 	}
 
@@ -300,13 +300,15 @@ int fk_conf_handle_port(fk_line *line)
 	int rt, port;
 
 	rt = fk_str_is_positive(line->fields[1]);
-	if (rt == 0) {//not a positive integer
+	if (rt == 0) {/* not a positive integer */
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
 		return -1;
 	}
-	/* port of integer type can hold the 0 ~ 65535, if the
+	/* 
+	 * port of integer type can hold the 0 ~ 65535, if the
 	 * line->fileds[1] beyond the range which an integer 
-	 * could hold atoi() will return a minus value */
+	 * could hold atoi() will return a minus value 
+	 */
 	port = atoi(fk_str_raw(line->fields[1]));
 	if (port <= 0 || port > 65535) {
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
