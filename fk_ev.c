@@ -81,15 +81,19 @@ int fk_ev_dispatch()
 		pto = &timeout;
 	}
 
-	/* pto:
+	/* 
+	 * pto:
 	 * (1)NULL: wait indefinitely
 	 * (2){0,0}: return immediately
 	 * (3)>{0,0}: wait for a period
-	 * cannot be < {0, 0} */
+	 * cannot be < {0, 0} 
+	 */
 	mpxop->iompx_dispatch((&evmgr)->iompx, pto);
 
-	/* remove the nearest timer from timer_list, 
-	 * insert it to the exp_tmev */
+	/* 
+	 * remove the nearest timer from timer_list, 
+	 * insert it to the exp_tmev 
+	 */
 	fk_ev_pending_tmev_update();
 
 	fk_ev_active_ioev_proc();
@@ -182,8 +186,10 @@ void fk_ioev_destroy(fk_ioev *ioev)
 	fk_mem_free(ioev);
 }
 
-/* no need to delete timer
- * so fk_ev_timer_del not supplied */
+/* 
+ * no need to delete timer
+ * so fk_ev_timer_del not supplied 
+ */
 fk_tmev *fk_tmev_create(unsigned interval, char type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev *tmev;
@@ -336,9 +342,11 @@ int fk_ev_ioev_activate(int fd, char type)
 {
 	fk_ioev *rioev, *wioev;
 
-	/* maybe rioev and wioev point to the same ioev object
+	/* 
+	 * maybe rioev and wioev point to the same ioev object
 	 * use ioev->active to avoid inerting the ioev object 
-	 * to the active list twice */
+	 * to the active list twice 
+	 */
 	if (type & FK_IOEV_READ) {
 		rioev = evmgr.read_ev[fd];
 		if (rioev != NULL) {/* when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null */
