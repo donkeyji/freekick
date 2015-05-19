@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 typedef struct _fk_block {
-	uint16_t first;//the index of the first free unit
+	uint16_t first;/* the index of the first free unit */
 	uint16_t free_cnt;
 	uint16_t unit_cnt;
 	uint16_t unit_size;
