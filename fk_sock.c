@@ -37,7 +37,7 @@ int fk_sock_create_listen(char *addr, uint16_t port)
 	bzero(&saddr, sizeof(struct sockaddr_in));
 	saddr.sin_port = htons(port);/* uint16, defined in netinet/in.h */
 	saddr.sin_family = AF_INET;/* uint8, defined in sys/socket.h */
-	//saddr.sin_addr.s_addr = htons(INADDR_ANY);//uint32, defined in netinet/in.h
+	//saddr.sin_addr.s_addr = htons(INADDR_ANY);/* uint32, defined in netinet/in.h */
 	saddr.sin_addr.s_addr = inet_addr(addr);/* uint32, defined in netinet/in.h */
 
 	rt = bind(listen_sock, (struct sockaddr *)&saddr, sizeof(struct sockaddr));

@@ -78,19 +78,19 @@ void *fk_pool_malloc(fk_pool *pool)
 
 	blk = pool->head;
 
-	//to find the first non-full block
+	/* to find the first non-full block */
 	while (blk != NULL && fk_pool_block_isfull(blk)) {
 		blk = blk->next;
 	}
 
-	// to create a new block
+	/* to create a new block */
 	if (blk == NULL) {
 		blk = (fk_block *)fk_pool_block_create(pool->unit_size, pool->init_cnt);
 		if (blk == NULL) {
 			return NULL;
 		}
 		blk->next = pool->head;
-		pool->head = blk;//inset to the list as head
+		pool->head = blk;/* inset to the list as head */
 	}
 
 	fk_pool_block_alloc(blk, ptr);
@@ -103,18 +103,18 @@ void fk_pool_free(fk_pool *pool, void *ptr)
 	fk_block *cur_blk, *prev_blk;
 
 	cur_blk = pool->head;
-	prev_blk = cur_blk;//could not be 'NULL'
+	prev_blk = cur_blk;/* could not be 'NULL' */
 
 	while (cur_blk != NULL && fk_pool_block_nocontain(cur_blk, ptr)) {
 		prev_blk = cur_blk;
 		cur_blk = cur_blk->next;
 	}
-	if (cur_blk == NULL) {//there is no this block
+	if (cur_blk == NULL) {/* there is no this block */
 		return;
 	}
 	fk_pool_block_free(cur_blk, ptr);
 
-	//if the count of empty blocks beyond the upper limit
+	/* if the count of empty blocks beyond the upper limit */
 	if (fk_pool_block_isempty(cur_blk)) {
 		if (pool->empty_blks == FK_POOL_MAX_EMPTY_BLOCKS) {
 			if (cur_blk == pool->head) {
@@ -129,7 +129,7 @@ void fk_pool_free(fk_pool *pool, void *ptr)
 		}
 	}
 
-	//take this block as the head
+	/* take this block as the head */
 	if (cur_blk != pool->head) {
 		prev_blk->next = cur_blk->next;
 		cur_blk->next = pool->head;
@@ -151,14 +151,14 @@ fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt)
 	blk->free_cnt = unit_cnt;
 	blk->unit_cnt = unit_cnt;
 	blk->unit_size = unit_size;
-	blk->first = 0;//the 0 index unit
+	blk->first = 0;/* the 0 index unit */
 
 	ptr = blk->data;
 	for (i = 0; i < unit_cnt - 1; i++) {
-		*((uint16_t *)ptr) = i + 1; //point to the index of the next free unit
+		*((uint16_t *)ptr) = i + 1; /* point to the index of the next free unit */
 		ptr += unit_size;
 	}
-	*((uint16_t *)ptr) = -1; //the last unit
+	*((uint16_t *)ptr) = -1; /* the last unit */
 
 	return blk;
 }
