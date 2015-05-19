@@ -93,7 +93,7 @@ int fk_epoll_add(void *ev_iompx, int fd, char type)
 		return -1;
 	}
 
-	//if succeed, save emask
+	/* if succeed, save emask */
 	iompx->emask[fd] = otp | type;
 	return 0;
 }
@@ -143,8 +143,8 @@ int fk_epoll_remove(void *ev_iompx, int fd, char type)
 		return -1;
 	}
 
-	//if succeed, remove from the emask
-	iompx->emask[fd] = otp & (~type);//my clever!!!!!!
+	/* if succeed, remove from the emask */
+	iompx->emask[fd] = otp & (~type);/* my clever!!!!!! */
 	return 0;
 }
 

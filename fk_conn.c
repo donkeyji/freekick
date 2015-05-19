@@ -245,7 +245,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			 * because the FK_ARG_HIGHWAT == (64 * 1024 - 2), and
 			 * INT_MAX > FK_ARG_HIGHWAT 
 			 */
-			argl = atoi(start + 1);//argument length
+			argl = atoi(start + 1);/* argument length */
 			if (argl < 0 || argl > FK_ARG_HIGHWAT) {
 				fk_log_debug("invalid argument length\n");
 				return -1;
