@@ -224,8 +224,9 @@ int fk_conf_line_parse(fk_line *line)
 		start = i;
 		end = i;
 		/* find a completed token */
-		while (buf[end] != ' ' && buf[end] != '\t'
-		        && buf[end] != '\n' && buf[end] != '#') {
+		while (buf[end] != ' ' && buf[end] != '\t' && 
+			   buf[end] != '\n' && buf[end] != '#') 
+		{
 			end++;
 		}
 		line->fields[line->cnt] = fk_str_create(buf + start, (size_t)(end - start));
