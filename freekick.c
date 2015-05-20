@@ -55,8 +55,17 @@ static void fk_main_cycle();
 static void fk_svr_init();
 static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
 static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
+
 static void fk_svr_db_load(fk_str *db_path);
 static void fk_svr_db_save();
+static int fk_svr_db_dump(int db_idx);
+static int fk_svr_db_head_dump(int db_idx);
+static int fk_svr_db_tail_dump(int db_idx);
+static int fk_svr_db_elt_dump(fk_elt *elt);
+static int fk_svr_db_str_elt_dump(fk_elt *elt);
+static int fk_svr_db_list_elt_dump(fk_elt *elt);
+static int fk_svr_db_dict_elt_dump(fk_elt *elt);
+
 static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
@@ -1059,6 +1068,79 @@ void fk_signal_reg()
 }
 
 int fk_svr_db_save_exec()
+{
+	int i;
+	for (i = 0; i < server.dbcnt; i++) {
+		fk_svr_db_dump(i);
+	}
+	return 0;
+}
+
+int fk_svr_db_dump(int db_idx)
+{
+	fk_elt *elt;
+	fk_dict *dct;
+	fk_dict_iter *iter;
+
+	dct = server.db[db_idx];
+
+	/*dict head*/
+	fk_svr_db_head_dump(db_idx);
+
+	/*dict body*/
+	iter = fk_dict_iter_begin(dct);
+	elt = fk_dict_iter_next(iter);
+	while (elt != NULL) {
+		fk_svr_db_elt_dump(elt);
+		elt = fk_dict_iter_next(iter);
+	}
+
+	/*dict tail*/
+	fk_svr_db_tail_dump(db_idx);
+
+	return 0;
+}
+
+int fk_svr_db_elt_dump(fk_elt *elt)
+{
+	int type;
+
+	type = fk_item_type(((fk_item *)elt->value));
+	switch (type) {
+	case FK_ITEM_STR:
+		fk_svr_db_str_elt_dump(elt);
+		break;
+	case FK_ITEM_LIST:
+		fk_svr_db_list_elt_dump(elt);
+		break;
+	case FK_ITEM_DICT:
+		fk_svr_db_dict_elt_dump(elt);
+		break;
+	}
+	return 0;
+}
+
+int fk_svr_db_str_elt_dump(fk_elt *elt)
+{
+	return 0;
+}
+
+int fk_svr_db_list_elt_dump(fk_elt *elt)
+{
+	return 0;
+}
+
+int fk_svr_db_dict_elt_dump(fk_elt *elt)
+{
+	return 0;
+}
+
+int fk_svr_db_tail_dump(int db_idx)
+{
+	return 0;
+}
+
+int fk_svr_db_head_dump(int db_idx)
 {
 	return 0;
 }

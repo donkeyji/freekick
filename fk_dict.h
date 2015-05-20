@@ -34,6 +34,9 @@ typedef struct _fk_dict {
 	fk_elt_op *eop;
 } fk_dict;
 
+typedef struct _fk_dict_iter {
+} fk_dict_iter;
+
 fk_dict *fk_dict_create();
 void fk_dict_destroy(fk_dict *dct);
 int fk_dict_add(fk_dict *dct, void *key, void *value);
@@ -46,5 +49,8 @@ void fk_dict_empty(fk_dict *dct);
 void fk_dict_print(fk_dict *dct);
 #endif
 
+
+fk_dict_iter *fk_dict_iter_begin(fk_dict *dct);
+fk_elt *fk_dict_iter_next(fk_dict_iter *iter);
 
 #endif
