@@ -23,18 +23,18 @@ typedef struct _fk_line {
 	fk_str *fields[FK_CONF_MAX_FIELDS];
 } fk_line;
 
-typedef struct _fk_itv {/* instructive */
+typedef struct _fk_dtv {/* directive */
 	char *name;
 	unsigned field_cnt;
 	int (*handler) (fk_line *line);
-} fk_itv;
+} fk_dtv;
 
 static int fk_conf_parse_file(char *conf_path);
 static int fk_conf_line_read(fk_line *line, FILE *fp);
 static int fk_conf_line_parse(fk_line *line);
 static int fk_conf_line_proc(fk_line *line);
 static void fk_conf_line_reset(fk_line *line);
-static fk_itv *fk_conf_search(fk_str *name);
+static fk_dtv *fk_conf_search(fk_str *name);
 
 static int fk_conf_handle_port(fk_line *line);
 static int fk_conf_handle_daemon(fk_line *line);
@@ -49,7 +49,7 @@ static int fk_conf_handle_dbpath(fk_line *line);
 static int fk_conf_handle_timeout(fk_line *line);
 static int fk_conf_handle_dir(fk_line *line);
 
-static fk_itv itv_map[] = {
+static fk_dtv dtv_map[] = {
 	{"port", 2, fk_conf_handle_port},
 	{"daemon", 1, fk_conf_handle_daemon},
 	{"pidpath", 2, fk_conf_handle_pidpath},
@@ -219,13 +219,13 @@ int fk_conf_line_parse(fk_line *line)
 	return 0;
 }
 
-fk_itv *fk_conf_search(fk_str *name)
+fk_dtv *fk_conf_search(fk_str *name)
 {
 	unsigned i;
 
-	for (i = 0; itv_map[i].name != NULL; i++) {
-		if (strcasecmp(fk_str_raw(name), itv_map[i].name) == 0) {
-			return &itv_map[i];
+	for (i = 0; dtv_map[i].name != NULL; i++) {
+		if (strcasecmp(fk_str_raw(name), dtv_map[i].name) == 0) {
+			return &dtv_map[i];
 		}
 	}
 	return NULL;
@@ -235,23 +235,23 @@ int fk_conf_line_proc(fk_line *line)
 {
 	int rt;
 	fk_str *cmd;
-	fk_itv *itv;
+	fk_dtv *dtv;
 
 	if (line->cnt == 0) {/* the current line is a comment or empty line */
 		return 0;
 	}
 
 	cmd = line->fields[0];
-	itv = fk_conf_search(cmd);
-	if (itv == NULL) {
+	dtv = fk_conf_search(cmd);
+	if (dtv == NULL) {
 		sprintf(line->err, "no this cmd: %s, line: %d\n", fk_str_raw(cmd), line->no);
 		return -1;
 	}
-	if (itv->field_cnt != line->cnt) {
+	if (dtv->field_cnt != line->cnt) {
 		sprintf(line->err, "field cnt wrong. line: %d\n", line->no);
 		return -1;
 	}
-	rt = itv->handler(line);
+	rt = dtv->handler(line);
 	if (rt < 0) {
 		return -1;
 	}
