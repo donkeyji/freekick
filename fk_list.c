@@ -108,31 +108,37 @@ void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 
 fk_node *fk_list_iter_begin(fk_list *lst, int dir)
 {
-	lst->iter.dir = dir;
+	fk_list_iter *iter;
+
+   	iter = (fk_list_iter *)fk_mem_alloc(sizeof(fk_list_iter));
+	iter->dir = dir;
+
 	if (dir == FK_LIST_ITER_T2H) {
-		lst->iter.cur = lst->tail;
+		iter->cur = lst->tail;
 	}
 	if (dir == FK_LIST_ITER_H2T) {
-		lst->iter.cur = lst->head;
+		iter->cur = lst->head;
 	}
-	lst->iter.end = NULL;
-	return lst->iter.cur;
+	iter->end = NULL;
+
+	return iter->cur;
 }
 
-fk_node *fk_list_iter_next(fk_list *lst)
+fk_node *fk_list_iter_next(fk_list_iter *iter)
 {
-	if (lst->iter.dir == FK_LIST_ITER_T2H) {
-		lst->iter.cur = lst->iter.cur->prev;
+	if (iter->dir == FK_LIST_ITER_T2H) {
+		iter->cur = iter->cur->prev;
 	}
-	if (lst->iter.dir == FK_LIST_ITER_H2T) {
-		lst->iter.cur = lst->iter.cur->next;
+	if (iter->dir == FK_LIST_ITER_H2T) {
+		iter->cur = iter->cur->next;
 	}
-	return lst->iter.cur;
+
+	return iter->cur;
 }
 
-int fk_list_iter_end(fk_list *lst)
+int fk_list_iter_end(fk_list_iter *iter)
 {
-	if (lst->iter.cur == lst->iter.end) {
+	if (iter->cur == iter->end) {
 		return 1;
 	}
 	return 0;
