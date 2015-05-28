@@ -81,8 +81,7 @@ typedef struct _fk_node {
 } fk_node;
 
 typedef struct _fk_list_iter {
-	fk_node *cur;
-	fk_node *end;
+	fk_node *next;
 	int dir;/* 0, 1 */
 } fk_list_iter;
 
@@ -116,9 +115,9 @@ void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd);
 
 fk_node *fk_list_search(fk_list *lst, void *key);
 
-fk_node *fk_list_iter_begin(fk_list *lst, int dir);
+fk_list_iter *fk_list_iter_begin(fk_list *lst, int dir);
 fk_node *fk_list_iter_next(fk_list_iter *iter);
-int fk_list_iter_end(fk_list_iter *iter);
+void fk_list_iter_end(fk_list_iter *iter);
 
 #define fk_list_head fk_rawlist_head
 #define fk_list_tail fk_rawlist_tail
