@@ -333,3 +333,17 @@ void fk_dict_print(fk_dict *dct)
 #endif
 */
 
+
+fk_dict_iter *fk_dict_iter_begin(fk_dict *dct)
+{
+	fk_dict_iter *iter;
+	iter = NULL;
+	return iter;
+}
+
+fk_elt *fk_dict_iter_next(fk_dict_iter *iter)
+{
+	fk_elt *elt;
+	elt = NULL;
+	return elt;
+}
