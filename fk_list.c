@@ -106,7 +106,7 @@ void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
 	return;
 }
 
-fk_node *fk_list_iter_begin(fk_list *lst, int dir)
+fk_list_iter *fk_list_iter_begin(fk_list *lst, int dir)
 {
 	fk_list_iter *iter;
 
@@ -114,34 +114,36 @@ fk_node *fk_list_iter_begin(fk_list *lst, int dir)
 	iter->dir = dir;
 
 	if (dir == FK_LIST_ITER_T2H) {
-		iter->cur = lst->tail;
+		iter->next = lst->tail;
 	}
 	if (dir == FK_LIST_ITER_H2T) {
-		iter->cur = lst->head;
+		iter->next = lst->head;
 	}
-	iter->end = NULL;
 
-	return iter->cur;
+	return iter;
 }
 
 fk_node *fk_list_iter_next(fk_list_iter *iter)
 {
-	if (iter->dir == FK_LIST_ITER_T2H) {
-		iter->cur = iter->cur->prev;
-	}
-	if (iter->dir == FK_LIST_ITER_H2T) {
-		iter->cur = iter->cur->next;
+	fk_node *nd;
+
+	nd = iter->next;
+
+	if (iter->next != NULL) {
+		if (iter->dir == FK_LIST_ITER_T2H) {
+			iter->next = iter->next->prev;
+		}
+		if (iter->dir == FK_LIST_ITER_H2T) {
+			iter->next = iter->next->next;
+		}
 	}
 
-	return iter->cur;
+	return nd;
 }
 
-int fk_list_iter_end(fk_list_iter *iter)
+void fk_list_iter_end(fk_list_iter *iter)
 {
-	if (iter->cur == iter->end) {
-		return 1;
-	}
-	return 0;
+	fk_mem_free(iter);/* just release the memory */
 }
 
 void fk_list_head_insert(fk_list *lst, void *val)
