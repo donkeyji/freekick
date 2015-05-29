@@ -374,3 +374,8 @@ fk_elt *fk_dict_iter_next(fk_dict_iter *iter)
 
 	return NULL;/* all elements have been visited yet */
 }
+
+void fk_dict_iter_end(fk_dict_iter *iter)
+{
+	fk_mem_free(iter);
+}

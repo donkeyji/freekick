@@ -55,5 +55,6 @@ void fk_dict_print(fk_dict *dct);
 
 fk_dict_iter *fk_dict_iter_begin(fk_dict *dct);
 fk_elt *fk_dict_iter_next(fk_dict_iter *iter);
+void fk_dict_iter_end(fk_dict_iter *iter);
 
 #endif
