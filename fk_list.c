@@ -113,11 +113,22 @@ fk_list_iter *fk_list_iter_begin(fk_list *lst, int dir)
    	iter = (fk_list_iter *)fk_mem_alloc(sizeof(fk_list_iter));
 	iter->dir = dir;
 
-	if (dir == FK_LIST_ITER_T2H) {
-		iter->next = lst->tail;
-	}
+	/* from head to tail */
 	if (dir == FK_LIST_ITER_H2T) {
-		iter->next = lst->head;
+		iter->cur = lst->head;
+	}
+	/* from tail to head */
+	if (dir == FK_LIST_ITER_T2H) {
+		iter->cur = lst->tail;
+	}
+
+	if (iter->cur != NULL) {
+		if (dir == FK_LIST_ITER_H2T) {
+			iter->next = iter->cur->next;
+		}
+		if (dir == FK_LIST_ITER_T2H) {
+			iter->next = iter->cur->prev;
+		}
 	}
 
 	return iter;
@@ -125,20 +136,20 @@ fk_list_iter *fk_list_iter_begin(fk_list *lst, int dir)
 
 fk_node *fk_list_iter_next(fk_list_iter *iter)
 {
-	fk_node *nd;
+	/* use cur as return value */
+	iter->cur = iter->next;
 
-	nd = iter->next;
-
-	if (iter->next != NULL) {
-		if (iter->dir == FK_LIST_ITER_T2H) {
-			iter->next = iter->next->prev;
-		}
+	/* if visiting not completed */
+	if (iter->cur != NULL) {
 		if (iter->dir == FK_LIST_ITER_H2T) {
-			iter->next = iter->next->next;
+			iter->next = iter->cur->next;
+		}
+		if (iter->dir == FK_LIST_ITER_T2H) {
+			iter->next = iter->cur->prev;
 		}
 	}
 
-	return nd;
+	return iter->cur;
 }
 
 void fk_list_iter_end(fk_list_iter *iter)

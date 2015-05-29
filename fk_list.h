@@ -81,7 +81,8 @@ typedef struct _fk_node {
 } fk_node;
 
 typedef struct _fk_list_iter {
-	fk_node *next;
+	fk_node *cur;/* return this */
+	fk_node *next;/* record the next */
 	int dir;/* 0, 1 */
 } fk_list_iter;
 
