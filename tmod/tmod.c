@@ -64,7 +64,7 @@ void t_dict()
 	printf("xxxxxxxx\n");
 	fk_item *oo = fk_mem_alloc(sizeof(fk_item));
 	oo->type = FK_ITEM_STR;
-	oo->data = gg;
+	oo->entity = gg;
 	printf("yyyyyyyyyy\n");
 
 	fk_dict_add(dd, ss, oo);
@@ -87,25 +87,24 @@ void t_list()
 {
 	int i;
 	fk_node *nd;
-	int x[10] = {5, 1, 4, 2, 5, 3, 1, 1, 9, 2};
+	int x[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	fk_list *ll = fk_list_create(&oopp);
 	for (i = 0; i < 10; i++) {
-		//printf("i: %d\n", i);
-		fk_list_insert(ll, x+i);
-		//printf("%d\n", *(int *)(ll->head->data));
+		fk_list_head_insert(ll, x+i);
 	}
-	printf("len: %d\n", ll->len);
-	nd = ll->head; 
-	while (nd != NULL) { 
+	printf("list len: %zu\n", ll->len);
+	fk_list_iter *iter = fk_list_iter_begin(ll, FK_LIST_ITER_H2T);
+	nd = fk_list_iter_next(iter);
+	while (nd != NULL) {
 		printf("%d\n", *(int*)(nd->data));
-		nd = nd->next;
-		//printf("nd: %p\n", nd);
+		nd = fk_list_iter_next(iter);
 	}
+	fk_list_iter_end(iter);
 }
 
 int main()
 {
-	fk_list_init();
+	//fk_list_init();
 	//t_dict();	
 	t_list();
     return 0;
