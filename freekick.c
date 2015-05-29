@@ -1084,10 +1084,10 @@ int fk_svr_db_dump(int db_idx)
 
 	dct = server.db[db_idx];
 
-	/*dict head*/
+	/* dict head */
 	fk_svr_db_head_dump(db_idx);
 
-	/*dict body*/
+	/* dict body */
 	iter = fk_dict_iter_begin(dct);
 	elt = fk_dict_iter_next(iter);
 	while (elt != NULL) {
@@ -1095,7 +1095,7 @@ int fk_svr_db_dump(int db_idx)
 		elt = fk_dict_iter_next(iter);
 	}
 
-	/*dict tail*/
+	/* dict tail */
 	fk_svr_db_tail_dump(db_idx);
 
 	return 0;
