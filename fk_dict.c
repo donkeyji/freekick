@@ -354,6 +354,7 @@ fk_elt *fk_dict_iter_next(fk_dict_iter *iter)
 	while (1) {
 		if (iter->cur == NULL) {/* the first time to call this function */
 			iter->idx++;
+			/* narrow type to wide type */
 			if (iter->idx == (long long)(iter->dct->size)) {
 				break;
 			}
@@ -361,7 +362,7 @@ fk_elt *fk_dict_iter_next(fk_dict_iter *iter)
 			if (elst != NULL) {
 				iter->cur = fk_rawlist_head(elst);
 			}
-		} else {
+		} else {/* not the first time to call this function */
 			iter->cur = iter->next;
 		}
 
