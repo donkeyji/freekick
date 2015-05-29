@@ -1077,6 +1077,7 @@ int fk_svr_db_save_exec()
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_svr_db_dump(fp, i);
 	}
+	fclose(fp);
 	return 0;
 }
 
