@@ -111,35 +111,31 @@ fk_list_iter *fk_list_iter_begin(fk_list *lst, int dir)
 	fk_list_iter *iter;
 
    	iter = (fk_list_iter *)fk_mem_alloc(sizeof(fk_list_iter));
+	iter->lst = lst;
 	iter->dir = dir;
-
-	/* from head to tail */
-	if (dir == FK_LIST_ITER_H2T) {
-		iter->cur = lst->head;
-	}
-	/* from tail to head */
-	if (dir == FK_LIST_ITER_T2H) {
-		iter->cur = lst->tail;
-	}
-
-	if (iter->cur != NULL) {
-		if (dir == FK_LIST_ITER_H2T) {
-			iter->next = iter->cur->next;
-		}
-		if (dir == FK_LIST_ITER_T2H) {
-			iter->next = iter->cur->prev;
-		}
-	}
+	iter->cur = NULL;
+	iter->next = NULL;
 
 	return iter;
 }
 
 fk_node *fk_list_iter_next(fk_list_iter *iter)
 {
-	/* use cur as return value */
-	iter->cur = iter->next;
+	if (iter->cur == NULL) {/* the first time to call this function */
+		/* from head to tail */
+		if (iter->dir == FK_LIST_ITER_H2T) {
+			iter->cur = iter->lst->head;
+		}
+		/* from tail to head */
+		if (iter->dir == FK_LIST_ITER_T2H) {
+			iter->cur = iter->lst->tail;
+		}
+	} else {
+		/* use cur as return value */
+		iter->cur = iter->next;
+		/* if visiting not completed */
+	}
 
-	/* if visiting not completed */
 	if (iter->cur != NULL) {
 		if (iter->dir == FK_LIST_ITER_H2T) {
 			iter->next = iter->cur->next;

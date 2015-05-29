@@ -80,12 +80,6 @@ typedef struct _fk_node {
 	void *data;
 } fk_node;
 
-typedef struct _fk_list_iter {
-	fk_node *cur;/* return this */
-	fk_node *next;/* record the next */
-	int dir;/* 0, 1 */
-} fk_list_iter;
-
 typedef struct _fk_node_op {
 	/* method specified */
 	void *(*data_copy)(void *);
@@ -99,6 +93,13 @@ typedef struct _fk_list {
 	size_t len;
 	fk_node_op *nop;
 } fk_list;
+
+typedef struct _fk_list_iter {
+	fk_list *lst;
+	fk_node *cur;/* return this */
+	fk_node *next;/* record the next */
+	int dir;/* 0, 1 */
+} fk_list_iter;
 
 fk_list *fk_list_create(fk_node_op *nop);
 void fk_list_empty(fk_list *lst);
