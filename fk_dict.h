@@ -35,6 +35,9 @@ typedef struct _fk_dict {
 } fk_dict;
 
 typedef struct _fk_dict_iter {
+	fk_dict *dct;
+	fk_elt *cur, *next;
+	long long idx;/* should be long than size_t type */
 } fk_dict_iter;
 
 fk_dict *fk_dict_create();

@@ -337,13 +337,40 @@ void fk_dict_print(fk_dict *dct)
 fk_dict_iter *fk_dict_iter_begin(fk_dict *dct)
 {
 	fk_dict_iter *iter;
-	iter = NULL;
+	
+	iter = (fk_dict_iter *)fk_mem_alloc(sizeof(fk_dict_iter));
+	iter->idx = -1;
+	iter->dct = dct;
+	iter->cur = NULL;
+	iter->next = NULL;
+
 	return iter;
 }
 
 fk_elt *fk_dict_iter_next(fk_dict_iter *iter)
 {
-	fk_elt *elt;
-	elt = NULL;
-	return elt;
+	fk_elt_list *elst;
+
+	while (1) {
+		if (iter->cur == NULL) {/* the first time to call this function */
+			iter->idx++;
+			if (iter->idx == (long long)(iter->dct->size)) {
+				break;
+			}
+			elst = (iter->dct->buckets)[iter->idx];
+			if (elst != NULL) {
+				iter->cur = fk_rawlist_head(elst);
+			}
+		} else {
+			iter->cur = iter->next;
+		}
+
+		/* found  a non-null element */
+		if (iter->cur != NULL) {
+			iter->next = iter->cur->next;/* save the next element */
+			return iter->cur;
+		}
+	}
+
+	return NULL;/* all elements have been visited yet */
 }
