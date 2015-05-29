@@ -200,11 +200,15 @@ void fk_proto_init()
 		key = fk_str_create(name, strlen(name));
 		fk_dict_add(pmap, key, value);
 	}
-/*
 #ifdef FK_DEBUG
-	fk_dict_print(pmap);
+	fk_elt *elt;
+	fk_dict_iter *iter = fk_dict_iter_begin(pmap);
+	while ((elt = fk_dict_iter_next(iter)) != NULL) {
+		key = (fk_str *)(elt->key);
+		value = elt->value;
+		fprintf(stdout, "proto key: %s\n", fk_str_raw(key));
+	}
 #endif
-*/
 }
 
 fk_proto *fk_proto_search(fk_str *name)

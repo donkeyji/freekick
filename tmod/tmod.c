@@ -58,16 +58,25 @@ void t_pool()
 
 void t_dict()
 {
+	fk_elt *elt;
 	fk_dict *dd = fk_dict_create();
+	printf("11111111\n");
 	fk_str *ss = fk_str_create("huge", 4);
 	fk_str *gg = fk_str_create("ooxx", 4);
-	printf("xxxxxxxx\n");
-	fk_item *oo = fk_mem_alloc(sizeof(fk_item));
-	oo->type = FK_ITEM_STR;
-	oo->entity = gg;
-	printf("yyyyyyyyyy\n");
+	fk_item *oo = fk_item_create(FK_ITEM_STR, gg);
 
 	fk_dict_add(dd, ss, oo);
+
+	fk_dict_iter *iter = fk_dict_iter_begin(dd);
+	printf("22222222\n");
+	while ((elt = fk_dict_iter_next(iter)) != NULL) {
+		ss = (fk_str*)(elt->key);
+		oo = (fk_item*)(elt->value);
+		gg = (fk_str *)fk_item_raw(oo);
+		printf("%s\n", fk_str_raw(ss));
+		printf("%s\n", fk_str_raw(gg));
+	}
+	printf("33333333\n");
 }
 
 int int_cmp(void *a, void *b)
@@ -104,8 +113,7 @@ void t_list()
 
 int main()
 {
-	//fk_list_init();
-	//t_dict();	
-	t_list();
+	t_dict();	
+	//t_list();
     return 0;
 }
