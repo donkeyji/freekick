@@ -1273,9 +1273,9 @@ void fk_svr_db_load(fk_str *db_path)
 	if (fp == NULL) {/* db not exist */
 		return;
 	}
-	fseek(fp, 0, SEEK_END);
-	tail = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
+	fseek(fp, 0, SEEK_END);/* move to the tail */
+	tail = ftell(fp);/* record the position of the tail */
+	fseek(fp, 0, SEEK_SET);/* rewind to the head */
 
 	while (ftell(fp) != tail) {
 		rt = fk_svr_db_restore(fp, &buf);
@@ -1302,14 +1302,14 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 		return -1;
 	}
 	db = server.db[idx];
-	printf("===idx: %d\n", idx);
+	printf("===db idx: %d\n", idx);
 
 	/* restore len of dictionary */
 	rt = fscanf(dbf, "%zu\r\n", &cnt);
 	if (rt < 0) {
 		return -1;
 	}
-	printf("===size: %zu\n", cnt);
+	printf("===db size: %zu\n", cnt);
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
