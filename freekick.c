@@ -1144,7 +1144,7 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
 
 	/* value dump */
-	fprintf(dbf, "%d\r\n", fk_item_type(itm));
+	fprintf(dbf, "%u\r\n", fk_item_type(itm));
 	fprintf(dbf, "%zu\r\n", fk_str_len(value) - 1);
 	fprintf(dbf, "%s\r\n", fk_str_raw(value));
 
