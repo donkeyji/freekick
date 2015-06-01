@@ -968,7 +968,7 @@ void fk_svr_init()
 		server.db[i] = fk_dict_create(&db_dict_eop);
 	}
 	/* load db from file */
-	fk_svr_db_load(server.db_path);
+	//fk_svr_db_load(server.db_path);
 }
 
 void fk_setrlimit()
@@ -1261,17 +1261,20 @@ void fk_svr_db_save()
 
 void fk_svr_db_load(fk_str *db_path)
 {
-	int rt;
 	FILE *fp; 
 	char *buf;
+	int rt, tail;
 
 	buf = NULL;/* must be initialized to NULL */
 	fp = fopen(fk_str_raw(db_path), "r");
 	if (fp == NULL) {/* db not exist */
 		return;
 	}
+	fseek(fp, 0, SEEK_END);
+	tail = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
 
-	while (feof(fp) != 1) {
+	while (ftell(fp) != tail) {
 		rt = fk_svr_db_restore(fp, &buf);
 		if (rt < 0) {
 			fk_log_error("load db body failed\n");
