@@ -1320,16 +1320,16 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 		switch (type) {
 		case FK_ITEM_STR:
 			rt = fk_svr_db_str_elt_restore(dbf, db, buf);
-			if (rt < 0) {
-				return -1;
-			}
 			break;
 		case FK_ITEM_LIST:
-			fk_svr_db_list_elt_restore(dbf, db, buf);
+			rt = fk_svr_db_list_elt_restore(dbf, db, buf);
 			break;
 		case FK_ITEM_DICT:
-			fk_svr_db_dict_elt_restore(dbf, db, buf);
+			rt = fk_svr_db_dict_elt_restore(dbf, db, buf);
 			break;
+		}
+		if (rt < 0) {
+			return -1;
 		}
 	}
 	return 0;
@@ -1371,6 +1371,45 @@ int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 
 int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
+	int rt;
+	size_t klen, llen, i, nlen, slen;
+	fk_str *key, *nds;
+	fk_item *kitm, *vitm, *nitm;
+	fk_list *lst;
+
+	rt = fscanf(dbf, "%zu\r\n", &klen);
+	if (rt < 0) {
+		return -1;
+	}
+	rt = getline(buf, &slen, dbf);
+	if (rt < 0) {
+		return -1;
+	}
+	key = fk_str_create(*buf, klen);
+	kitm = fk_item_create(FK_ITEM_STR, key);
+
+	rt = fscanf(dbf, "%zu\r\n", &llen);
+	if (rt < 0) {
+		return -1;
+	}
+
+	lst = fk_list_create(&db_list_op);
+	for (i = 0; i < llen; i++) {
+		rt = fscanf(dbf, "%zu\r\n", &nlen);
+		if (rt < 0) {
+			return -1;
+		}
+		rt = getline(buf, &slen, dbf);
+		if (rt < 0) {
+			return -1;
+		}
+		nds = fk_str_create(*buf, nlen);
+		nitm = fk_item_create(FK_ITEM_STR, nds);
+		fk_list_tail_insert(lst, nitm);
+	}
+	vitm = fk_item_create(FK_ITEM_LIST, lst);
+	fk_dict_add(db, kitm, vitm);
+
 	return 0;
 }
 
