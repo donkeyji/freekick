@@ -15,11 +15,10 @@
 
 int fk_sock_create_listen(char *addr, uint16_t port)
 {
-	int rt, opt, listen_sock;
+	int rt, listen_sock;
 	/* struct sockaddr_in has the same size as struct sockaddr */
 	struct sockaddr_in saddr;
 
-	opt = 1;
 	listen_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (listen_sock == -1) {
 		return -1;

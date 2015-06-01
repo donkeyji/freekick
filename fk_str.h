@@ -1,6 +1,8 @@
 #ifndef _FK_STR_H_
 #define _FK_STR_H_
 
+#include <stdint.h>
+
 typedef struct _fk_str {
 	size_t len;/* full length, including '\0' */
 	char seq[];

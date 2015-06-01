@@ -65,8 +65,6 @@ static void fk_svr_db_dict_elt_load(FILE *dbf, fk_dict *db, char **buf);
 static void fk_svr_db_save();
 static int fk_svr_db_save_exec();
 static int fk_svr_db_dump(FILE *dbf, int db_idx);
-static int fk_svr_db_head_dump(FILE *dbf, int db_idx);
-static int fk_svr_db_tail_dump(FILE *dbf, int db_idx);
 static int fk_svr_db_elt_dump(FILE *dbf, fk_elt *elt);
 static int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt);
 static int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt);
@@ -1099,8 +1097,11 @@ int fk_svr_db_dump(FILE *dbf, int db_idx)
 
 	dct = server.db[db_idx];
 
-	/* dict head */
-	fk_svr_db_head_dump(dbf, db_idx);
+	/* only write index of db */
+	fprintf(dbf, "%d\r\n", db_idx);
+
+	/* dump the len of the dict */
+	fprintf(dbf, "%zu\r\n", fk_dict_len(dct));
 
 	/* dict body */
 	iter = fk_dict_iter_begin(dct);
@@ -1109,9 +1110,6 @@ int fk_svr_db_dump(FILE *dbf, int db_idx)
 		fk_svr_db_elt_dump(dbf, elt);
 		elt = fk_dict_iter_next(iter);
 	}
-
-	/* dict tail */
-	fk_svr_db_tail_dump(dbf, db_idx);
 
 	return 0;
 }
@@ -1238,18 +1236,6 @@ int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 	return 0;
 }
 
-int fk_svr_db_tail_dump(FILE *dbf, int db_idx)
-{
-	return 0;
-}
-
-int fk_svr_db_head_dump(FILE *dbf, int db_idx)
-{
-	/* only write index of db */
-	fprintf(dbf, "%d\r\n", db_idx);
-	return 0;
-}
-
 void fk_svr_db_save()
 {
 	int rt;
@@ -1280,9 +1266,11 @@ void fk_svr_db_load(fk_str *db_path)
 	char *buf;
 	fk_dict *db;
 
-	fp = fopen(fk_str_raw(db_path), "r+");
-	while (!feof(fp)) {
-		fscanf(fp, "%d", &idx);
+	buf = NULL;/* must be initialized to NULL */
+	fp = fopen(fk_str_raw(db_path), "r");
+
+	while (feof(fp) != 1) {
+		fscanf(fp, "%d\r\n", &idx);
 		db = server.db[idx];
 		fk_svr_db_body_load(fp, db, &buf);
 	}
@@ -1296,9 +1284,12 @@ void fk_svr_db_body_load(FILE *dbf, fk_dict *db, char **buf)
 	size_t cnt, i;
 	unsigned type;
 
-	fscanf(dbf, "%zu", &cnt);
+	/* restore len of dictionary */
+	fscanf(dbf, "%zu\r\n", &cnt);
+
+	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
-		fscanf(dbf, "%u", &type);
+		fscanf(dbf, "%u\r\n", &type);
 		switch (type) {
 		case FK_ITEM_STR:
 			fk_svr_db_str_elt_load(dbf, db, buf);
@@ -1319,12 +1310,12 @@ void fk_svr_db_str_elt_load(FILE *dbf, fk_dict *db, char **buf)
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
 
-	fscanf(dbf, "%zu", &klen);
+	fscanf(dbf, "%zu\r\n", &klen);
 	getline(buf, &llen, dbf);
 	key = fk_str_create(*buf, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
-	fscanf(dbf, "%zu", &vlen);
+	fscanf(dbf, "%zu\r\n", &vlen);
 	getline(buf, &llen, dbf);
 	value = fk_str_create(*buf, vlen);
 	vitm = fk_item_create(FK_ITEM_STR, value);
