@@ -58,6 +58,7 @@ static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
 
 static void fk_svr_db_load(fk_str *db_path);
 static void fk_svr_db_save();
+static int fk_svr_db_save_exec();
 static int fk_svr_db_dump(FILE *dbf, int db_idx);
 static int fk_svr_db_head_dump(FILE *dbf, int db_idx);
 static int fk_svr_db_tail_dump(FILE *dbf, int db_idx);
@@ -1131,6 +1132,22 @@ int fk_svr_db_elt_dump(FILE *dbf, fk_elt *elt)
 
 int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 {
+	fk_item *itm;
+	fk_str *key, *value;
+
+	key = (fk_str *)(elt->key);
+	itm = (fk_item *)(elt->value);
+	value = (fk_str *)(fk_item_raw(itm));
+
+	/* key dump */
+	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
+	fprintf(dbf, "%s\r\n", fk_str_raw(key));
+
+	/* value dump */
+	fprintf(dbf, "%d\r\n", fk_item_type(itm));
+	fprintf(dbf, "%zu\r\n", fk_str_len(value) - 1);
+	fprintf(dbf, "%s\r\n", fk_str_raw(value));
+
 	return 0;
 }
 
@@ -1151,6 +1168,8 @@ int fk_svr_db_tail_dump(FILE *dbf, int db_idx)
 
 int fk_svr_db_head_dump(FILE *dbf, int db_idx)
 {
+	/* only write index of db */
+	fprintf(dbf, "%d\r\n", db_idx);
 	return 0;
 }
 
