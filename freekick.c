@@ -968,7 +968,7 @@ void fk_svr_init()
 		server.db[i] = fk_dict_create(&db_dict_eop);
 	}
 	/* load db from file */
-	//fk_svr_db_load(server.db_path);
+	fk_svr_db_load(server.db_path);
 }
 
 void fk_setrlimit()
@@ -1096,6 +1096,9 @@ int fk_svr_db_dump(FILE *dbf, int db_idx)
 	fk_dict_iter *iter;
 
 	dct = server.db[db_idx];
+	if (fk_dict_len(dct) == 0) {
+		return 0;
+	}
 
 	/* only write index of db */
 	fprintf(dbf, "%d\r\n", db_idx);
@@ -1144,12 +1147,12 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 	key = (fk_str *)(fk_item_raw(kitm));
 	value = (fk_str *)(fk_item_raw(vitm));
 
+	/* type dump */
+	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+
 	/* key dump */
 	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
-
-	/* type dump */
-	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
 
 	/* value dump */
 	fprintf(dbf, "%zu\r\n", fk_str_len(value) - 1);
@@ -1172,12 +1175,12 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 	key = (fk_str *)(fk_item_raw(kitm));
 	lst = (fk_list *)(fk_item_raw(vitm));
 
+	/* type dump */
+	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+
 	/* key dump */
 	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
-
-	/* type dump */
-	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
 
 	/* size dump */
 	fprintf(dbf, "%zu\r\n", fk_list_len(lst));
@@ -1208,12 +1211,12 @@ int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 	key = (fk_str *)(fk_item_raw(kitm));
 	dct = (fk_dict *)(fk_item_raw(vitm));
 
+	/* type dump */
+	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+
 	/* key dump */
 	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
-
-	/* type dump */
-	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
 
 	/* size dump */
 	fprintf(dbf, "%zu\r\n", fk_dict_len(dct));
@@ -1299,12 +1302,14 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 		return -1;
 	}
 	db = server.db[idx];
+	printf("===idx: %d\n", idx);
 
 	/* restore len of dictionary */
 	rt = fscanf(dbf, "%zu\r\n", &cnt);
 	if (rt < 0) {
 		return -1;
 	}
+	printf("===size: %zu\n", cnt);
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
