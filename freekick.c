@@ -1145,8 +1145,10 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
 
-	/* value dump */
+	/* type dump */
 	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+
+	/* value dump */
 	fprintf(dbf, "%zu\r\n", fk_str_len(value) - 1);
 	fprintf(dbf, "%s\r\n", fk_str_raw(value));
 
@@ -1155,6 +1157,37 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 
 int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 {
+	fk_node *nd;
+	fk_list *lst;
+	fk_str *key, *vs;
+	fk_item *kitm, *vitm, *nitm;
+	fk_list_iter *iter;
+
+	kitm = (fk_item *)(elt->key);
+	vitm = (fk_item *)(elt->value);
+
+	key = (fk_str *)(fk_item_raw(kitm));
+	lst = (fk_list *)(fk_item_raw(vitm));
+
+	/* key dump */
+	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
+	fprintf(dbf, "%s\r\n", fk_str_raw(key));
+
+	/* type dump */
+	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+
+	/* count dump */
+	fprintf(dbf, "%zu\r\n", fk_list_len(lst));
+
+	/*value dump */
+	iter = fk_list_iter_begin(lst, FK_LIST_ITER_H2T);
+	while ((nd = fk_list_iter_next(iter)) != NULL) {
+		nitm = (fk_item *)(fk_node_raw(nd));
+		vs = (fk_str *)(fk_item_raw(nitm));
+		fprintf(dbf, "%zu\r\n", fk_str_len(vs) - 1);
+		fprintf(dbf, "%s\r\n", fk_str_raw(vs));
+	}
+
 	return 0;
 }
 
