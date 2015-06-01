@@ -57,10 +57,10 @@ static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
 static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
 
 static void fk_svr_db_load(fk_str *db_path);
-static void fk_svr_db_body_load(FILE *dbf, fk_dict *db, char **buf);
-static void fk_svr_db_str_elt_load(FILE *dbf, fk_dict *db, char **buf);
-static void fk_svr_db_list_elt_load(FILE *dbf, fk_dict *db, char **buf);
-static void fk_svr_db_dict_elt_load(FILE *dbf, fk_dict *db, char **buf);
+static int fk_svr_db_restore(FILE *dbf, char **buf);
+static int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf);
+static int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf);
+static int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf);
 
 static void fk_svr_db_save();
 static int fk_svr_db_save_exec();
@@ -1261,74 +1261,114 @@ void fk_svr_db_save()
 
 void fk_svr_db_load(fk_str *db_path)
 {
-	int idx;
+	int rt;
 	FILE *fp; 
 	char *buf;
-	fk_dict *db;
 
 	buf = NULL;/* must be initialized to NULL */
 	fp = fopen(fk_str_raw(db_path), "r");
+	if (fp == NULL) {/* db not exist */
+		return;
+	}
 
 	while (feof(fp) != 1) {
-		fscanf(fp, "%d\r\n", &idx);
-		db = server.db[idx];
-		fk_svr_db_body_load(fp, db, &buf);
+		rt = fk_svr_db_restore(fp, &buf);
+		if (rt < 0) {
+			fk_log_error("load db body failed\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 	fclose(fp);
 
 	return;
 }
 
-void fk_svr_db_body_load(FILE *dbf, fk_dict *db, char **buf)
+int fk_svr_db_restore(FILE *dbf, char **buf)
 {
+	int idx, rt;
+	fk_dict *db;
 	size_t cnt, i;
 	unsigned type;
 
+	/* restore the index */
+	rt = fscanf(dbf, "%d\r\n", &idx);
+	if (rt < 0) {
+		return -1;
+	}
+	db = server.db[idx];
+
 	/* restore len of dictionary */
-	fscanf(dbf, "%zu\r\n", &cnt);
+	rt = fscanf(dbf, "%zu\r\n", &cnt);
+	if (rt < 0) {
+		return -1;
+	}
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
-		fscanf(dbf, "%u\r\n", &type);
+		rt = fscanf(dbf, "%u\r\n", &type);
+		if (rt < 0) {
+			return -1;
+		}
 		switch (type) {
 		case FK_ITEM_STR:
-			fk_svr_db_str_elt_load(dbf, db, buf);
+			rt = fk_svr_db_str_elt_restore(dbf, db, buf);
+			if (rt < 0) {
+				return -1;
+			}
 			break;
 		case FK_ITEM_LIST:
-			fk_svr_db_list_elt_load(dbf, db, buf);
+			fk_svr_db_list_elt_restore(dbf, db, buf);
 			break;
 		case FK_ITEM_DICT:
-			fk_svr_db_dict_elt_load(dbf, db, buf);
+			fk_svr_db_dict_elt_restore(dbf, db, buf);
 			break;
 		}
 	}
+	return 0;
 }
 
-void fk_svr_db_str_elt_load(FILE *dbf, fk_dict *db, char **buf)
+int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
+	int rt;
 	size_t klen, vlen, llen;
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
 
-	fscanf(dbf, "%zu\r\n", &klen);
-	getline(buf, &llen, dbf);
+	rt = fscanf(dbf, "%zu\r\n", &klen);
+	if (rt < 0) {
+		return -1;
+	}
+	rt = getline(buf, &llen, dbf);
+	if (rt < 0) {
+		return -1;
+	}
 	key = fk_str_create(*buf, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
-	fscanf(dbf, "%zu\r\n", &vlen);
-	getline(buf, &llen, dbf);
+	rt = fscanf(dbf, "%zu\r\n", &vlen);
+	if (rt < 0) {
+		return -1;
+	}
+	rt = getline(buf, &llen, dbf);
+	if (rt < 0) {
+		return -1;
+	}
 	value = fk_str_create(*buf, vlen);
 	vitm = fk_item_create(FK_ITEM_STR, value);
 
 	fk_dict_add(db, kitm, vitm);
+
+	return 0;
 }
 
-void fk_svr_db_list_elt_load(FILE *dbf, fk_dict *db, char **buf)
+int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
+	return 0;
 }
 
-void fk_svr_db_dict_elt_load(FILE *dbf, fk_dict *db, char **buf)
+int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
+	return 0;
 }
 
 void fk_main_init(char *conf_path)
