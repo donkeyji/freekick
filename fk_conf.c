@@ -124,8 +124,8 @@ void fk_conf_init(char *conf_path)
 
 int fk_conf_parse_file(char *conf_path)
 {
-	int rt;
 	FILE *fp;
+	int rt, tail;
 	fk_line *line;
 	unsigned line_num;
 
@@ -134,17 +134,19 @@ int fk_conf_parse_file(char *conf_path)
 		printf("failed to open config file\n");
 		return -1;
 	}
+	fseek(fp, 0, SEEK_END);
+	tail = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
 	line_num = 0;
 	line = fk_conf_line_create();
 
-	while (1) {
+	/* do not reach the tail of the file */
+	while (ftell(fp) != tail) {
 		line_num++;/* it begins from 1, not 0 */
 		fk_conf_line_reset(line);
 		line->no = line_num;
 		rt = fk_conf_line_read(line, fp);
-		if (rt > 0) {/* end of file */
-			break;
-		} else if (rt < 0) {
+		if (rt < 0) {/* end of file */
 			printf("%s", line->err);
 			return -1;
 		}
@@ -173,12 +175,8 @@ int fk_conf_line_read(fk_line *line, FILE *fp)
 
 	rt = getline(&(line->buf), &(line->len), fp);
 	if (rt < 0) {
-		if (feof(fp) != 1) {
-			sprintf(line->err, "%s\n", strerror(errno));
-			return -1;
-		} else {
-			return 1;
-		}
+		sprintf(line->err, "%s\n", strerror(errno));
+		return -1;
 	}
 	return 0;
 }
