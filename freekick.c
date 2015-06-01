@@ -1166,8 +1166,8 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 	fk_node *nd;
 	fk_list *lst;
 	fk_str *key, *vs;
-	fk_item *kitm, *vitm, *nitm;
 	fk_list_iter *iter;
+	fk_item *kitm, *vitm, *nitm;
 
 	kitm = (fk_item *)(elt->key);
 	vitm = (fk_item *)(elt->value);
@@ -1199,11 +1199,11 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 
 int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 {
-	fk_item *kitm, *vitm, *skitm, *svitm;
-	fk_str *key, *skey, *svs;
+	fk_elt *selt;
 	fk_dict *dct;
 	fk_dict_iter *iter;
-	fk_elt *selt;
+	fk_str *key, *skey, *svs;
+	fk_item *kitm, *vitm, *skitm, *svitm;
 
 	kitm = (fk_item *)(elt->key);
 	vitm = (fk_item *)(elt->value);
@@ -1257,7 +1257,7 @@ void fk_svr_db_save()
 		return;
 	} else {
 		sleep(6);
-		rt = fk_svr_db_save_exec();
+		fk_svr_db_save_exec();
 		exit(EXIT_SUCCESS);
 	}
 }
@@ -1302,14 +1302,18 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 		return -1;
 	}
 	db = server.db[idx];
-	printf("===db idx: %d\n", idx);
+#ifdef FK_DEBUG
+	fk_log_debug("===load db idx: %d\n", idx);
+#endif
 
 	/* restore len of dictionary */
 	rt = fscanf(dbf, "%zu\r\n", &cnt);
 	if (rt < 0) {
 		return -1;
 	}
-	printf("===db size: %zu\n", cnt);
+#ifdef FK_DEBUG
+	fk_log_debug("===load db size: %zu\n", cnt);
+#endif
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
@@ -1317,6 +1321,7 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 		if (rt < 0) {
 			return -1;
 		}
+
 		switch (type) {
 		case FK_ITEM_STR:
 			rt = fk_svr_db_str_elt_restore(dbf, db, buf);
@@ -1338,9 +1343,9 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
 	int rt;
-	size_t klen, vlen, llen;
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
+	size_t klen, vlen, llen;
 
 	rt = fscanf(dbf, "%zu\r\n", &klen);
 	if (rt < 0) {
@@ -1372,10 +1377,10 @@ int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
 	int rt;
-	size_t klen, llen, i, nlen, slen;
+	fk_list *lst;
 	fk_str *key, *nds;
 	fk_item *kitm, *vitm, *nitm;
-	fk_list *lst;
+	size_t klen, llen, i, nlen, slen;
 
 	rt = fscanf(dbf, "%zu\r\n", &klen);
 	if (rt < 0) {
@@ -1416,10 +1421,10 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
 	int rt;
-	size_t klen, sklen, svlen, dlen, slen, i;
+	fk_dict *sdct;
 	fk_str *key, *skey, *svalue;
 	fk_item *kitm, *skitm, *vitm, *svitm;
-	fk_dict *sdct;
+	size_t klen, sklen, svlen, dlen, slen, i;
 
 	rt = fscanf(dbf, "%zu\r\n", &klen);
 	if (rt < 0) {
