@@ -1132,19 +1132,21 @@ int fk_svr_db_elt_dump(FILE *dbf, fk_elt *elt)
 
 int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 {
-	fk_item *itm;
 	fk_str *key, *value;
+	fk_item *kitm, *vitm;
 
-	key = (fk_str *)(elt->key);
-	itm = (fk_item *)(elt->value);
-	value = (fk_str *)(fk_item_raw(itm));
+	kitm = (fk_item *)(elt->key);
+	vitm = (fk_item *)(elt->value);
+
+	key = (fk_str *)(fk_item_raw(kitm));
+	value = (fk_str *)(fk_item_raw(vitm));
 
 	/* key dump */
 	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
 
 	/* value dump */
-	fprintf(dbf, "%u\r\n", fk_item_type(itm));
+	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
 	fprintf(dbf, "%zu\r\n", fk_str_len(value) - 1);
 	fprintf(dbf, "%s\r\n", fk_str_raw(value));
 
