@@ -1415,6 +1415,57 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 
 int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
+	int rt;
+	size_t klen, sklen, svlen, dlen, slen, i;
+	fk_str *key, *skey, *svalue;
+	fk_item *kitm, *skitm, *vitm, *svitm;
+	fk_dict *sdct;
+
+	rt = fscanf(dbf, "%zu\r\n", &klen);
+	if (rt < 0) {
+		return -1;
+	}
+	rt = getline(buf, &slen, dbf);
+	if (rt < 0) {
+		return -1;
+	}
+	key = fk_str_create(*buf, klen);
+	kitm = fk_item_create(FK_ITEM_STR, key);
+
+	rt = fscanf(dbf, "%zu\r\n", &dlen);
+	if (rt < 0) {
+		return -1;
+	}
+
+	sdct = fk_dict_create(&db_dict_eop);
+	for (i = 0; i < dlen; i++) {
+		rt = fscanf(dbf, "%zu\r\n", &sklen);
+		if (rt < 0) {
+			return -1;
+		}
+		rt = getline(buf, &slen, dbf);
+		if (rt < 0) {
+			return -1;
+		}
+		skey = fk_str_create(*buf, sklen);
+		skitm = fk_item_create(FK_ITEM_STR, skey);
+
+		rt = fscanf(dbf, "%zu\r\n", &svlen);
+		if (rt < 0) {
+			return -1;
+		}
+		rt = getline(buf, &slen, dbf);
+		if (rt < 0) {
+			return -1;
+		}
+		svalue = fk_str_create(*buf, svlen);
+		svitm = fk_item_create(FK_ITEM_STR, svalue);
+
+		fk_dict_add(sdct, skitm, svitm);
+	}
+	vitm = fk_item_create(FK_ITEM_DICT, sdct);
+	fk_dict_add(db, kitm, vitm);
+
 	return 0;
 }
 
