@@ -1176,7 +1176,7 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 	/* type dump */
 	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
 
-	/* count dump */
+	/* size dump */
 	fprintf(dbf, "%zu\r\n", fk_list_len(lst));
 
 	/*value dump */
@@ -1193,6 +1193,43 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 
 int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 {
+	fk_item *kitm, *vitm, *skitm, *svitm;
+	fk_str *key, *skey, *svs;
+	fk_dict *dct;
+	fk_dict_iter *iter;
+	fk_elt *selt;
+
+	kitm = (fk_item *)(elt->key);
+	vitm = (fk_item *)(elt->value);
+
+	key = (fk_str *)(fk_item_raw(kitm));
+	dct = (fk_dict *)(fk_item_raw(vitm));
+
+	/* key dump */
+	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
+	fprintf(dbf, "%s\r\n", fk_str_raw(key));
+
+	/* type dump */
+	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+
+	/* size dump */
+	fprintf(dbf, "%zu\r\n", fk_dict_len(dct));
+
+	iter = fk_dict_iter_begin(dct);
+	while ((selt = fk_dict_iter_next(iter)) != NULL) {
+		skitm = (fk_item *)(selt->key);
+		svitm = (fk_item *)(selt->value);
+
+		skey = (fk_str *)(fk_item_raw(skitm));
+		svs = (fk_str *)(fk_item_raw(svitm));
+
+		fprintf(dbf, "%zu\r\n", fk_str_len(skey) - 1);
+		fprintf(dbf, "%s\r\n", fk_str_raw(skey));
+
+		fprintf(dbf, "%zu\r\n", fk_str_len(svs) - 1);
+		fprintf(dbf, "%s\r\n", fk_str_raw(svs));
+	}
+
 	return 0;
 }
 
