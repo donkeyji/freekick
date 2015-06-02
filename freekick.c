@@ -1290,6 +1290,11 @@ void fk_svr_db_load(fk_str *db_path)
 	return;
 }
 
+/* 
+ * return value:
+ * 1. error occurs when reading 
+ * 2. reaching to the end of file 
+ */
 int fk_svr_db_restore(FILE *dbf, char **buf)
 {
 	int idx, rt;
@@ -1303,18 +1308,12 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 		return -1;
 	}
 	db = server.db[idx];
-#ifdef FK_DEBUG
-	fk_log_debug("===load db idx: %d\n", idx);
-#endif
 
 	/* restore len of dictionary */
 	rt = fscanf(dbf, "%zu\r\n", &cnt);
 	if (rt < 0) {
 		return -1;
 	}
-#ifdef FK_DEBUG
-	fk_log_debug("===load db size: %zu\n", cnt);
-#endif
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
@@ -1341,6 +1340,11 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 	return 0;
 }
 
+/* 
+ * return value:
+ * 1. error occurs when reading 
+ * 2. reaching to the end of file 
+ */
 int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
 	int rt;
@@ -1375,6 +1379,11 @@ int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 	return 0;
 }
 
+/* 
+ * return value:
+ * 1. error occurs when reading 
+ * 2. reaching to the end of file 
+ */
 int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
 	int rt;
@@ -1419,6 +1428,11 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 	return 0;
 }
 
+/* 
+ * return value:
+ * 1. error occurs when reading 
+ * 2. reaching to the end of file 
+ */
 int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 {
 	int rt;
