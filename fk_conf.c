@@ -140,13 +140,13 @@ int fk_conf_parse_file(char *conf_path)
 	line_num = 0;
 	line = fk_conf_line_create();
 
-	/* do not reach the tail of the file */
+	/* do not reach the end of the file */
 	while (ftell(fp) != tail) {
 		line_num++;/* it begins from 1, not 0 */
 		fk_conf_line_reset(line);
 		line->no = line_num;
 		rt = fk_conf_line_read(line, fp);
-		if (rt < 0) {/* end of file */
+		if (rt < 0) {
 			printf("%s", line->err);
 			return -1;
 		}
@@ -174,6 +174,7 @@ int fk_conf_line_read(fk_line *line, FILE *fp)
 	int rt;
 
 	rt = getline(&(line->buf), &(line->len), fp);
+	/* no need to think about end-of-file here */
 	if (rt < 0) {
 		sprintf(line->err, "%s\n", strerror(errno));
 		return -1;
