@@ -1292,7 +1292,7 @@ void fk_svr_db_load(fk_str *db_path)
 }
 
 /* 
- * return value:
+ * return value: -1
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
@@ -1342,7 +1342,7 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 }
 
 /* 
- * return value:
+ * return value: -1
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
@@ -1381,7 +1381,7 @@ int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 }
 
 /* 
- * return value:
+ * return value: -1
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
@@ -1430,7 +1430,7 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 }
 
 /* 
- * return value:
+ * return value: -1
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
