@@ -1284,6 +1284,7 @@ void fk_svr_db_load(fk_str *db_path)
 			exit(EXIT_FAILURE);
 		}
 	}
+	free(buf);/* must free this block */
 	fclose(fp);
 
 	return;
