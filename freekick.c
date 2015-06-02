@@ -1264,9 +1264,10 @@ void fk_svr_db_save()
 
 void fk_svr_db_load(fk_str *db_path)
 {
+	int rt;
 	FILE *fp; 
 	char *buf;
-	int rt, tail;
+	long tail;
 
 	buf = NULL;/* must be initialized to NULL */
 	fp = fopen(fk_str_raw(db_path), "r");

@@ -124,8 +124,9 @@ void fk_conf_init(char *conf_path)
 
 int fk_conf_parse_file(char *conf_path)
 {
+	int rt;
 	FILE *fp;
-	int rt, tail;
+	long tail;
 	fk_line *line;
 	unsigned line_num;
 
