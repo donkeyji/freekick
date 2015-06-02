@@ -137,7 +137,7 @@ int fk_conf_parse_file(char *conf_path)
 	}
 	fseek(fp, 0, SEEK_END);
 	tail = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
+	rewind(fp);/* fseek(fp, 0, SEEK_SET); */
 	line_num = 0;
 	line = fk_conf_line_create();
 
