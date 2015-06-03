@@ -1078,16 +1078,12 @@ int fk_svr_db_save_exec()
 {
 	FILE *fp;
 	int i, rt;
-	char *old_db;
+	char *temp_db;
 
-	old_db = "freekick-old.db";
+	temp_db = "freekick-temp.db";
 
-	/* if an old db file exists, rename it to old.db */
-	if (access(fk_str_raw(server.db_file), F_OK) == 0) {
-		rename(fk_str_raw(server.db_file), old_db);
-	}
-
-	fp = fopen(fk_str_raw(server.db_file), "w+");
+	/* step 1: write to a temporary file*/
+	fp = fopen(temp_db, "w+");
 
 	for (i = 0; i < server.dbcnt; i++) {
 		rt = fk_svr_db_dump(fp, i);
@@ -1097,10 +1093,8 @@ int fk_svr_db_save_exec()
 	}
 	fclose(fp);
 
-	/* remove temporary db file */
-	if (access(old_db, F_OK) == 0) {
-		remove(old_db);
-	}
+	/* step 2: rename temporary file to server.db_file */
+	rename(temp_db, fk_str_raw(server.db_file));
 
 	return 0;
 }
