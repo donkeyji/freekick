@@ -1265,14 +1265,16 @@ void fk_svr_db_save()
 
 	fk_log_debug("to save db\n");
 	rt = fork();
-	if (rt < 0) {
+	if (rt < 0) {/* should not exit here, just return */
 		fk_log_error("fork: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	} else if (rt > 0) {
+		return;
+	} else if (rt > 0) {/* mark the save_done */
 		server.save_done = 0;
 		return;
 	} else {
+		/* execute only in child process */
 		if (fk_svr_db_save_exec() < 0) {
+			fk_log_error("db save failed\n");
 			exit(EXIT_FAILURE);
 		}
 		exit(EXIT_SUCCESS);
@@ -1555,9 +1557,13 @@ void fk_main_final()
 	while (server.save_done == 0) {
 		sleep(1);
 	}
+	if (setting.dump != 1) {
+		return;
+	}
 	/* save db once more */
 	rt = fk_svr_db_save_exec();
 	if (rt < 0) {
+		fk_log_error("db save failed\n");
 		exit(EXIT_FAILURE);
 	}
 }
