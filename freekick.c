@@ -44,7 +44,7 @@ typedef struct _fk_server {
 	fk_str *pid_path;
 	unsigned dbcnt;
 	fk_dict **db;
-	fk_str *db_path;
+	fk_str *db_file;
 	int save_done;
 } fk_server;
 
@@ -56,7 +56,7 @@ static void fk_svr_init();
 static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
 static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
 
-static void fk_svr_db_load(fk_str *db_path);
+static void fk_svr_db_load(fk_str *db_file);
 static int fk_svr_db_restore(FILE *dbf, char **buf);
 static int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf);
 static int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf);
@@ -65,7 +65,6 @@ static int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf);
 static void fk_svr_db_save();
 static int fk_svr_db_save_exec();
 static int fk_svr_db_dump(FILE *dbf, int db_idx);
-static int fk_svr_db_elt_dump(FILE *dbf, fk_elt *elt);
 static int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt);
 static int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt);
 static int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt);
@@ -936,7 +935,7 @@ void fk_svr_init()
 	server.port = setting.port;
 	server.max_conn = setting.max_conn;
 	server.dbcnt = setting.dbcnt;
-	server.db_path = fk_str_clone(setting.db_path);
+	server.db_file = fk_str_clone(setting.db_file);
 	server.save_done = 1;
 	server.addr = fk_str_clone(setting.addr);
 
@@ -968,7 +967,7 @@ void fk_svr_init()
 		server.db[i] = fk_dict_create(&db_dict_eop);
 	}
 	/* load db from file */
-	fk_svr_db_load(server.db_path);
+	fk_svr_db_load(server.db_file);
 }
 
 void fk_setrlimit()
@@ -1080,7 +1079,7 @@ int fk_svr_db_save_exec()
 	int i;
 	FILE *fp;
 
-	fp = fopen(fk_str_raw(server.db_path), "w+");
+	fp = fopen(fk_str_raw(server.db_file), "w+");
 
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_svr_db_dump(fp, i);
@@ -1091,6 +1090,7 @@ int fk_svr_db_save_exec()
 
 int fk_svr_db_dump(FILE *dbf, int db_idx)
 {
+	int type;
 	fk_elt *elt;
 	fk_dict *dct;
 	fk_dict_iter *iter;
@@ -1110,29 +1110,21 @@ int fk_svr_db_dump(FILE *dbf, int db_idx)
 	iter = fk_dict_iter_begin(dct);
 	elt = fk_dict_iter_next(iter);
 	while (elt != NULL) {
-		fk_svr_db_elt_dump(dbf, elt);
+		type = fk_item_type(((fk_item *)elt->value));
+		switch (type) {
+		case FK_ITEM_STR:
+			fk_svr_db_str_elt_dump(dbf, elt);
+			break;
+		case FK_ITEM_LIST:
+			fk_svr_db_list_elt_dump(dbf, elt);
+			break;
+		case FK_ITEM_DICT:
+			fk_svr_db_dict_elt_dump(dbf, elt);
+			break;
+		}
 		elt = fk_dict_iter_next(iter);
 	}
 
-	return 0;
-}
-
-int fk_svr_db_elt_dump(FILE *dbf, fk_elt *elt)
-{
-	int type;
-
-	type = fk_item_type(((fk_item *)elt->value));
-	switch (type) {
-	case FK_ITEM_STR:
-		fk_svr_db_str_elt_dump(dbf, elt);
-		break;
-	case FK_ITEM_LIST:
-		fk_svr_db_list_elt_dump(dbf, elt);
-		break;
-	case FK_ITEM_DICT:
-		fk_svr_db_dict_elt_dump(dbf, elt);
-		break;
-	}
 	return 0;
 }
 
@@ -1256,13 +1248,12 @@ void fk_svr_db_save()
 		server.save_done = 0;
 		return;
 	} else {
-		sleep(6);
 		fk_svr_db_save_exec();
 		exit(EXIT_SUCCESS);
 	}
 }
 
-void fk_svr_db_load(fk_str *db_path)
+void fk_svr_db_load(fk_str *db_file)
 {
 	int rt;
 	FILE *fp; 
@@ -1270,7 +1261,7 @@ void fk_svr_db_load(fk_str *db_path)
 	long tail;
 
 	buf = NULL;/* must be initialized to NULL */
-	fp = fopen(fk_str_raw(db_path), "r");
+	fp = fopen(fk_str_raw(db_file), "r");
 	if (fp == NULL) {/* db not exist */
 		return;
 	}
