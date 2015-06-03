@@ -48,6 +48,11 @@ typedef struct _fk_server {
 	int save_done;
 } fk_server;
 
+typedef struct _fk_readline {
+	char *line;
+	size_t len;
+} fk_readline;
+
 /* ---------------------------------------------------- */
 static void fk_main_init(char *conf_path);
 static void fk_main_final();
@@ -57,10 +62,10 @@ static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
 static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
 
 static void fk_svr_db_load(fk_str *db_file);
-static int fk_svr_db_restore(FILE *dbf, char **buf);
-static int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf);
-static int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf);
-static int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf);
+static int fk_svr_db_restore(FILE *dbf, fk_readline *buf);
+static int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf);
+static int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf);
+static int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf);
 
 static void fk_svr_db_save();
 static int fk_svr_db_save_exec();
@@ -88,6 +93,9 @@ static void fk_db_dict_val_free(void *elt);
 static void *fk_db_list_val_copy(void *ptr);
 static void fk_db_list_val_free(void *ptr);
 
+fk_readline *fk_readline_create(size_t len);
+void fk_readline_adjust(fk_readline *buf, size_t len);
+void fk_readline_destroy(fk_readline *buf);
 /* ---------------------------------------------------- */
 #define FK_RSP_OK				"OK"
 #define FK_RSP_ERR				"ERROR"
@@ -1103,6 +1111,30 @@ void fk_signal_reg()
 	}
 }
 
+fk_readline *fk_readline_create(size_t len)
+{
+	fk_readline *buf; 
+	buf = fk_mem_alloc(sizeof(fk_readline));
+	buf->len = len;
+	buf->line = (char *)fk_mem_alloc(buf->len);
+
+	return buf;
+}
+
+void fk_readline_adjust(fk_readline *buf, size_t len)
+{
+	if (buf->len < len) {
+		buf->len = fk_util_min_power(len);
+		buf->line = (char *)fk_mem_realloc(buf->line, buf->len);
+	}
+}
+
+void fk_readline_destroy(fk_readline *buf)
+{
+	fk_mem_free(buf->line);
+	fk_mem_free(buf);
+}
+
 int fk_svr_db_save_exec()
 {
 	FILE *fp;
@@ -1182,6 +1214,7 @@ int fk_svr_db_dump(FILE *dbf, int db_idx)
 
 int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 {
+	size_t len;
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
 
@@ -1195,11 +1228,15 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
 
 	/* key dump */
-	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
+	len = fk_str_len(key) - 1;
+	printf("dump len: %zu\n", len);
+	fwrite(&len, sizeof(len), 1, dbf);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
 
 	/* value dump */
-	fprintf(dbf, "%zu\r\n", fk_str_len(value) - 1);
+	len = fk_str_len(value) - 1;
+	printf("dump len: %zu\n", len);
+	fwrite(&len, sizeof(len), 1, dbf);
 	fprintf(dbf, "%s\r\n", fk_str_raw(value));
 
 	return 0;
@@ -1317,10 +1354,10 @@ void fk_svr_db_load(fk_str *db_file)
 {
 	int rt;
 	FILE *fp; 
-	char *buf;
 	long tail;
+	fk_readline *buf;
 
-	buf = NULL;/* must be initialized to NULL */
+	buf = fk_readline_create(4096);
 	fp = fopen(fk_str_raw(db_file), "r");
 	if (fp == NULL) {/* db not exist */
 		return;
@@ -1330,13 +1367,13 @@ void fk_svr_db_load(fk_str *db_file)
 	fseek(fp, 0, SEEK_SET);/* rewind to the head */
 
 	while (ftell(fp) != tail) {
-		rt = fk_svr_db_restore(fp, &buf);
+		rt = fk_svr_db_restore(fp, buf);
 		if (rt < 0) {
 			fk_log_error("load db body failed\n");
 			exit(EXIT_FAILURE);
 		}
 	}
-	free(buf);/* must free this block */
+	fk_readline_destroy(buf);/* must free this block */
 	fclose(fp);
 
 	return;
@@ -1347,7 +1384,7 @@ void fk_svr_db_load(fk_str *db_file)
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
-int fk_svr_db_restore(FILE *dbf, char **buf)
+int fk_svr_db_restore(FILE *dbf, fk_readline *buf)
 {
 	int idx, rt;
 	fk_dict *db;
@@ -1399,33 +1436,24 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
-int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
+int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 {
-	int rt;
+	size_t klen, vlen;
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
-	size_t klen, vlen, llen;
 
-	rt = fscanf(dbf, "%zu\r\n", &klen);
-	if (rt < 0) {
-		return -1;
-	}
-	rt = getline(buf, &llen, dbf);
-	if (rt < 0) {
-		return -1;
-	}
-	key = fk_str_create(*buf, klen);
+	fread(&klen, sizeof(klen), 1, dbf);
+
+	fk_readline_adjust(buf, klen + 2);
+	fread(buf->line, klen + 2, 1, dbf);
+	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
-	rt = fscanf(dbf, "%zu\r\n", &vlen);
-	if (rt < 0) {
-		return -1;
-	}
-	rt = getline(buf, &llen, dbf);
-	if (rt < 0) {
-		return -1;
-	}
-	value = fk_str_create(*buf, vlen);
+	fread(&vlen, sizeof(vlen), 1, dbf);
+	fk_readline_adjust(buf, vlen + 2);
+	fread(buf->line, vlen + 2, 1, dbf);
+
+	value = fk_str_create(buf->line, vlen);
 	vitm = fk_item_create(FK_ITEM_STR, value);
 
 	fk_dict_add(db, kitm, vitm);
@@ -1438,23 +1466,21 @@ int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, char **buf)
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
-int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
+int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 {
 	int rt;
 	fk_list *lst;
 	fk_str *key, *nds;
 	fk_item *kitm, *vitm, *nitm;
-	size_t klen, llen, i, nlen, slen;
+	size_t klen, llen, i, nlen;
 
 	rt = fscanf(dbf, "%zu\r\n", &klen);
 	if (rt < 0) {
 		return -1;
 	}
-	rt = getline(buf, &slen, dbf);
-	if (rt < 0) {
-		return -1;
-	}
-	key = fk_str_create(*buf, klen);
+	fk_readline_adjust(buf, klen + 2);
+	fread(buf->line, klen + 2, 1, dbf);
+	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
 	rt = fscanf(dbf, "%zu\r\n", &llen);
@@ -1468,11 +1494,9 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 		if (rt < 0) {
 			return -1;
 		}
-		rt = getline(buf, &slen, dbf);
-		if (rt < 0) {
-			return -1;
-		}
-		nds = fk_str_create(*buf, nlen);
+		fk_readline_adjust(buf, nlen + 2);
+		fread(buf->line, nlen + 2, 1, dbf);
+		nds = fk_str_create(buf->line, nlen);
 		nitm = fk_item_create(FK_ITEM_STR, nds);
 		fk_list_tail_insert(lst, nitm);
 	}
@@ -1487,23 +1511,21 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, char **buf)
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
-int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf)
+int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 {
 	int rt;
 	fk_dict *sdct;
 	fk_str *key, *skey, *svalue;
+	size_t klen, sklen, svlen, dlen, i;
 	fk_item *kitm, *skitm, *vitm, *svitm;
-	size_t klen, sklen, svlen, dlen, slen, i;
 
 	rt = fscanf(dbf, "%zu\r\n", &klen);
 	if (rt < 0) {
 		return -1;
 	}
-	rt = getline(buf, &slen, dbf);
-	if (rt < 0) {
-		return -1;
-	}
-	key = fk_str_create(*buf, klen);
+	fk_readline_adjust(buf, klen + 2);
+	fread(buf->line, klen + 2, 1, dbf);
+	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
 	rt = fscanf(dbf, "%zu\r\n", &dlen);
@@ -1517,22 +1539,18 @@ int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, char **buf)
 		if (rt < 0) {
 			return -1;
 		}
-		rt = getline(buf, &slen, dbf);
-		if (rt < 0) {
-			return -1;
-		}
-		skey = fk_str_create(*buf, sklen);
+		fk_readline_adjust(buf, sklen + 2);
+		fread(buf->line, sklen + 2, 1, dbf);
+		skey = fk_str_create(buf->line, sklen);
 		skitm = fk_item_create(FK_ITEM_STR, skey);
 
 		rt = fscanf(dbf, "%zu\r\n", &svlen);
 		if (rt < 0) {
 			return -1;
 		}
-		rt = getline(buf, &slen, dbf);
-		if (rt < 0) {
-			return -1;
-		}
-		svalue = fk_str_create(*buf, svlen);
+		fk_readline_adjust(buf, svlen + 2);
+		fread(buf->line, svlen + 2, 1, dbf);
+		svalue = fk_str_create(buf->line, svlen);
 		svitm = fk_item_create(FK_ITEM_STR, svalue);
 
 		fk_dict_add(sdct, skitm, svitm);
