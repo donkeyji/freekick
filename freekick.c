@@ -957,14 +957,14 @@ void fk_svr_init()
 	server.max_conn = setting.max_conn;
 	server.dbcnt = setting.dbcnt;
 	server.db_file = fk_str_clone(setting.db_file);
-	server.save_done = 1;
 	server.addr = fk_str_clone(setting.addr);
 
 	/* create global environment */
+	server.save_done = 1;
 	server.start_time = time(NULL);
 	server.stop = 0;
 	server.conn_cnt = 0;
-	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_util_conns_to_files(setting.max_conn));
+	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_util_conns_to_files(server.max_conn));
 	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
 	if (server.listen_fd < 0) {
 		fk_log_error("server listen socket creating failed: %s\n", strerror(errno));
