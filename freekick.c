@@ -1229,13 +1229,11 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 
 	/* key dump */
 	len = fk_str_len(key) - 1;
-	printf("dump len: %zu\n", len);
 	fwrite(&len, sizeof(len), 1, dbf);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
 
 	/* value dump */
 	len = fk_str_len(value) - 1;
-	printf("dump len: %zu\n", len);
 	fwrite(&len, sizeof(len), 1, dbf);
 	fprintf(dbf, "%s\r\n", fk_str_raw(value));
 
