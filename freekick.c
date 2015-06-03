@@ -1171,6 +1171,7 @@ int fk_svr_db_save_exec()
 
 int fk_svr_db_dump(FILE *dbf, int db_idx)
 {
+	size_t len;
 	fk_elt *elt;
 	int type, rt;
 	fk_dict *dct;
@@ -1182,10 +1183,11 @@ int fk_svr_db_dump(FILE *dbf, int db_idx)
 	}
 
 	/* only write index of db */
-	fprintf(dbf, "%d\r\n", db_idx);
+	fwrite(&db_idx, sizeof(db_idx), 1, dbf);
 
 	/* dump the len of the dict */
-	fprintf(dbf, "%zu\r\n", fk_dict_len(dct));
+	len = fk_dict_len(dct);
+	fwrite(&len, sizeof(len), 1, dbf);
 
 	/* dict body */
 	iter = fk_dict_iter_begin(dct);
@@ -1214,6 +1216,7 @@ int fk_svr_db_dump(FILE *dbf, int db_idx)
 
 int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 {
+	int type;
 	size_t len;
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
@@ -1225,7 +1228,8 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 	value = (fk_str *)(fk_item_raw(vitm));
 
 	/* type dump */
-	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+	type = fk_item_type(vitm);
+	fwrite(&type, sizeof(type), 1, dbf);
 
 	/* key dump */
 	len = fk_str_len(key) - 1;
@@ -1242,6 +1246,8 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 
 int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 {
+	int type;
+	size_t len;
 	fk_node *nd;
 	fk_list *lst;
 	fk_str *key, *vs;
@@ -1255,21 +1261,25 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 	lst = (fk_list *)(fk_item_raw(vitm));
 
 	/* type dump */
-	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+	type = fk_item_type(vitm);
+	fwrite(&type, sizeof(type), 1, dbf);
 
 	/* key dump */
-	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
+	len = fk_str_len(key) - 1;
+	fwrite(&len, sizeof(len), 1, dbf);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
 
 	/* size dump */
-	fprintf(dbf, "%zu\r\n", fk_list_len(lst));
+	len = fk_list_len(lst);
+	fwrite(&len, sizeof(len), 1, dbf);
 
 	/*value dump */
 	iter = fk_list_iter_begin(lst, FK_LIST_ITER_H2T);
 	while ((nd = fk_list_iter_next(iter)) != NULL) {
 		nitm = (fk_item *)(fk_node_raw(nd));
 		vs = (fk_str *)(fk_item_raw(nitm));
-		fprintf(dbf, "%zu\r\n", fk_str_len(vs) - 1);
+		len = fk_str_len(vs) - 1;
+		fwrite(&len, sizeof(len), 1, dbf);
 		fprintf(dbf, "%s\r\n", fk_str_raw(vs));
 	}
 
@@ -1278,6 +1288,8 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 
 int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 {
+	int type;
+	size_t len;
 	fk_elt *selt;
 	fk_dict *dct;
 	fk_dict_iter *iter;
@@ -1291,14 +1303,17 @@ int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 	dct = (fk_dict *)(fk_item_raw(vitm));
 
 	/* type dump */
-	fprintf(dbf, "%u\r\n", fk_item_type(vitm));
+	type = fk_item_type(vitm);
+	fwrite(&type, sizeof(type), 1, dbf);
 
 	/* key dump */
-	fprintf(dbf, "%zu\r\n", fk_str_len(key) - 1);
+	len = fk_str_len(key) - 1;
+	fwrite(&len, sizeof(len), 1, dbf);
 	fprintf(dbf, "%s\r\n", fk_str_raw(key));
 
 	/* size dump */
-	fprintf(dbf, "%zu\r\n", fk_dict_len(dct));
+	len = fk_dict_len(dct);
+	fwrite(&len, sizeof(len), 1, dbf);
 
 	iter = fk_dict_iter_begin(dct);
 	while ((selt = fk_dict_iter_next(iter)) != NULL) {
@@ -1308,10 +1323,12 @@ int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 		skey = (fk_str *)(fk_item_raw(skitm));
 		svs = (fk_str *)(fk_item_raw(svitm));
 
-		fprintf(dbf, "%zu\r\n", fk_str_len(skey) - 1);
+		len = fk_str_len(skey) - 1;
+		fwrite(&len, sizeof(len), 1, dbf);
 		fprintf(dbf, "%s\r\n", fk_str_raw(skey));
 
-		fprintf(dbf, "%zu\r\n", fk_str_len(svs) - 1);
+		len = fk_str_len(svs) - 1;
+		fwrite(&len, sizeof(len), 1, dbf);
 		fprintf(dbf, "%s\r\n", fk_str_raw(svs));
 	}
 
@@ -1390,24 +1407,15 @@ int fk_svr_db_restore(FILE *dbf, fk_readline *buf)
 	unsigned type;
 
 	/* restore the index */
-	rt = fscanf(dbf, "%d\r\n", &idx);
-	if (rt < 0) {
-		return -1;
-	}
+	fread(&idx, sizeof(idx), 1, dbf);
 	db = server.db[idx];
 
 	/* restore len of dictionary */
-	rt = fscanf(dbf, "%zu\r\n", &cnt);
-	if (rt < 0) {
-		return -1;
-	}
+	fread(&cnt, sizeof(cnt), 1, dbf);
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
-		rt = fscanf(dbf, "%u\r\n", &type);
-		if (rt < 0) {
-			return -1;
-		}
+		fread(&type, sizeof(type), 1, dbf);
 
 		switch (type) {
 		case FK_ITEM_STR:
@@ -1466,32 +1474,22 @@ int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
  */
 int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 {
-	int rt;
 	fk_list *lst;
 	fk_str *key, *nds;
 	fk_item *kitm, *vitm, *nitm;
 	size_t klen, llen, i, nlen;
 
-	rt = fscanf(dbf, "%zu\r\n", &klen);
-	if (rt < 0) {
-		return -1;
-	}
+	fread(&klen, sizeof(klen), 1, dbf);
 	fk_readline_adjust(buf, klen + 2);
 	fread(buf->line, klen + 2, 1, dbf);
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
-	rt = fscanf(dbf, "%zu\r\n", &llen);
-	if (rt < 0) {
-		return -1;
-	}
+	fread(&llen, sizeof(llen), 1, dbf);
 
 	lst = fk_list_create(&db_list_op);
 	for (i = 0; i < llen; i++) {
-		rt = fscanf(dbf, "%zu\r\n", &nlen);
-		if (rt < 0) {
-			return -1;
-		}
+		fread(&nlen, sizeof(nlen), 1, dbf);
 		fk_readline_adjust(buf, nlen + 2);
 		fread(buf->line, nlen + 2, 1, dbf);
 		nds = fk_str_create(buf->line, nlen);
@@ -1511,41 +1509,28 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
  */
 int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 {
-	int rt;
 	fk_dict *sdct;
 	fk_str *key, *skey, *svalue;
 	size_t klen, sklen, svlen, dlen, i;
 	fk_item *kitm, *skitm, *vitm, *svitm;
 
-	rt = fscanf(dbf, "%zu\r\n", &klen);
-	if (rt < 0) {
-		return -1;
-	}
+	fread(&klen, sizeof(klen), 1, dbf);
 	fk_readline_adjust(buf, klen + 2);
 	fread(buf->line, klen + 2, 1, dbf);
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
-	rt = fscanf(dbf, "%zu\r\n", &dlen);
-	if (rt < 0) {
-		return -1;
-	}
+	fread(&dlen, sizeof(dlen), 1, dbf);
 
 	sdct = fk_dict_create(&db_dict_eop);
 	for (i = 0; i < dlen; i++) {
-		rt = fscanf(dbf, "%zu\r\n", &sklen);
-		if (rt < 0) {
-			return -1;
-		}
+		fread(&sklen, sizeof(sklen), 1, dbf);
 		fk_readline_adjust(buf, sklen + 2);
 		fread(buf->line, sklen + 2, 1, dbf);
 		skey = fk_str_create(buf->line, sklen);
 		skitm = fk_item_create(FK_ITEM_STR, skey);
 
-		rt = fscanf(dbf, "%zu\r\n", &svlen);
-		if (rt < 0) {
-			return -1;
-		}
+		fread(&svlen, sizeof(svlen), 1, dbf);
 		fk_readline_adjust(buf, svlen + 2);
 		fread(buf->line, svlen + 2, 1, dbf);
 		svalue = fk_str_create(buf->line, svlen);
