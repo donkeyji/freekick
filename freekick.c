@@ -1076,8 +1076,16 @@ void fk_signal_reg()
 
 int fk_svr_db_save_exec()
 {
-	int i, rt;
 	FILE *fp;
+	int i, rt;
+	char *old_db;
+
+	old_db = "freekick-old.db";
+
+	/* if an old db file exists, rename it to old.db */
+	if (access(fk_str_raw(server.db_file), F_OK) == 0) {
+		rename(fk_str_raw(server.db_file), old_db);
+	}
 
 	fp = fopen(fk_str_raw(server.db_file), "w+");
 
@@ -1088,6 +1096,12 @@ int fk_svr_db_save_exec()
 		}
 	}
 	fclose(fp);
+
+	/* remove temporary db file */
+	if (access(old_db, F_OK) == 0) {
+		remove(old_db);
+	}
+
 	return 0;
 }
 
