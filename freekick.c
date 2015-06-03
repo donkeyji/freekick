@@ -1076,13 +1076,16 @@ void fk_signal_reg()
 
 int fk_svr_db_save_exec()
 {
-	int i;
+	int i, rt;
 	FILE *fp;
 
 	fp = fopen(fk_str_raw(server.db_file), "w+");
 
 	for (i = 0; i < server.dbcnt; i++) {
-		fk_svr_db_dump(fp, i);
+		rt = fk_svr_db_dump(fp, i);
+		if (rt < 0) {
+			return -1;
+		}
 	}
 	fclose(fp);
 	return 0;
@@ -1090,8 +1093,8 @@ int fk_svr_db_save_exec()
 
 int fk_svr_db_dump(FILE *dbf, int db_idx)
 {
-	int type;
 	fk_elt *elt;
+	int type, rt;
 	fk_dict *dct;
 	fk_dict_iter *iter;
 
@@ -1113,14 +1116,17 @@ int fk_svr_db_dump(FILE *dbf, int db_idx)
 		type = fk_item_type(((fk_item *)elt->value));
 		switch (type) {
 		case FK_ITEM_STR:
-			fk_svr_db_str_elt_dump(dbf, elt);
+			rt = fk_svr_db_str_elt_dump(dbf, elt);
 			break;
 		case FK_ITEM_LIST:
-			fk_svr_db_list_elt_dump(dbf, elt);
+			rt = fk_svr_db_list_elt_dump(dbf, elt);
 			break;
 		case FK_ITEM_DICT:
-			fk_svr_db_dict_elt_dump(dbf, elt);
+			rt = fk_svr_db_dict_elt_dump(dbf, elt);
 			break;
+		}
+		if (rt < 0) {
+			return -1;
 		}
 		elt = fk_dict_iter_next(iter);
 	}
