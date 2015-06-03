@@ -822,9 +822,6 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 	fk_log_info("[timer 1]conn cnt: %u\n", server.conn_cnt);
 	fk_log_info("[timer 1]dbdict size: %d, used: %d, limit: %d\n", server.db[0]->size, server.db[0]->used, server.db[0]->limit);
 
-	if (setting.dump != 1) {
-		return 0;
-	}
 	fk_svr_db_save();
 	return 0;
 }
@@ -1257,6 +1254,10 @@ int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 void fk_svr_db_save()
 {
 	int rt;
+
+	if (setting.dump != 1) {
+		return;
+	}
 
 	if (server.save_done != 1) {
 		return;
