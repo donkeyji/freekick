@@ -1091,14 +1091,17 @@ int fk_svr_db_save_exec()
 	for (i = 0; i < server.dbcnt; i++) {
 		rt = fk_svr_db_dump(fp, i);
 		if (rt < 0) {
+			fclose(fp);
+			remove(temp_db);/* remove this temporary db file */
 			return -1;
 		}
 	}
-	fclose(fp);
+	fclose(fp);/* close before rename */
 
 	/* step 2: rename temporary file to server.db_file */
 	rt = rename(temp_db, fk_str_raw(server.db_file));
 	if (rt < 0) {
+		remove(temp_db);/* remove this temporary db file */
 		return -1;
 	}
 
