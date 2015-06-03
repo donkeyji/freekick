@@ -90,6 +90,7 @@ static void fk_db_list_val_free(void *ptr);
 
 /* ---------------------------------------------------- */
 #define FK_RSP_OK				"OK"
+#define FK_RSP_ERR				"ERROR"
 #define FK_RSP_TYPE_ERR			"Type Error"
 #define FK_RSP_NIL				(-1)
 /* ---------------------------------------------------- */
@@ -111,6 +112,7 @@ static int fk_cmd_rpush(fk_conn *conn);
 static int fk_cmd_lpop(fk_conn *conn);
 static int fk_cmd_rpop(fk_conn *conn);
 static int fk_cmd_llen(fk_conn *conn);
+static int fk_cmd_save(fk_conn *conn);
 /* ---------------------------------------------------- */
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);
@@ -153,6 +155,7 @@ static fk_proto protos[] = {
 	{"LPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_lpop	 	},
 	{"RPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_rpop	 	},
 	{"LLEN",	FK_PROTO_READ,		2,					fk_cmd_llen		},
+	{"SAVE",	FK_PROTO_READ,		1,					fk_cmd_save		},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -680,6 +683,27 @@ int fk_cmd_llen(fk_conn *conn)
 	lst = (fk_list *)fk_item_raw(value);
 	len = fk_list_len(lst);
 	rt = fk_conn_int_rsp_add(conn, len);
+	if (rt < 0) {
+		return -1;
+	}
+	return 0;
+}
+
+int fk_cmd_save(fk_conn *conn)
+{
+	int rt;
+
+	if (server.save_done != 1) {
+		rt = fk_conn_status_rsp_add(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	}
+
+	fk_svr_db_save_exec();
+
+	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
 		return -1;
 	}
