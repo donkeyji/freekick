@@ -952,7 +952,10 @@ void fk_svr_init()
 {
 	unsigned i;
 
-	/* copy setting from conf to server */
+	/* 
+	 * copy setting from conf to server 
+	 * but is it necessary???
+	 */
 	server.port = setting.port;
 	server.max_conn = setting.max_conn;
 	server.dbcnt = setting.dbcnt;
