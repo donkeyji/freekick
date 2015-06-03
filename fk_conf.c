@@ -45,7 +45,7 @@ static int fk_conf_handle_maxconn(fk_line *line);
 static int fk_conf_handle_dbcnt(fk_line *line);
 static int fk_conf_handle_addr(fk_line *line);
 static int fk_conf_handle_loglevel(fk_line *line);
-static int fk_conf_handle_dbpath(fk_line *line);
+static int fk_conf_handle_dbfile(fk_line *line);
 static int fk_conf_handle_timeout(fk_line *line);
 static int fk_conf_handle_dir(fk_line *line);
 
@@ -55,7 +55,7 @@ static fk_dtv dtv_map[] = {
 	{"pidpath", 2, fk_conf_handle_pidpath},
 	{"logpath", 2, fk_conf_handle_logpath},
 	{"dump", 1, fk_conf_handle_dump},
-	{"dbpath", 2, fk_conf_handle_dbpath},
+	{"dbfile", 2, fk_conf_handle_dbfile},
 	{"dir", 2, fk_conf_handle_dir},
 	{"loglevel", 2, fk_conf_handle_loglevel},
 	{"maxconn", 2, fk_conf_handle_maxconn},
@@ -322,7 +322,7 @@ int fk_conf_handle_logpath(fk_line *line)
 	return 0;
 }
 
-int fk_conf_handle_dbpath(fk_line *line)
+int fk_conf_handle_dbfile(fk_line *line)
 {
 	setting.db_path = fk_str_clone(line->fields[1]);
 	return 0;
