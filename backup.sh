@@ -13,7 +13,7 @@ else
 fi
 name="freekick-$appendix.tar.gz"
 
-dst_dir="/Users/huge/Work/VShared/virginix/code/release-freekick"
+dst_dir="/Users/huge/Work/VShared/plum/code/release-freekick"
 test -d "$dst_dir" && git archive master --prefix='freekick/' | gzip > "$dst_dir"/$name
 
 dst_dir="/Volumes/SDCard/X-STARS/release-freekick"
