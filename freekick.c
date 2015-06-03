@@ -691,26 +691,23 @@ int fk_cmd_llen(fk_conn *conn)
 
 int fk_cmd_save(fk_conn *conn)
 {
-	int rt;
+	int rt, err;
 
-	if (server.save_done != 1) {
-		rt = fk_conn_status_rsp_add(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);
-		if (rt < 0) {
-			return -1;
+	err = 1;
+
+	if (server.save_done == 1) {
+		rt = fk_svr_db_save_exec();
+		if (rt == 0) {
+			err = 0;
 		}
-		return 0;
 	}
 
-	rt = fk_svr_db_save_exec();
-	if (rt < 0) {
-		rt = fk_conn_status_rsp_add(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);
-		if (rt < 0) {
-			return -1;
-		}
-		return 0;
+	if (err == 1) {
+		rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	} else {
+		rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	}
 
-	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
 		return -1;
 	}
