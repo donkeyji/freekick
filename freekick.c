@@ -1384,6 +1384,8 @@ int fk_svr_db_restore(FILE *dbf, char **buf)
 		case FK_ITEM_DICT:
 			rt = fk_svr_db_dict_elt_restore(dbf, db, buf);
 			break;
+		default:
+			return -1;
 		}
 		if (rt < 0) {
 			return -1;
