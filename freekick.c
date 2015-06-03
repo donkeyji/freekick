@@ -701,7 +701,14 @@ int fk_cmd_save(fk_conn *conn)
 		return 0;
 	}
 
-	fk_svr_db_save_exec();
+	rt = fk_svr_db_save_exec();
+	if (rt < 0) {
+		rt = fk_conn_status_rsp_add(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	}
 
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
@@ -709,6 +716,7 @@ int fk_cmd_save(fk_conn *conn)
 	}
 	return 0;
 }
+
 /* -------------------------------------------- */
 uint32_t fk_db_dict_key_hash(void *key)
 {
