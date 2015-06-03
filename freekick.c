@@ -1084,6 +1084,9 @@ int fk_svr_db_save_exec()
 
 	/* step 1: write to a temporary file*/
 	fp = fopen(temp_db, "w+");
+	if (fp == NULL) {
+		return -1;
+	}
 
 	for (i = 0; i < server.dbcnt; i++) {
 		rt = fk_svr_db_dump(fp, i);
@@ -1094,7 +1097,10 @@ int fk_svr_db_save_exec()
 	fclose(fp);
 
 	/* step 2: rename temporary file to server.db_file */
-	rename(temp_db, fk_str_raw(server.db_file));
+	rt = rename(temp_db, fk_str_raw(server.db_file));
+	if (rt < 0) {
+		return -1;
+	}
 
 	return 0;
 }
@@ -1262,7 +1268,9 @@ void fk_svr_db_save()
 		server.save_done = 0;
 		return;
 	} else {
-		fk_svr_db_save_exec();
+		if (fk_svr_db_save_exec() < 0) {
+			exit(EXIT_FAILURE);
+		}
 		exit(EXIT_SUCCESS);
 	}
 }
@@ -1538,12 +1546,16 @@ void fk_main_cycle()
 
 void fk_main_final()
 {
+	int rt;
 	/* to do: free resource */
 	while (server.save_done == 0) {
 		sleep(1);
 	}
 	/* save db once more */
-	fk_svr_db_save_exec();
+	rt = fk_svr_db_save_exec();
+	if (rt < 0) {
+		exit(EXIT_FAILURE);
+	}
 }
 
 int main(int argc, char **argv)
