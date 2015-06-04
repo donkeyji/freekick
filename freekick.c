@@ -93,9 +93,9 @@ static void fk_db_dict_val_free(void *elt);
 static void *fk_db_list_val_copy(void *ptr);
 static void fk_db_list_val_free(void *ptr);
 
-fk_readline *fk_readline_create(size_t len);
-void fk_readline_adjust(fk_readline *buf, size_t len);
-void fk_readline_destroy(fk_readline *buf);
+static fk_readline *fk_readline_create(size_t len);
+static void fk_readline_adjust(fk_readline *buf, size_t len);
+static void fk_readline_destroy(fk_readline *buf);
 /* ---------------------------------------------------- */
 #define FK_RSP_OK				"OK"
 #define FK_RSP_ERR				"ERROR"
