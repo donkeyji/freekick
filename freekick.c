@@ -1234,12 +1234,12 @@ int fk_svr_db_str_elt_dump(FILE *dbf, fk_elt *elt)
 	/* key dump */
 	len = fk_str_len(key) - 1;
 	fwrite(&len, sizeof(len), 1, dbf);
-	fprintf(dbf, "%s\r\n", fk_str_raw(key));
+	fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, dbf);
 
 	/* value dump */
 	len = fk_str_len(value) - 1;
 	fwrite(&len, sizeof(len), 1, dbf);
-	fprintf(dbf, "%s\r\n", fk_str_raw(value));
+	fwrite(fk_str_raw(value), fk_str_len(value) - 1, 1, dbf);
 
 	return 0;
 }
@@ -1267,7 +1267,7 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 	/* key dump */
 	len = fk_str_len(key) - 1;
 	fwrite(&len, sizeof(len), 1, dbf);
-	fprintf(dbf, "%s\r\n", fk_str_raw(key));
+	fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, dbf);
 
 	/* size dump */
 	len = fk_list_len(lst);
@@ -1280,7 +1280,7 @@ int fk_svr_db_list_elt_dump(FILE *dbf, fk_elt *elt)
 		vs = (fk_str *)(fk_item_raw(nitm));
 		len = fk_str_len(vs) - 1;
 		fwrite(&len, sizeof(len), 1, dbf);
-		fprintf(dbf, "%s\r\n", fk_str_raw(vs));
+		fwrite(fk_str_raw(vs), fk_str_len(vs) - 1, 1, dbf);
 	}
 
 	return 0;
@@ -1309,7 +1309,7 @@ int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 	/* key dump */
 	len = fk_str_len(key) - 1;
 	fwrite(&len, sizeof(len), 1, dbf);
-	fprintf(dbf, "%s\r\n", fk_str_raw(key));
+	fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, dbf);
 
 	/* size dump */
 	len = fk_dict_len(dct);
@@ -1325,11 +1325,11 @@ int fk_svr_db_dict_elt_dump(FILE *dbf, fk_elt *elt)
 
 		len = fk_str_len(skey) - 1;
 		fwrite(&len, sizeof(len), 1, dbf);
-		fprintf(dbf, "%s\r\n", fk_str_raw(skey));
+		fwrite(fk_str_raw(skey), fk_str_len(skey) - 1, 1, dbf);
 
 		len = fk_str_len(svs) - 1;
 		fwrite(&len, sizeof(len), 1, dbf);
-		fprintf(dbf, "%s\r\n", fk_str_raw(svs));
+		fwrite(fk_str_raw(svs), fk_str_len(svs) - 1, 1, dbf);
 	}
 
 	return 0;
@@ -1450,14 +1450,14 @@ int fk_svr_db_str_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 
 	fread(&klen, sizeof(klen), 1, dbf);
 
-	fk_readline_adjust(buf, klen + 2);
-	fread(buf->line, klen + 2, 1, dbf);
+	fk_readline_adjust(buf, klen);
+	fread(buf->line, klen, 1, dbf);
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
 	fread(&vlen, sizeof(vlen), 1, dbf);
-	fk_readline_adjust(buf, vlen + 2);
-	fread(buf->line, vlen + 2, 1, dbf);
+	fk_readline_adjust(buf, vlen);
+	fread(buf->line, vlen, 1, dbf);
 
 	value = fk_str_create(buf->line, vlen);
 	vitm = fk_item_create(FK_ITEM_STR, value);
@@ -1480,8 +1480,8 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 	size_t klen, llen, i, nlen;
 
 	fread(&klen, sizeof(klen), 1, dbf);
-	fk_readline_adjust(buf, klen + 2);
-	fread(buf->line, klen + 2, 1, dbf);
+	fk_readline_adjust(buf, klen);
+	fread(buf->line, klen, 1, dbf);
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
@@ -1490,8 +1490,8 @@ int fk_svr_db_list_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 	lst = fk_list_create(&db_list_op);
 	for (i = 0; i < llen; i++) {
 		fread(&nlen, sizeof(nlen), 1, dbf);
-		fk_readline_adjust(buf, nlen + 2);
-		fread(buf->line, nlen + 2, 1, dbf);
+		fk_readline_adjust(buf, nlen);
+		fread(buf->line, nlen, 1, dbf);
 		nds = fk_str_create(buf->line, nlen);
 		nitm = fk_item_create(FK_ITEM_STR, nds);
 		fk_list_tail_insert(lst, nitm);
@@ -1515,8 +1515,8 @@ int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 	fk_item *kitm, *skitm, *vitm, *svitm;
 
 	fread(&klen, sizeof(klen), 1, dbf);
-	fk_readline_adjust(buf, klen + 2);
-	fread(buf->line, klen + 2, 1, dbf);
+	fk_readline_adjust(buf, klen);
+	fread(buf->line, klen, 1, dbf);
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
@@ -1525,14 +1525,14 @@ int fk_svr_db_dict_elt_restore(FILE *dbf, fk_dict *db, fk_readline *buf)
 	sdct = fk_dict_create(&db_dict_eop);
 	for (i = 0; i < dlen; i++) {
 		fread(&sklen, sizeof(sklen), 1, dbf);
-		fk_readline_adjust(buf, sklen + 2);
-		fread(buf->line, sklen + 2, 1, dbf);
+		fk_readline_adjust(buf, sklen);
+		fread(buf->line, sklen, 1, dbf);
 		skey = fk_str_create(buf->line, sklen);
 		skitm = fk_item_create(FK_ITEM_STR, skey);
 
 		fread(&svlen, sizeof(svlen), 1, dbf);
-		fk_readline_adjust(buf, svlen + 2);
-		fread(buf->line, svlen + 2, 1, dbf);
+		fk_readline_adjust(buf, svlen);
+		fread(buf->line, svlen, 1, dbf);
 		svalue = fk_str_create(buf->line, svlen);
 		svitm = fk_item_create(FK_ITEM_STR, svalue);
 
