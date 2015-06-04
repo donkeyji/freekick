@@ -1169,6 +1169,10 @@ int fk_svr_db_save_exec()
 	return 0;
 }
 
+/*
+ * to do: 
+ * error handling
+ */
 int fk_svr_db_dump(FILE *fp, int db_idx)
 {
 	size_t len;
