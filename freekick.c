@@ -1277,7 +1277,7 @@ int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 {
 	int type;
-	size_t len;
+	size_t len, wz;
 	fk_node *nd;
 	fk_list *lst;
 	fk_str *key, *vs;
@@ -1292,16 +1292,28 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 
 	/* type dump */
 	type = fk_item_type(vitm);
-	fwrite(&type, sizeof(type), 1, fp);
+	wz = fwrite(&type, sizeof(type), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	/* key dump */
 	len = fk_str_len(key) - 1;
-	fwrite(&len, sizeof(len), 1, fp);
-	fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	wz = fwrite(&len, sizeof(len), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
+	wz = fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	/* size dump */
 	len = fk_list_len(lst);
-	fwrite(&len, sizeof(len), 1, fp);
+	wz = fwrite(&len, sizeof(len), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	/*value dump */
 	iter = fk_list_iter_begin(lst, FK_LIST_ITER_H2T);
@@ -1309,9 +1321,19 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 		nitm = (fk_item *)(fk_node_raw(nd));
 		vs = (fk_str *)(fk_item_raw(nitm));
 		len = fk_str_len(vs) - 1;
-		fwrite(&len, sizeof(len), 1, fp);
-		fwrite(fk_str_raw(vs), fk_str_len(vs) - 1, 1, fp);
+		wz = fwrite(&len, sizeof(len), 1, fp);
+		if (wz == 0) {
+			fk_list_iter_end(iter);
+			return -1;
+		}
+
+		wz = fwrite(fk_str_raw(vs), fk_str_len(vs) - 1, 1, fp);
+		if (len > 0 && wz == 0) {
+			fk_list_iter_end(iter);
+			return -1;
+		}
 	}
+	fk_list_iter_end(iter);/* must release this iterator of fk_list */
 
 	return 0;
 }
