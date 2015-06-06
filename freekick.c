@@ -1201,8 +1201,7 @@ int fk_svr_db_dump(FILE *fp, int db_idx)
 
 	/* dict body */
 	iter = fk_dict_iter_begin(dct);
-	elt = fk_dict_iter_next(iter);
-	while (elt != NULL) {
+	while ((elt = fk_dict_iter_next(iter)) != NULL) {
 		type = fk_item_type(((fk_item *)elt->value));
 		switch (type) {
 		case FK_ITEM_STR:
@@ -1219,8 +1218,8 @@ int fk_svr_db_dump(FILE *fp, int db_idx)
 			fk_dict_iter_end(iter);/* need to release iterator */
 			return -1;
 		}
-		elt = fk_dict_iter_next(iter);
 	}
+	fk_dict_iter_end(iter);/* must release this iterator of fk_dict */
 
 	return 0;
 }
