@@ -1533,20 +1533,32 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
  */
 int fk_svr_db_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 {
-	size_t klen, vlen;
+	size_t klen, vlen, rz;
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
 
-	fread(&klen, sizeof(klen), 1, fp);
+	rz = fread(&klen, sizeof(klen), 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 
 	fk_zline_adjust(buf, klen);
-	fread(buf->line, klen, 1, fp);
+	rz = fread(buf->line, klen, 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
-	fread(&vlen, sizeof(vlen), 1, fp);
+	rz = fread(&vlen, sizeof(vlen), 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 	fk_zline_adjust(buf, vlen);
-	fread(buf->line, vlen, 1, fp);
+	rz = fread(buf->line, vlen, 1, fp);
+	if (vlen > 0 && rz == 0) {
+		return -1;
+	}
 
 	value = fk_str_create(buf->line, vlen);
 	vitm = fk_item_create(FK_ITEM_STR, value);
