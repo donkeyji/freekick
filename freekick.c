@@ -322,11 +322,11 @@ int fk_cmd_mget(fk_conn *conn)
 				}
 			} else {
 				ss = (fk_str *)fk_item_raw(value);
-				rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss) - 1));
+				rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss)));
 				if (rt < 0) {
 					return -1;
 				}
-				rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+				rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss));
 				if (rt < 0) {
 					return -1;
 				}
@@ -361,11 +361,11 @@ int fk_cmd_get(fk_conn *conn)
 	} 
 
 	ss = (fk_str *)fk_item_raw(value);
-	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss) - 1));
+	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss)));
 	if (rt < 0) {
 		return -1;
 	}
-	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss));
 	if (rt < 0) {
 		return -1;
 	}
@@ -528,11 +528,11 @@ int fk_cmd_hget(fk_conn *conn)
 	}
 
 	value = (fk_str *)fk_item_raw(itm);
-	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(value) - 1));
+	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(value)));
 	if (rt < 0) {
 		return -1;
 	}
-	rt = fk_conn_content_rsp_add(conn, fk_str_raw(value), fk_str_len(value) - 1);
+	rt = fk_conn_content_rsp_add(conn, fk_str_raw(value), fk_str_len(value));
 	if (rt < 0) {
 		return -1;
 	}
@@ -644,11 +644,11 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	}
 	itm = (fk_item *)fk_node_raw(nd_itm);
 	ss = (fk_str *)fk_item_raw(itm);
-	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss) - 1));
+	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss)));
 	if (rt < 0) {
 		return -1;
 	}
-	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss) - 1);
+	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss));
 	if (rt < 0) {
 		return -1;
 	}
@@ -1269,18 +1269,18 @@ int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 	value = (fk_str *)(fk_item_raw(vitm));
 
 	/* key dump */
-	len = fk_str_len(key) - 1;
+	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
 		return -1;
 	}
-	wz = fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
 		return -1;
 	}
 
 	/* value dump */
-	len = fk_str_len(value) - 1;
+	len = fk_str_len(value);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	/* 
 	 * when len == 0 ==> wz == 0
@@ -1289,7 +1289,7 @@ int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 	if (wz == 0) {
 		return -1;
 	}
-	wz = fwrite(fk_str_raw(value), fk_str_len(value) - 1, 1, fp);
+	wz = fwrite(fk_str_raw(value), fk_str_len(value), 1, fp);
 	if (len > 0 && wz == 0) {
 		return -1;
 	}
@@ -1313,12 +1313,12 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 	lst = (fk_list *)(fk_item_raw(vitm));
 
 	/* key dump */
-	len = fk_str_len(key) - 1;
+	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
 		return -1;
 	}
-	wz = fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
 		return -1;
 	}
@@ -1335,14 +1335,14 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 	while ((nd = fk_list_iter_next(iter)) != NULL) {
 		nitm = (fk_item *)(fk_node_raw(nd));
 		vs = (fk_str *)(fk_item_raw(nitm));
-		len = fk_str_len(vs) - 1;
+		len = fk_str_len(vs);
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_list_iter_end(iter);
 			return -1;
 		}
 
-		wz = fwrite(fk_str_raw(vs), fk_str_len(vs) - 1, 1, fp);
+		wz = fwrite(fk_str_raw(vs), fk_str_len(vs), 1, fp);
 		if (len > 0 && wz == 0) {
 			fk_list_iter_end(iter);
 			return -1;
@@ -1369,12 +1369,12 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 	dct = (fk_dict *)(fk_item_raw(vitm));
 
 	/* key dump */
-	len = fk_str_len(key) - 1;
+	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
 		return -1;
 	}
-	wz = fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
 		return -1;
 	}
@@ -1394,25 +1394,25 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 		skey = (fk_str *)(fk_item_raw(skitm));
 		svs = (fk_str *)(fk_item_raw(svitm));
 
-		len = fk_str_len(skey) - 1;
+		len = fk_str_len(skey);
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
 			return -1;
 		}
-		wz = fwrite(fk_str_raw(skey), fk_str_len(skey) - 1, 1, fp);
+		wz = fwrite(fk_str_raw(skey), fk_str_len(skey), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
 			return -1;
 		}
 
-		len = fk_str_len(svs) - 1;
+		len = fk_str_len(svs);
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
 			return -1;
 		}
-		wz = fwrite(fk_str_raw(svs), fk_str_len(svs) - 1, 1, fp);
+		wz = fwrite(fk_str_raw(svs), fk_str_len(svs), 1, fp);
 		if (len > 0 && wz == 0) {
 			fk_dict_iter_end(iter);
 			return -1;
