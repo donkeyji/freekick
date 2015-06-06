@@ -1494,6 +1494,10 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
 	unsigned type;
 	size_t cnt, i, rz;
 
+	/* 
+	 * to do:
+	 * check the range of "idx"
+	 */
 	/* restore the index */
 	rz = fread(&idx, sizeof(idx), 1, fp);
 	if (rz == 0) {
