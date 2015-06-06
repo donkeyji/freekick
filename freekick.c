@@ -121,6 +121,7 @@ static int fk_cmd_lpop(fk_conn *conn);
 static int fk_cmd_rpop(fk_conn *conn);
 static int fk_cmd_llen(fk_conn *conn);
 static int fk_cmd_save(fk_conn *conn);
+static int fk_cmd_select(fk_conn *conn);
 /* ---------------------------------------------------- */
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);
@@ -164,6 +165,7 @@ static fk_proto protos[] = {
 	{"RPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_rpop	 	},
 	{"LLEN",	FK_PROTO_READ,		2,					fk_cmd_llen		},
 	{"SAVE",	FK_PROTO_READ,		1,					fk_cmd_save		},
+	{"SELECT",	FK_PROTO_WRITE,		2,					fk_cmd_select	},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -716,6 +718,32 @@ int fk_cmd_save(fk_conn *conn)
 		rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	}
 
+	if (rt < 0) {
+		return -1;
+	}
+	return 0;
+}
+
+int fk_cmd_select(fk_conn *conn)
+{
+	int db_idx, rt;
+	fk_str *s;
+	fk_item *itm;
+
+	itm = fk_conn_arg_get(conn, 1);
+	s = (fk_str *)fk_item_raw(itm);
+	db_idx = atoi(fk_str_raw(s));
+	if (db_idx < 0 || db_idx >= server.dbcnt) {
+		rt = fk_conn_error_rsp_add(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);
+		if (rt < 0) {
+			return -1;
+		}
+		return 0;
+	}
+
+	conn->db_idx = db_idx;
+
+	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
 		return -1;
 	}
