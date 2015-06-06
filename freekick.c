@@ -1175,7 +1175,7 @@ int fk_svr_db_save_exec()
  */
 int fk_svr_db_dump(FILE *fp, int db_idx)
 {
-	size_t len;
+	size_t len, wz;
 	fk_elt *elt;
 	int type, rt;
 	fk_dict *dct;
@@ -1187,11 +1187,17 @@ int fk_svr_db_dump(FILE *fp, int db_idx)
 	}
 
 	/* only write index of db */
-	fwrite(&db_idx, sizeof(db_idx), 1, fp);
+	wz = fwrite(&db_idx, sizeof(db_idx), 1, fp);/* htonl ??? */
+	if (wz == 0) {
+		return -1;
+	}
 
 	/* dump the len of the dict */
 	len = fk_dict_len(dct);
-	fwrite(&len, sizeof(len), 1, fp);
+	wz = fwrite(&len, sizeof(len), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	/* dict body */
 	iter = fk_dict_iter_begin(dct);
@@ -1210,6 +1216,7 @@ int fk_svr_db_dump(FILE *fp, int db_idx)
 			break;
 		}
 		if (rt < 0) {
+			fk_dict_iter_end(iter);/* need to release iterator */
 			return -1;
 		}
 		elt = fk_dict_iter_next(iter);
