@@ -726,9 +726,9 @@ int fk_cmd_save(fk_conn *conn)
 
 int fk_cmd_select(fk_conn *conn)
 {
-	int db_idx, rt;
 	fk_str *s;
 	fk_item *itm;
+	int db_idx, rt;
 
 	itm = fk_conn_arg_get(conn, 1);
 	s = (fk_str *)fk_item_raw(itm);
@@ -742,7 +742,6 @@ int fk_cmd_select(fk_conn *conn)
 	}
 
 	conn->db_idx = db_idx;
-
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
 		return -1;
