@@ -1186,8 +1186,8 @@ int fk_svr_db_dump(FILE *fp, int db_idx)
 		return 0;
 	}
 
-	/* only write index of db */
-	wz = fwrite(&db_idx, sizeof(db_idx), 1, fp);/* htonl ??? */
+	/* I do not think it's necessary to call htonl() */
+	wz = fwrite(&db_idx, sizeof(db_idx), 1, fp);
 	if (wz == 0) {
 		return -1;
 	}
