@@ -1578,21 +1578,36 @@ int fk_svr_db_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 	fk_list *lst;
 	fk_str *key, *nds;
 	fk_item *kitm, *vitm, *nitm;
-	size_t klen, llen, i, nlen;
+	size_t klen, llen, i, nlen, rz;
 
-	fread(&klen, sizeof(klen), 1, fp);
+	rz = fread(&klen, sizeof(klen), 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 	fk_zline_adjust(buf, klen);
-	fread(buf->line, klen, 1, fp);
+	rz = fread(buf->line, klen, 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
-	fread(&llen, sizeof(llen), 1, fp);
+	rz = fread(&llen, sizeof(llen), 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 
 	lst = fk_list_create(&db_list_op);
 	for (i = 0; i < llen; i++) {
-		fread(&nlen, sizeof(nlen), 1, fp);
+		rz = fread(&nlen, sizeof(nlen), 1, fp);
+		if (rz == 0) {
+			return -1;
+		}
 		fk_zline_adjust(buf, nlen);
-		fread(buf->line, nlen, 1, fp);
+		rz = fread(buf->line, nlen, 1, fp);
+		if (nlen > 0 && rz == 0) {
+			return -1;
+		}
 		nds = fk_str_create(buf->line, nlen);
 		nitm = fk_item_create(FK_ITEM_STR, nds);
 		fk_list_tail_insert(lst, nitm);
