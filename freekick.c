@@ -1341,7 +1341,7 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 {
 	int type;
-	size_t len;
+	size_t len, wz;
 	fk_elt *selt;
 	fk_dict *dct;
 	fk_dict_iter *iter;
@@ -1356,16 +1356,28 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 
 	/* type dump */
 	type = fk_item_type(vitm);
-	fwrite(&type, sizeof(type), 1, fp);
+	wz = fwrite(&type, sizeof(type), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	/* key dump */
 	len = fk_str_len(key) - 1;
-	fwrite(&len, sizeof(len), 1, fp);
-	fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	wz = fwrite(&len, sizeof(len), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
+	wz = fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	/* size dump */
 	len = fk_dict_len(dct);
-	fwrite(&len, sizeof(len), 1, fp);
+	wz = fwrite(&len, sizeof(len), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	iter = fk_dict_iter_begin(dct);
 	while ((selt = fk_dict_iter_next(iter)) != NULL) {
@@ -1376,13 +1388,30 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 		svs = (fk_str *)(fk_item_raw(svitm));
 
 		len = fk_str_len(skey) - 1;
-		fwrite(&len, sizeof(len), 1, fp);
-		fwrite(fk_str_raw(skey), fk_str_len(skey) - 1, 1, fp);
+		wz = fwrite(&len, sizeof(len), 1, fp);
+		if (wz == 0) {
+			fk_dict_iter_end(iter);
+			return -1;
+		}
+		wz = fwrite(fk_str_raw(skey), fk_str_len(skey) - 1, 1, fp);
+		if (wz == 0) {
+			fk_dict_iter_end(iter);
+			return -1;
+		}
 
 		len = fk_str_len(svs) - 1;
-		fwrite(&len, sizeof(len), 1, fp);
-		fwrite(fk_str_raw(svs), fk_str_len(svs) - 1, 1, fp);
+		wz = fwrite(&len, sizeof(len), 1, fp);
+		if (wz == 0) {
+			fk_dict_iter_end(iter);
+			return -1;
+		}
+		wz = fwrite(fk_str_raw(svs), fk_str_len(svs) - 1, 1, fp);
+		if (len > 0 && wz == 0) {
+			fk_dict_iter_end(iter);
+			return -1;
+		}
 	}
+	fk_dict_iter_end(iter);/* must release this iterator of fk_dict */
 
 	return 0;
 }
