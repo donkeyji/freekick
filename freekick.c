@@ -1627,28 +1627,49 @@ int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 {
 	fk_dict *sdct;
 	fk_str *key, *skey, *svalue;
-	size_t klen, sklen, svlen, dlen, i;
+	size_t klen, sklen, svlen, dlen, i, rz;
 	fk_item *kitm, *skitm, *vitm, *svitm;
 
-	fread(&klen, sizeof(klen), 1, fp);
+	rz = fread(&klen, sizeof(klen), 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 	fk_zline_adjust(buf, klen);
-	fread(buf->line, klen, 1, fp);
+	rz = fread(buf->line, klen, 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
-	fread(&dlen, sizeof(dlen), 1, fp);
+	rz = fread(&dlen, sizeof(dlen), 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 
 	sdct = fk_dict_create(&db_dict_eop);
 	for (i = 0; i < dlen; i++) {
-		fread(&sklen, sizeof(sklen), 1, fp);
+		rz = fread(&sklen, sizeof(sklen), 1, fp);
+		if (rz == 0) {
+			return -1;
+		}
 		fk_zline_adjust(buf, sklen);
-		fread(buf->line, sklen, 1, fp);
+		rz = fread(buf->line, sklen, 1, fp);
+		if (rz == 0) {
+			return -1;
+		}
 		skey = fk_str_create(buf->line, sklen);
 		skitm = fk_item_create(FK_ITEM_STR, skey);
 
-		fread(&svlen, sizeof(svlen), 1, fp);
+		rz = fread(&svlen, sizeof(svlen), 1, fp);
+		if (rz == 0) {
+			return -1;
+		}
 		fk_zline_adjust(buf, svlen);
-		fread(buf->line, svlen, 1, fp);
+		rz = fread(buf->line, svlen, 1, fp);
+		if (svlen > 0 && rz == 0) {
+			return -1;
+		}
 		svalue = fk_str_create(buf->line, svlen);
 		svitm = fk_item_create(FK_ITEM_STR, svalue);
 
