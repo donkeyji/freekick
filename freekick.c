@@ -1460,6 +1460,10 @@ void fk_svr_db_load(fk_str *db_file)
 	long tail;
 	fk_zline *buf;
 
+	if (setting.dump != 1) {
+		return;
+	}
+
 	buf = fk_zline_create(4096);
 	fp = fopen(fk_str_raw(db_file), "r");
 	if (fp == NULL) {/* db not exist */
