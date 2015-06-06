@@ -52,7 +52,9 @@ void fk_dict_empty(fk_dict *dct);
 void fk_dict_print(fk_dict *dct);
 #endif
 
-#define fk_dict_len(dct)	(dct->used)
+#define fk_dict_len(dct)	((dct)->used)
+#define fk_elt_key(elt)		((elt)->key)
+#define fk_elt_value(elt)	((elt)->value)
 
 fk_dict_iter *fk_dict_iter_begin(fk_dict *dct);
 fk_elt *fk_dict_iter_next(fk_dict_iter *iter);

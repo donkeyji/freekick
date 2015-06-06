@@ -218,8 +218,8 @@ void fk_proto_init()
 	fk_elt *elt;
 	fk_dict_iter *iter = fk_dict_iter_begin(pmap);
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
-		key = (fk_str *)(elt->key);
-		value = elt->value;
+		key = (fk_str *)fk_elt_key(elt);
+		value = fk_elt_value(elt);
 		fprintf(stdout, "proto key: %s\n", fk_str_raw(key));
 	}
 #endif
@@ -1202,7 +1202,7 @@ int fk_svr_db_dump(FILE *fp, int db_idx)
 	/* dict body */
 	iter = fk_dict_iter_begin(dct);
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
-		type = fk_item_type(((fk_item *)elt->value));
+		type = fk_item_type(((fk_item *)fk_elt_value(elt)));
 		wz = fwrite(&type, sizeof(type), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);/* need to release iterator */
@@ -1235,8 +1235,8 @@ int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
 
-	kitm = (fk_item *)(elt->key);
-	vitm = (fk_item *)(elt->value);
+	kitm = (fk_item *)fk_elt_key(elt);
+	vitm = (fk_item *)fk_elt_value(elt);
 
 	key = (fk_str *)(fk_item_raw(kitm));
 	value = (fk_str *)(fk_item_raw(vitm));
@@ -1279,8 +1279,8 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 	fk_list_iter *iter;
 	fk_item *kitm, *vitm, *nitm;
 
-	kitm = (fk_item *)(elt->key);
-	vitm = (fk_item *)(elt->value);
+	kitm = (fk_item *)fk_elt_key(elt);
+	vitm = (fk_item *)fk_elt_value(elt);
 
 	key = (fk_str *)(fk_item_raw(kitm));
 	lst = (fk_list *)(fk_item_raw(vitm));
@@ -1335,8 +1335,8 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 	fk_str *key, *skey, *svs;
 	fk_item *kitm, *vitm, *skitm, *svitm;
 
-	kitm = (fk_item *)(elt->key);
-	vitm = (fk_item *)(elt->value);
+	kitm = (fk_item *)fk_elt_key(elt);
+	vitm = (fk_item *)fk_elt_value(elt);
 
 	key = (fk_str *)(fk_item_raw(kitm));
 	dct = (fk_dict *)(fk_item_raw(vitm));
@@ -1361,8 +1361,8 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 
 	iter = fk_dict_iter_begin(dct);
 	while ((selt = fk_dict_iter_next(iter)) != NULL) {
-		skitm = (fk_item *)(selt->key);
-		svitm = (fk_item *)(selt->value);
+		skitm = (fk_item *)fk_elt_key(selt);
+		svitm = (fk_item *)fk_elt_value(selt);
 
 		skey = (fk_str *)(fk_item_raw(skitm));
 		svs = (fk_str *)(fk_item_raw(svitm));
