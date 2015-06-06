@@ -1228,7 +1228,7 @@ int fk_svr_db_dump(FILE *fp, int db_idx)
 int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 {
 	int type;
-	size_t len;
+	size_t len, wz;
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
 
@@ -1240,17 +1240,36 @@ int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 
 	/* type dump */
 	type = fk_item_type(vitm);
-	fwrite(&type, sizeof(type), 1, fp);
+	wz = fwrite(&type, sizeof(type), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	/* key dump */
 	len = fk_str_len(key) - 1;
-	fwrite(&len, sizeof(len), 1, fp);
-	fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	wz = fwrite(&len, sizeof(len), 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
+	wz = fwrite(fk_str_raw(key), fk_str_len(key) - 1, 1, fp);
+	if (wz == 0) {
+		return -1;
+	}
 
 	/* value dump */
 	len = fk_str_len(value) - 1;
-	fwrite(&len, sizeof(len), 1, fp);
-	fwrite(fk_str_raw(value), fk_str_len(value) - 1, 1, fp);
+	wz = fwrite(&len, sizeof(len), 1, fp);
+	/* 
+	 * when len == 0 ==> wz == 0
+	 * when len > 0  ==> wz > 0
+	 */
+	if (wz == 0) {
+		return -1;
+	}
+	wz = fwrite(fk_str_raw(value), fk_str_len(value) - 1, 1, fp);
+	if (len > 0 && wz == 0) {
+		return -1;
+	}
 
 	return 0;
 }
