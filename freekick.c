@@ -1483,19 +1483,28 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
 {
 	int idx, rt;
 	fk_dict *db;
-	size_t cnt, i;
+	size_t cnt, i, rz;
 	unsigned type;
 
 	/* restore the index */
-	fread(&idx, sizeof(idx), 1, fp);
+	rz = fread(&idx, sizeof(idx), 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 	db = server.db[idx];
 
 	/* restore len of dictionary */
-	fread(&cnt, sizeof(cnt), 1, fp);
+	rz = fread(&cnt, sizeof(cnt), 1, fp);
+	if (rz == 0) {
+		return -1;
+	}
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
-		fread(&type, sizeof(type), 1, fp);
+		rz = fread(&type, sizeof(type), 1, fp);
+		if (rz == 0) {
+			return -1;
+		}
 
 		switch (type) {
 		case FK_ITEM_STR:
