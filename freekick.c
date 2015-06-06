@@ -1175,10 +1175,10 @@ int fk_svr_db_save_exec()
  */
 int fk_svr_db_dump(FILE *fp, int db_idx)
 {
-	size_t len, wz;
 	fk_elt *elt;
 	int type, rt;
 	fk_dict *dct;
+	size_t len, wz;
 	fk_dict_iter *iter;
 
 	dct = server.db[db_idx];
@@ -1276,9 +1276,9 @@ int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 {
 	int type;
-	size_t len, wz;
 	fk_node *nd;
 	fk_list *lst;
+	size_t len, wz;
 	fk_str *key, *vs;
 	fk_list_iter *iter;
 	fk_item *kitm, *vitm, *nitm;
@@ -1340,9 +1340,9 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 {
 	int type;
-	size_t len, wz;
 	fk_elt *selt;
 	fk_dict *dct;
+	size_t len, wz;
 	fk_dict_iter *iter;
 	fk_str *key, *skey, *svs;
 	fk_item *kitm, *vitm, *skitm, *svitm;
@@ -1483,8 +1483,8 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
 {
 	int idx, rt;
 	fk_dict *db;
-	size_t cnt, i, rz;
 	unsigned type;
+	size_t cnt, i, rz;
 
 	/* restore the index */
 	rz = fread(&idx, sizeof(idx), 1, fp);
@@ -1533,9 +1533,9 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
  */
 int fk_svr_db_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 {
-	size_t klen, vlen, rz;
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
+	size_t klen, vlen, rz;
 
 	rz = fread(&klen, sizeof(klen), 1, fp);
 	if (rz == 0) {
@@ -1627,8 +1627,8 @@ int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 {
 	fk_dict *sdct;
 	fk_str *key, *skey, *svalue;
-	size_t klen, sklen, svlen, dlen, i, rz;
 	fk_item *kitm, *skitm, *vitm, *svitm;
+	size_t klen, sklen, svlen, dlen, i, rz;
 
 	rz = fread(&klen, sizeof(klen), 1, fp);
 	if (rz == 0) {
