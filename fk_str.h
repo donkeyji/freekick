@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 typedef struct _fk_str {
-	size_t len;/* full length, including '\0' */
+	size_t len;/* valid length, excluding '\0' */
 	char seq[];
 } fk_str;
 
