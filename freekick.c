@@ -883,8 +883,11 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 
 int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 {
+	int i;
 	fk_log_info("[timer 1]conn cnt: %u\n", server.conn_cnt);
-	fk_log_info("[timer 1]dbdict size: %d, used: %d, limit: %d\n", server.db[0]->size, server.db[0]->used, server.db[0]->limit);
+	for (i = 0; i < server.dbcnt; i++) {
+		fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
+	}
 
 	fk_svr_db_save();
 	return 0;
