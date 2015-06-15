@@ -69,7 +69,7 @@ static int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
 
 static void fk_svr_db_save();
 static int fk_svr_db_save_exec();
-static int fk_svr_db_dump(FILE *fp, int db_idx);
+static int fk_svr_db_dump(FILE *fp, unsigned db_idx);
 static int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt);
 static int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt);
 static int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt);
@@ -883,7 +883,7 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 
 int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 {
-	int i;
+	unsigned i;
 	fk_log_info("[timer 1]conn cnt: %u\n", server.conn_cnt);
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
@@ -1167,8 +1167,9 @@ void fk_zline_destroy(fk_zline *buf)
 
 int fk_svr_db_save_exec()
 {
+	int rt;
 	FILE *fp;
-	int i, rt;
+	unsigned i;
 	char *temp_db;
 
 	temp_db = "freekick-temp.db";
@@ -1203,7 +1204,7 @@ int fk_svr_db_save_exec()
  * to do: 
  * error handling
  */
-int fk_svr_db_dump(FILE *fp, int db_idx)
+int fk_svr_db_dump(FILE *fp, unsigned db_idx)
 {
 	fk_elt *elt;
 	int type, rt;
@@ -1496,10 +1497,10 @@ void fk_svr_db_load(fk_str *db_file)
  */
 int fk_svr_db_restore(FILE *fp, fk_zline *buf)
 {
-	int idx, rt;
+	int rt;
 	fk_dict *db;
-	unsigned type;
 	size_t cnt, i, rz;
+	unsigned type, idx;
 
 	/* 
 	 * to do:
@@ -1508,6 +1509,9 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
 	/* restore the index */
 	rz = fread(&idx, sizeof(idx), 1, fp);
 	if (rz == 0) {
+		return -1;
+	}
+	if (idx >= server.dbcnt) {
 		return -1;
 	}
 	db = server.db[idx];
