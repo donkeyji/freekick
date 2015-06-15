@@ -89,3 +89,10 @@
 当将max_conn设置为2时，且第一个connection的fd为6，将第一个connection存入conns_tab时，由于内存越界，刚好将server.listen_ev的内存给覆盖，造成了诡异的错误。
  server.conns_tab[conn->fd] = conn;
 server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
+
+41.在将db序列化时，需要将字符串的长度和内容都写入文件，如果采用纯文本格式写入，调用fprintf将字符串序列化成C/S间传输的协议那种格式，以\r\n来分隔，会导致反序列化时读入的麻烦，因为一个空字符串序列化成0\r\n\r\n这样，fread()会将2个\r\n合并成一个\r\n，导致读入字符串内容错误。所以并不适合采用这种字符格式的序列化，而采用fwrite()将字符串的长度以二进制的方式写入，后面紧跟字符串的内容，不加\r\n。
+
+42.在fwrite字符串的长度时，由于我这里fk_str/fk_list/fk_dict的长度都用的是size_t类型，size_t长度会依赖32/64平台变化，且有大小端的问题，网络字节序的转换也不好弄，htonl只能转换32-bit宽度的整数。
+
+
+
