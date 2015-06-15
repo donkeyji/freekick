@@ -1669,6 +1669,9 @@ int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (rz == 0) {
 		return -1;
 	}
+	if (klen > FK_STR_HIGHWAT) {
+		return -1;
+	}
 	fk_zline_adjust(buf, klen);
 	rz = fread(buf->line, klen, 1, fp);
 	if (rz == 0) {
@@ -1688,6 +1691,9 @@ int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 		if (rz == 0) {
 			return -1;
 		}
+		if (sklen > FK_STR_HIGHWAT) {
+			return -1;
+		}
 		fk_zline_adjust(buf, sklen);
 		rz = fread(buf->line, sklen, 1, fp);
 		if (rz == 0) {
@@ -1698,6 +1704,9 @@ int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 
 		rz = fread(&svlen, sizeof(svlen), 1, fp);
 		if (rz == 0) {
+			return -1;
+		}
+		if (svlen > FK_STR_HIGHWAT) {
 			return -1;
 		}
 		fk_zline_adjust(buf, svlen);
