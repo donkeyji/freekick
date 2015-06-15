@@ -1540,7 +1540,8 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
 			rt = fk_svr_db_dict_elt_restore(fp, db, buf);
 			break;
 		default:
-			return -1;
+			rt = -1;
+			break;
 		}
 		if (rt < 0) {
 			return -1;
