@@ -1564,6 +1564,9 @@ int fk_svr_db_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (rz == 0) {
 		return -1;
 	}
+	if (klen > FK_STR_HIGHWAT) {
+		return -1;
+	}
 
 	fk_zline_adjust(buf, klen);
 	rz = fread(buf->line, klen, 1, fp);
@@ -1575,6 +1578,9 @@ int fk_svr_db_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 
 	rz = fread(&vlen, sizeof(vlen), 1, fp);
 	if (rz == 0) {
+		return -1;
+	}
+	if (vlen > FK_STR_HIGHWAT) {
 		return -1;
 	}
 	fk_zline_adjust(buf, vlen);
