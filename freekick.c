@@ -67,8 +67,8 @@ static int fk_svr_db_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
 static int fk_svr_db_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
 static int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
 
-static void fk_svr_db_save();
-static int fk_svr_db_save_exec();
+static void fk_svr_db_save_background();
+static int fk_svr_db_save();
 static int fk_svr_db_dump(FILE *fp, unsigned db_idx);
 static int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt);
 static int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt);
@@ -706,7 +706,7 @@ int fk_cmd_save(fk_conn *conn)
 	err = 1;
 
 	if (server.save_done == 1) {
-		rt = fk_svr_db_save_exec();
+		rt = fk_svr_db_save();
 		if (rt == 0) {
 			err = 0;
 		}
@@ -889,7 +889,7 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 		fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
 	}
 
-	fk_svr_db_save();
+	fk_svr_db_save_background();
 	return 0;
 }
 
@@ -1165,7 +1165,7 @@ void fk_zline_destroy(fk_zline *buf)
 	fk_mem_free(buf);
 }
 
-int fk_svr_db_save_exec()
+int fk_svr_db_save()
 {
 	int rt;
 	FILE *fp;
@@ -1427,7 +1427,7 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 	return 0;
 }
 
-void fk_svr_db_save()
+void fk_svr_db_save_background()
 {
 	int rt;
 
@@ -1449,7 +1449,7 @@ void fk_svr_db_save()
 		return;
 	} else {
 		/* execute only in child process */
-		if (fk_svr_db_save_exec() < 0) {
+		if (fk_svr_db_save() < 0) {
 			fk_log_error("db save failed\n");
 			exit(EXIT_FAILURE);
 		}
@@ -1778,7 +1778,7 @@ void fk_main_final()
 		return;
 	}
 	/* save db once more */
-	rt = fk_svr_db_save_exec();
+	rt = fk_svr_db_save();
 	if (rt < 0) {
 		fk_log_error("db save failed\n");
 		exit(EXIT_FAILURE);
