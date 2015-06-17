@@ -1790,12 +1790,12 @@ int main(int argc, char **argv)
 	char *conf_path;
 
 	if (argc > 2) {
-		printf("illegal argument!!!\n");
-		printf("usage:\n");
-		printf("1: no config specifed\n");
-		printf("\tfreekick\n");
-		printf("2: specify a config file\n");
-		printf("\tfreekick /path/freekick.conf\n");
+		fprintf(stderr, "illegal argument!!!\n");
+		fprintf(stderr, "usage:\n");
+		fprintf(stderr, "1: no config specifed\n");
+		fprintf(stderr, "\tfreekick\n");
+		fprintf(stderr, "2: specify a config file\n");
+		fprintf(stderr, "\tfreekick /path/freekick.conf\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -1804,7 +1804,7 @@ int main(int argc, char **argv)
 		conf_path = argv[1];
 	}
 	if (conf_path == NULL) {
-		printf("no config file specified, using the default setting\n");
+		fprintf(stdout, "no config file specified, using the default setting\n");
 	}
 
 	fk_main_init(conf_path);
