@@ -1792,10 +1792,7 @@ int main(int argc, char **argv)
 	if (argc > 2) {
 		fprintf(stderr, "illegal argument!!!\n");
 		fprintf(stderr, "usage:\n");
-		fprintf(stderr, "1: no config specifed\n");
-		fprintf(stderr, "\tfreekick\n");
-		fprintf(stderr, "2: specify a config file\n");
-		fprintf(stderr, "\tfreekick /path/freekick.conf\n");
+		fprintf(stderr, "\tfreekick [/path/freekick.conf]\n");
 		exit(EXIT_FAILURE);
 	}
 
