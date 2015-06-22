@@ -1,6 +1,10 @@
 #ifndef _FK_TYPES_H_
 #define _FK_TYPES_H_
 
+/* status code */
+#define FK_OK			0
+#define FK_ERR			-1
+
 /* log level */
 #define FK_LOG_ERROR 	0
 #define FK_LOG_WARN 	1
