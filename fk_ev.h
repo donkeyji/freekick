@@ -6,6 +6,9 @@
 #include <fk_list.h>
 #include <fk_heap.h>
 
+#define FK_EV_OK		0
+#define FK_EV_ERR		-1
+
 /* for file ev */
 #define FK_IOEV_READ 	0x01
 #define FK_IOEV_WRITE 	0x02

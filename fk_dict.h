@@ -7,6 +7,9 @@
 #include <fk_list.h>
 #include <fk_str.h>
 
+#define FK_DICT_OK		0
+#define FK_DICT_ERR		-1
+
 typedef struct _fk_elt_op {
 	uint32_t (*key_hash)(void *key);/* gen hash */
 	int (*key_cmp)(void *k1, void *k2);/* key compare */
