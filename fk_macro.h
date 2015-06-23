@@ -1,9 +1,14 @@
 #ifndef _FK_TYPES_H_
 #define _FK_TYPES_H_
 
-/* status code */
-#define FK_OK			0
+/* status code definition copied from nginx */
+#define FK_OK			 0
 #define FK_ERR			-1
+#define FK_AGAIN    	-2
+#define FK_BUSY     	-3
+#define FK_DONE     	-4
+#define FK_DECLINED   	-5
+#define FK_ABORT      	-6
 
 /* log level */
 #define FK_LOG_ERROR 	0
