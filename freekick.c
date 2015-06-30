@@ -1174,7 +1174,7 @@ int fk_svr_db_save()
 
 	temp_db = "freekick-temp.db";
 
-	/* step 1: write to a temporary file*/
+	/* step 1: write to a temporary file */
 	fp = fopen(temp_db, "w+");
 	if (fp == NULL) {
 		return -1;
@@ -1334,7 +1334,7 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 		return -1;
 	}
 
-	/*value dump */
+	/* value dump */
 	iter = fk_list_iter_begin(lst, FK_LIST_ITER_H2T);
 	while ((nd = fk_list_iter_next(iter)) != NULL) {
 		nitm = (fk_item *)(fk_node_raw(nd));
