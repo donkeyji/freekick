@@ -94,5 +94,5 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 
 42.在fwrite字符串的长度时，由于我这里fk_str/fk_list/fk_dict的长度都用的是size_t类型，size_t长度会依赖32/64平台变化，且有大小端的问题，网络字节序的转换也不好弄，htonl只能转换32-bit宽度的整数。所以目前的db文件不支持32-bit与64-bit直接的移植，也不支持大小端不同的机器上的移植。
 
-
+42.给不同的模块定义不同的状态码，用来表示不同的返回值。例如, FK_OK, FK_ERR...
 
