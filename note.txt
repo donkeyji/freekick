@@ -96,3 +96,4 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 
 42.给不同的模块定义不同的状态码，用来表示不同的返回值。例如, FK_OK, FK_ERR...
 
+43.协议处理函数最好能返回状态码，由此来判断协议执行的状态。redis, memcached就没有返回值，pop3d作了返回值。freekick也提供了返回值。
