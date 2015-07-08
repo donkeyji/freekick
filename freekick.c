@@ -615,26 +615,26 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	if (lst_itm == NULL) {
 		rt = fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	if (fk_item_type(lst_itm) != FK_ITEM_LIST) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	lst = fk_item_raw(lst_itm);
 	if (fk_list_len(lst) == 0) {
 		rt = fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	if (pos == 0) {
@@ -646,15 +646,15 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	ss = (fk_str *)fk_item_raw(itm);
 	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss)));
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
 	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss));
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
 	fk_list_any_remove(lst, nd_itm);
 
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_lpop(fk_conn *conn)
