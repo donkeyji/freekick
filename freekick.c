@@ -291,9 +291,9 @@ int fk_cmd_mset(fk_conn *conn)
 	}
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_mget(fk_conn *conn)
