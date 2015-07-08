@@ -562,18 +562,18 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 		fk_dict_add(server.db[conn->db_idx], key, lst_itm);
 		rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
 
-		return 0;
+		return FK_OK;
 	}
 
 	if (fk_item_type(lst_itm) != FK_ITEM_LIST) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	lst = fk_item_raw(lst_itm);
@@ -587,9 +587,9 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 	}
 	rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_lpush(fk_conn *conn)
