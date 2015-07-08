@@ -248,10 +248,10 @@ int fk_cmd_set(fk_conn *conn)
 
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
 
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_setnx(fk_conn *conn)
@@ -264,9 +264,9 @@ int fk_cmd_setnx(fk_conn *conn)
 	if (value != NULL) {
 		rt = fk_conn_int_rsp_add(conn, 0);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	value = fk_conn_arg_get(conn, 2);
@@ -274,9 +274,9 @@ int fk_cmd_setnx(fk_conn *conn)
 
 	rt = fk_conn_int_rsp_add(conn, 1);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_mset(fk_conn *conn)
