@@ -389,10 +389,10 @@ int fk_cmd_del(fk_conn *conn)
 
 	rt = fk_conn_int_rsp_add(conn, deleted);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
 
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_flushdb(fk_conn *conn)
@@ -402,9 +402,9 @@ int fk_cmd_flushdb(fk_conn *conn)
 	fk_dict_empty(server.db[conn->db_idx]);
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_flushall(fk_conn *conn)
@@ -417,10 +417,10 @@ int fk_cmd_flushall(fk_conn *conn)
 	}
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
 
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_exists(fk_conn *conn)
@@ -436,10 +436,10 @@ int fk_cmd_exists(fk_conn *conn)
 	}
 	rt = fk_conn_int_rsp_add(conn, n);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
 
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_hset(fk_conn *conn)
