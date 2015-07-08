@@ -719,9 +719,9 @@ int fk_cmd_save(fk_conn *conn)
 	}
 
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_select(fk_conn *conn)
@@ -736,17 +736,17 @@ int fk_cmd_select(fk_conn *conn)
 	if (db_idx < 0 || db_idx >= server.dbcnt) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	conn->db_idx = db_idx;
 	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
-	return 0;
+	return FK_OK;
 }
 
 /* -------------------------------------------- */
