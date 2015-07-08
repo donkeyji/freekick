@@ -678,25 +678,25 @@ int fk_cmd_llen(fk_conn *conn)
 	if (value == NULL) {
 		rt = fk_conn_int_rsp_add(conn, 0);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 	if (fk_item_type(value) != FK_ITEM_LIST) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	lst = (fk_list *)fk_item_raw(value);
 	len = fk_list_len(lst);
 	rt = fk_conn_int_rsp_add(conn, len);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_save(fk_conn *conn)
