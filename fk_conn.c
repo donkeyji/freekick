@@ -337,7 +337,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		return 0;
 	}
 	rt = pto->handler(conn);
-	if (rt < 0) {/* arg_vtr are not consumed, free all the arg_vtr */
+	if (rt == FK_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
 		fk_conn_args_free(conn);
 		return -1;
 	}
