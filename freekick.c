@@ -460,9 +460,9 @@ int fk_cmd_hset(fk_conn *conn)
 		fk_dict_add(server.db[conn->db_idx], hkey, hitm);
 		rt = fk_conn_int_rsp_add(conn, 1);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	if (fk_item_type(hitm) == FK_ITEM_DICT) {
@@ -471,16 +471,16 @@ int fk_cmd_hset(fk_conn *conn)
 		fk_dict_add(dct, key, itm);
 		rt = fk_conn_int_rsp_add(conn, 1);
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
-		return 0;
+		return FK_OK;
 	}
 
 	rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 	if (rt < 0) {
-		return -1;
+		return FK_ERR;
 	}
-	return 0;
+	return FK_OK;
 }
 
 int fk_cmd_hget(fk_conn *conn)
