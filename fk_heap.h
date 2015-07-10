@@ -1,9 +1,6 @@
 #ifndef _FK_HEAP_H_
 #define _FK_HEAP_H_
 
-#define FK_HEAP_OK		0
-#define FK_HEAP_ERR		-1
-
 #define FK_HEAP_LEAF_HEADER		size_t idx
 
 typedef struct _fk_leaf {
