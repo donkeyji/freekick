@@ -1192,7 +1192,7 @@ int fk_svr_db_save()
 
 	for (i = 0; i < server.dbcnt; i++) {
 		rt = fk_svr_db_dump(fp, i);
-		if (rt < 0) {
+		if (rt == FK_ERR) {
 			fclose(fp);
 			remove(temp_db);/* remove this temporary db file */
 			return FK_ERR;
@@ -1224,20 +1224,20 @@ int fk_svr_db_dump(FILE *fp, unsigned db_idx)
 
 	dct = server.db[db_idx];
 	if (fk_dict_len(dct) == 0) {
-		return 0;
+		return FK_OK;
 	}
 
 	/* I do not think it's necessary to call htonl() */
 	wz = fwrite(&db_idx, sizeof(db_idx), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
 	/* dump the len of the dict */
 	len = fk_dict_len(dct);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
 	/* dict body */
@@ -1247,7 +1247,7 @@ int fk_svr_db_dump(FILE *fp, unsigned db_idx)
 		wz = fwrite(&type, sizeof(type), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);/* need to release iterator */
-			return -1;
+			return FK_ERR;
 		}
 		switch (type) {
 		case FK_ITEM_STR:
@@ -1262,12 +1262,12 @@ int fk_svr_db_dump(FILE *fp, unsigned db_idx)
 		}
 		if (rt < 0) {
 			fk_dict_iter_end(iter);/* need to release iterator */
-			return -1;
+			return FK_ERR;
 		}
 	}
 	fk_dict_iter_end(iter);/* must release this iterator of fk_dict */
 
-	return 0;
+	return FK_OK;
 }
 
 int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
