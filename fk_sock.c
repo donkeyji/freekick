@@ -24,12 +24,12 @@ int fk_sock_create_listen(char *addr, uint16_t port)
 		return FK_SOCK_ERR;
 	}
 
-	if (fk_sock_set_nonblock(listen_sock) == -1) {
+	if (fk_sock_set_nonblock(listen_sock) == FK_SOCK_ERR) {
 		return FK_SOCK_ERR;
 	}
 
 	rt = fk_sock_set_reuse_addr(listen_sock);
-	if (rt < 0) {
+	if (rt == FK_SOCK_ERR) {
 		return FK_SOCK_ERR;
 	}
 
@@ -62,11 +62,11 @@ int fk_sock_accept(int listen_fd)
 	}
 
 	rt = fk_sock_set_nonblock(fd);
-	if (rt < 0) {
+	if (rt == FK_SOCK_ERR) {
 		return FK_SOCK_ERR;
 	}
 	rt = fk_sock_keep_alive(fd);
-	if (rt < 0) {
+	if (rt == FK_SOCK_ERR) {
 		return FK_SOCK_ERR;
 	}
 

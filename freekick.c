@@ -863,6 +863,11 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 	int fd;
 
 	fd = fk_sock_accept(listen_fd);
+	if (fd == FK_SOCK_ERR) {
+		fk_log_error("accept fd failed\n");
+		return 0;
+	}
+
 	/* anything wrong by closing the fd directly? */
 	if (server.conn_cnt == server.max_conn) {
 		fk_log_warn("beyond max connections\n");
@@ -1017,7 +1022,7 @@ void fk_svr_init()
 	server.conn_cnt = 0;
 	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_util_conns_to_files(server.max_conn));
 	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
-	if (server.listen_fd < 0) {
+	if (server.listen_fd == FK_SOCK_ERR) {
 		fk_log_error("server listen socket creating failed: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
