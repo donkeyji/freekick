@@ -60,7 +60,7 @@ int fk_epoll_add(void *ev_iompx, int fd, char type)
 	otp = iompx->emask[fd];
 	if (type & otp) {
 		fk_log_error("try to add existing ev\n");
-		return -1;
+		return FK_EV_ERR;
 	}
 
 	oev = 0x0000;
@@ -90,12 +90,12 @@ int fk_epoll_add(void *ev_iompx, int fd, char type)
 	rt = epoll_ctl(iompx->efd, op, fd, &(iompx->ev));
 	if (rt < 0) {
 		fk_log_error("epoll_ctl failed: %s\n", strerror(errno));
-		return -1;
+		return FK_EV_ERR;
 	}
 
 	/* if succeed, save emask */
 	iompx->emask[fd] = otp | type;
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_epoll_remove(void *ev_iompx, int fd, char type)
@@ -110,7 +110,7 @@ int fk_epoll_remove(void *ev_iompx, int fd, char type)
 	otp = iompx->emask[fd];
 	if (!(type & otp)) {
 		fk_log_error("try to remove a non-existing ev\n");
-		return -1;
+		return FK_EV_ERR;
 	}
 
 	oev = 0x0000;
@@ -140,12 +140,12 @@ int fk_epoll_remove(void *ev_iompx, int fd, char type)
 	rt = epoll_ctl(iompx->efd, op, fd, &(iompx->ev));
 	if (rt < 0) {
 		fk_log_error("epoll_ctl failed: %s\n", strerror(errno));
-		return -1;
+		return FK_EV_ERR;
 	}
 
 	/* if succeed, remove from the emask */
 	iompx->emask[fd] = otp & (~type);/* my clever!!!!!! */
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
@@ -166,9 +166,9 @@ int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 	//fk_log_debug("epoll return\n");
 	if (nfds < 0) {
 		if (errno != EINTR) {
-			return -1;
+			return FK_EV_ERR;
 		}
-		return 0;
+		return FK_EV_OK;
 	}
 
 	for (i = 0; i < nfds; i++) {
@@ -183,5 +183,5 @@ int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 		fk_ev_ioev_activate(fd, type);
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
