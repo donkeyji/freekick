@@ -709,7 +709,7 @@ int fk_cmd_save(fk_conn *conn)
 
 	if (server.save_done == 1) {
 		rt = fk_svr_db_save();
-		if (rt == 0) {
+		if (rt == FK_OK) {
 			err = 0;
 		}
 	}
@@ -1187,7 +1187,7 @@ int fk_svr_db_save()
 	/* step 1: write to a temporary file */
 	fp = fopen(temp_db, "w+");
 	if (fp == NULL) {
-		return -1;
+		return FK_ERR;
 	}
 
 	for (i = 0; i < server.dbcnt; i++) {
@@ -1195,7 +1195,7 @@ int fk_svr_db_save()
 		if (rt < 0) {
 			fclose(fp);
 			remove(temp_db);/* remove this temporary db file */
-			return -1;
+			return FK_ERR;
 		}
 	}
 	fclose(fp);/* close before rename */
@@ -1204,10 +1204,10 @@ int fk_svr_db_save()
 	rt = rename(temp_db, fk_str_raw(server.db_file));
 	if (rt < 0) {
 		remove(temp_db);/* remove this temporary db file */
-		return -1;
+		return FK_ERR;
 	}
 
-	return 0;
+	return FK_OK;
 }
 
 /*
@@ -1459,7 +1459,7 @@ void fk_svr_db_save_background()
 		return;
 	} else {
 		/* execute only in child process */
-		if (fk_svr_db_save() < 0) {
+		if (fk_svr_db_save() == FK_ERR) {
 			fk_log_error("db save failed\n");
 			exit(EXIT_FAILURE);
 		}
@@ -1794,7 +1794,7 @@ void fk_main_final()
 	}
 	/* save db once more */
 	rt = fk_svr_db_save();
-	if (rt < 0) {
+	if (rt == FK_ERR) {
 		fk_log_error("db save failed\n");
 		exit(EXIT_FAILURE);
 	}
