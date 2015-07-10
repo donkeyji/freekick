@@ -1489,7 +1489,7 @@ void fk_svr_db_load(fk_str *db_file)
 
 	while (ftell(fp) != tail) {
 		rt = fk_svr_db_restore(fp, buf);
-		if (rt < 0) {
+		if (rt == FK_ERR) {
 			fk_log_error("load db body failed\n");
 			exit(EXIT_FAILURE);
 		}
@@ -1519,24 +1519,24 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
 	/* restore the index */
 	rz = fread(&idx, sizeof(idx), 1, fp);
 	if (rz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 	if (idx >= server.dbcnt) {
-		return -1;
+		return FK_ERR;
 	}
 	db = server.db[idx];
 
 	/* restore len of dictionary */
 	rz = fread(&cnt, sizeof(cnt), 1, fp);
 	if (rz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
 		rz = fread(&type, sizeof(type), 1, fp);
 		if (rz == 0) {
-			return -1;
+			return FK_ERR;
 		}
 
 		switch (type) {
@@ -1554,10 +1554,10 @@ int fk_svr_db_restore(FILE *fp, fk_zline *buf)
 			break;
 		}
 		if (rt < 0) {
-			return -1;
+			return FK_ERR;
 		}
 	}
-	return 0;
+	return FK_OK;
 }
 
 /* 
