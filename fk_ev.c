@@ -100,7 +100,7 @@ int fk_ev_dispatch()
 
 	fk_ev_expired_tmev_proc();
 
-	return 0;
+	return FK_EV_OK;
 }
 
 void fk_ev_cycle(int *stop)
@@ -124,7 +124,7 @@ int fk_ev_ioev_add(fk_ioev *ioev)
 
 	rt = mpxop->iompx_add((&evmgr)->iompx, fd, type);
 	if (rt < 0) {
-		return -1;
+		return FK_EV_ERR;
 	}
 
 	if (type & FK_IOEV_READ) {
@@ -133,7 +133,7 @@ int fk_ev_ioev_add(fk_ioev *ioev)
 	if (type & FK_IOEV_WRITE) {
 		evmgr.write_ev[fd] = ioev;
 	}
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_ev_ioev_remove(fk_ioev *ioev)
@@ -146,7 +146,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	type = ioev->type;
 	rt = mpxop->iompx_remove((&evmgr)->iompx, fd, type);
 	if (rt < 0) {
-		return -1;
+		return FK_EV_ERR;
 	}
 
 	/* maybe this ioev in active list */
@@ -162,7 +162,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 		evmgr.write_ev[fd] = NULL;
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb)
@@ -220,7 +220,8 @@ int fk_ev_tmev_add(fk_tmev *tmev)
 
 	tmhp = evmgr.timer_heap;
 	fk_heap_push(tmhp, (fk_leaf *)tmev);
-	return 0;
+
+	return FK_EV_OK;
 }
 
 int fk_ev_tmev_remove(fk_tmev *tmev)
@@ -236,7 +237,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 		tmev->expired = 0;
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_ev_pending_tmev_update()
@@ -261,7 +262,7 @@ int fk_ev_pending_tmev_update()
 			break;
 		}
 	}
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_ev_expired_tmev_proc()
@@ -295,7 +296,7 @@ int fk_ev_expired_tmev_proc()
 		tmev = fk_rawlist_head(evmgr.exp_tmev);
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_ev_active_ioev_proc()
@@ -325,7 +326,7 @@ int fk_ev_active_ioev_proc()
 		ioev = fk_rawlist_head(evmgr.act_ioev);
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 fk_tmev *fk_ev_nearest_tmev_get()
@@ -366,7 +367,7 @@ int fk_ev_ioev_activate(int fd, char type)
 		}
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
