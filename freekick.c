@@ -1060,7 +1060,11 @@ void fk_setrlimit()
 		fprintf(stderr, "getrlimit: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
+#if defined(__linux__)
+	fprintf(stdout, "original file number limit: rlim_cur = %zu, rlim_max = %zu\n", lmt.rlim_cur, lmt.rlim_max);
+#elif defined(__APPLE__) || defined(__BSD__)
 	fprintf(stdout, "original file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
+#endif
 
 	if (max_files > lmt.rlim_max) {
 		euid = geteuid();
@@ -1075,7 +1079,11 @@ void fk_setrlimit()
 				fprintf(stderr, "setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
+#if defined(__linux__)
+			fprintf(stdout, "new file number limit: rlim_cur = %zu, rlim_max = %zu\n", lmt.rlim_cur, lmt.rlim_max);
+#elif defined(__APPLE__) || defined(__BSD__)
 			fprintf(stdout, "new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
+#endif
 		} else {/* non-root */
 #ifdef FK_DEBUG
 			fprintf(stdout, "running as non-root\n");
