@@ -384,7 +384,7 @@ int fk_cmd_del(fk_conn *conn)
 	for (i = 1; i < conn->arg_cnt; i++) {
 		key = fk_conn_arg_get(conn, i);
 		rt = fk_dict_remove(server.db[conn->db_idx], key);
-		if (rt == 0) {
+		if (rt == FK_DICT_OK) {
 			deleted++;
 		}
 	}

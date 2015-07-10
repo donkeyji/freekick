@@ -230,7 +230,7 @@ int fk_dict_remove(fk_dict *dct, void *key)
 
 	elt = fk_dict_search(dct, key, &idx);
 	if (elt == NULL) {
-		return -1;
+		return FK_DICT_ERR;
 	}
 
 	lst = dct->buckets[idx];
@@ -241,7 +241,7 @@ int fk_dict_remove(fk_dict *dct, void *key)
 	fk_elt_destroy(elt);
 	dct->used--;
 
-	return 0;
+	return FK_DICT_OK;
 }
 
 int fk_dict_stretch(fk_dict *dct)
