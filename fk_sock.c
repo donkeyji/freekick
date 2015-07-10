@@ -21,16 +21,16 @@ int fk_sock_create_listen(char *addr, uint16_t port)
 
 	listen_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (listen_sock == -1) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 
 	if (fk_sock_set_nonblock(listen_sock) == -1) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 
 	rt = fk_sock_set_reuse_addr(listen_sock);
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 
 	bzero(&saddr, sizeof(struct sockaddr_in));
@@ -41,12 +41,12 @@ int fk_sock_create_listen(char *addr, uint16_t port)
 
 	rt = bind(listen_sock, (struct sockaddr *)&saddr, sizeof(struct sockaddr));
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 
 	rt = listen(listen_sock, 5);
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 
 	return listen_sock;
@@ -58,16 +58,16 @@ int fk_sock_accept(int listen_fd)
 
 	fd = accept(listen_fd, NULL, NULL);
 	if (fd < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 
 	rt = fk_sock_set_nonblock(fd);
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 	rt = fk_sock_keep_alive(fd);
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 
 	return fd;
@@ -78,10 +78,10 @@ int fk_sock_set_nonblock(int fd)
 	int rt;
 	rt = fcntl(fd, F_SETFL, O_NONBLOCK);
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
 
-	return 0;
+	return FK_SOCK_OK;
 }
 
 int fk_sock_keep_alive(int fd)
@@ -91,9 +91,9 @@ int fk_sock_keep_alive(int fd)
 	opt = 1;
 	rt = setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, (void *)&opt, sizeof(opt));
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
-	return 0;
+	return FK_SOCK_OK;
 }
 
 int fk_sock_set_reuse_addr(int fd)
@@ -103,9 +103,9 @@ int fk_sock_set_reuse_addr(int fd)
 	opt = 1;
 	rt = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&opt, sizeof(opt));
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
-	return 0;
+	return FK_SOCK_OK;
 }
 
 int fk_sock_set_linger(int fd)
@@ -115,7 +115,7 @@ int fk_sock_set_linger(int fd)
 
 	rt = setsockopt(fd, SOL_SOCKET, SO_LINGER, (void *)&ling, sizeof(ling));
 	if (rt < 0) {
-		return -1;
+		return FK_SOCK_ERR;
 	}
-	return 0;
+	return FK_SOCK_OK;
 }

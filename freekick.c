@@ -74,6 +74,8 @@ static int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt);
 static int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt);
 static int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt);
 
+static int fk_svr_sync_with_master();
+
 static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
@@ -890,6 +892,9 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 	}
 
 	fk_svr_db_save_background();
+
+	fk_svr_sync_with_master();
+
 	return 0;
 }
 
@@ -1724,6 +1729,11 @@ int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 	fk_dict_add(db, kitm, vitm);
 
 	return 0;
+}
+
+int fk_svr_sync_with_master()
+{
+	return FK_OK;
 }
 
 void fk_main_init(char *conf_path)
