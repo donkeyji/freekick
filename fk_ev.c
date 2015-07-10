@@ -123,7 +123,7 @@ int fk_ev_ioev_add(fk_ioev *ioev)
 	type = ioev->type;
 
 	rt = mpxop->iompx_add((&evmgr)->iompx, fd, type);
-	if (rt < 0) {
+	if (rt == FK_EV_ERR) {
 		return FK_EV_ERR;
 	}
 
@@ -145,7 +145,7 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	fd = ioev->fd;
 	type = ioev->type;
 	rt = mpxop->iompx_remove((&evmgr)->iompx, fd, type);
-	if (rt < 0) {
+	if (rt == FK_EV_ERR) {
 		return FK_EV_ERR;
 	}
 

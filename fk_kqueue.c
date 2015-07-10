@@ -3,7 +3,7 @@
 /* 
  * no need to keep tracking the existing ev associated to fd, 
  * which should be done in epoll. If an existing/non-existing 
- * ev is added/removed, just return -1 to the caller 
+ * ev is added/removed, just return FK_EV_ERR to the caller 
  */
 
 typedef struct _fk_kqueue {
@@ -56,7 +56,7 @@ int fk_kqueue_add(void *ev_iompx, int fd, char type)
 
 	//otyp = iompx->emask[fd];
 	//if (otyp & type) {
-		//return -1;
+		//return FK_EV_ERR;
 	//}
 
 	if (type & FK_IOEV_READ) {
@@ -64,7 +64,7 @@ int fk_kqueue_add(void *ev_iompx, int fd, char type)
 		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent add read failed: %s\n", strerror(errno));
-			return -1;
+			return FK_EV_ERR;
 		}
 		//iompx->emask[fd] |= FK_IOEV_READ;
 	}
@@ -74,12 +74,12 @@ int fk_kqueue_add(void *ev_iompx, int fd, char type)
 		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent add write failed: %s\n", strerror(errno));
-			return -1;
+			return FK_EV_ERR;
 		}
 		//iompx->emask[fd] |= FK_IOEV_WRITE;
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_kqueue_remove(void *ev_iompx, int fd, char type)
@@ -93,7 +93,7 @@ int fk_kqueue_remove(void *ev_iompx, int fd, char type)
 	//otyp = iompx->emask[fd];
 
 	//if (type & (~otyp)) {
-		//return -1;
+		//return FK_EV_ERR;
 	//}
 
 	if (type & FK_IOEV_READ) {
@@ -101,7 +101,7 @@ int fk_kqueue_remove(void *ev_iompx, int fd, char type)
 		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent delete read failed: %s\n", strerror(errno));
-			return -1;
+			return FK_EV_ERR;
 		}
 		//iompx->emask[fd] &= (~FK_IOEV_READ);
 	}
@@ -110,12 +110,12 @@ int fk_kqueue_remove(void *ev_iompx, int fd, char type)
 		rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
 		if (rt < 0) {
 			fk_log_error("kevent delete write failed: %s\n", strerror(errno));
-			return -1;
+			return FK_EV_ERR;
 		}
 		//iompx->emask[fd] &= (~FK_IOEV_WRITE);
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
@@ -141,9 +141,9 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 	nfds = kevent(iompx->kfd, NULL, 0, iompx->evlist, iompx->max_evs, pt);
 	if (nfds < 0) {
 		if (errno != EINTR) {
-			return -1;
+			return FK_EV_ERR;
 		}
-		return 0;
+		return FK_EV_OK;
 	}
 
 	//fk_log_debug("kevent return\n");
@@ -161,7 +161,7 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 			if (data == EBADF || data == EINVAL || data == ENOENT) {
 				continue;
 			}
-			return -1;
+			return FK_EV_ERR;
 		}
 		*/
 
@@ -177,5 +177,5 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 		fk_ev_ioev_activate(fd, type);
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
