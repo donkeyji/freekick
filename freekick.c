@@ -1260,7 +1260,7 @@ int fk_svr_db_dump(FILE *fp, unsigned db_idx)
 			rt = fk_svr_db_dict_elt_dump(fp, elt);
 			break;
 		}
-		if (rt < 0) {
+		if (rt == FK_ERR) {
 			fk_dict_iter_end(iter);/* need to release iterator */
 			return FK_ERR;
 		}
@@ -1286,11 +1286,11 @@ int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
 	/* value dump */
@@ -1301,14 +1301,14 @@ int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt)
 	 * when len > 0  ==> wz > 0
 	 */
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 	wz = fwrite(fk_str_raw(value), fk_str_len(value), 1, fp);
 	if (len > 0 && wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
-	return 0;
+	return FK_OK;
 }
 
 int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
@@ -1330,18 +1330,18 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
 	/* size dump */
 	len = fk_list_len(lst);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
 	/* value dump */
@@ -1353,18 +1353,18 @@ int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt)
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_list_iter_end(iter);
-			return -1;
+			return FK_ERR;
 		}
 
 		wz = fwrite(fk_str_raw(vs), fk_str_len(vs), 1, fp);
 		if (len > 0 && wz == 0) {
 			fk_list_iter_end(iter);
-			return -1;
+			return FK_ERR;
 		}
 	}
 	fk_list_iter_end(iter);/* must release this iterator of fk_list */
 
-	return 0;
+	return FK_OK;
 }
 
 int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
@@ -1386,18 +1386,18 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
 	/* size dump */
 	len = fk_dict_len(dct);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return -1;
+		return FK_ERR;
 	}
 
 	iter = fk_dict_iter_begin(dct);
@@ -1412,29 +1412,29 @@ int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt)
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
-			return -1;
+			return FK_ERR;
 		}
 		wz = fwrite(fk_str_raw(skey), fk_str_len(skey), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
-			return -1;
+			return FK_ERR;
 		}
 
 		len = fk_str_len(svs);
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
-			return -1;
+			return FK_ERR;
 		}
 		wz = fwrite(fk_str_raw(svs), fk_str_len(svs), 1, fp);
 		if (len > 0 && wz == 0) {
 			fk_dict_iter_end(iter);
-			return -1;
+			return FK_ERR;
 		}
 	}
 	fk_dict_iter_end(iter);/* must release this iterator of fk_dict */
 
-	return 0;
+	return FK_OK;
 }
 
 void fk_svr_db_save_background()
