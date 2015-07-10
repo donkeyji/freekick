@@ -253,7 +253,7 @@ int fk_dict_stretch(fk_dict *dct)
 	fk_elt_list **bks, *lst;
 
 	if (dct->used < dct->limit) {
-		return 0;
+		return FK_DICT_OK;
 	}
 	new_size = dct->size << 1;
 	bks = (fk_elt_list **)fk_mem_alloc(new_size * sizeof(fk_elt_list *));
@@ -293,7 +293,7 @@ int fk_dict_stretch(fk_dict *dct)
 	dct->size_mask = new_size - 1;
 	dct->limit = new_size >> 1;
 
-	return 0;
+	return FK_DICT_OK;
 }
 
 /*
