@@ -161,9 +161,7 @@ void *fk_dict_get(fk_dict *dct, void *key)
 }
 
 /*
- * return value:
- * 1: key already exists
- * 0: key not exists yet
+ * if the key exists already, it fails
  */
 int fk_dict_add(fk_dict *dct, void *key, void *value)
 {
@@ -182,7 +180,7 @@ int fk_dict_add(fk_dict *dct, void *key, void *value)
 
 	elt = fk_dict_search(dct, key, &idx);
 	if (elt != NULL) {
-		return 1;
+		return FK_DICT_ERR;
 	}
 
 	lst = dct->buckets[idx];
@@ -198,7 +196,7 @@ int fk_dict_add(fk_dict *dct, void *key, void *value)
 	fk_rawlist_head_insert(lst, elt);
 	dct->used++;
 
-	return 0;
+	return FK_DICT_OK;
 }
 
 /*
@@ -208,17 +206,22 @@ int fk_dict_add(fk_dict *dct, void *key, void *value)
  */
 int fk_dict_replace(fk_dict *dct, void *key, void *value)
 {
-	size_t idx;
+	int rt;
 	fk_elt *elt;
 
-	elt = fk_dict_search(dct, key, &idx);
-	if (elt == NULL) {
-		return fk_dict_add(dct, key, value);
+	/* try to add by call fk_dict_add */
+	rt = fk_dict_add(dct, key, value);
+	if (rt == FK_DICT_OK) {
+		return 0;/* key not exists */
 	}
+
+	elt = fk_dict_search(dct, key, NULL);
+
 	/* free old value */
 	fk_elt_value_free(dct, elt);
 	/* use new value to replace */
 	fk_elt_value_set(dct, elt, value);
+
 	return 1;/* the key exist already */
 }
 
