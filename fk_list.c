@@ -226,9 +226,10 @@ void fk_list_clear(fk_list *lst)
 {
 	fk_node *nd;
 
-	nd = lst->head;
+	nd = fk_list_head(lst);
 	while (nd != NULL) {
 		fk_list_any_remove(lst, nd);
+		nd = fk_list_head(lst);
 	}
 }
 
