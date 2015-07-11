@@ -133,7 +133,7 @@ int fk_conf_parse_file(char *conf_path)
 	fp = fopen(conf_path, "r");
 	if (fp == NULL) {
 		printf("failed to open config file\n");
-		return -1;
+		return FK_CONF_ERR;
 	}
 	fseek(fp, 0, SEEK_END);
 	tail = ftell(fp);
@@ -149,17 +149,17 @@ int fk_conf_parse_file(char *conf_path)
 		rt = fk_conf_line_read(line, fp);
 		if (rt < 0) {
 			printf("%s", line->err);
-			return -1;
+			return FK_CONF_ERR;
 		}
 		rt = fk_conf_line_parse(line);
 		if (rt < 0) {
 			printf("%s", line->err);
-			return -1;
+			return FK_CONF_ERR;
 		}
 		rt = fk_conf_line_proc(line);
 		if (rt < 0) {
 			printf("%s", line->err);
-			return -1;
+			return FK_CONF_ERR;
 		}
 	}
 
@@ -167,7 +167,7 @@ int fk_conf_parse_file(char *conf_path)
 
 	fclose(fp);
 
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_line_read(fk_line *line, FILE *fp)
@@ -178,9 +178,9 @@ int fk_conf_line_read(fk_line *line, FILE *fp)
 	/* no need to think about end-of-file here */
 	if (rt < 0) {
 		sprintf(line->err, "%s\n", strerror(errno));
-		return -1;
+		return FK_CONF_ERR;
 	}
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_line_parse(fk_line *line)
@@ -194,7 +194,7 @@ int fk_conf_line_parse(fk_line *line)
 	while (buf[i] != '\n') {
 		if (line->cnt == FK_CONF_MAX_FIELDS) {
 			sprintf(line->err, "the max fields of one line should not be more than %d, line: %d\n", FK_CONF_MAX_FIELDS, line->no);
-			return -1;
+			return FK_CONF_ERR;
 		}
 		while (buf[i] == ' ' || buf[i] == '\t') {/* fint the first no empty character */
 			i++;
@@ -216,7 +216,7 @@ int fk_conf_line_parse(fk_line *line)
 		i = end;
 	}
 
-	return 0;
+	return FK_CONF_OK;
 }
 
 fk_dtv *fk_conf_search(fk_str *name)
@@ -238,25 +238,25 @@ int fk_conf_line_proc(fk_line *line)
 	fk_dtv *dtv;
 
 	if (line->cnt == 0) {/* the current line is a comment or empty line */
-		return 0;
+		return FK_CONF_OK;
 	}
 
 	cmd = line->fields[0];
 	dtv = fk_conf_search(cmd);
 	if (dtv == NULL) {
 		sprintf(line->err, "no this cmd: %s, line: %d\n", fk_str_raw(cmd), line->no);
-		return -1;
+		return FK_CONF_ERR;
 	}
 	if (dtv->field_cnt != line->cnt) {
 		sprintf(line->err, "field cnt wrong. line: %d\n", line->no);
-		return -1;
+		return FK_CONF_ERR;
 	}
 	rt = dtv->handler(line);
 	if (rt < 0) {
-		return -1;
+		return FK_CONF_ERR;
 	}
 
-	return 0;
+	return FK_CONF_OK;
 }
 
 void fk_conf_line_reset(fk_line *line)
@@ -282,7 +282,7 @@ int fk_conf_handle_port(fk_line *line)
 	rt = fk_str_is_positive(line->fields[1]);
 	if (rt == 0) {/* not a positive integer */
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
-		return -1;
+		return FK_CONF_ERR;
 	}
 	/* 
 	 * port of integer type can hold the 0 ~ 65535, if the
@@ -292,40 +292,40 @@ int fk_conf_handle_port(fk_line *line)
 	port = atoi(fk_str_raw(line->fields[1]));
 	if (port <= 0 || port > 65535) {
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
-		return -1;
+		return FK_CONF_ERR;
 	}
 	setting.port = (uint16_t)port;
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_daemon(fk_line *line)
 {
 	setting.daemon = 1;
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_dump(fk_line *line)
 {
 	setting.dump = 1;
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_pidpath(fk_line *line)
 {
 	setting.pid_path = fk_str_clone(line->fields[1]);
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_logpath(fk_line *line)
 {
 	setting.log_path = fk_str_clone(line->fields[1]);
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_dbfile(fk_line *line)
 {
 	setting.db_file = fk_str_clone(line->fields[1]);
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_maxconn(fk_line *line)
@@ -335,11 +335,11 @@ int fk_conf_handle_maxconn(fk_line *line)
 	rt = fk_str_is_positive(line->fields[1]);
 	if (rt == 0) {/* not a positive integer */
 		sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
-		return -1;
+		return FK_CONF_ERR;
 	}
 	max_conn = atoi(fk_str_raw(line->fields[1]));
 	setting.max_conn = (unsigned)max_conn;
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_dbcnt(fk_line *line)
@@ -349,17 +349,17 @@ int fk_conf_handle_dbcnt(fk_line *line)
 	rt = fk_str_is_positive(line->fields[1]);
 	if (rt == 0) {/* not a positive integer */
 		sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
-		return -1;
+		return FK_CONF_ERR;
 	}
 	dbcnt = atoi(fk_str_raw(line->fields[1]));
 	setting.dbcnt = (unsigned)dbcnt;
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_addr(fk_line *line)
 {
 	setting.addr = fk_str_clone(line->fields[1]);
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_loglevel(fk_line *line)
@@ -377,9 +377,9 @@ int fk_conf_handle_loglevel(fk_line *line)
 		setting.log_level = FK_LOG_ERROR;
 	} else {
 		sprintf(line->err, "no this log level: %s, line: %d", level, line->no);
-		return -1;
+		return FK_CONF_ERR;
 	}
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_timeout(fk_line *line)
@@ -389,16 +389,16 @@ int fk_conf_handle_timeout(fk_line *line)
 	rt = fk_str_is_positive(line->fields[1]);
 	if (rt == 0) {/* not a positive integer */
 		sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
-		return -1;
+		return FK_CONF_ERR;
 	}
 	timeout = atoi(fk_str_raw(line->fields[1]));
 	setting.timeout = (time_t)timeout;
 
-	return 0;
+	return FK_CONF_OK;
 }
 
 int fk_conf_handle_dir(fk_line *line)
 {
 	setting.dir = fk_str_clone(line->fields[1]);
-	return 0;
+	return FK_CONF_OK;
 }

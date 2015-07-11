@@ -5,6 +5,9 @@
 
 #include <fk_str.h>
 
+#define FK_CONF_OK		0
+#define FK_CONF_ERR		-1
+
 typedef struct _fk_conf {
 	uint16_t port;
 	fk_str *addr;
