@@ -149,7 +149,7 @@ int fk_conn_data_recv(fk_conn *conn)
 		}
 	}
 
-	return 0;
+	return FK_CONN_OK;
 }
 
 int fk_conn_req_parse(fk_conn *conn)
@@ -280,7 +280,7 @@ int fk_conn_req_parse(fk_conn *conn)
 
 			if (conn->arg_cnt == conn->arg_idx) {/* a total protocol has been parsed */
 				conn->parse_done = 1;
-				return 0;
+				return FK_CONN_OK;
 			}
 		}
 	}
@@ -318,7 +318,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #ifdef FK_DEBUG
 		fk_log_debug("parse not completed yet\n");
 #endif
-		return 0;
+		return FK_CONN_OK;
 	}
 	itm = (fk_item *)fk_conn_arg_get(conn, 0);
 	cmd = (fk_str *)fk_item_raw(itm);
@@ -328,13 +328,13 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg_get(conn, 0)));
 		fk_conn_args_free(conn);
 		fk_conn_error_rsp_add(conn, "Invalid Protocol", strlen("Invalid Protocol"));
-		return 0;
+		return FK_CONN_OK;
 	}
 	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_args_free(conn);
 		fk_conn_error_rsp_add(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
-		return 0;
+		return FK_CONN_OK;
 	}
 	rt = pto->handler(conn);
 	if (rt == FK_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
@@ -342,7 +342,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		return -1;
 	}
 	fk_conn_args_free(conn);
-	return 0;
+	return FK_CONN_OK;
 }
 
 int fk_conn_timer_cb(unsigned interval, char type, void *ext)
