@@ -11,7 +11,7 @@
 #include <fk_str.h>
 #include <fk_vtr.h>
 
-#define FK_CONN_INCOMPLETE	1
+#define FK_CONN_UNDONE	1
 #define FK_CONN_OK		0
 #define FK_CONN_ERR		-1
 
