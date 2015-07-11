@@ -62,7 +62,7 @@ int fk_poll_add(void *ev_iompx, int fd, char type)
 
 	if (oev & nev) {
 		fk_log_error("try to add an existing ev\n");
-		return -1;
+		return FK_EV_ERR;
 	}
 
 	pfd->events = oev | nev;
@@ -74,7 +74,7 @@ int fk_poll_add(void *ev_iompx, int fd, char type)
 		fk_log_debug("after add: last %d\n", iompx->last);
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_poll_remove(void *ev_iompx, int fd, char type)
@@ -100,7 +100,7 @@ int fk_poll_remove(void *ev_iompx, int fd, char type)
 
 	if (nev & (~oev)) {
 		fk_log_error("try to remove a non-existing ev\n");
-		return -1;
+		return FK_EV_ERR;
 	}
 
 	pfd->events = oev & (~nev);
@@ -114,7 +114,7 @@ int fk_poll_remove(void *ev_iompx, int fd, char type)
 		iompx->last--;
 	}
 
-	return 0;
+	return FK_EV_OK;
 }
 
 int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
@@ -134,10 +134,10 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 	nfds = poll(iompx->evlist, iompx->last, ms_timeout);
 	if (nfds < 0) {
 		fk_log_debug("poll failed: %s\n", strerror(errno));
-		return -1;
+		return FK_EV_ERR;
 	}
 	if (nfds == 0) {
-		return 0;
+		return FK_EV_OK;
 	}
 	cnt = 0;
 	for (i = 0; i < iompx->last; i++) {
@@ -160,5 +160,5 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 			break;
 		}
 	}
-	return 0;
+	return FK_EV_OK;
 }
