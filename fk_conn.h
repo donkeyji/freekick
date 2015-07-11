@@ -11,6 +11,10 @@
 #include <fk_str.h>
 #include <fk_vtr.h>
 
+#define FK_CONN_BUSY	1
+#define FK_CONN_OK		0
+#define FK_CONN_ERR		-1
+
 typedef struct _fk_conn {
 	int fd;
 	fk_ioev *read_ev;
