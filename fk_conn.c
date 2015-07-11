@@ -485,7 +485,7 @@ int fk_conn_rsp_send(fk_conn *conn)
 		fk_ev_ioev_add(conn->write_ev);
 		conn->write_added = 1;
 	}
-	return 0;
+	return FK_CONN_OK;
 }
 
 int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len)
@@ -502,7 +502,7 @@ int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_status, stat);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return 0;
+	return FK_CONN_OK;
 }
 
 int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len)
@@ -519,7 +519,7 @@ int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_error, error);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return 0;
+	return FK_CONN_OK;
 }
 
 int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len)
@@ -536,7 +536,7 @@ int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_content, content);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return 0;
+	return FK_CONN_OK;
 }
 
 int fk_conn_int_rsp_add(fk_conn *conn, int num)
@@ -554,7 +554,7 @@ int fk_conn_int_rsp_add(fk_conn *conn, int num)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_int, num);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return 0;
+	return FK_CONN_OK;
 }
 
 int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
@@ -572,7 +572,7 @@ int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_bulk, bulk_len);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return 0;
+	return FK_CONN_OK;
 }
 
 int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
@@ -590,5 +590,5 @@ int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_mbulk, bulk_cnt);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return 0;
+	return FK_CONN_OK;
 }
