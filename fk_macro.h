@@ -1,5 +1,5 @@
-#ifndef _FK_TYPES_H_
-#define _FK_TYPES_H_
+#ifndef _FK_MACRO_H_
+#define _FK_MACRO_H_
 
 /* status code definition copied from nginx */
 #define FK_OK			 0
