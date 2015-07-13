@@ -381,7 +381,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	conn = (fk_conn *)ext;
 
 	rt = fk_conn_data_recv(conn);
-	if (rt == -1) {/* conn closed */
+	if (rt == FK_CONN_ERR) {/* conn closed */
 		fk_svr_conn_remove(conn);
 		return 0;
 	}
