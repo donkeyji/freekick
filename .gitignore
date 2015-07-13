@@ -1,4 +1,5 @@
 *.[od]
+*.pyc
 freekick
 clt_test
 tmod
