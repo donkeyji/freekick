@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+/*
+ * no unified status code definiton for this string module
+ */
+
 typedef struct _fk_str {
 	size_t len;/* valid length, excluding '\0' */
 	char seq[];
