@@ -392,16 +392,16 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	 */
 	while (fk_buf_payload_len(conn->rbuf) > 0) {
 		rt = fk_conn_req_parse(conn);
-		if (rt < 0) {/* error when parsing */
+		if (rt == FK_CONN_ERR) {/* error when parsing */
 			fk_log_error("fatal error occured when parsing protocol\n");
 			fk_svr_conn_remove(conn);
 			return 0;
-		} else if (rt > 0) {/* parsing not completed */
+		} else if (rt == FK_CONN_UNDONE) {/* parsing not completed */
 			break;
 		}
 
 		rt = fk_conn_cmd_proc(conn);
-		if (rt < 0) {
+		if (rt == FK_CONN_ERR) {
 			fk_log_error("fatal error occured when processing cmd\n");
 			fk_svr_conn_remove(conn);
 			return 0;
@@ -409,7 +409,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	}
 
 	rt = fk_conn_rsp_send(conn);
-	if (rt < 0) {
+	if (rt == FK_CONN_ERR) {
 		fk_log_error("fatal error occurs when sending response\n");
 		fk_svr_conn_remove(conn);
 		return 0;
