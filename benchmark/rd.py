@@ -18,6 +18,13 @@ def pfunc():
 		rd.set('%d' % i, line.rstrip())
 		i += 1
 
+	# setnx
+	f.seek(0)
+	i = 0;
+	for line in f:
+		rd.set('%d' % i, line.rstrip())
+		i += 1
+
 	# get
 	i = 0
 	for i in range(100):
@@ -67,10 +74,10 @@ def pfunc():
 
 	f.close()
 
-s = time.time()
+start = time.time()
 pfunc()
-e = time.time()
-print e - s
+end = time.time()
+print end - start
 
 '''
 for i in range(1, 2):
