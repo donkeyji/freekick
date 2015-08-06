@@ -128,7 +128,7 @@ static int fk_cmd_rpop(fk_conn *conn);
 static int fk_cmd_llen(fk_conn *conn);
 static int fk_cmd_save(fk_conn *conn);
 static int fk_cmd_select(fk_conn *conn);
-static int fk_cmd_script(fk_conn *conn);
+static int fk_cmd_eval(fk_conn *conn);
 /* ---------------------------------------------------- */
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);
@@ -173,7 +173,7 @@ static fk_proto protos[] = {
 	{"LLEN",	FK_PROTO_READ,		2,					fk_cmd_llen		},
 	{"SAVE",	FK_PROTO_READ,		1,					fk_cmd_save		},
 	{"SELECT",	FK_PROTO_WRITE,		2,					fk_cmd_select	},
-	{"SCRIPT",	FK_PROTO_SCRIPT,	FK_PROTO_VARLEN,	fk_cmd_script	},
+	{"EVAL",	FK_PROTO_SCRIPT,	FK_PROTO_VARLEN,	fk_cmd_eval		},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -757,7 +757,7 @@ int fk_cmd_select(fk_conn *conn)
 	return FK_OK;
 }
 
-int fk_cmd_script(fk_conn *conn)
+int fk_cmd_eval(fk_conn *conn)
 {
 	int inkey, ingarv, rt, i;
 	fk_item *code, *nkey, *key, *arg;
@@ -779,24 +779,29 @@ int fk_cmd_script(fk_conn *conn)
 	fk_lua_argv_reset();
 
 	inkey = atoi(fk_str_raw(snkey));
+	printf("===inkey: %d\n", inkey);
 	if (inkey > 0) {
 		for (i = 0; i < inkey; i++) {
 			key = fk_conn_arg_get(conn, 3 + i);	
-			fk_lua_keys_push(fk_str_raw((fk_str *)fk_item_raw(key)));
+			printf("key %d: %s\n", i, fk_str_raw((fk_str *)fk_item_raw(key)));
+			fk_lua_keys_push(fk_str_raw((fk_str *)fk_item_raw(key)), i + 1);
 		}
 	}
 
 	ingarv = conn->arg_cnt - 1 - 2 - inkey;
+	printf("===ingarv: %d\n", ingarv);
 	if (ingarv > 0) {
 		for (i = 0; i < ingarv; i++) {
-			arg = fk_conn_arg_get(conn, 3 + inkey + 1 + i);
-			fk_lua_argv_push(fk_str_raw((fk_str *)fk_item_raw(arg)));
+			arg = fk_conn_arg_get(conn, 3 + inkey + i);
+			printf("arg %d: %s\n", i, fk_str_raw((fk_str *)fk_item_raw(arg)));
+			fk_lua_argv_push(fk_str_raw((fk_str *)fk_item_raw(arg)), i + 1);
 		}
 	}
 
-	fk_lua_script_load(fk_str_raw((fk_str *)fk_item_raw(code)));
+	fk_lua_script_run(fk_str_raw((fk_str *)fk_item_raw(code)));
 
-	fk_lua_script_call();
+	printf("===after\n");
+	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 
 	return FK_OK;
 }

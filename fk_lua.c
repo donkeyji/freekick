@@ -31,28 +31,43 @@ int fk_lua_pcall(lua_State *L)
 
 void fk_lua_keys_reset()
 {
+	lua_newtable(gL);
+	lua_setglobal(gL, "KEYS");
 }
 
 void fk_lua_argv_reset()
 {
+	lua_newtable(gL);
+	lua_setglobal(gL, "ARGV");
 }
 
-int fk_lua_keys_push(char *key)
+int fk_lua_keys_push(char *key, int index)
 {
+	/* locate the array KEYS */
+	lua_getglobal(gL, "KEYS");
+
+	lua_pushstring(gL, key);
+	lua_rawseti(gL, -2, index);
+
 	return 0;
 }
 
-int fk_lua_argv_push(char *arg)
+int fk_lua_argv_push(char *arg, int index)
 {
+	/* locate the array KEYS */
+	lua_getglobal(gL, "ARGV");
+
+	lua_pushstring(gL, arg);
+	lua_rawseti(gL, -2, index);
+
 	return 0;
 }
 
-int fk_lua_script_load(char *code)
+int fk_lua_script_run(char *code)
 {
-	return 0;
-}
+	int rt;
 
-int fk_lua_script_call()
-{
+	rt = luaL_loadstring(gL, code) || lua_pcall(gL, 0, LUA_MULTRET, 0);
+
 	return 0;
 }
