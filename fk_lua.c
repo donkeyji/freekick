@@ -28,3 +28,21 @@ int fk_lua_pcall(lua_State *L)
 	lua_pushinteger(L, 2);
 	return 1;
 }
+
+void fk_lua_keys_reset()
+{
+}
+
+void fk_lua_argv_reset()
+{
+}
+
+int fk_lua_keys_push(char *key)
+{
+	return 0;
+}
+
+int fk_lua_argv_push(char *arg)
+{
+	return 0;
+}

@@ -128,6 +128,7 @@ static int fk_cmd_rpop(fk_conn *conn);
 static int fk_cmd_llen(fk_conn *conn);
 static int fk_cmd_save(fk_conn *conn);
 static int fk_cmd_select(fk_conn *conn);
+static int fk_cmd_script(fk_conn *conn);
 /* ---------------------------------------------------- */
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);
@@ -172,6 +173,7 @@ static fk_proto protos[] = {
 	{"LLEN",	FK_PROTO_READ,		2,					fk_cmd_llen		},
 	{"SAVE",	FK_PROTO_READ,		1,					fk_cmd_save		},
 	{"SELECT",	FK_PROTO_WRITE,		2,					fk_cmd_select	},
+	{"SCRIPT",	FK_PROTO_SCRIPT,	FK_PROTO_VARLEN,	fk_cmd_script	},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -752,6 +754,46 @@ int fk_cmd_select(fk_conn *conn)
 	if (rt == FK_CONN_ERR) {
 		return FK_ERR;
 	}
+	return FK_OK;
+}
+
+int fk_cmd_script(fk_conn *conn)
+{
+	int inkey, ingarv, rt, i;
+	fk_item *code, *nkey, *key, *arg;
+	fk_str *snkey;
+
+	code = fk_conn_arg_get(conn, 1);
+	nkey = fk_conn_arg_get(conn, 2);
+
+	snkey = (fk_str *)fk_item_raw(nkey);
+	if (fk_str_is_nonminus(snkey) == 0) {
+		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
+		if (rt == FK_CONN_ERR) {
+			return FK_ERR;
+		}
+		return FK_OK;
+	}
+
+	fk_lua_keys_reset();
+	fk_lua_argv_reset();
+
+	inkey = atoi(fk_str_raw(snkey));
+	if (inkey > 0) {
+		for (i = 0; i < inkey; i++) {
+			key = fk_conn_arg_get(conn, 3 + i);	
+			fk_lua_keys_push(fk_str_raw((fk_str *)fk_item_raw(key)));
+		}
+	}
+
+	ingarv = conn->arg_cnt - 1 - 2 - inkey;
+	if (ingarv > 0) {
+		for (i = 0; i < ingarv; i++) {
+			arg = fk_conn_arg_get(conn, 3 + inkey + 1 + i);
+			fk_lua_argv_push(fk_str_raw((fk_str *)fk_item_raw(arg)));
+		}
+	}
+
 	return FK_OK;
 }
 

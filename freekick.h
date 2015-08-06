@@ -18,6 +18,7 @@
 #define FK_PROTO_INVALID 	0
 #define FK_PROTO_READ 		1
 #define FK_PROTO_WRITE 		2
+#define FK_PROTO_SCRIPT 	3
 
 #define FK_PROTO_VARLEN		0
 
