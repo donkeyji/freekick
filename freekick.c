@@ -30,6 +30,7 @@
 #include <fk_util.h>
 #include <fk_dict.h>
 #include <fk_cache.h>
+#include <fk_lua.h>
 #include <freekick.h>
 
 typedef struct _fk_server {
@@ -1779,6 +1780,8 @@ void fk_main_init(char *conf_path)
 	fk_proto_init();
 
 	fk_ev_init();
+
+	fk_lua_init();
 
 	fk_svr_init();
 }
