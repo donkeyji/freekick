@@ -46,3 +46,13 @@ int fk_lua_argv_push(char *arg)
 {
 	return 0;
 }
+
+int fk_lua_script_load(char *code)
+{
+	return 0;
+}
+
+int fk_lua_script_call()
+{
+	return 0;
+}

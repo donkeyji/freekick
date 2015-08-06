@@ -794,6 +794,10 @@ int fk_cmd_script(fk_conn *conn)
 		}
 	}
 
+	fk_lua_script_load(fk_str_raw((fk_str *)fk_item_raw(code)));
+
+	fk_lua_script_call();
+
 	return FK_OK;
 }
 
