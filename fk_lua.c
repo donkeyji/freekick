@@ -2,6 +2,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+#include <fk_item.h>
 #include <fk_lua.h>
 
 static int fk_lua_pcall(lua_State *L);
@@ -29,36 +30,40 @@ int fk_lua_pcall(lua_State *L)
 	return 1;
 }
 
-void fk_lua_keys_reset()
+int fk_lua_keys_push(fk_conn *conn, int keyc)
 {
+	int i;
+	fk_item *key;
+
 	lua_newtable(gL);
+
+	for (i = 0; i < keyc; i++) {
+		key = fk_conn_arg_get(conn, 3 + i);	
+		printf("key %d: %s\n", i, fk_str_raw((fk_str *)fk_item_raw(key)));
+		lua_pushstring(gL, fk_str_raw((fk_str *)fk_item_raw(key)));
+		lua_rawseti(gL, -2, i + 1);
+	}
+
 	lua_setglobal(gL, "KEYS");
-}
-
-void fk_lua_argv_reset()
-{
-	lua_newtable(gL);
-	lua_setglobal(gL, "ARGV");
-}
-
-int fk_lua_keys_push(char *key, int index)
-{
-	/* locate the array KEYS */
-	lua_getglobal(gL, "KEYS");
-
-	lua_pushstring(gL, key);
-	lua_rawseti(gL, -2, index);
 
 	return 0;
 }
 
-int fk_lua_argv_push(char *arg, int index)
+int fk_lua_argv_push(fk_conn *conn, int argc, int keyc)
 {
-	/* locate the array KEYS */
-	lua_getglobal(gL, "ARGV");
+	int i;
+	fk_item *arg;
 
-	lua_pushstring(gL, arg);
-	lua_rawseti(gL, -2, index);
+	lua_newtable(gL);
+
+	for (i = 0; i < argc; i++) {
+		arg = fk_conn_arg_get(conn, 3 + keyc + i);	
+		printf("arg %d: %s\n", i, fk_str_raw((fk_str *)fk_item_raw(arg)));
+		lua_pushstring(gL, fk_str_raw((fk_str *)fk_item_raw(arg)));
+		lua_rawseti(gL, -2, i + 1);
+	}
+
+	lua_setglobal(gL, "ARGV");
 
 	return 0;
 }
@@ -66,6 +71,8 @@ int fk_lua_argv_push(char *arg, int index)
 int fk_lua_script_run(char *code)
 {
 	int rt;
+
+	printf("code: %s\n", code);
 
 	rt = luaL_loadstring(gL, code) || lua_pcall(gL, 0, LUA_MULTRET, 0);
 
