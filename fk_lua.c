@@ -11,7 +11,6 @@
 static int fk_lua_pcall(lua_State *L);
 
 lua_State *gL = NULL;
-//fk_conn *lua_conn = NULL;
 
 static const struct luaL_Reg fklib[] = {
 	{"pcall", fk_lua_pcall},
@@ -46,9 +45,7 @@ int fk_lua_pcall(lua_State *L)
 	fk_vtr_stretch(lua_conn->arg_vtr, (size_t)(lua_conn->arg_cnt));
 	fk_vtr_stretch(lua_conn->len_vtr, (size_t)(lua_conn->arg_cnt));
 
-	/* 
-	 * similar to the fk_conn_req_parse()
-	 */
+	/* similar to the function: fk_conn_req_parse() */
 	for (i = 0; i < lua_conn->arg_cnt; i++) {
 		arg = luaL_checklstring(L, i + 1, &len);
 		itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
@@ -66,7 +63,8 @@ int fk_lua_pcall(lua_State *L)
 	pto = fk_proto_search(cmd);
 	pto->handler(lua_conn);
 
-	/* get return values */
+	/* get return values, push them to lua */
+	/* parse lua_conn->write_buf */
 
 	fk_conn_destroy(lua_conn);
 
