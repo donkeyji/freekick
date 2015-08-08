@@ -4,6 +4,7 @@
 
 #include <fk_item.h>
 #include <fk_lua.h>
+#include <freekick.h>
 
 static int fk_lua_pcall(lua_State *L);
 
@@ -25,8 +26,32 @@ void fk_lua_init()
 
 int fk_lua_pcall(lua_State *L)
 {
-	lua_pushinteger(L, 1);
-	lua_pushinteger(L, 2);
+	size_t len;
+	int argc, i;
+	const char *arg;
+	fk_str *cmd;
+	fk_item *itm;
+	fk_proto *pto;
+	fk_conn *lua_conn;
+
+	lua_conn = fk_conn_create(0);
+
+	argc = lua_gettop(L);
+
+	arg = luaL_checklstring(L, 1, &len);
+	cmd = fk_str_create((char *)arg, len);
+	fk_str_2upper(cmd);	
+
+	for (i = 0; i < argc; i++) {
+		arg = luaL_checklstring(L, 1, &len);
+		itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
+		fk_conn_arg_set(lua_conn, lua_conn->arg_idx, itm);
+		fk_item_ref_inc(itm);
+	}
+
+	pto = fk_proto_search(cmd);
+	pto->handler(lua_conn);
+
 	return 1;
 }
 
