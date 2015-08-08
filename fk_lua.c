@@ -2,6 +2,8 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+#include <fk_mem.h>
+#include <fk_vtr.h>
 #include <fk_item.h>
 #include <fk_lua.h>
 #include <freekick.h>
@@ -9,6 +11,7 @@
 static int fk_lua_pcall(lua_State *L);
 
 lua_State *gL = NULL;
+//fk_conn *lua_conn = NULL;
 
 static const struct luaL_Reg fklib[] = {
 	{"pcall", fk_lua_pcall},
@@ -26,31 +29,46 @@ void fk_lua_init()
 
 int fk_lua_pcall(lua_State *L)
 {
+	int i;
 	size_t len;
-	int argc, i;
-	const char *arg;
 	fk_str *cmd;
 	fk_item *itm;
 	fk_proto *pto;
+	const char *arg;
 	fk_conn *lua_conn;
 
-	lua_conn = fk_conn_create(0);
+	lua_conn = fk_conn_create(-1);/* invalid fd */
 
-	argc = lua_gettop(L);
+	/* get the argument count */
+	lua_conn->arg_cnt = lua_gettop(L);
 
-	arg = luaL_checklstring(L, 1, &len);
-	cmd = fk_str_create((char *)arg, len);
-	fk_str_2upper(cmd);	
+	/* allocate memory for arguments */
+	fk_vtr_stretch(lua_conn->arg_vtr, (size_t)(lua_conn->arg_cnt));
+	fk_vtr_stretch(lua_conn->len_vtr, (size_t)(lua_conn->arg_cnt));
 
-	for (i = 0; i < argc; i++) {
-		arg = luaL_checklstring(L, 1, &len);
+	/* 
+	 * similar to the fk_conn_req_parse()
+	 */
+	for (i = 0; i < lua_conn->arg_cnt; i++) {
+		arg = luaL_checklstring(L, i + 1, &len);
 		itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
 		fk_conn_arg_set(lua_conn, lua_conn->arg_idx, itm);
+		fk_conn_arglen_set(lua_conn, lua_conn->arg_idx, (void *)((size_t)len));
 		fk_item_ref_inc(itm);
+		lua_conn->arg_idx += 1;
 	}
+	lua_conn->parse_done = 1;
 
+	/* the first arg */
+	itm = (fk_item *)fk_conn_arg_get(lua_conn, 0);
+	cmd = (fk_str *)fk_item_raw(itm);
+	fk_str_2upper(cmd);
 	pto = fk_proto_search(cmd);
 	pto->handler(lua_conn);
+
+	/* get return values */
+
+	fk_conn_destroy(lua_conn);
 
 	return 1;
 }
