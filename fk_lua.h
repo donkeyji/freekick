@@ -8,6 +8,6 @@ void fk_lua_init();
 int fk_lua_keys_push(fk_conn *conn, int keyc);
 int fk_lua_argv_push(fk_conn *conn, int argc, int keyc);
 
-int fk_lua_script_run(char *code);
+int fk_lua_script_run(fk_conn *conn, char *code);
 
 #endif

@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
@@ -10,6 +12,12 @@
 #include <freekick.h>
 
 static int fk_lua_pcall(lua_State *L);
+
+static int fk_lua_status_parse(lua_State *L, fk_buf *buf);
+static int fk_lua_error_parse(lua_State *L, fk_buf *buf);
+static int fk_lua_integer_parse(lua_State *L, fk_buf *buf);
+static int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf);
+static int fk_lua_bulk_parse(lua_State *L, fk_buf *buf);
 
 lua_State *gL = NULL;
 
@@ -30,8 +38,8 @@ void fk_lua_init()
 int fk_lua_pcall(lua_State *L)
 {
 	int i;
-	char *p, *e;
 	size_t len;
+	char *start;
 	fk_str *cmd;
 	fk_buf *buf;
 	fk_item *itm;
@@ -69,23 +77,22 @@ int fk_lua_pcall(lua_State *L)
 	/* get return values, push them to lua */
 	/* parse lua_conn->write_buf */
 	buf = lua_conn->wbuf;
-	p = fk_buf_payload_start(buf);
-	switch (*p) {
+	start = fk_buf_payload_start(buf);
+	switch (*start) {
 	case '+':
-		lua_pushlstring(L, p + 1, fk_buf_payload_len(buf));
-		return 1;
+		fk_lua_status_parse(L, buf);
 		break;
 	case '-':
+		fk_lua_error_parse(L, buf);
 		break;
 	case ':':
+		fk_lua_integer_parse(L, buf);
 		break;
 	case '*':
+		fk_lua_mbulk_parse(L, buf);
 		break;
 	case '$':
-		e = memchr(p, '\n', fk_buf_payload_len(buf));
-		p = e;
-		lua_pushlstring(L, p + 1, fk_buf_payload_len(buf));
-		return 1;
+		fk_lua_bulk_parse(L, buf);
 		break;
 	}
 
@@ -93,6 +100,45 @@ int fk_lua_pcall(lua_State *L)
 	fk_conn_destroy(lua_conn);
 
 	return 1;
+}
+
+int fk_lua_status_parse(lua_State *L, fk_buf *buf)
+{
+	char *s;
+
+	s = fk_buf_payload_start(buf);
+	lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);
+	return 1;
+}
+
+int fk_lua_error_parse(lua_State *L, fk_buf *buf)
+{
+	return 0;
+}
+
+int fk_lua_integer_parse(lua_State *L, fk_buf *buf)
+{
+	return 0;
+}
+
+int fk_lua_bulk_parse(lua_State *L, fk_buf *buf)
+{
+	int blen;
+	char *s, *e;
+
+	s = fk_buf_payload_start(buf);
+	e = memchr(s, '\n', fk_buf_payload_len(buf));
+
+	blen = atoi(s + 1);
+
+	lua_pushlstring(L, e + 1, blen);
+
+	return 1;
+}
+
+int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf)
+{
+	return 0;
 }
 
 int fk_lua_keys_push(fk_conn *conn, int keyc)
@@ -104,7 +150,6 @@ int fk_lua_keys_push(fk_conn *conn, int keyc)
 
 	for (i = 0; i < keyc; i++) {
 		key = fk_conn_arg_get(conn, 3 + i);	
-		printf("key %d: %s\n", i, fk_str_raw((fk_str *)fk_item_raw(key)));
 		lua_pushstring(gL, fk_str_raw((fk_str *)fk_item_raw(key)));
 		lua_rawseti(gL, -2, i + 1);
 	}
@@ -123,7 +168,6 @@ int fk_lua_argv_push(fk_conn *conn, int argc, int keyc)
 
 	for (i = 0; i < argc; i++) {
 		arg = fk_conn_arg_get(conn, 3 + keyc + i);	
-		printf("arg %d: %s\n", i, fk_str_raw((fk_str *)fk_item_raw(arg)));
 		lua_pushstring(gL, fk_str_raw((fk_str *)fk_item_raw(arg)));
 		lua_rawseti(gL, -2, i + 1);
 	}
@@ -133,17 +177,19 @@ int fk_lua_argv_push(fk_conn *conn, int argc, int keyc)
 	return 0;
 }
 
-int fk_lua_script_run(char *code)
+int fk_lua_script_run(fk_conn *conn, char *code)
 {
 	int rt;
-	const char *st;
-
-	printf("code: %s\n", code);
+	size_t len;
+	const char *reply;
 
 	rt = luaL_loadstring(gL, code) || lua_pcall(gL, 0, LUA_MULTRET, 0);
-	if (rt == 0) {
-		st = luaL_checkstring(gL, -1);
-		printf("==st: %s\n", st);
+	if (rt < 0) {
+	} else if (rt == 0) {
+		reply = luaL_checklstring(gL, -1, &len);
+		printf("reply: %s, len: %zu\n", reply, len);
+		fk_conn_bulk_rsp_add(conn, len);
+		fk_conn_content_rsp_add(conn, (char *)reply, len);
 	}
 
 	return 0;
