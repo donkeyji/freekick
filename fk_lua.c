@@ -37,7 +37,7 @@ void fk_lua_init()
 
 int fk_lua_pcall(lua_State *L)
 {
-	int i;
+	int i, rt;
 	size_t len;
 	char *start;
 	fk_str *cmd;
@@ -80,26 +80,26 @@ int fk_lua_pcall(lua_State *L)
 	start = fk_buf_payload_start(buf);
 	switch (*start) {
 	case '+':
-		fk_lua_status_parse(L, buf);
+		rt = fk_lua_status_parse(L, buf);
 		break;
 	case '-':
-		fk_lua_error_parse(L, buf);
+		rt = fk_lua_error_parse(L, buf);
 		break;
 	case ':':
-		fk_lua_integer_parse(L, buf);
+		rt = fk_lua_integer_parse(L, buf);
 		break;
 	case '*':
-		fk_lua_mbulk_parse(L, buf);
+		rt = fk_lua_mbulk_parse(L, buf);
 		break;
 	case '$':
-		fk_lua_bulk_parse(L, buf);
+		rt = fk_lua_bulk_parse(L, buf);
 		break;
 	}
 
 	/* destroy this fake connection */
 	fk_conn_destroy(lua_conn);
 
-	return 1;
+	return rt;
 }
 
 int fk_lua_status_parse(lua_State *L, fk_buf *buf)
@@ -108,17 +108,18 @@ int fk_lua_status_parse(lua_State *L, fk_buf *buf)
 
 	s = fk_buf_payload_start(buf);
 	lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);
+
 	return 1;
 }
 
 int fk_lua_error_parse(lua_State *L, fk_buf *buf)
 {
-	return 0;
+	return 1;
 }
 
 int fk_lua_integer_parse(lua_State *L, fk_buf *buf)
 {
-	return 0;
+	return 1;
 }
 
 int fk_lua_bulk_parse(lua_State *L, fk_buf *buf)
@@ -138,7 +139,7 @@ int fk_lua_bulk_parse(lua_State *L, fk_buf *buf)
 
 int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf)
 {
-	return 0;
+	return 1;
 }
 
 int fk_lua_keys_push(fk_conn *conn, int keyc)
