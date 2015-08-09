@@ -2,6 +2,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+#include <fk_buf.h>
 #include <fk_mem.h>
 #include <fk_vtr.h>
 #include <fk_item.h>
@@ -29,8 +30,10 @@ void fk_lua_init()
 int fk_lua_pcall(lua_State *L)
 {
 	int i;
+	char *p, *e;
 	size_t len;
 	fk_str *cmd;
+	fk_buf *buf;
 	fk_item *itm;
 	fk_proto *pto;
 	const char *arg;
@@ -65,7 +68,28 @@ int fk_lua_pcall(lua_State *L)
 
 	/* get return values, push them to lua */
 	/* parse lua_conn->write_buf */
+	buf = lua_conn->wbuf;
+	p = fk_buf_payload_start(buf);
+	switch (*p) {
+	case '+':
+		lua_pushlstring(L, p + 1, fk_buf_payload_len(buf));
+		return 1;
+		break;
+	case '-':
+		break;
+	case ':':
+		break;
+	case '*':
+		break;
+	case '$':
+		e = memchr(p, '\n', fk_buf_payload_len(buf));
+		p = e;
+		lua_pushlstring(L, p + 1, fk_buf_payload_len(buf));
+		return 1;
+		break;
+	}
 
+	/* destroy this fake connection */
 	fk_conn_destroy(lua_conn);
 
 	return 1;
@@ -112,10 +136,15 @@ int fk_lua_argv_push(fk_conn *conn, int argc, int keyc)
 int fk_lua_script_run(char *code)
 {
 	int rt;
+	const char *st;
 
 	printf("code: %s\n", code);
 
 	rt = luaL_loadstring(gL, code) || lua_pcall(gL, 0, LUA_MULTRET, 0);
+	if (rt == 0) {
+		st = luaL_checkstring(gL, -1);
+		printf("==st: %s\n", st);
+	}
 
 	return 0;
 }
