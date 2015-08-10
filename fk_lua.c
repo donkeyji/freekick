@@ -47,6 +47,7 @@ int fk_lua_pcall(lua_State *L)
 	const char *arg;
 	fk_conn *lua_conn;
 
+	/* a fake connection to execute a freekick command */
 	lua_conn = fk_conn_create(-1);/* invalid fd */
 
 	/* get the argument count */
@@ -99,17 +100,19 @@ int fk_lua_pcall(lua_State *L)
 	/* destroy this fake connection */
 	fk_conn_destroy(lua_conn);
 
-	return rt;
+	return rt;/* number of return value */
 }
 
 int fk_lua_status_parse(lua_State *L, fk_buf *buf)
 {
 	char *s;
 
-	s = fk_buf_payload_start(buf);
 	lua_newtable(L);
 	lua_pushstring(L, "ok");/* key */
+
+	s = fk_buf_payload_start(buf);
 	lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);/* value */
+
 	lua_rawset(L, -3);
 
 	return 1;
@@ -119,10 +122,12 @@ int fk_lua_error_parse(lua_State *L, fk_buf *buf)
 {
 	char *s;
 
-	s = fk_buf_payload_start(buf);
 	lua_newtable(L);
 	lua_pushstring(L, "err");/* key */
+
+	s = fk_buf_payload_start(buf);
 	lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);/* value */
+
 	lua_rawset(L, -3);
 
 	return 1;
@@ -134,7 +139,6 @@ int fk_lua_integer_parse(lua_State *L, fk_buf *buf)
 	char *s;
 
 	s = fk_buf_payload_start(buf);
-
 	n = atoi(s + 1);
 
 	lua_pushnumber(L, (lua_Number)n);/* int ---> lua_Number */
@@ -236,8 +240,8 @@ int fk_lua_argv_push(fk_conn *conn, int argc, int keyc)
 int fk_lua_script_run(fk_conn *conn, char *code)
 {
 	int rt;
-	size_t len;
-	const char *reply;
+	//size_t len;
+	//const char *reply;
 
 	rt = luaL_loadstring(gL, code) || lua_pcall(gL, 0, LUA_MULTRET, 0);
 	if (rt < 0) {
