@@ -783,7 +783,7 @@ int fk_cmd_eval(fk_conn *conn)
 
 	fk_lua_script_run(conn, fk_str_raw((fk_str *)fk_item_raw(code)));
 
-	//rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 
 	return FK_OK;
 }

@@ -107,18 +107,38 @@ int fk_lua_status_parse(lua_State *L, fk_buf *buf)
 	char *s;
 
 	s = fk_buf_payload_start(buf);
-	lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);
+	lua_newtable(L);
+	lua_pushstring(L, "ok");/* key */
+	lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);/* value */
+	lua_rawset(L, -3);
 
 	return 1;
 }
 
 int fk_lua_error_parse(lua_State *L, fk_buf *buf)
 {
+	char *s;
+
+	s = fk_buf_payload_start(buf);
+	lua_newtable(L);
+	lua_pushstring(L, "err");/* key */
+	lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);/* value */
+	lua_rawset(L, -3);
+
 	return 1;
 }
 
 int fk_lua_integer_parse(lua_State *L, fk_buf *buf)
 {
+	int n;
+	char *s;
+
+	s = fk_buf_payload_start(buf);
+
+	n = atoi(s + 1);
+
+	lua_pushnumber(L, (lua_Number)n);/* int ---> lua_Number */
+
 	return 1;
 }
 
@@ -131,14 +151,49 @@ int fk_lua_bulk_parse(lua_State *L, fk_buf *buf)
 	e = memchr(s, '\n', fk_buf_payload_len(buf));
 
 	blen = atoi(s + 1);
-
-	lua_pushlstring(L, e + 1, blen);
+	if (blen == -1) {
+		lua_pushnil(L);/* nil */
+	} else {
+		lua_pushlstring(L, e + 1, blen);/* common string */
+	}
 
 	return 1;
 }
 
 int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf)
 {
+	int mbulk, i, blen, n;
+	char *s, *e;
+
+	lua_newtable(L);
+
+	s = fk_buf_payload_start(buf);
+	e = memchr(s, '\n', fk_buf_payload_len(buf));
+	mbulk = atoi(s + 1);
+
+	for (i = 0; i < mbulk; i++) {
+		s = e + 1;
+		switch (*s) {
+		case '$':
+			e = memchr(s + 1, '\n', fk_buf_payload_len(buf));
+			blen = atoi(s + 1);
+			if (blen == -1) {
+				lua_pushnil(L);
+			} else {
+				lua_pushlstring(L, e + 1, blen);
+			}
+			lua_rawseti(L, -2, i + 1);
+			e += (blen + 2);
+			break;
+		case ':':
+			e = memchr(s + 1, '\n', fk_buf_payload_len(buf));
+			n = atoi(s + 1);
+			lua_pushnumber(L, (lua_Number)n);
+			lua_rawseti(L, -2, i + 1);
+			break;
+		}
+	}
+
 	return 1;
 }
 
@@ -187,10 +242,10 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 	rt = luaL_loadstring(gL, code) || lua_pcall(gL, 0, LUA_MULTRET, 0);
 	if (rt < 0) {
 	} else if (rt == 0) {
-		reply = luaL_checklstring(gL, -1, &len);
-		printf("reply: %s, len: %zu\n", reply, len);
-		fk_conn_bulk_rsp_add(conn, len);
-		fk_conn_content_rsp_add(conn, (char *)reply, len);
+		//reply = luaL_checklstring(gL, -1, &len);
+		//printf("reply: %s, len: %zu\n", reply, len);
+		//fk_conn_bulk_rsp_add(conn, len);
+		//fk_conn_content_rsp_add(conn, (char *)reply, len);
 	}
 
 	return 0;
