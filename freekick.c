@@ -103,11 +103,6 @@ static fk_zline *fk_zline_create(size_t len);
 static void fk_zline_adjust(fk_zline *buf, size_t len);
 static void fk_zline_destroy(fk_zline *buf);
 /* ---------------------------------------------------- */
-#define FK_RSP_OK				"OK"
-#define FK_RSP_ERR				"ERROR"
-#define FK_RSP_TYPE_ERR			"Type Error"
-#define FK_RSP_NIL				(-1)
-/* ---------------------------------------------------- */
 
 /* all the proto handlers */
 static int fk_cmd_set(fk_conn *conn);
@@ -783,7 +778,7 @@ int fk_cmd_eval(fk_conn *conn)
 
 	fk_lua_script_run(conn, fk_str_raw((fk_str *)fk_item_raw(code)));
 
-	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	//rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 
 	return FK_OK;
 }

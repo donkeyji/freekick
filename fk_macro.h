@@ -27,4 +27,9 @@
 #define FK_STR_HIGHWAT 		(FK_ARG_HIGHWAT)
 #define FK_ARG_CNT_HIGHWAT 	128
 
+/* reply sent to the clients */
+#define FK_RSP_OK				"OK"
+#define FK_RSP_ERR				"ERROR"
+#define FK_RSP_TYPE_ERR			"Type Error"
+#define FK_RSP_NIL				(-1)
 #endif

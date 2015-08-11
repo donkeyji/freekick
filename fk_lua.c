@@ -9,6 +9,7 @@
 #include <fk_vtr.h>
 #include <fk_item.h>
 #include <fk_lua.h>
+#include <fk_macro.h>
 #include <freekick.h>
 
 static int fk_lua_pcall(lua_State *L);
@@ -32,7 +33,8 @@ void fk_lua_init()
 
 	luaL_openlibs(gL);
 
-	luaL_register(gL, "freekick", fklib);
+	//luaL_register(gL, "freekick", fklib);
+	luaL_register(gL, "redis", fklib);
 }
 
 int fk_lua_pcall(lua_State *L)
@@ -239,17 +241,58 @@ int fk_lua_argv_push(fk_conn *conn, int argc, int keyc)
 
 int fk_lua_script_run(fk_conn *conn, char *code)
 {
-	int rt;
-	//size_t len;
-	//const char *reply;
+	const char *p, *sp;
+	size_t len, slen, olen;
+	int i, rt, top1, top2, nret, type, stype, idx;
 
+	top1 = lua_gettop(gL);
 	rt = luaL_loadstring(gL, code) || lua_pcall(gL, 0, LUA_MULTRET, 0);
-	if (rt < 0) {
+
+	if (rt < 0) {/* error occurs when run script */
 	} else if (rt == 0) {
-		//reply = luaL_checklstring(gL, -1, &len);
-		//printf("reply: %s, len: %zu\n", reply, len);
-		//fk_conn_bulk_rsp_add(conn, len);
-		//fk_conn_content_rsp_add(conn, (char *)reply, len);
+		top2 = lua_gettop(gL);
+		nret = top2 - top1;/* get the number of return value */
+
+		if (nret == 0) {/* no return value at all */
+			fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+		} else {/* nret >= 1 */
+			idx = -1 - (nret - 1);/* only get the first return value */
+			type = lua_type(gL, idx);
+			switch (type) {
+			case LUA_TNUMBER:
+				fk_conn_int_rsp_add(conn, (int)lua_tointeger(gL, idx));
+				break;
+			case LUA_TSTRING:
+				p = lua_tolstring(gL, idx, &len);
+				fk_conn_bulk_rsp_add(conn, (int)len);
+				fk_conn_content_rsp_add(conn, (char *)p, len);
+				break;
+			case LUA_TNIL:
+				fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+				break;
+			case LUA_TBOOLEAN:
+				break;
+			case LUA_TTABLE:
+				olen = lua_objlen(gL, idx);
+				fk_conn_mbulk_rsp_add(conn, olen);
+				for (i = 1; i <= olen; i++) {
+					lua_rawgeti(gL, idx, i);
+					stype = lua_type(gL, -1);
+					switch (stype) {
+					case LUA_TSTRING:
+						sp = lua_tolstring(gL, -1, &slen);
+						fk_conn_bulk_rsp_add(conn, (int)slen);
+						fk_conn_content_rsp_add(conn, (char *)sp, slen);
+						break;
+					case LUA_TNUMBER:
+						fk_conn_int_rsp_add(conn, lua_tointeger(gL, -1));
+						break;
+					}
+					lua_pop(gL, 1);
+				}
+				break;
+			}
+		}
 	}
 
 	return 0;
