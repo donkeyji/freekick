@@ -165,7 +165,8 @@ int fk_lua_bulk_parse(lua_State *L, fk_buf *buf)
 
 	blen = atoi(s + 1);
 	if (blen == -1) {
-		lua_pushnil(L);/* nil */
+		//lua_pushnil(L);/* nil */
+		lua_pushboolean(L, 0);
 	} else {
 		lua_pushlstring(L, e + 1, blen);/* common string */
 	}
@@ -191,7 +192,8 @@ int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf)
 			e = memchr(s + 1, '\n', fk_buf_payload_len(buf));
 			blen = atoi(s + 1);
 			if (blen == -1) {
-				lua_pushnil(L);
+				//lua_pushnil(L);
+				lua_pushboolean(L, 0);
 			} else {
 				lua_pushlstring(L, e + 1, blen);
 			}
