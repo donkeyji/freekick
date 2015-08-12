@@ -4,6 +4,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+#include <fk_log.h>
 #include <fk_buf.h>
 #include <fk_mem.h>
 #include <fk_vtr.h>
@@ -230,58 +231,73 @@ int fk_lua_paras_push(char **paras, int npara, int type)
 
 int fk_lua_script_run(fk_conn *conn, char *code)
 {
-	const char *p, *sp;
+	const char *p, *sp, *err;
 	size_t len, slen, olen;
 	int i, rt, top1, top2, nret, type, stype, idx;
 
 	top1 = lua_gettop(gL);
-	rt = luaL_loadstring(gL, code) || lua_pcall(gL, 0, LUA_MULTRET, 0);
 
-	if (rt < 0) {/* error occurs when run script */
-	} else if (rt == 0) {
-		top2 = lua_gettop(gL);
-		nret = top2 - top1;/* get the number of return value */
+	rt = luaL_loadstring(gL, code);
+	if (rt != 0) {/* error occurs when load a string */
+		fk_log_info("load string failed\n");
+		err = lua_tolstring(gL, -1, &slen);
+		fk_conn_bulk_rsp_add(conn, slen);
+		fk_conn_content_rsp_add(conn, (char *)err, slen);
+		return 0;
+	}
 
-		if (nret == 0) {/* no return value at all */
-			fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
-		} else {/* nret >= 1 */
-			idx = -1 - (nret - 1);/* only get the first return value */
-			type = lua_type(gL, idx);
-			switch (type) {
-			case LUA_TNUMBER:
-				fk_conn_int_rsp_add(conn, (int)lua_tointeger(gL, idx));
-				break;
+   	rt = lua_pcall(gL, 0, LUA_MULTRET, 0);
+	if (rt != 0) {/* error occurs when run script */
+		fk_log_info("run string failed\n");
+		err = lua_tolstring(gL, -1, &slen);
+		fk_conn_bulk_rsp_add(conn, slen);
+		fk_conn_content_rsp_add(conn, (char *)err, slen);
+		return 0;
+	}
+
+	top2 = lua_gettop(gL);
+	nret = top2 - top1;/* get the number of return value */
+
+	if (nret == 0) {/* no return value at all */
+		fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+		return 0;
+	}
+
+	idx = -1 - (nret - 1);/* only get the first return value */
+	type = lua_type(gL, idx);
+	switch (type) {
+	case LUA_TNUMBER:
+		fk_conn_int_rsp_add(conn, (int)lua_tointeger(gL, idx));
+		break;
+	case LUA_TSTRING:
+		p = lua_tolstring(gL, idx, &len);
+		fk_conn_bulk_rsp_add(conn, (int)len);
+		fk_conn_content_rsp_add(conn, (char *)p, len);
+		break;
+	case LUA_TNIL:
+		fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+		break;
+	case LUA_TBOOLEAN:
+		break;
+	case LUA_TTABLE:
+		olen = lua_objlen(gL, idx);
+		fk_conn_mbulk_rsp_add(conn, olen);
+		for (i = 1; i <= olen; i++) {
+			lua_rawgeti(gL, idx, i);
+			stype = lua_type(gL, -1);
+			switch (stype) {
 			case LUA_TSTRING:
-				p = lua_tolstring(gL, idx, &len);
-				fk_conn_bulk_rsp_add(conn, (int)len);
-				fk_conn_content_rsp_add(conn, (char *)p, len);
+				sp = lua_tolstring(gL, -1, &slen);
+				fk_conn_bulk_rsp_add(conn, (int)slen);
+				fk_conn_content_rsp_add(conn, (char *)sp, slen);
 				break;
-			case LUA_TNIL:
-				fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
-				break;
-			case LUA_TBOOLEAN:
-				break;
-			case LUA_TTABLE:
-				olen = lua_objlen(gL, idx);
-				fk_conn_mbulk_rsp_add(conn, olen);
-				for (i = 1; i <= olen; i++) {
-					lua_rawgeti(gL, idx, i);
-					stype = lua_type(gL, -1);
-					switch (stype) {
-					case LUA_TSTRING:
-						sp = lua_tolstring(gL, -1, &slen);
-						fk_conn_bulk_rsp_add(conn, (int)slen);
-						fk_conn_content_rsp_add(conn, (char *)sp, slen);
-						break;
-					case LUA_TNUMBER:
-						fk_conn_int_rsp_add(conn, lua_tointeger(gL, -1));
-						break;
-					}
-					lua_pop(gL, 1);
-				}
+			case LUA_TNUMBER:
+				fk_conn_int_rsp_add(conn, lua_tointeger(gL, -1));
 				break;
 			}
+			lua_pop(gL, 1);
 		}
+		break;
 	}
 
 	return 0;
