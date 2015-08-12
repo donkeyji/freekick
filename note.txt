@@ -99,3 +99,7 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 43.协议处理函数最好能返回状态码，由此来判断协议执行的状态。redis, memcached就没有返回值，pop3d作了返回值。freekick也提供了返回值。
 
 44.为必要的模块定义FK_MOD_OK/FK_MOD_ERR状态码，用来作为模块内函数的返回值，避免直接用0，-1等数字，从而有更明确的含义。
+
+45.供lua调用的c函数，其栈是一个全新的栈，lua_gettop(L)得到的就是lua传给这个c函数的参数个数。该c函数调用完后，其栈被完全释放，不再影响lua_gettop(L)的值。
+
+46.为何执行的lua脚本有时候导致server在fk_conn_cmd_proc出现segment fault?
