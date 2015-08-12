@@ -11,6 +11,7 @@
 #include <fk_item.h>
 #include <fk_lua.h>
 #include <fk_macro.h>
+#include <fk_conn.h>
 #include <freekick.h>
 
 static int fk_lua_pcall(lua_State *L);
@@ -43,10 +44,10 @@ int fk_lua_pcall(lua_State *L)
 	int i, rt;
 	size_t len;
 	char *start;
-	fk_str *cmd;
+	//fk_str *cmd;
 	fk_buf *buf;
 	fk_item *itm;
-	fk_proto *pto;
+	//fk_proto *pto;
 	const char *arg;
 	fk_conn *lua_conn;
 
@@ -72,11 +73,12 @@ int fk_lua_pcall(lua_State *L)
 	lua_conn->parse_done = 1;
 
 	/* the first arg */
-	itm = (fk_item *)fk_conn_arg_get(lua_conn, 0);
-	cmd = (fk_str *)fk_item_raw(itm);
-	fk_str_2upper(cmd);
-	pto = fk_proto_search(cmd);
-	pto->handler(lua_conn);
+	//itm = (fk_item *)fk_conn_arg_get(lua_conn, 0);
+	//cmd = (fk_str *)fk_item_raw(itm);
+	//fk_str_2upper(cmd);
+	//pto = fk_proto_search(cmd);
+	//pto->handler(lua_conn);
+	rt = fk_conn_cmd_proc(lua_conn);
 
 	/* get return values, push them to lua */
 	/* parse lua_conn->write_buf */
@@ -231,8 +233,8 @@ int fk_lua_paras_push(char **paras, int npara, int type)
 
 int fk_lua_script_run(fk_conn *conn, char *code)
 {
-	const char *p, *sp, *err;
 	size_t len, slen, olen;
+	const char *p, *sp, *err;
 	int i, rt, top1, top2, nret, type, stype, idx;
 
 	top1 = lua_gettop(gL);

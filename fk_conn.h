@@ -39,6 +39,8 @@ typedef struct _fk_conn {
 fk_conn *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn *conn);
 
+int fk_conn_cmd_proc(fk_conn *conn);
+
 #define fk_conn_arg_set(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
 
 #define fk_conn_arg_get(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
