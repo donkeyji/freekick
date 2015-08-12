@@ -754,15 +754,16 @@ int fk_cmd_select(fk_conn *conn)
 
 int fk_cmd_eval(fk_conn *conn)
 {
-	fk_str *snkey;
-	fk_item *code, *nkey;
-	int inkey, inargv, rt;
+	int nkey, nargv, rt, i;
+	char *code, **keys, **argv;
+	fk_str *str_nkey, *str_code;
+	fk_item *itm_code, *itm_nkey, *itm_arg;
 
-	code = fk_conn_arg_get(conn, 1);
-	nkey = fk_conn_arg_get(conn, 2);
+	itm_code = fk_conn_arg_get(conn, 1);
+	itm_nkey = fk_conn_arg_get(conn, 2);
 
-	snkey = (fk_str *)fk_item_raw(nkey);
-	if (fk_str_is_nonminus(snkey) == 0) {
+	str_nkey = (fk_str *)fk_item_raw(itm_nkey);
+	if (fk_str_is_nonminus(str_nkey) == 0) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 		if (rt == FK_CONN_ERR) {
 			return FK_ERR;
@@ -770,15 +771,29 @@ int fk_cmd_eval(fk_conn *conn)
 		return FK_OK;
 	}
 
-	inkey = atoi(fk_str_raw(snkey));
-	fk_lua_keys_push(conn, inkey);
+	nkey = atoi(fk_str_raw(str_nkey));
+	keys = (char **)calloc(nkey, sizeof(char *));
+	for (i = 0; i < nkey; i++) {
+		itm_arg = fk_conn_arg_get(conn, 3 + i);
+		keys[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
+	}
+	fk_lua_paras_push(keys, nkey, FK_LUA_PARA_KEYS);
 
-	inargv = conn->arg_cnt - 1 - 2 - inkey;
-	fk_lua_argv_push(conn, inargv, inkey);
+	nargv = conn->arg_cnt - 1 - 2 - nkey;
+	argv = (char **)calloc(nargv, sizeof(char *));
+	for (i = 0; i < nargv; i++) {
+		itm_arg = fk_conn_arg_get(conn, 3 + nkey + i);
+		argv[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
+	}
+	fk_lua_paras_push(argv, nargv, FK_LUA_PARA_ARGV);
 
-	fk_lua_script_run(conn, fk_str_raw((fk_str *)fk_item_raw(code)));
+	/* just release the array, but not the every item in it */
+	fk_mem_free(keys);
+	fk_mem_free(argv);
 
-	//rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	str_code = (fk_str *)fk_item_raw(itm_code);
+	code = fk_str_raw(str_code);
+	fk_lua_script_run(conn, code);
 
 	return FK_OK;
 }

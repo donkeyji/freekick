@@ -203,38 +203,27 @@ int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_keys_push(fk_conn *conn, int keyc)
+int fk_lua_paras_push(char **paras, int npara, int type)
 {
 	int i;
-	fk_item *key;
+	char *name;
 
 	lua_newtable(gL);
 
-	for (i = 0; i < keyc; i++) {
-		key = fk_conn_arg_get(conn, 3 + i);	
-		lua_pushstring(gL, fk_str_raw((fk_str *)fk_item_raw(key)));
+	for (i = 0; i < npara; i++) {
+		lua_pushstring(gL, paras[i]);
 		lua_rawseti(gL, -2, i + 1);
 	}
 
-	lua_setglobal(gL, "KEYS");
-
-	return 0;
-}
-
-int fk_lua_argv_push(fk_conn *conn, int argc, int keyc)
-{
-	int i;
-	fk_item *arg;
-
-	lua_newtable(gL);
-
-	for (i = 0; i < argc; i++) {
-		arg = fk_conn_arg_get(conn, 3 + keyc + i);	
-		lua_pushstring(gL, fk_str_raw((fk_str *)fk_item_raw(arg)));
-		lua_rawseti(gL, -2, i + 1);
+	switch (type) {
+	case FK_LUA_PARA_KEYS:
+		name = "KEYS";
+		break;
+	case FK_LUA_PARA_ARGV:
+		name = "ARGV";
+		break;
 	}
-
-	lua_setglobal(gL, "ARGV");
+	lua_setglobal(gL, name);
 
 	return 0;
 }
