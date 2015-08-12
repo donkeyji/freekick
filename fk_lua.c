@@ -44,15 +44,17 @@ int fk_lua_pcall(lua_State *L)
 	int i, rt;
 	size_t len;
 	char *start;
-	//fk_str *cmd;
 	fk_buf *buf;
 	fk_item *itm;
-	//fk_proto *pto;
 	const char *arg;
 	fk_conn *lua_conn;
 
-	/* a fake connection to execute a freekick command */
-	lua_conn = fk_conn_create(-1);/* invalid fd */
+	/* 
+	 * create a fake client used for executing a freekick command,
+	 * of which fd is invalid, just ignore the error generated 
+	 * when calling fk_ioev_add()
+	 */
+	lua_conn = fk_conn_create(-1);
 
 	/* get the argument count */
 	lua_conn->arg_cnt = lua_gettop(L);
@@ -72,16 +74,18 @@ int fk_lua_pcall(lua_State *L)
 	}
 	lua_conn->parse_done = 1;
 
-	/* the first arg */
-	//itm = (fk_item *)fk_conn_arg_get(lua_conn, 0);
-	//cmd = (fk_str *)fk_item_raw(itm);
-	//fk_str_2upper(cmd);
-	//pto = fk_proto_search(cmd);
-	//pto->handler(lua_conn);
+	/* just call the fk_conn_cmd_proc */
 	rt = fk_conn_cmd_proc(lua_conn);
+	if (rt == FK_CONN_ERR) {
+		fk_log_error("fatal error occured when processing cmd in lua\n");
+		fk_conn_destroy(lua_conn);
+		return 0;/* no return value to lua */
+	}
 
-	/* get return values, push them to lua */
-	/* parse lua_conn->write_buf */
+	/* 
+	 * parse data in lua_conn->wbuf, which is the reply to the client.
+	 * push them to lua level
+	 */
 	buf = lua_conn->wbuf;
 	start = fk_buf_payload_start(buf);
 	switch (*start) {
@@ -102,7 +106,7 @@ int fk_lua_pcall(lua_State *L)
 		break;
 	}
 
-	/* destroy this fake connection */
+	/* destroy this fake client */
 	fk_conn_destroy(lua_conn);
 
 	return rt;/* number of return value */
