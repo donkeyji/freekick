@@ -35,7 +35,7 @@ void fk_lua_init()
 	luaL_openlibs(gL);
 
 	//luaL_register(gL, "freekick", fklib);
-	luaL_register(gL, "redis", fklib);
+	luaL_register(gL, "redis", fklib);/* just for convenience when debuging by using "redis" */
 }
 
 int fk_lua_pcall(lua_State *L)
