@@ -264,6 +264,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 	}
 
 	top2 = lua_gettop(gL);
+	//printf("top1: %d, top2: %d\n", top1, top2);
 	nret = top2 - top1;/* get the number of return value */
 
 	if (nret == 0) {/* no return value at all */
@@ -307,6 +308,9 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		}
 		break;
 	}
+
+	/* pop all the return values */
+	lua_pop(gL, nret);
 
 	return 0;
 }
