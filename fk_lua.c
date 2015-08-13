@@ -251,6 +251,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		err = lua_tolstring(gL, -1, &slen);
 		fk_conn_bulk_rsp_add(conn, slen);
 		fk_conn_content_rsp_add(conn, (char *)err, slen);
+		lua_pop(gL, 1);/* must pop this error message */
 		return 0;
 	}
 
@@ -260,11 +261,12 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		err = lua_tolstring(gL, -1, &slen);
 		fk_conn_bulk_rsp_add(conn, slen);
 		fk_conn_content_rsp_add(conn, (char *)err, slen);
+		lua_pop(gL, 1);/* must pop this error message */
 		return 0;
 	}
 
 	top2 = lua_gettop(gL);
-	//printf("top1: %d, top2: %d\n", top1, top2);
+	printf("top1: %d, top2: %d\n", top1, top2);
 	nret = top2 - top1;/* get the number of return value */
 
 	if (nret == 0) {/* no return value at all */
@@ -309,8 +311,8 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		break;
 	}
 
-	/* pop all the return values */
-	lua_pop(gL, nret);
+	lua_pop(gL, nret);/* pop all the return values */
+	lua_gc(gL, LUA_GCSTEP, 1);
 
 	return 0;
 }
