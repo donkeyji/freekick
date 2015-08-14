@@ -16,6 +16,8 @@
 
 static int fk_lua_pcall(lua_State *L);
 
+static int fk_lua_conn_cmd_proc(fk_conn *conn);
+
 static int fk_lua_status_parse(lua_State *L, fk_buf *buf);
 static int fk_lua_error_parse(lua_State *L, fk_buf *buf);
 static int fk_lua_integer_parse(lua_State *L, fk_buf *buf);
@@ -23,6 +25,7 @@ static int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf);
 static int fk_lua_bulk_parse(lua_State *L, fk_buf *buf);
 
 lua_State *gL = NULL;
+fk_conn *lua_conn = NULL;
 
 static const struct luaL_Reg fklib[] = {
 	{"pcall", fk_lua_pcall},
@@ -47,14 +50,12 @@ int fk_lua_pcall(lua_State *L)
 	fk_buf *buf;
 	fk_item *itm;
 	const char *arg;
-	fk_conn *lua_conn;
 
 	/* 
 	 * create a fake client used for executing a freekick command,
 	 * of which fd is invalid, just ignore the error generated 
 	 * when calling fk_ioev_add()
 	 */
-	lua_conn = fk_conn_create(-1);
 
 	/* get the argument count */
 	lua_conn->arg_cnt = lua_gettop(L);
@@ -74,13 +75,7 @@ int fk_lua_pcall(lua_State *L)
 	}
 	lua_conn->parse_done = 1;
 
-	/* just call the fk_conn_cmd_proc */
-	rt = fk_conn_cmd_proc(lua_conn);
-	if (rt == FK_CONN_ERR) {
-		fk_log_error("fatal error occured when processing cmd in lua\n");
-		fk_conn_destroy(lua_conn);
-		return 0;/* no return value to lua */
-	}
+	fk_lua_conn_cmd_proc(lua_conn);
 
 	/* 
 	 * parse data in lua_conn->wbuf, which is the reply to the client.
@@ -106,10 +101,36 @@ int fk_lua_pcall(lua_State *L)
 		break;
 	}
 
-	/* destroy this fake client */
-	fk_conn_destroy(lua_conn);
 
 	return rt;/* number of return value */
+}
+
+int fk_lua_conn_cmd_proc(fk_conn *conn)
+{
+	int rt;
+	fk_str *cmd;
+	fk_item *itm;
+	fk_proto *pto;
+
+	itm = (fk_item *)fk_conn_arg_get(conn, 0);
+	cmd = (fk_str *)fk_item_raw(itm);
+	fk_str_2upper(cmd);
+	pto = fk_proto_search(cmd);
+	if (pto == NULL) {
+		fk_conn_error_rsp_add(conn, "Invalid Protocol", strlen("Invalid Protocol"));
+		return 0;
+	}
+	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
+		fk_conn_error_rsp_add(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
+		return 0;
+	}
+	rt = pto->handler(conn);
+	if (rt == FK_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
+		fk_conn_error_rsp_add(conn, "cmd handler failed", strlen("cmd handler failed"));
+		return 0;
+	}
+
+	return 0;
 }
 
 int fk_lua_status_parse(lua_State *L, fk_buf *buf)
@@ -255,6 +276,8 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		return 0;
 	}
 
+	lua_conn = fk_conn_create(-1);
+	lua_conn->db_idx = conn->db_idx;/* keep the same db_idx */
    	rt = lua_pcall(gL, 0, LUA_MULTRET, 0);
 	if (rt != 0) {/* error occurs when run script */
 		fk_log_info("run string failed\n");
@@ -262,8 +285,10 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		fk_conn_bulk_rsp_add(conn, slen);
 		fk_conn_content_rsp_add(conn, (char *)err, slen);
 		lua_pop(gL, 1);/* must pop this error message */
+		fk_conn_destroy(lua_conn);/* destroy this fake client */
 		return 0;
 	}
+	fk_conn_destroy(lua_conn);/* destroy this fake client */
 
 	top2 = lua_gettop(gL);
 	printf("top1: %d, top2: %d\n", top1, top2);
