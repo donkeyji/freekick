@@ -23,7 +23,7 @@ static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
 static void fk_conn_args_free(fk_conn *conn);
 static int fk_conn_req_parse(fk_conn *conn);
 static int fk_conn_data_recv(fk_conn *conn);
-//static int fk_conn_cmd_proc(fk_conn *conn);
+static int fk_conn_cmd_proc(fk_conn *conn);
 static int fk_conn_rsp_send(fk_conn *conn);
 
 /* response format */
