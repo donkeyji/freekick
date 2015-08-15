@@ -66,7 +66,15 @@ int fk_lua_pcall(lua_State *L)
 
 	/* similar to the function: fk_conn_req_parse() */
 	for (i = 0; i < lua_conn->arg_cnt; i++) {
-		arg = luaL_checklstring(L, i + 1, &len);
+		/* do not use luaL_checklstring() here, because if luaL_checklstring()
+		 * fails, this function will return to lua directly, so that error 
+		 * couldn't be handled inside this function
+		 */
+		if (!lua_isstring(L, i + 1)) {
+			lua_pushstring(L, "the argument of pcall should be string");
+			return 1;
+		}
+		arg = lua_tolstring(L, i + 1, &len);
 		itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
 		fk_conn_arg_set(lua_conn, lua_conn->arg_idx, itm);
 		fk_conn_arglen_set(lua_conn, lua_conn->arg_idx, (void *)((size_t)len));
@@ -213,7 +221,6 @@ int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf)
 			e = memchr(s + 1, '\n', fk_buf_payload_len(buf));
 			blen = atoi(s + 1);
 			if (blen == -1) {
-				//lua_pushnil(L);
 				lua_pushboolean(L, 0);
 			} else {
 				lua_pushlstring(L, e + 1, blen);
@@ -291,7 +298,6 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 	fk_conn_destroy(lua_conn);/* destroy this fake client */
 
 	top2 = lua_gettop(gL);
-	printf("top1: %d, top2: %d\n", top1, top2);
 	nret = top2 - top1;/* get the number of return value */
 
 	if (nret == 0) {/* no return value at all */
