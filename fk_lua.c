@@ -302,6 +302,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 
 	if (nret == 0) {/* no return value at all */
 		fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+		lua_settop(gL, top1);
 		return 0;
 	}
 
@@ -342,7 +343,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		break;
 	}
 
-	lua_pop(gL, nret);/* pop all the return values */
+	lua_settop(gL, top1);/* keep the top of the stack */
 	lua_gc(gL, LUA_GCSTEP, 1);
 
 	return 0;
