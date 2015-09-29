@@ -1,5 +1,5 @@
-#ifndef _FK_MALLOC_H_
-#define _FK_MALLOC_H_
+#ifndef _FK_MEM_H_
+#define _FK_MEM_H_
 
 #include <sys/types.h>
 
