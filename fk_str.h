@@ -13,7 +13,6 @@ typedef struct _fk_str {
 } fk_str;
 
 #define fk_str_raw(str) ((str)->seq)
-
 #define fk_str_len(str) ((str)->len)
 
 fk_str *fk_str_create(char *seq, size_t len);
