@@ -4,7 +4,7 @@
 #include <fk_sklist.h>
 
 static fk_sknode *fk_sknode_create(int level, int score, void *data);
-
+static void fk_sknode_destroy(fk_sknode *nd);
 
 fk_sklist *fk_sklist_create()
 {
@@ -27,6 +27,15 @@ fk_sklist *fk_sklist_create()
 
 void fk_sklist_destroy(fk_sklist *sl)
 {
+	fk_sknode *cur, *nxt;
+
+	cur = sl->head;
+	while (cur != NULL) {
+		nxt = cur->next[0];
+		fk_sknode_destroy(cur);
+		cur = nxt;
+	}
+	fk_mem_free(sl);
 }
 
 void fk_sklist_insert(fk_sklist *sl, void *val)
@@ -55,4 +64,9 @@ fk_sknode *fk_sknode_create(int level, int score, void *data)
 	nd->data = data;
 
 	return nd;
+}
+
+void fk_sknode_destroy(fk_sknode *nd)
+{
+	fk_mem_free(nd);
 }
