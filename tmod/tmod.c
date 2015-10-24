@@ -111,9 +111,14 @@ void t_list()
 	fk_list_iter_end(iter);
 }
 
+void t_sklist()
+{
+}
+
 int main()
 {
-	t_dict();	
+	//t_dict();	
 	//t_list();
+	t_sklist();
     return 0;
 }
