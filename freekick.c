@@ -1814,7 +1814,9 @@ void fk_main_init(char *conf_path)
 
 	fk_setrlimit();
 
+	/* where is the best place to call fk_set_seed()?? */
 	fk_set_seed();
+
 	/* 
 	 * the second to init, so that all the 
 	 * ther module can call fk_log_xxx() 
