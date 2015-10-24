@@ -5,6 +5,7 @@
 
 static fk_sknode *fk_sknode_create(int level, int score, void *data);
 static void fk_sknode_destroy(fk_sknode *nd);
+static int fk_sknode_rand_level();
 
 fk_sklist *fk_sklist_create()
 {
@@ -38,8 +39,24 @@ void fk_sklist_destroy(fk_sklist *sl)
 	fk_mem_free(sl);
 }
 
-void fk_sklist_insert(fk_sklist *sl, void *val)
+void fk_sklist_insert(fk_sklist *sl, int score, void *val)
 {
+	int i, level;
+	fk_sknode *cur, *nxt, *nd, *update[FK_SKLIST_MAX_LEVEL];
+
+	cur = sl->head;
+	for (i = FK_SKLIST_MAX_LEVEL - 1; i >= 0; i--) {
+		if (cur->next[i] != NULL) {
+			nxt = cur->next[i]->next;
+			while (nxt->score > score) {
+				nxt = nxt->next;
+			}
+		}
+		update[i] = nxt;/* insert this one before nxt */
+	}
+
+	level = fk_sknode_rand_level();
+	nd = fk_sknode_create(level, score, val);
 }
 
 void fk_sklist_remove(fk_sklist *sl, fk_sknode *nd)
@@ -69,4 +86,18 @@ fk_sknode *fk_sknode_create(int level, int score, void *data)
 void fk_sknode_destroy(fk_sknode *nd)
 {
 	fk_mem_free(nd);
+}
+
+int fk_sknode_rand_level()
+{
+	int level;
+
+	level = 1;
+
+	while (level % 2 != 0) {
+		level++;
+	}
+	level = level > FK_SKLIST_MAX_LEVEL ? FK_SKLIST_MAX_LEVEL : level;
+
+	return level;
 }

@@ -84,6 +84,7 @@ static void fk_signal_reg();
 static void fk_sigint(int sig);
 static void fk_sigchld(int sig);
 static void fk_setrlimit();
+static void fk_set_seed();
 static void fk_set_pwd();
 static void fk_daemonize();
 static void fk_write_pid_file();
@@ -1149,6 +1150,11 @@ void fk_setrlimit()
 	}
 }
 
+void fk_set_seed()
+{
+	srand(time(NULL));
+}
+
 void fk_set_pwd()
 {
 	int rt;
@@ -1808,6 +1814,7 @@ void fk_main_init(char *conf_path)
 
 	fk_setrlimit();
 
+	fk_set_seed();
 	/* 
 	 * the second to init, so that all the 
 	 * ther module can call fk_log_xxx() 

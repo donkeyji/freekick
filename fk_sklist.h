@@ -19,7 +19,7 @@ typedef struct _fk_sklist {
 
 fk_sklist *fk_sklist_create();
 void fk_sklist_destroy(fk_sklist *sl);
-void fk_sklist_insert(fk_sklist *sl, void *val);
+void fk_sklist_insert(fk_sklist *sl, int score, void *val);
 void fk_sklist_remove(fk_sklist *sl, fk_sknode *nd);
 fk_sknode *fk_sklist_search(fk_sklist *sl, void *val);
 
