@@ -3,14 +3,24 @@
 #include <fk_mem.h>
 #include <fk_sklist.h>
 
+static fk_sknode *fk_sknode_create(int level, int score, void *data);
+
+
 fk_sklist *fk_sklist_create()
 {
+	int i;
+	fk_sknode *nd;
 	fk_sklist *sl;
 
 	sl = fk_mem_alloc(sizeof(fk_sklist));
 	sl->level = 0;
 	sl->len = 0;
-	sl->head = NULL;
+
+	nd = fk_sknode_create(FK_SKLIST_MAX_LEVEL, 0, NULL);
+	for (i = 0; i < FK_SKLIST_MAX_LEVEL; i++) {
+		nd->next[i] = NULL;
+	}
+	sl->head = nd;
 
 	return sl;
 }
@@ -32,6 +42,17 @@ fk_sknode *fk_sklist_search(fk_sklist *sl, void *val)
 	fk_sknode *nd;
 
 	nd = NULL;
+
+	return nd;
+}
+
+fk_sknode *fk_sknode_create(int level, int score, void *data)
+{
+	fk_sknode *nd;
+
+	nd = fk_mem_alloc(sizeof(fk_sknode) + (level - 1) * sizeof(fk_sknode *));
+	nd->score = score;
+	nd->data = data;
 
 	return nd;
 }

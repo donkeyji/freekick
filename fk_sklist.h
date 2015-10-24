@@ -6,14 +6,14 @@
 #define FK_SKLIST_MAX_LEVEL		16
 
 typedef struct _fk_sknode {
+	int score;
 	void *data;
-	struct _fk_sknode *prev;
-	struct _fk_sknode *next[];
+	struct _fk_sknode *next[1];/* at lease 1 element */
 } fk_sknode;
 
 typedef struct _fk_sklist {
 	fk_sknode *head;
-	int level;
+	int level;/* current level */
 	size_t len;
 } fk_sklist;
 
