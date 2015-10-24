@@ -3,6 +3,8 @@
 
 #include <sys/types.h>
 
+#define FK_SKLIST_MAX_LEVEL		16
+
 typedef struct _fk_sknode {
 	void *data;
 	struct _fk_sknode *prev;
