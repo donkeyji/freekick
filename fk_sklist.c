@@ -41,22 +41,41 @@ void fk_sklist_destroy(fk_sklist *sl)
 
 void fk_sklist_insert(fk_sklist *sl, int score, void *val)
 {
-	int i, level;
-	fk_sknode *cur, *nxt, *nd, *update[FK_SKLIST_MAX_LEVEL];
+	int i, nlv;
+	fk_sknode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
 
-	cur = sl->head;
+	p = sl->head;/* p->next[i] ==> q */
+
 	for (i = FK_SKLIST_MAX_LEVEL - 1; i >= 0; i--) {
-		if (cur->next[i] != NULL) {
-			nxt = cur->next[i]->next;
-			while (nxt->score > score) {
-				nxt = nxt->next;
-			}
+		q = p->next[i];/* the first node in this level */
+		while (q != NULL && q->score < score) {
+			p = q;
+			q = p->next[i];
 		}
-		update[i] = nxt;/* insert this one before nxt */
+		update[i] = p;/* insert this new node after p */
 	}
 
-	level = fk_sknode_rand_level();
-	nd = fk_sknode_create(level, score, val);
+	/* generate a random level for this new node */
+	nlv = fk_sknode_rand_level();
+
+	/* 
+	 * maybe nlv is greater than sl->level
+	 * so we need to generate more lists 
+	 */
+	if (nlv > sl->level) {
+		for (i = sl->level; i < nlv; i++) {
+			update[i] = sl->head;/* use the head as the previous node */
+		}
+		sl->level = nlv;/* set this nlv as the level of skiplist */
+	}
+
+	nd = fk_sknode_create(nlv, score, val);
+
+	/* insert in nlv levels */
+	for (i = 0; i < nlv; i++) {
+		nd->next[i] = update[i]->next[i];
+		update[i]->next[i] = nd;
+	}
 }
 
 void fk_sklist_remove(fk_sklist *sl, fk_sknode *nd)
