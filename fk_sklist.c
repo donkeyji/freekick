@@ -82,6 +82,8 @@ void fk_sklist_insert(fk_sklist *sl, int score, void *val)
 		nd->next[i] = update[i]->next[i];
 		update[i]->next[i] = nd;
 	}
+
+	sl->len++;
 }
 
 void fk_sklist_remove(fk_sklist *sl, int score)
@@ -122,6 +124,8 @@ void fk_sklist_remove(fk_sklist *sl, int score)
 	}
 
 	fk_sknode_destroy(nd);
+
+	sl->len--;
 }
 
 fk_sknode *fk_sklist_search(fk_sklist *sl, int score)
