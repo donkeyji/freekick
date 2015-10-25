@@ -44,16 +44,21 @@ void fk_sklist_insert(fk_sklist *sl, int score, void *val)
 	int i, nlv;
 	fk_sknode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
 
-	p = sl->head;/* p->next[i] ==> q */
+	p = sl->head;
 	q = NULL;
 
 	for (i = FK_SKLIST_MAX_LEVEL - 1; i >= 0; i--) {
 		q = p->next[i];/* the first node in this level */
 		while (q != NULL && q->score < score) {
 			p = q;
-			q = p->next[i - 1];
+			q = p->next[i];
 		}
-		update[i] = p;/* insert this new node after p */
+		/* 
+		 * at this time, these condition below are satisfied:
+		 * (1) q == NULL || q->score >= score 
+		 * (2) q == p->next[i]
+		 */
+		update[i] = p;
 	}
 
 	/* generate a random level for this new node */
@@ -91,23 +96,31 @@ void fk_sklist_remove(fk_sklist *sl, int score)
 		q = p->next[i];
 		while (q != NULL && q->score < score) {
 			p = q;
-			q = p->next[i - 1];
+			q = p->next[i];
 		}
+		/* 
+		 * at this time, these condition below are satisfied:
+		 * (1) q == NULL || q->score >= score 
+		 * (2) q == p->next[i]
+		 */
 		update[i] = p;
 	}
 
-	/* not found */
+	/* not found in the lowest level list */
 	if (q == NULL || (q != NULL && q->score != score)) {
 		return;
 	}
 
 	nd = q;
-	for (i = sl->level - 1; i >=0; i--) {
-		update[i]->next[i] = nd->next[i];
-		if (sl->head->next[i] == NULL) {
-			sl->level--;
+	for (i = sl->level - 1; i >= 0; i--) {
+		if (update[i]->next[i] == nd) {/* need to remove */
+			update[i]->next[i] = nd->next[i];
+			if (sl->head->next[i] == NULL) {
+				sl->level--;
+			}
 		}
 	}
+
 	fk_sknode_destroy(nd);
 }
 
@@ -123,8 +136,9 @@ fk_sknode *fk_sklist_search(fk_sklist *sl, int score)
 		q = p->next[i];
 		while (q != NULL && q->score < score) {
 			p = q;
-			q = p->next[i - 1];
+			q = p->next[i];
 		}
+		/* if found, return directly */
 		if (q->score == score) {
 			return q;
 		}
