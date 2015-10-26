@@ -72,6 +72,7 @@ void fk_sklist_destroy(fk_sklist *sl)
 	fk_mem_free(sl);
 }
 
+/* data: hold the fk_item object */
 void fk_sklist_insert(fk_sklist *sl, int score, void *data)
 {
 	int i, nlv;
