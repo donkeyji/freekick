@@ -39,7 +39,7 @@ void fk_sklist_destroy(fk_sklist *sl)
 	fk_mem_free(sl);
 }
 
-void fk_sklist_insert(fk_sklist *sl, int score, void *val)
+void fk_sklist_insert(fk_sklist *sl, int score, void *data)
 {
 	int i, nlv;
 	fk_sknode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
@@ -75,7 +75,7 @@ void fk_sklist_insert(fk_sklist *sl, int score, void *val)
 		sl->level = nlv;/* set this nlv as the level of skiplist */
 	}
 
-	nd = fk_sknode_create(nlv, score, val);
+	nd = fk_sknode_create(nlv, score, data);
 
 	/* insert in nlv levels */
 	for (i = 0; i < nlv; i++) {
