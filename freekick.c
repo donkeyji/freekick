@@ -831,10 +831,10 @@ int fk_cmd_zadd(fk_conn *conn)
 		itm_str = fk_conn_arg_get(conn, i + 1);
 
 		score = atoi(fk_str_raw((fk_str *)fk_item_raw(itm_score)));
-		printf("score: %d\n", score);
+		//printf("score: %d\n", score);
 		fk_sklist_insert(sl, score, itm_str);
 	}
-	rt = fk_conn_int_rsp_add(conn, (conn->arg_cnt - 2)/2);
+	rt = fk_conn_int_rsp_add(conn, (int)((conn->arg_cnt - 2) / 2));
 	if (rt == FK_CONN_ERR) {
 		return FK_ERR;
 	}
