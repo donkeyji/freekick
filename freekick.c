@@ -815,16 +815,16 @@ int fk_cmd_zadd(fk_conn *conn)
 {
 	fk_sklist *sl;
 	int score, i, rt;
-	fk_item *itm_key, *itm_score, *itm_str, *itm_sklst;
+	fk_item *itm_key, *itm_score, *itm_str, *itm_sl;
 
 	itm_key = fk_conn_arg_get(conn, 1);
-	itm_sklst = fk_dict_get(server.db[conn->db_idx], itm_key);
-	if (itm_sklst == NULL) {
+	itm_sl = fk_dict_get(server.db[conn->db_idx], itm_key);
+	if (itm_sl == NULL) {
 		sl = fk_sklist_create(&db_sklist_op);
-		itm_sklst = fk_item_create(FK_ITEM_SKLIST, sl);
-		fk_dict_add(server.db[conn->db_idx], itm_key, itm_sklst);
+		itm_sl = fk_item_create(FK_ITEM_SKLIST, sl);
+		fk_dict_add(server.db[conn->db_idx], itm_key, itm_sl);
 	}
-	sl = (fk_sklist *)fk_item_raw(itm_sklst);
+	sl = (fk_sklist *)fk_item_raw(itm_sl);
 
 	for (i = 2; i < conn->arg_cnt; i += 2) {
 		itm_score = fk_conn_arg_get(conn, i);
