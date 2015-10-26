@@ -114,7 +114,7 @@ void t_list()
 
 void t_sklist()
 {
-	int i;
+	int i, level;
 	fk_sklist *sl;
 	fk_sknode *p, *q;
 
@@ -128,10 +128,10 @@ void t_sklist()
 	fk_sklist_insert(sl, 24, NULL);
 	fk_sklist_insert(sl, 33, NULL);
 
-	printf("level: %d\n", sl->level);
+	level = fk_sklist_level(sl);
+	printf("level: %d\n", level);
 
-
-	for (i = FK_SKLIST_MAX_LEVEL - 1; i >= 0; i--) {
+	for (i = level - 1; i >= 0; i--) {
 		printf("%d---------\n", i);
 		p = sl->head;
 		q = p->next[i];
@@ -141,6 +141,22 @@ void t_sklist()
 		}
 	}
 
+	printf("remove node:\n");
+	fk_sklist_remove(sl, 44);
+	fk_sklist_remove(sl, 33);
+
+	level = fk_sklist_level(sl);
+	printf("new level: %d\n", level);
+	printf("after remove node:\n");
+	for (i = level - 1; i >= 0; i--) {
+		printf("%d---------\n", i);
+		p = sl->head;
+		q = p->next[i];
+		while (q != NULL) {
+			printf("%d\n", q->score);
+			q = q->next[i];
+		}
+	}
 	fk_sklist_destroy(sl);
 }
 

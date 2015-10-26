@@ -30,4 +30,8 @@ void fk_sklist_insert(fk_sklist *sl, int score, void *data);
 void fk_sklist_remove(fk_sklist *sl, int score);
 fk_sknode *fk_sklist_search(fk_sklist *sl, int score);
 
+#define fk_sklist_len(sl)	((sl)->len)
+
+#define fk_sklist_level(sl)	((sl)->level)
+
 #endif
