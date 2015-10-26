@@ -198,7 +198,7 @@ int fk_sknode_rand_level()
 
 	level = 1;
 
-	while (level % 2 != 0) {
+	while (rand() % 2 != 0) {
 		level++;
 	}
 	level = level > FK_SKLIST_MAX_LEVEL ? FK_SKLIST_MAX_LEVEL : level;
