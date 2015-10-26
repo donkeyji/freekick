@@ -8,6 +8,7 @@
 #include <fk_dict.h>
 #include <fk_item.h>
 #include <fk_list.h>
+#include <fk_sklist.h>
 
 
 typedef struct {
@@ -113,6 +114,34 @@ void t_list()
 
 void t_sklist()
 {
+	int i;
+	fk_sklist *sl;
+	fk_sknode *p, *q;
+
+	sl = fk_sklist_create(NULL);
+
+	fk_sklist_insert(sl, 5, NULL);
+	fk_sklist_insert(sl, 3, NULL);
+	fk_sklist_insert(sl, 4, NULL);
+	fk_sklist_insert(sl, 11, NULL);
+	fk_sklist_insert(sl, 44, NULL);
+	fk_sklist_insert(sl, 24, NULL);
+	fk_sklist_insert(sl, 33, NULL);
+
+	printf("level: %d\n", sl->level);
+
+
+	for (i = FK_SKLIST_MAX_LEVEL - 1; i >= 0; i--) {
+		printf("%d---------\n", i);
+		p = sl->head;
+		q = p->next[i];
+		while (q != NULL) {
+			printf("%d\n", q->score);
+			q = q->next[i];
+		}
+	}
+
+	fk_sklist_destroy(sl);
 }
 
 int main()
