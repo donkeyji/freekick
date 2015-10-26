@@ -103,3 +103,9 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 45.供lua调用的c函数，其栈是一个全新的栈，lua_gettop(L)得到的就是lua传给这个c函数的参数个数。该c函数调用完后，其栈被完全释放，不再影响lua_gettop(L)的值。
 
 46.为何执行的lua脚本有时候导致server在fk_conn_cmd_proc出现segment fault?
+
+47.在定义带参数的宏时，要注意宏参数不能与代码块中的变量名相同，否则在预处理时进行字符串替换时，会将同名的变量也当做宏参数进行了替换，造成错误。如:
+#define fk_node_data_set(lst, nd, data) {	\
+	nd->data = data;						\
+}
+会将nd->data处的data也当成了宏参数，造成不必要的错误。
