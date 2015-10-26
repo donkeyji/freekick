@@ -101,6 +101,9 @@ static void fk_db_dict_val_free(void *elt);
 static void *fk_db_list_val_copy(void *ptr);
 static void fk_db_list_val_free(void *ptr);
 
+static void *fk_db_sklist_val_copy(void *ptr);
+static void fk_db_sklist_val_free(void *ptr);
+
 static fk_zline *fk_zline_create(size_t len);
 static void fk_zline_adjust(fk_zline *buf, size_t len);
 static void fk_zline_destroy(fk_zline *buf);
@@ -148,6 +151,12 @@ static fk_elt_op db_dict_eop = {
 static fk_node_op db_list_op = {
 	fk_db_list_val_copy,
 	fk_db_list_val_free,
+	NULL
+};
+
+static fk_sknode_op db_sklist_op = {
+	fk_db_sklist_val_copy,
+	fk_db_sklist_val_free,
 	NULL
 };
 
@@ -811,7 +820,7 @@ int fk_cmd_zadd(fk_conn *conn)
 	itm_key = fk_conn_arg_get(conn, 1);
 	itm_sklst = fk_dict_get(server.db[conn->db_idx], itm_key);
 	if (itm_sklst == NULL) {
-		sl = fk_sklist_create(NULL);
+		sl = fk_sklist_create(&db_sklist_op);
 		itm_sklst = fk_item_create(FK_ITEM_SKLIST, sl);
 		fk_dict_add(server.db[conn->db_idx], itm_key, itm_sklst);
 	}
@@ -909,6 +918,26 @@ void *fk_db_list_val_copy(void *ptr)
 
 /* for lpush/lpop */
 void fk_db_list_val_free(void *ptr)
+{
+	fk_item *itm;
+
+	itm = (fk_item *)ptr;
+
+	fk_item_ref_dec(itm);
+}
+
+void *fk_db_sklist_val_copy(void *ptr)
+{
+	fk_item *itm;
+
+	itm = (fk_item *)ptr;
+
+	fk_item_ref_inc(itm);
+
+	return ptr;
+}
+
+void fk_db_sklist_val_free(void *ptr)
 {
 	fk_item *itm;
 
