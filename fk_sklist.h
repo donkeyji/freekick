@@ -7,8 +7,8 @@
 
 typedef struct _fk_sknode {
 	int score;/* the value to sort */
-	void *data;/* the real object to hold */
-	struct _fk_sknode *next[1];/* at lease 1 element */
+	void *data;/* hold the fk_item */
+	struct _fk_sknode *next[1];/* at least 1 element */
 } fk_sknode;
 
 typedef struct _fk_sklist {
