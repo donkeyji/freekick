@@ -20,6 +20,7 @@
 	if ((sl)->skop->data_free != NULL) {			\
 		(sl)->skop->data_free((nd)->data);			\
 	}												\
+	(nd)->data = NULL;								\
 }
 
 static fk_sknode_op default_skop = {
