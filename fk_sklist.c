@@ -52,7 +52,8 @@ void fk_sklist_insert(fk_sklist *sl, int score, void *data)
 
 	for (i = FK_SKLIST_MAX_LEVEL - 1; i >= 0; i--) {
 		q = p->next[i];/* the first node in this level */
-		while (q != NULL && q->score < score) {
+		/* if the score exist already, insert this new node after the older one */
+		while (q != NULL && q->score <= score) {
 			p = q;
 			q = p->next[i];
 		}
