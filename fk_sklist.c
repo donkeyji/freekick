@@ -3,11 +3,34 @@
 #include <fk_mem.h>
 #include <fk_sklist.h>
 
-static fk_sknode *fk_sknode_create(int level, int score, void *data);
-static void fk_sknode_destroy(fk_sknode *nd);
+#define fk_sknode_create(level)		fk_mem_alloc(sizeof(fk_sknode) + ((level) - 1) * sizeof(fk_sknode *))
+
+#define fk_sknode_destroy(nd)	fk_mem_free(nd)
+
+#define fk_sknode_data_set(sl, nd, sc, dt)	{		\
+	(nd)->score = (sc);								\
+	if ((sl)->skop->data_copy != NULL) {			\
+		(nd)->data = (sl)->skop->data_copy((dt));	\
+	} else {										\
+		(nd)->data = (dt);							\
+	}												\
+}
+
+#define fk_sknode_data_free(sl, nd)	{				\
+	if ((sl)->skop->data_free != NULL) {			\
+		(sl)->skop->data_free((nd)->data);			\
+	}												\
+}
+
+static fk_sknode_op default_skop = {
+	NULL,
+	NULL,
+	NULL
+};
+
 static int fk_sknode_rand_level();
 
-fk_sklist *fk_sklist_create()
+fk_sklist *fk_sklist_create(fk_sknode_op *skop)
 {
 	int i;
 	fk_sknode *nd;
@@ -16,9 +39,14 @@ fk_sklist *fk_sklist_create()
 	sl = fk_mem_alloc(sizeof(fk_sklist));
 	sl->level = 0;
 	sl->len = 0;
+	sl->skop = &default_skop;
+	if (skop != NULL) {
+		sl->skop = skop;
+	}
 
 	/* head is a empty node which donot hold a score nor a fk_item */
-	nd = fk_sknode_create(FK_SKLIST_MAX_LEVEL, 0, NULL);
+	nd = fk_sknode_create(FK_SKLIST_MAX_LEVEL);
+	fk_sknode_data_set(sl, nd, 0, NULL);
 	for (i = 0; i < FK_SKLIST_MAX_LEVEL; i++) {
 		nd->next[i] = NULL;
 	}
@@ -35,6 +63,7 @@ void fk_sklist_destroy(fk_sklist *sl)
 	/* from the lowest list */
 	while (p != NULL) {
 		q = p->next[0];/* save the next node */
+		fk_sknode_data_free(sl, p);
 		fk_sknode_destroy(p);/* free the current node */
 		p = q;/* go to the next node */
 	}
@@ -79,7 +108,8 @@ void fk_sklist_insert(fk_sklist *sl, int score, void *data)
 		sl->level = nlv;/* set this nlv as the level of skiplist */
 	}
 
-	nd = fk_sknode_create(nlv, score, data);
+	nd = fk_sknode_create(nlv);
+	fk_sknode_data_set(sl, nd, score, data);
 
 	/* insert in nlv levels */
 	for (i = 0; i < nlv; i++) {
@@ -132,6 +162,7 @@ void fk_sklist_remove(fk_sklist *sl, int score)
 		}
 	}
 
+	fk_sknode_data_free(sl, nd);
 	fk_sknode_destroy(nd);
 
 	sl->len--;
@@ -158,22 +189,6 @@ fk_sknode *fk_sklist_search(fk_sklist *sl, int score)
 	}
 
 	return q;
-}
-
-fk_sknode *fk_sknode_create(int level, int score, void *data)
-{
-	fk_sknode *nd;
-
-	nd = fk_mem_alloc(sizeof(fk_sknode) + (level - 1) * sizeof(fk_sknode *));
-	nd->score = score;
-	nd->data = data;
-
-	return nd;
-}
-
-void fk_sknode_destroy(fk_sknode *nd)
-{
-	fk_mem_free(nd);
 }
 
 int fk_sknode_rand_level()
