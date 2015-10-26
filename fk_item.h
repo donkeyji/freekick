@@ -1,10 +1,11 @@
 #ifndef _FK_ITEM_H_
 #define _FK_ITEM_H_
 
-#define FK_ITEM_NIL 0
-#define FK_ITEM_STR  1
-#define FK_ITEM_LIST 2
-#define FK_ITEM_DICT 3
+#define FK_ITEM_NIL 	0
+#define FK_ITEM_STR  	1
+#define FK_ITEM_LIST 	2
+#define FK_ITEM_DICT 	3
+#define FK_ITEM_SKLIST	4
 
 typedef struct _fk_item {
 	int type;
