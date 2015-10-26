@@ -86,6 +86,7 @@ void fk_sklist_insert(fk_sklist *sl, int score, void *data)
 	sl->len++;
 }
 
+/* remove node by score */
 void fk_sklist_remove(fk_sklist *sl, int score)
 {
 	int i;
@@ -108,7 +109,7 @@ void fk_sklist_remove(fk_sklist *sl, int score)
 		update[i] = p;
 	}
 
-	/* not found in the lowest level list */
+	/* even not found in the lowest level list */
 	if (q == NULL || (q != NULL && q->score != score)) {
 		return;
 	}
@@ -117,6 +118,10 @@ void fk_sklist_remove(fk_sklist *sl, int score)
 	for (i = sl->level - 1; i >= 0; i--) {
 		if (update[i]->next[i] == nd) {/* need to remove */
 			update[i]->next[i] = nd->next[i];
+			/* 
+			 * if the node removed is the current toppest, 
+			 * just decrease the level of the skiplist
+			 */
 			if (sl->head->next[i] == NULL) {
 				sl->level--;
 			}
