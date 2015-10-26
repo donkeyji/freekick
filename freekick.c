@@ -21,6 +21,7 @@
 #include <fk_ev.h>
 #include <fk_heap.h>
 #include <fk_list.h>
+#include <fk_sklist.h>
 #include <fk_log.h>
 #include <fk_mem.h>
 #include <fk_item.h>
@@ -125,6 +126,7 @@ static int fk_cmd_llen(fk_conn *conn);
 static int fk_cmd_save(fk_conn *conn);
 static int fk_cmd_select(fk_conn *conn);
 static int fk_cmd_eval(fk_conn *conn);
+static int fk_cmd_zadd(fk_conn *conn);
 /* ---------------------------------------------------- */
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);
@@ -170,6 +172,7 @@ static fk_proto protos[] = {
 	{"SAVE",	FK_PROTO_READ,		1,					fk_cmd_save		},
 	{"SELECT",	FK_PROTO_WRITE,		2,					fk_cmd_select	},
 	{"EVAL",	FK_PROTO_SCRIPT,	FK_PROTO_VARLEN,	fk_cmd_eval		},
+	{"ZADD",	FK_PROTO_WRITE,		FK_PROTO_VARLEN,	fk_cmd_zadd		},
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
 };
 
@@ -795,6 +798,37 @@ int fk_cmd_eval(fk_conn *conn)
 	str_code = (fk_str *)fk_item_raw(itm_code);
 	code = fk_str_raw(str_code);
 	fk_lua_script_run(conn, code);
+
+	return FK_OK;
+}
+
+int fk_cmd_zadd(fk_conn *conn)
+{
+	fk_sklist *sl;
+	int score, i, rt;
+	fk_item *itm_key, *itm_score, *itm_str, *itm_sklst;
+
+	itm_key = fk_conn_arg_get(conn, 1);
+	itm_sklst = fk_dict_get(server.db[conn->db_idx], itm_key);
+	if (itm_sklst == NULL) {
+		sl = fk_sklist_create(NULL);
+		itm_sklst = fk_item_create(FK_ITEM_SKLIST, sl);
+		fk_dict_add(server.db[conn->db_idx], itm_key, itm_sklst);
+	}
+	sl = (fk_sklist *)fk_item_raw(itm_sklst);
+
+	for (i = 2; i < conn->arg_cnt; i += 2) {
+		itm_score = fk_conn_arg_get(conn, i);
+		itm_str = fk_conn_arg_get(conn, i + 1);
+
+		score = atoi(fk_str_raw((fk_str *)fk_item_raw(itm_score)));
+		printf("score: %d\n", score);
+		fk_sklist_insert(sl, score, itm_str);
+	}
+	rt = fk_conn_int_rsp_add(conn, (conn->arg_cnt - 2)/2);
+	if (rt == FK_CONN_ERR) {
+		return FK_ERR;
+	}
 
 	return FK_OK;
 }
