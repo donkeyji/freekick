@@ -13,7 +13,7 @@ typedef struct _fk_sknode {
 
 typedef struct _fk_sklist {
 	fk_sknode *head;
-	int level;/* current level */
+	int level;/* the max level of the nodes */
 	size_t len;
 } fk_sklist;
 

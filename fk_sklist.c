@@ -17,6 +17,7 @@ fk_sklist *fk_sklist_create()
 	sl->level = 0;
 	sl->len = 0;
 
+	/* head is a empty node which donot hold a score nor a fk_item */
 	nd = fk_sknode_create(FK_SKLIST_MAX_LEVEL, 0, NULL);
 	for (i = 0; i < FK_SKLIST_MAX_LEVEL; i++) {
 		nd->next[i] = NULL;
@@ -28,14 +29,16 @@ fk_sklist *fk_sklist_create()
 
 void fk_sklist_destroy(fk_sklist *sl)
 {
-	fk_sknode *cur, *nxt;
+	fk_sknode *p, *q;
 
-	cur = sl->head;
-	while (cur != NULL) {
-		nxt = cur->next[0];
-		fk_sknode_destroy(cur);
-		cur = nxt;
+	p = sl->head;
+	/* from the lowest list */
+	while (p != NULL) {
+		q = p->next[0];/* save the next node */
+		fk_sknode_destroy(p);/* free the current node */
+		p = q;/* go to the next node */
 	}
+
 	fk_mem_free(sl);
 }
 
