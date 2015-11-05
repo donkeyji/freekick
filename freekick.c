@@ -42,6 +42,7 @@ typedef struct _fk_server {
 	unsigned conn_cnt;/* connection count */
 	time_t start_time;
 	int stop;
+	unsigned long long timer_cnt;
 	fk_ioev *listen_ev;
 	fk_tmev *svr_timer;
 	fk_tmev *svr_timer2;
@@ -1002,7 +1003,10 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 {
 	unsigned i;
-	fk_log_info("[timer 1]conn cnt: %u\n", server.conn_cnt);
+
+	server.timer_cnt++;
+
+	fk_log_info("[timer 1]conn cnt: %u, timer_cnt: %llu\n", server.conn_cnt, server.timer_cnt);
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
 	}
@@ -1131,6 +1135,7 @@ void fk_svr_init()
 	server.start_time = time(NULL);
 	server.stop = 0;
 	server.conn_cnt = 0;
+	server.timer_cnt = 0;
 	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_util_conns_to_files(server.max_conn));
 	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
 	if (server.listen_fd == FK_SOCK_ERR) {
