@@ -16,6 +16,9 @@ ifeq ($(gp),y)
 CFLAGS += -g -pg -lc_p
 endif
 
+# ------------------------------------------------------------
+# -ldl: this option is not the default when in linux
+# ------------------------------------------------------------
 LDFLAGS := -ljemalloc -llua -ldl
 ifeq ($(gp),y)
 LDFLAGS += -pg
