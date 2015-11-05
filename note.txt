@@ -109,3 +109,5 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 	nd->data = data;						\
 }
 会将nd->data处的data也当成了宏参数，造成不必要的错误。
+
+48.为何在linux下编译时需要加上-ldl选项? dlopen/dlsym等接口
