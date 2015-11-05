@@ -16,7 +16,7 @@ ifeq ($(gp),y)
 CFLAGS += -g -pg -lc_p
 endif
 
-LDFLAGS := -ljemalloc -llua
+LDFLAGS := -ljemalloc -llua -ldl
 ifeq ($(gp),y)
 LDFLAGS += -pg
 endif
