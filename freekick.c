@@ -52,7 +52,8 @@ typedef struct _fk_server {
 	unsigned dbcnt;
 	fk_dict **db;
 	fk_str *db_file;
-	int save_done;
+	int save_done;/* maybe it's a redundancy */
+	pid_t save_pid;/* -1: the save child process ended */
 } fk_server;
 
 typedef struct _fk_zline {
@@ -723,6 +724,7 @@ int fk_cmd_save(fk_conn *conn)
 
 	err = 1;
 
+	/* saving child process ended */
 	if (server.save_done == 1) {
 		rt = fk_svr_db_save();
 		if (rt == FK_OK) {
@@ -1132,7 +1134,8 @@ void fk_svr_init()
 	server.addr = fk_str_clone(setting.addr);
 
 	/* create global environment */
-	server.save_done = 1;
+	server.save_done = 1;/* no saving child process now */
+	server.save_pid = -1;/* -1 is a invalid pid */
 	server.start_time = time(NULL);
 	server.last_save = time(NULL);
 	server.stop = 0;
@@ -1254,6 +1257,7 @@ void fk_sigchld(int sig)
 	}
 	if (st == 0) {
 		server.save_done = 1;
+		server.save_pid = -1;/* the saving child process is terminated */
 		server.last_save = time(NULL);
 	}
 	fk_log_debug("save db done\n");
@@ -1588,6 +1592,7 @@ void fk_svr_db_save_background()
 		return;
 	} else if (rt > 0) {/* mark the save_done */
 		server.save_done = 0;
+		server.save_pid = rt;/* save the child process ID */
 		return;
 	} else {
 		/* execute only in child process */
