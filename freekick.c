@@ -41,6 +41,7 @@ typedef struct _fk_server {
 	unsigned max_conn;/* max connections */
 	unsigned conn_cnt;/* connection count */
 	time_t start_time;
+	time_t last_save;
 	int stop;
 	unsigned long long timer_cnt;
 	fk_ioev *listen_ev;
@@ -1006,7 +1007,7 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 
 	server.timer_cnt++;
 
-	fk_log_info("[timer 1]conn cnt: %u, timer_cnt: %llu\n", server.conn_cnt, server.timer_cnt);
+	fk_log_info("[timer 1]conn cnt: %u, timer_cnt: %llu, last_save: %zu\n", server.conn_cnt, server.timer_cnt, server.last_save);
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
 	}
@@ -1133,6 +1134,7 @@ void fk_svr_init()
 	/* create global environment */
 	server.save_done = 1;
 	server.start_time = time(NULL);
+	server.last_save = time(NULL);
 	server.stop = 0;
 	server.conn_cnt = 0;
 	server.timer_cnt = 0;
@@ -1252,6 +1254,7 @@ void fk_sigchld(int sig)
 	}
 	if (st == 0) {
 		server.save_done = 1;
+		server.last_save = time(NULL);
 	}
 	fk_log_debug("save db done\n");
 }
