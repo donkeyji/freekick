@@ -17,7 +17,7 @@ CFLAGS += -g -pg -lc_p
 endif
 
 # ------------------------------------------------------------
-# -ldl: this option is not the default when in linux
+# -ldl: needed when in linux, but not in mac
 # ------------------------------------------------------------
 LDFLAGS := -ljemalloc -llua -ldl
 ifeq ($(gp),y)
