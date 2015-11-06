@@ -122,3 +122,5 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 (7)全景变量的管理
 (8)出错的处理
 (9)函数的返回值的选取
+
+50.linux下，编译安装了jemalloc，需要ldconfig -v重新生成一下/etc/ld.so.cache文件，因为是靠这个cache文件来寻找so文件。
