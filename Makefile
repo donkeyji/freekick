@@ -18,8 +18,9 @@ endif
 
 # ------------------------------------------------------------
 # -ldl: needed when in linux, but not in mac
+# -lm: needed when in linux, but not in mac
 # ------------------------------------------------------------
-LDFLAGS := -ljemalloc -llua -ldl
+LDFLAGS := -ljemalloc -llua -ldl -lm
 ifeq ($(gp),y)
 LDFLAGS += -pg
 endif
