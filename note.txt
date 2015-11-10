@@ -124,3 +124,5 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 (9)函数的返回值的选取
 
 50.linux下，编译安装了jemalloc，需要ldconfig -v重新生成一下/etc/ld.so.cache文件，因为是靠这个cache文件来寻找so文件。
+
+51.freekick并不支持inline类型的协议，以空格分隔参数；只支持标准的二进制安全协议，以\r\n分隔。
