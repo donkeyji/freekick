@@ -6,6 +6,7 @@
 
 #include <sys/time.h>
 
+#include <fk_def.h>
 #include <fk_conf.h>
 #include <fk_ev.h>
 #include <fk_list.h>
@@ -21,10 +22,10 @@ static int fk_ev_active_ioev_proc();
 static int fk_ev_expired_tmev_proc();
 static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
-#if defined(__linux__)
+#if defined(FK_HAVE_EPOLL)
 	#include <fk_epoll.c>
 	static fk_mpxop *mpxop = &epoll_op;
-#elif defined(__FreeBSD__) || defined(__APPLE__)
+#elif defined(FK_HAVE_KUEUE)
 	#include <fk_kqueue.c>
 	static fk_mpxop *mpxop = &kqueue_op;
 #else

@@ -1183,7 +1183,7 @@ void fk_setrlimit()
 	}
 #if defined(__linux__)
 	fprintf(stdout, "original file number limit: rlim_cur = %zu, rlim_max = %zu\n", lmt.rlim_cur, lmt.rlim_max);
-#elif defined(__APPLE__) || defined(__BSD__)
+#elif defined(__APPLE__) || defined(__FreeBSD__)
 	fprintf(stdout, "original file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
 #endif
 
@@ -1202,7 +1202,7 @@ void fk_setrlimit()
 			}
 #if defined(__linux__)
 			fprintf(stdout, "new file number limit: rlim_cur = %zu, rlim_max = %zu\n", lmt.rlim_cur, lmt.rlim_max);
-#elif defined(__APPLE__) || defined(__BSD__)
+#elif defined(__APPLE__) || defined(__FreeBSD__)
 			fprintf(stdout, "new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
 #endif
 		} else {/* non-root */
