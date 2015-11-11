@@ -1,17 +1,9 @@
 #ifndef _FK_DEF_H_
 #define _FK_DEF_H_
 
-/* mac features */
+/* mac features definitions */
 #if defined(__APPLE__)
 #include <AvailabilityMacros.h>
-#endif
-
-#if defined(__linux__)
-#define FK_LINUX
-#endif
-
-#if defined(__FreeBSD__) || defined(__APPLE__)
-#define FK_BSD
 #endif
 
 #if defined(__linux__)

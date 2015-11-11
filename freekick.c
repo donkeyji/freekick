@@ -1182,11 +1182,10 @@ void fk_setrlimit()
 		fprintf(stderr, "getrlimit: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-#if defined(FK_LINUX)
-	fprintf(stdout, "original file number limit: rlim_cur = %zu, rlim_max = %zu\n", lmt.rlim_cur, lmt.rlim_max);
-#elif defined(FK_BSD)
-	fprintf(stdout, "original file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
-#endif
+	/* the type "rlim_t" has different size in linux from mac,
+	 * so just convert "rlim_t" to "unsigned long long"
+	 */
+	fprintf(stdout, "original file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
 
 	if (max_files > lmt.rlim_max) {
 		euid = geteuid();
@@ -1201,11 +1200,7 @@ void fk_setrlimit()
 				fprintf(stderr, "setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
-#if defined(FK_LINUX)
-			fprintf(stdout, "new file number limit: rlim_cur = %zu, rlim_max = %zu\n", lmt.rlim_cur, lmt.rlim_max);
-#elif defined(FK_BSD)
-			fprintf(stdout, "new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
-#endif
+			fprintf(stdout, "new file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
 		} else {/* non-root */
 #ifdef FK_DEBUG
 			fprintf(stdout, "running as non-root\n");
