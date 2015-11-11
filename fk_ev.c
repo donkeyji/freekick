@@ -25,7 +25,7 @@ static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 #if defined(FK_HAVE_EPOLL)
 	#include <fk_epoll.c>
 	static fk_mpxop *mpxop = &epoll_op;
-#elif defined(FK_HAVE_KUEUE)
+#elif defined(FK_HAVE_KQUEUE)
 	#include <fk_kqueue.c>
 	static fk_mpxop *mpxop = &kqueue_op;
 #else
