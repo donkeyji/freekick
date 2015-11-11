@@ -14,6 +14,7 @@
 #include <sys/resource.h>
 
 /* local headers */
+#include <fk_def.h>
 #include <fk_ev.h>
 #include <fk_buf.h>
 #include <fk_conn.h>
@@ -1181,9 +1182,9 @@ void fk_setrlimit()
 		fprintf(stderr, "getrlimit: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-#if defined(__linux__)
+#if defined(FK_LINUX)
 	fprintf(stdout, "original file number limit: rlim_cur = %zu, rlim_max = %zu\n", lmt.rlim_cur, lmt.rlim_max);
-#elif defined(__APPLE__) || defined(__FreeBSD__)
+#elif defined(FK_BSD)
 	fprintf(stdout, "original file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
 #endif
 
@@ -1200,9 +1201,9 @@ void fk_setrlimit()
 				fprintf(stderr, "setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
-#if defined(__linux__)
+#if defined(FK_LINUX)
 			fprintf(stdout, "new file number limit: rlim_cur = %zu, rlim_max = %zu\n", lmt.rlim_cur, lmt.rlim_max);
-#elif defined(__APPLE__) || defined(__FreeBSD__)
+#elif defined(FK_BSD)
 			fprintf(stdout, "new file number limit: rlim_cur = %llu, rlim_max = %llu\n", lmt.rlim_cur, lmt.rlim_max);
 #endif
 		} else {/* non-root */
