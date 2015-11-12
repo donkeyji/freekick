@@ -186,7 +186,7 @@ static fk_proto protos[] = {
 	{"SELECT",	FK_PROTO_WRITE,		2,					fk_cmd_select	},
 	{"EVAL",	FK_PROTO_SCRIPT,	FK_PROTO_VARLEN,	fk_cmd_eval		},
 	{"ZADD",	FK_PROTO_WRITE,		FK_PROTO_VARLEN,	fk_cmd_zadd		},
-	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL}
+	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL			}
 };
 
 static fk_dict *pmap = NULL;
