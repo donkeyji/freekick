@@ -1010,10 +1010,12 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 
 	server.timer_cnt++;
 
-	fk_log_info("[timer 1]conn cnt: %u, timer_cnt: %llu, last_save: %zu\n", server.conn_cnt, server.timer_cnt, server.last_save);
+#ifdef FK_DEBUG
+	fk_log_info("[timer 1]conn cnt: %u, timer_cnt: %llu, last_save: %zu\n, free_items: %zu\n", server.conn_cnt, server.timer_cnt, server.last_save, fk_item_free_obj_cnt());
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
 	}
+#endif
 
 	fk_svr_db_save_background();
 
@@ -1900,6 +1902,8 @@ void fk_main_init(char *conf_path)
 	fk_signal_reg();
 
 	fk_cache_init();
+
+	fk_item_init();
 
 	fk_proto_init();
 
