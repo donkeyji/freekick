@@ -9,15 +9,17 @@ static fk_zline *fk_zline_create(size_t len);
 static void fk_zline_adjust(fk_zline *buf, size_t len);
 static void fk_zline_destroy(fk_zline *buf);
 
-static int fk_svr_db_restore(FILE *fp, fk_zline *buf);
-static int fk_svr_db_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
-static int fk_svr_db_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
-static int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
-
+/* related to dump */
 static int fk_svr_db_dump(FILE *fp, unsigned db_idx);
 static int fk_svr_db_str_elt_dump(FILE *fp, fk_elt *elt);
 static int fk_svr_db_list_elt_dump(FILE *fp, fk_elt *elt);
 static int fk_svr_db_dict_elt_dump(FILE *fp, fk_elt *elt);
+
+/* related to restore */
+static int fk_svr_db_restore(FILE *fp, fk_zline *buf);
+static int fk_svr_db_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
+static int fk_svr_db_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
+static int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
 
 void fk_svr_db_save_background()
 {
@@ -604,4 +606,3 @@ int fk_svr_db_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 
 	return FK_OK;
 }
-
