@@ -1,3 +1,9 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+
+#include <unistd.h>
+
 #include <freekick.h>
 
 typedef struct _fk_zline {

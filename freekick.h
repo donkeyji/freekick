@@ -1,20 +1,11 @@
 #ifndef _FREEKICK_H_
 #define _FREEKICK_H_
 
-/* c standard library headers */
-#include <signal.h>
-#include <time.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
+/* standard c library headers */
+#include <stdint.h>/* for uint_16 */
 
 /* system headers */
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/resource.h>
+#include <sys/types.h>/* for time_t */
 
 /* local headers */
 #include <fk_def.h>

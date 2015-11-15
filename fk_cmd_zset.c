@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include <freekick.h>
 
 int fk_cmd_zadd(fk_conn *conn)

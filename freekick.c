@@ -1,3 +1,19 @@
+/* c standard library headers */
+#include <signal.h>
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+
+/* system headers */
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/resource.h>
+
+/* local headers */
 #include <freekick.h>
 
 /* ---------------------------------------------------- */
