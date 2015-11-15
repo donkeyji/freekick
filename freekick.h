@@ -79,7 +79,7 @@ fk_conn *fk_svr_conn_get(int fd);
 /* related to protocol */
 fk_proto *fk_proto_search(fk_str *name);
 
-/* all the protocol handlers */
+/* all the protocol handlers which are splited into different .c files */
 int fk_cmd_set(fk_conn *conn);
 int fk_cmd_setnx(fk_conn *conn);
 int fk_cmd_get(fk_conn *conn);
@@ -102,7 +102,9 @@ int fk_cmd_eval(fk_conn *conn);
 int fk_cmd_zadd(fk_conn *conn);
 
 /* extern declerations of global variables */
-extern fk_server server;
+
+extern fk_server server;/* this "server" is visited in different .c files */
+
 extern fk_elt_op db_dict_eop;
 extern fk_node_op db_list_op;
 extern fk_sknode_op db_sklist_op;
