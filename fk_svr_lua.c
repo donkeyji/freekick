@@ -24,8 +24,8 @@ static int fk_lua_integer_parse(lua_State *L, fk_buf *buf);
 static int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf);
 static int fk_lua_bulk_parse(lua_State *L, fk_buf *buf);
 
-lua_State *gL = NULL;
-fk_conn *lua_conn = NULL;
+static lua_State *gL = NULL;
+static fk_conn *lua_conn = NULL;
 
 static const struct luaL_Reg fklib[] = {
 	{"pcall", fk_lua_pcall},
