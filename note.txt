@@ -131,4 +131,4 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 
 53.fk_str类型是不变的，不对已有fk_str对象进行修改，只能生成新的fk_str对象。
 
-54.讲freekick.c的内容按功能划分split到不同的fk_svr_xxx.c文件中去，这些fk_svr_xxx.c文件没有相应的fk_svr_xxx.h文件，而只是作为freekick.c文件的一部分而共同实现freekick.h中申明的接口。fk_svr_xxx.c文件和freekick.c都各自包含自己需要的头文件，而不在freekick.h中统一包含，freekick.h中仍旧只include必要申明类型的头文件。freekick.c和fk_svr_xxx.c文件都共同维护server这个全景变量，所以在freekick.h中来将server申明为extern。
+54.讲freekick.c的内容按功能划分split到不同的fk_svr_xxx.c文件中去，这些fk_svr_xxx.c文件没有相应的fk_svr_xxx.h文件，并非完全独立的模块(.h/.c)，而只是作为freekick.c文件的一部分而共同实现freekick.h中申明的接口。fk_svr_xxx.c文件和freekick.c都各自包含自己需要的头文件，而不在freekick.h中统一包含，freekick.h中仍旧只include必要申明类型的头文件。freekick.c和fk_svr_xxx.c文件都共同维护server这个全景变量，所以在freekick.h中来将server申明为extern。freekick.h+freekick.c+fk_svr_xxx.c共同构成一个完整的模块。
