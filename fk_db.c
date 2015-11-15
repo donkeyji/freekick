@@ -1,5 +1,8 @@
 #include <freekick.h>
 
+/*
+ * some protocol related to db operation
+ */
 int fk_cmd_del(fk_conn *conn)
 {
 	fk_item *key;
@@ -120,4 +123,3 @@ int fk_cmd_select(fk_conn *conn)
 	}
 	return FK_OK;
 }
-

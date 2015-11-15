@@ -349,6 +349,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 	return 0;
 }
 
+/* relate to lua protocol */
 int fk_cmd_eval(fk_conn *conn)
 {
 	int nkey, nargv, rt, i;
@@ -394,4 +395,3 @@ int fk_cmd_eval(fk_conn *conn)
 
 	return FK_OK;
 }
-
