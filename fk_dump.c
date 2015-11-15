@@ -4,6 +4,7 @@
 
 #include <unistd.h>
 
+#include <fk_conf.h>
 #include <fk_log.h>
 #include <fk_mem.h>
 #include <freekick.h>

@@ -11,7 +11,6 @@
 #include <fk_def.h>
 #include <fk_macro.h>
 #include <fk_conn.h>
-#include <fk_conf.h>
 #include <fk_str.h>
 #include <fk_dict.h>
 #include <fk_sklist.h>

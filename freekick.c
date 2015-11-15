@@ -14,6 +14,7 @@
 #include <sys/resource.h>
 
 /* local headers */
+#include <fk_conf.h>
 #include <fk_log.h>
 #include <fk_mem.h>
 #include <fk_sock.h>
