@@ -1,5 +1,5 @@
-#ifndef _FREEKICK_H
-#define _FREEKICK_H
+#ifndef _FREEKICK_H_
+#define _FREEKICK_H_
 
 /* c standard library headers */
 #include <signal.h>
@@ -61,11 +61,6 @@ typedef struct _fk_proto {
 	int (*handler) (fk_conn *conn);
 } fk_proto;
 
-void fk_svr_conn_add(int fd);
-void fk_svr_conn_remove(fk_conn *conn);
-fk_conn *fk_svr_conn_get(int fd);
-fk_proto *fk_proto_search(fk_str *name);
-
 typedef struct _fk_server {
 	uint16_t port;
 	fk_str *addr;
@@ -88,25 +83,24 @@ typedef struct _fk_server {
 	pid_t save_pid;/* -1: the save child process ended */
 } fk_server;
 
-typedef struct _fk_zline {
-	char *line;
-	size_t len;
-} fk_zline;
-
 /* ---------------------------------------------------- */
-
+/* related to dump */
 void fk_svr_db_load(fk_str *db_file);
-
 void fk_svr_db_save_background();
 int fk_svr_db_save();
 
+/* related to replication */
 int fk_svr_sync_with_master();
 
+/* related to fk_conn */
+void fk_svr_conn_add(int fd);
+void fk_svr_conn_remove(fk_conn *conn);
+fk_conn *fk_svr_conn_get(int fd);
 
+/* related to protocol */
+fk_proto *fk_proto_search(fk_str *name);
 
-/* ---------------------------------------------------- */
-
-/* all the proto handlers */
+/* all the protocol handlers */
 int fk_cmd_set(fk_conn *conn);
 int fk_cmd_setnx(fk_conn *conn);
 int fk_cmd_get(fk_conn *conn);
@@ -127,9 +121,8 @@ int fk_cmd_save(fk_conn *conn);
 int fk_cmd_select(fk_conn *conn);
 int fk_cmd_eval(fk_conn *conn);
 int fk_cmd_zadd(fk_conn *conn);
-/* ---------------------------------------------------- */
 
-/* extern declerations */
+/* extern declerations of global variables */
 extern fk_server server;
 extern fk_elt_op db_dict_eop;
 extern fk_node_op db_list_op;

@@ -1,5 +1,10 @@
 #include <freekick.h>
 
+typedef struct _fk_zline {
+	char *line;
+	size_t len;
+} fk_zline;
+
 static fk_zline *fk_zline_create(size_t len);
 static void fk_zline_adjust(fk_zline *buf, size_t len);
 static void fk_zline_destroy(fk_zline *buf);
