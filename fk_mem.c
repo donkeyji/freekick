@@ -5,6 +5,8 @@
 
 #include <jemalloc/jemalloc.h>
 
+#include <fk_def.h>
+
 /*
 #ifdef __APPLE__
 #include <malloc/malloc.h>
