@@ -70,6 +70,9 @@ int fk_svr_db_save();
 /* related to replication */
 int fk_svr_sync_with_master();
 
+/* related to lua scripting */
+void fk_lua_init();
+
 /* related to fk_conn */
 void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);

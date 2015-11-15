@@ -4,19 +4,24 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+#include <fk_macro.h>
 #include <fk_log.h>
-#include <fk_buf.h>
 #include <fk_mem.h>
+#include <fk_buf.h>
 #include <fk_vtr.h>
 #include <fk_item.h>
-#include <fk_lua.h>
-#include <fk_macro.h>
 #include <fk_conn.h>
 #include <freekick.h>
+
+#define FK_LUA_PARA_KEYS		0
+#define FK_LUA_PARA_ARGV		1
 
 static int fk_lua_pcall(lua_State *L);
 
 static int fk_lua_conn_cmd_proc(fk_conn *conn);
+
+static int fk_lua_paras_push(char **paras, int npara, int type);
+static int fk_lua_script_run(fk_conn *conn, char *code);
 
 static int fk_lua_status_parse(lua_State *L, fk_buf *buf);
 static int fk_lua_error_parse(lua_State *L, fk_buf *buf);

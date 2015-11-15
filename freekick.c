@@ -19,7 +19,6 @@
 #include <fk_mem.h>
 #include <fk_sock.h>
 #include <fk_cache.h>
-#include <fk_lua.h>
 #include <freekick.h>
 
 /* ---------------------------------------------------- */
