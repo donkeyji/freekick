@@ -78,7 +78,10 @@ fk_conn *fk_svr_conn_get(int fd);
 /* related to protocol */
 fk_proto *fk_proto_search(fk_str *name);
 
-/* all the protocol handlers which are splited into different .c files */
+/* 
+ * all the protocol handlers which are splited 
+ * into different fk_svr_xxx.c files
+ */
 int fk_cmd_set(fk_conn *conn);
 int fk_cmd_setnx(fk_conn *conn);
 int fk_cmd_get(fk_conn *conn);
