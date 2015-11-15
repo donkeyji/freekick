@@ -4,6 +4,8 @@
 
 #include <unistd.h>
 
+#include <fk_log.h>
+#include <fk_mem.h>
 #include <freekick.h>
 
 typedef struct _fk_zline {

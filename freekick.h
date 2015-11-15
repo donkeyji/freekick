@@ -9,24 +9,12 @@
 
 /* local headers */
 #include <fk_def.h>
-#include <fk_ev.h>
-#include <fk_buf.h>
+#include <fk_macro.h>
 #include <fk_conn.h>
 #include <fk_conf.h>
-#include <fk_ev.h>
-#include <fk_heap.h>
-#include <fk_list.h>
-#include <fk_sklist.h>
-#include <fk_log.h>
-#include <fk_mem.h>
-#include <fk_item.h>
-#include <fk_sock.h>
 #include <fk_str.h>
-#include <fk_macro.h>
-#include <fk_util.h>
 #include <fk_dict.h>
-#include <fk_cache.h>
-#include <fk_lua.h>
+#include <fk_sklist.h>
 
 /* status code definition copied from nginx */
 #define FK_OK			 0
