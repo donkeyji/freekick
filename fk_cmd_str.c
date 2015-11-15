@@ -1,5 +1,10 @@
 #include <freekick.h>
 
+/* 
+ * this fk_cmd_str.c is just a part of the original freekick.c
+ * I just split the freekick.c into defferent .c files, 
+ * so just #include <freekick.h>
+ */
 int fk_cmd_set(fk_conn *conn)
 {
 	int rt;
@@ -135,4 +140,3 @@ int fk_cmd_get(fk_conn *conn)
 	}
 	return FK_OK;
 }
-

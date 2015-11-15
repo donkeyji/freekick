@@ -161,4 +161,3 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 
 	return FK_OK;
 }
-

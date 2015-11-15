@@ -97,4 +97,3 @@ int fk_cmd_hget(fk_conn *conn)
 
 	return FK_OK;
 }
-
