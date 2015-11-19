@@ -138,5 +138,3 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 56.__builtin_expect/__extension宏????
 
 57.glibc支持iso c/posix/bsd/sysv/xopen5个standard，iso < posix < bsd(sysv).
-
-58.debian 7.9中apt-get source时默认不下载unauthenticated的源码包了，如果需要强行下载，加上allow-unauthenticated的option。
