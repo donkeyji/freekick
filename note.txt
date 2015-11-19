@@ -133,6 +133,8 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 
 54.讲freekick.c的内容按功能划分split到不同的fk_svr_xxx.c文件中去，这些fk_svr_xxx.c文件没有相应的fk_svr_xxx.h文件，并非完全独立的模块(.h/.c)，而只是作为freekick.c文件的一部分而共同实现freekick.h中申明的接口。fk_svr_xxx.c文件和freekick.c都各自包含自己需要的头文件，而不在freekick.h中统一包含，freekick.h中仍旧只include必要申明类型的头文件。freekick.c和fk_svr_xxx.c文件都共同维护server这个全景变量，所以在freekick.h中来将server申明为extern。freekick.h+freekick.c+fk_svr_xxx.c共同构成一个完整的模块。
 
-55./usr/include/features.h中定义了__STRICT_ANSI__/_BSD_SOURCE/_POSIX_SOURCE/_GNU_SOURCE/_XOPEN_SOURCE等宏，glibc用以来支持不同的规范，用户可以自定义这些宏来指定不同的规范，通常将这些宏定义放在源文件的第一行，或者gcc -D来指定。
+55./usr/include/features.h中定义了__STRICT_ANSI__/_BSD_SOURCE/_POSIX_SOURCE/_XOPEN_SOURCE/_GNU_SOURCE等宏，glibc用以来支持不同的规范，用户可以自定义这些宏来指定不同的规范，通常将这些宏定义放在源文件的第一行，或者gcc -D来指定。_GNU_SOURCE打开，则支持所有规范和gnu的扩展；如果不指定，系统有默认值，见features.h中的注释说明。
 
 56.__builtin_expect/__extension宏????
+
+57.glibc支持iso c/posix/bsd/sysv/xopen5个standard，iso < posix < bsd(sysv).
