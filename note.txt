@@ -123,6 +123,7 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 (8)出错的处理，严重的错误就exit进程
 (9)函数的返回值的选取，回调函数的返回值是否需要关心
 (10)何时应该assert()
+(11)定义哪些操作性的宏
 
 50.linux下，编译安装了jemalloc，需要ldconfig -v重新生成一下/etc/ld.so.cache文件，因为是靠这个cache文件来寻找so文件。
 
