@@ -56,8 +56,7 @@ typedef struct _fk_mpxop {
 } fk_mpxop;
 
 typedef struct _fk_evmgr {
-	/* use list to save timer ev */
-	//fk_list *timer_list;
+	/* use min_heap to save timer ev */
 	fk_heap *timer_heap;
 
 	/* actived file ev */
