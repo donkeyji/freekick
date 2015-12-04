@@ -45,7 +45,7 @@ void fk_ev_init()
 
 	max_files = fk_util_conns_to_files(setting.max_conn); 
 
-	evmgr.timer_list = fk_list_create(NULL);
+	//evmgr.timer_list = fk_list_create(NULL);
 	evmgr.timer_heap = fk_heap_create(&tmev_op);
 
 	/* use macro to initialize this two member */
@@ -92,7 +92,7 @@ int fk_ev_dispatch()
 	mpxop->iompx_dispatch((&evmgr)->iompx, pto);
 
 	/* 
-	 * remove the nearest timer from timer_list, 
+	 * remove the nearest timer from timer_heap, 
 	 * insert it to the exp_tmev 
 	 */
 	fk_ev_pending_tmev_update();

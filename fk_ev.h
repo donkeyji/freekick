@@ -57,7 +57,7 @@ typedef struct _fk_mpxop {
 
 typedef struct _fk_evmgr {
 	/* use list to save timer ev */
-	fk_list *timer_list;
+	//fk_list *timer_list;
 	fk_heap *timer_heap;
 
 	/* actived file ev */
@@ -69,7 +69,7 @@ typedef struct _fk_evmgr {
 	fk_ioev **read_ev;/* max_conn + 1 */
 	fk_ioev **write_ev;/* max_conn + 1 */
 
-	/* epoll/kqueue */
+	/* implemention of epoll/kqueue/poll */
 	void *iompx;
 } fk_evmgr;
 
