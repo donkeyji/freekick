@@ -120,9 +120,9 @@ int fk_poll_remove(void *ev_iompx, int fd, char type)
 
 int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 {
+	char type;
 	fk_poll *iompx;
 	struct pollfd *pfd;
-	char type;
 	int i, nfds, ms_timeout, fd, cnt;
 
 	ms_timeout = -1;

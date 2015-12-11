@@ -151,8 +151,8 @@ int fk_epoll_remove(void *ev_iompx, int fd, char type)
 
 int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-	fk_epoll *iompx;
 	char type;
+	fk_epoll *iompx;
 	int i, nfds, fd, ms_timeout;
 
 	iompx = (fk_epoll *)ev_iompx;

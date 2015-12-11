@@ -65,6 +65,7 @@ void fk_ev_init()
 
 int fk_ev_dispatch()
 {
+	int rt;
 	fk_tmev *tmev;
 	struct timeval *pto, now, timeout;
 
@@ -88,7 +89,10 @@ int fk_ev_dispatch()
 	 * (3)>{0,0}: wait for a period
 	 * cannot be < {0, 0} 
 	 */
-	mpxop->iompx_dispatch((&evmgr)->iompx, pto);
+	rt = mpxop->iompx_dispatch((&evmgr)->iompx, pto);
+	if (rt == FK_EV_ERR) {
+		return FK_EV_ERR;
+	}
 
 	/* 
 	 * remove the nearest timer from timer_heap, 
@@ -110,7 +114,7 @@ void fk_ev_cycle(int *stop)
 		stop = &flag;
 	}
 	while (*stop != 1) {
-		fk_ev_dispatch();
+		fk_ev_dispatch();/* we donot care the retrun value of fk_ev_dispatch() */
 	}
 }
 

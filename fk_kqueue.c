@@ -121,12 +121,12 @@ int fk_kqueue_remove(void *ev_iompx, int fd, char type)
 
 int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 {
+	char type;
 	int i, nfds;
 	uintptr_t fd;
 	//intptr_t data;
 	//uint16_t flags;
 	fk_kqueue *iompx;
-	char type;
 	struct timespec *pt;
 	struct timespec kev_timeout;
 
