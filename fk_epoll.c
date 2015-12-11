@@ -20,6 +20,7 @@ static int fk_epoll_remove(void *ev_iompx, int fd, char type);
 static int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout);
 
 fk_mpxop epoll_op = {
+	"epoll",
 	fk_epoll_create,
 	fk_epoll_add,
 	fk_epoll_remove,

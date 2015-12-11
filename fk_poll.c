@@ -12,6 +12,7 @@ static int fk_poll_remove(void *ev_iompx, int fd, char type);
 static int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout);
 
 fk_mpxop poll_op = {
+	"poll",
 	fk_poll_create,
 	fk_poll_add,
 	fk_poll_remove,

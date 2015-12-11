@@ -49,6 +49,7 @@ fk_rawlist_def(fk_ioev, fk_ioev_list);
 fk_rawlist_def(fk_tmev, fk_tmev_list);
 
 typedef struct _fk_mpxop {
+	char *iompx_name;
 	void *(*iompx_create)(unsigned max_conn);
 	int (*iompx_add)(void *iompx, int fd, char type);
 	int (*iompx_remove)(void *iompx, int fd, char type);
