@@ -157,7 +157,7 @@ void fk_proto_init()
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
 		key = (fk_str *)fk_elt_key(elt);
 		value = fk_elt_value(elt);
-		fprintf(stdout, "proto key: %s\n", fk_str_raw(key));
+		fk_log_debug("proto key: %s\n", fk_str_raw(key));
 	}
 #endif
 }
@@ -504,42 +504,42 @@ void fk_setrlimit()
 	max_files = fk_util_conns_to_files(setting.max_conn);
 	rt = getrlimit(RLIMIT_NOFILE, &lmt);
 	if (rt < 0) {
-		fprintf(stderr, "getrlimit: %s\n", strerror(errno));
+		fk_log_error("getrlimit: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	/* the type "rlim_t" has different size in linux from mac,
 	 * so just convert "rlim_t" to "unsigned long long"
 	 */
-	fprintf(stdout, "original file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
+	fk_log_info("original file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
 
 	if (max_files > lmt.rlim_max) {
 		euid = geteuid();
 		if (euid == 0) {/* root */
 #ifdef FK_DEBUG
-			fprintf(stdout, "running as root\n");
+			fk_log_info("running as root\n");
 #endif
 			lmt.rlim_max = max_files;
 			lmt.rlim_cur = max_files;
 			rt = setrlimit(RLIMIT_NOFILE, &lmt);
 			if (rt < 0) {
-				fprintf(stderr, "setrlimit: %s\n", strerror(errno));
+				fk_log_error("setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
-			fprintf(stdout, "new file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
+			fk_log_info("new file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
 		} else {/* non-root */
 #ifdef FK_DEBUG
-			fprintf(stdout, "running as non-root\n");
+			fk_log_info("running as non-root\n");
 #endif
 			max_files = lmt.rlim_max;/* open as many as possible files */
 			lmt.rlim_cur = lmt.rlim_max;
 			rt = setrlimit(RLIMIT_NOFILE, &lmt);
 			if (rt < 0) {
-				fprintf(stderr, "setrlimit: %s\n", strerror(errno));
+				fk_log_error("setrlimit: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
 			/* set current limit to the original setting */
 			setting.max_conn = fk_util_files_to_conns(max_files);
-			fprintf(stdout, "change the setting.max_conn according the current file number limit: %u\n", setting.max_conn);
+			fk_log_info("change the setting.max_conn according the current file number limit: %u\n", setting.max_conn);
 		}
 	}
 }
