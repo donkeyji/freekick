@@ -618,7 +618,7 @@ void fk_main_init(char *conf_path)
 	/* the first to init */
 	fk_conf_init(conf_path);
 
-	/* it must be done before fk_log_init() */
+	/* it must be done before fk_log_init(), but why??? */
 	fk_daemonize();
 
 	fk_set_pwd();
