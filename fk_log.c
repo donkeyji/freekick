@@ -29,6 +29,10 @@ static fk_log logger = {
 	NULL/* could not be "stdout" here, because "stdout" is not a compile-time constant */
 };
 
+/* 
+ * if fk_log_init() is not invoked, fk_log_info/error/debug/warn can also be called, 
+ * when the log is redirected to stdout 
+ */
 void fk_log_init()
 {
 	FILE *fp;
