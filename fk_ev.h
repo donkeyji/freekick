@@ -50,13 +50,14 @@ fk_rawlist_def(fk_tmev, fk_tmev_list);
 
 typedef struct _fk_mpxop {
 	char *iompx_name;
-	void *(*iompx_create)(unsigned max_conn);
+	void *(*iompx_create)(unsigned max_files);
 	int (*iompx_add)(void *iompx, int fd, char type);
 	int (*iompx_remove)(void *iompx, int fd, char type);
 	int (*iompx_dispatch)(void *iompx, struct timeval *timeout);
 } fk_mpxop;
 
 typedef struct _fk_evmgr {
+	unsigned max_files;
 	/* use min_heap to save timer ev */
 	fk_heap *timer_heap;
 
@@ -66,14 +67,14 @@ typedef struct _fk_evmgr {
 
 	/* use array to save file ev */
 	/* conn + listen */
-	fk_ioev **read_ev;/* max_conn + 1 */
-	fk_ioev **write_ev;/* max_conn + 1 */
+	fk_ioev **read_ev;/* max_files */
+	fk_ioev **write_ev;/* max_files */
 
 	/* implemention of epoll/kqueue/poll */
 	void *iompx;
 } fk_evmgr;
 
-void fk_ev_init(unsigned max_conn);
+void fk_ev_init(unsigned max_files);
 int fk_ev_dispatch();
 void fk_ev_cycle(int *stop);
 int fk_ev_ioev_add(fk_ioev *ioev);

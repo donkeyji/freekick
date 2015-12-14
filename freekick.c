@@ -620,7 +620,7 @@ void fk_main_init(char *conf_path)
 
 	fk_proto_init();
 
-	fk_ev_init(setting.max_conn);
+	fk_ev_init(fk_util_conns_to_files(setting.max_conn));
 
 	fk_lua_init();
 

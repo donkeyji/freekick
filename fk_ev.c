@@ -39,24 +39,22 @@ static fk_leaf_op tmev_op = {
 	fk_ev_tmev_cmp
 };
 
-void fk_ev_init(unsigned max_conn)
+void fk_ev_init(unsigned max_files)
 {
-	unsigned max_files;
-
-	max_files = fk_util_conns_to_files(max_conn); 
+	evmgr.max_files = max_files; 
 
 	evmgr.timer_heap = fk_heap_create(&tmev_op);
 
 	/* use macro to initialize this two member */
-	evmgr.read_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * max_files);
-	evmgr.write_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * max_files);
+	evmgr.read_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * (evmgr.max_files));
+	evmgr.write_ev = (fk_ioev **)fk_mem_alloc(sizeof(fk_ioev *) * (evmgr.max_files));
 
 	evmgr.exp_tmev = fk_rawlist_create(fk_tmev_list);
 	fk_rawlist_init(evmgr.exp_tmev);
 	evmgr.act_ioev = fk_rawlist_create(fk_ioev_list);
 	fk_rawlist_init(evmgr.act_ioev);
 
-	evmgr.iompx = mpxop->iompx_create(max_files);
+	evmgr.iompx = mpxop->iompx_create(evmgr.max_files);
 	if (evmgr.iompx == NULL) {
 		fk_log_error("evmgr init failed\n");
 		exit(EXIT_FAILURE);
