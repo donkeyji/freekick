@@ -59,6 +59,7 @@ fk_conn *fk_conn_create(int fd)
 
 	conn->db_idx = 0;
 
+	/* added to the map */
 	server.conns_tab[conn->fd] = conn;
 	server.conn_cnt += 1;
 
@@ -67,6 +68,7 @@ fk_conn *fk_conn_create(int fd)
 
 void fk_conn_destroy(fk_conn *conn)
 {
+	/* removed from the map */
 	server.conns_tab[conn->fd] = NULL;
 	server.conn_cnt -= 1;
 
