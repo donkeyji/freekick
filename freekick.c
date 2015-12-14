@@ -610,7 +610,7 @@ void fk_main_init(char *conf_path)
 	 * the second to init, so that all the 
 	 * ther module can call fk_log_xxx() 
 	 */
-	fk_log_init();
+	fk_log_init(setting.log_path, setting.log_level);
 
 	fk_write_pid_file();
 
@@ -620,7 +620,7 @@ void fk_main_init(char *conf_path)
 
 	fk_proto_init();
 
-	fk_ev_init();
+	fk_ev_init(setting.max_conn);
 
 	fk_lua_init();
 

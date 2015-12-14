@@ -39,11 +39,11 @@ static fk_leaf_op tmev_op = {
 	fk_ev_tmev_cmp
 };
 
-void fk_ev_init()
+void fk_ev_init(unsigned max_conn)
 {
 	unsigned max_files;
 
-	max_files = fk_util_conns_to_files(setting.max_conn); 
+	max_files = fk_util_conns_to_files(max_conn); 
 
 	evmgr.timer_heap = fk_heap_create(&tmev_op);
 

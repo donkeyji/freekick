@@ -73,7 +73,7 @@ typedef struct _fk_evmgr {
 	void *iompx;
 } fk_evmgr;
 
-void fk_ev_init();
+void fk_ev_init(unsigned max_conn);
 int fk_ev_dispatch();
 void fk_ev_cycle(int *stop);
 int fk_ev_ioev_add(fk_ioev *ioev);
