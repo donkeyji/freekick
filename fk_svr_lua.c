@@ -367,7 +367,7 @@ int fk_cmd_eval(fk_conn *conn)
 	str_nkey = (fk_str *)fk_item_raw(itm_nkey);
 	if (fk_str_is_nonminus(str_nkey) == 0) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
-		if (rt == FK_CONN_ERR) {
+		if (rt == FK_ERR) {
 			return FK_ERR;
 		}
 		return FK_OK;

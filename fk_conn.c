@@ -104,7 +104,7 @@ int fk_conn_data_recv(fk_conn *conn)
 		fk_buf_free_len(conn->rbuf) == 0) 
 	{
 		fk_log_info("beyond max buffer length\n");
-		return FK_CONN_ERR;/* need to close this connection */
+		return FK_ERR;/* need to close this connection */
 	}
 
 	while (1) {
@@ -130,11 +130,11 @@ int fk_conn_data_recv(fk_conn *conn)
 		recv_len = recv(conn->fd, free_buf, free_len, 0);
 		if (recv_len == 0) {/* conn disconnected */
 			fk_log_info("[conn socket closed] fd: %d\n", conn->fd);
-			return FK_CONN_ERR;
+			return FK_ERR;
 		} else if (recv_len < 0) {
 			if (errno != EAGAIN) {
 				fk_log_error("[recv error] %s\n", strerror(errno));
-				return FK_CONN_ERR;
+				return FK_ERR;
 			} else {/* no data left in the read buffer of the socket */
 				break;
 			}
@@ -177,7 +177,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			start = fk_buf_payload_start(rbuf);
 			if (*start != '*') {
 				fk_log_debug("wrong client data\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
 			if (end == NULL) {
@@ -185,16 +185,16 @@ int fk_conn_req_parse(fk_conn *conn)
 			}
 			if (*(end - 1) != '\r') {
 				fk_log_debug("wrong client data\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			if (end - 2 < start + 1) {
 				fk_log_debug("wrong client data\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			rt = fk_util_is_positive_seq(start + 1, (size_t)(end - 2 - start));
 			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			/* 
 			 * a variable of integer type can hold the argument 
@@ -204,7 +204,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			conn->arg_cnt = atoi(start + 1);
 			if (conn->arg_cnt <= 0 || conn->arg_cnt > FK_ARG_CNT_HIGHWAT) {
 				fk_log_debug("invalid argument count\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 #ifdef FK_DEBUG
 			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
@@ -227,7 +227,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			start = fk_buf_payload_start(rbuf);
 			if (*start != '$') {
 				fk_log_debug("wrong client data\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
 			if (end == NULL) {
@@ -235,16 +235,16 @@ int fk_conn_req_parse(fk_conn *conn)
 			}
 			if (*(end - 1) != '\r') {
 				fk_log_debug("wrong client data\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			if (end - 2 < start + 1) {
 				fk_log_debug("wrong client data\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			rt = fk_util_is_nonminus_seq(start + 1, (size_t)(end - 2 - start));
 			if (rt < 0) {
 				fk_log_debug("wrong client data\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			/* 
 			 * argl of integer type can hold the argument length,
@@ -254,7 +254,7 @@ int fk_conn_req_parse(fk_conn *conn)
 			argl = atoi(start + 1);/* argument length */
 			if (argl < 0 || argl > FK_ARG_HIGHWAT) {
 				fk_log_debug("invalid argument length\n");
-				return FK_CONN_ERR;
+				return FK_ERR;
 			}
 			fk_conn_arglen_set(conn, conn->arg_idx, (void *)((size_t)argl));
 			conn->idx_flag = 1;/* need to parse arg */
@@ -272,7 +272,7 @@ int fk_conn_req_parse(fk_conn *conn)
 					*(start + arg_len + 1) != '\n') 
 				{
 					fk_log_debug("wrong client data\n");
-					return FK_CONN_ERR;
+					return FK_ERR;
 				}
 				itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
 				fk_conn_arg_set(conn, conn->arg_idx, itm);
@@ -345,7 +345,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	rt = pto->handler(conn);
 	if (rt == FK_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
 		fk_conn_args_free(conn);
-		return FK_CONN_ERR;
+		return FK_ERR;
 	}
 	fk_conn_args_free(conn);
 	return FK_OK;
@@ -387,7 +387,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	conn = (fk_conn *)ext;
 
 	rt = fk_conn_data_recv(conn);
-	if (rt == FK_CONN_ERR) {/* conn closed */
+	if (rt == FK_ERR) {/* conn closed */
 		fk_conn_destroy(conn);
 		return 0;
 	}
@@ -398,7 +398,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	 */
 	while (fk_buf_payload_len(conn->rbuf) > 0) {
 		rt = fk_conn_req_parse(conn);
-		if (rt == FK_CONN_ERR) {/* error when parsing */
+		if (rt == FK_ERR) {/* error when parsing */
 			fk_log_error("fatal error occured when parsing protocol\n");
 			fk_conn_destroy(conn);
 			return 0;
@@ -407,7 +407,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 		}
 
 		rt = fk_conn_cmd_proc(conn);
-		if (rt == FK_CONN_ERR) {
+		if (rt == FK_ERR) {
 			fk_log_error("fatal error occured when processing cmd\n");
 			fk_conn_destroy(conn);
 			return 0;
@@ -415,7 +415,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	}
 
 	rt = fk_conn_rsp_send(conn);
-	if (rt == FK_CONN_ERR) {
+	if (rt == FK_ERR) {
 		fk_log_error("fatal error occurs when sending response\n");
 		fk_conn_destroy(conn);
 		return 0;
@@ -502,7 +502,7 @@ int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len)
 
 	fk_buf_adjust(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
-		return FK_CONN_ERR;
+		return FK_ERR;
 	}
 
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_status, stat);
@@ -519,7 +519,7 @@ int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len)
 
 	fk_buf_adjust(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
-		return FK_CONN_ERR;
+		return FK_ERR;
 	}
 
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_error, error);
@@ -536,7 +536,7 @@ int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len)
 
 	fk_buf_adjust(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
-		return FK_CONN_ERR;
+		return FK_ERR;
 	}
 
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_content, content);
@@ -554,7 +554,7 @@ int fk_conn_int_rsp_add(fk_conn *conn, int num)
 
 	fk_buf_adjust(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
-		return FK_CONN_ERR;
+		return FK_ERR;
 	}
 
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_int, num);
@@ -572,7 +572,7 @@ int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
 
 	fk_buf_adjust(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
-		return FK_CONN_ERR;
+		return FK_ERR;
 	}
 
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_bulk, bulk_len);
@@ -590,7 +590,7 @@ int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
 
 	fk_buf_adjust(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
-		return FK_CONN_ERR;
+		return FK_ERR;
 	}
 
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_mbulk, bulk_cnt);
