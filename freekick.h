@@ -33,9 +33,6 @@
 
 #define FK_PROTO_VARLEN		0
 
-/* for fk_conn */
-#define FK_CONN_UNDONE	1
-
 typedef struct _fk_conn {
 	int fd;
 	fk_ioev *read_ev;
