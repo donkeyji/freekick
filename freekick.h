@@ -35,7 +35,6 @@
 
 /* for fk_conn */
 #define FK_CONN_UNDONE	1
-#define FK_CONN_OK		0
 #define FK_CONN_ERR		-1
 
 typedef struct _fk_conn {

@@ -155,7 +155,7 @@ int fk_conn_data_recv(fk_conn *conn)
 		}
 	}
 
-	return FK_CONN_OK;
+	return FK_OK;
 }
 
 int fk_conn_req_parse(fk_conn *conn)
@@ -286,7 +286,7 @@ int fk_conn_req_parse(fk_conn *conn)
 
 			if (conn->arg_cnt == conn->arg_idx) {/* a total protocol has been parsed */
 				conn->parse_done = 1;
-				return FK_CONN_OK;
+				return FK_OK;
 			}
 		}
 	}
@@ -324,7 +324,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 #ifdef FK_DEBUG
 		fk_log_debug("parse not completed yet\n");
 #endif
-		return FK_CONN_OK;
+		return FK_OK;
 	}
 	itm = (fk_item *)fk_conn_arg_get(conn, 0);
 	cmd = (fk_str *)fk_item_raw(itm);
@@ -334,13 +334,13 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg_get(conn, 0)));
 		fk_conn_args_free(conn);
 		fk_conn_error_rsp_add(conn, "Invalid Protocol", strlen("Invalid Protocol"));
-		return FK_CONN_OK;
+		return FK_OK;
 	}
 	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_args_free(conn);
 		fk_conn_error_rsp_add(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
-		return FK_CONN_OK;
+		return FK_OK;
 	}
 	rt = pto->handler(conn);
 	if (rt == FK_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
@@ -348,7 +348,7 @@ int fk_conn_cmd_proc(fk_conn *conn)
 		return FK_CONN_ERR;
 	}
 	fk_conn_args_free(conn);
-	return FK_CONN_OK;
+	return FK_OK;
 }
 
 int fk_conn_timer_cb(unsigned interval, char type, void *ext)
@@ -491,7 +491,7 @@ int fk_conn_rsp_send(fk_conn *conn)
 		fk_ev_ioev_add(conn->write_ev);
 		conn->write_added = 1;
 	}
-	return FK_CONN_OK;
+	return FK_OK;
 }
 
 int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len)
@@ -508,7 +508,7 @@ int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_status, stat);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return FK_CONN_OK;
+	return FK_OK;
 }
 
 int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len)
@@ -525,7 +525,7 @@ int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_error, error);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return FK_CONN_OK;
+	return FK_OK;
 }
 
 int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len)
@@ -542,7 +542,7 @@ int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_content, content);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return FK_CONN_OK;
+	return FK_OK;
 }
 
 int fk_conn_int_rsp_add(fk_conn *conn, int num)
@@ -560,7 +560,7 @@ int fk_conn_int_rsp_add(fk_conn *conn, int num)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_int, num);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return FK_CONN_OK;
+	return FK_OK;
 }
 
 int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
@@ -578,7 +578,7 @@ int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_bulk, bulk_len);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return FK_CONN_OK;
+	return FK_OK;
 }
 
 int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
@@ -596,5 +596,5 @@ int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt)
 	sprintf(fk_buf_free_start(conn->wbuf), rsp_mbulk, bulk_cnt);
 	fk_buf_high_inc(conn->wbuf, len);
 
-	return FK_CONN_OK;
+	return FK_OK;
 }
