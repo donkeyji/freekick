@@ -9,7 +9,6 @@
 
 #include <fk_macro.h>
 #include <fk_log.h>
-#include <fk_conn.h>
 #include <fk_mem.h>
 #include <fk_sock.h>
 #include <fk_util.h>
@@ -59,11 +58,18 @@ fk_conn *fk_conn_create(int fd)
 	conn->parse_done = 0;
 
 	conn->db_idx = 0;
+
+	server.conns_tab[conn->fd] = conn;
+	server.conn_cnt += 1;
+
 	return conn;
 }
 
 void fk_conn_destroy(fk_conn *conn)
 {
+	server.conns_tab[conn->fd] = NULL;
+	server.conn_cnt -= 1;
+
 	/* remove from freekick and unregister event from event manager */
 	fk_ev_ioev_remove(conn->read_ev);
 	fk_ioev_destroy(conn->read_ev);
@@ -359,7 +365,7 @@ int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 
 	if (now - conn->last_recv > setting.timeout) {
 		fk_log_debug("connection timeout\n");
-		fk_svr_conn_remove(conn);
+		fk_conn_destroy(conn);
 		return -1;/* tell evmgr not to add this timer again */
 	}
 	return 0;
@@ -382,7 +388,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 
 	rt = fk_conn_data_recv(conn);
 	if (rt == FK_CONN_ERR) {/* conn closed */
-		fk_svr_conn_remove(conn);
+		fk_conn_destroy(conn);
 		return 0;
 	}
 
@@ -394,7 +400,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 		rt = fk_conn_req_parse(conn);
 		if (rt == FK_CONN_ERR) {/* error when parsing */
 			fk_log_error("fatal error occured when parsing protocol\n");
-			fk_svr_conn_remove(conn);
+			fk_conn_destroy(conn);
 			return 0;
 		} else if (rt == FK_CONN_UNDONE) {/* parsing not completed */
 			break;
@@ -403,7 +409,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 		rt = fk_conn_cmd_proc(conn);
 		if (rt == FK_CONN_ERR) {
 			fk_log_error("fatal error occured when processing cmd\n");
-			fk_svr_conn_remove(conn);
+			fk_conn_destroy(conn);
 			return 0;
 		}
 	}
@@ -411,7 +417,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	rt = fk_conn_rsp_send(conn);
 	if (rt == FK_CONN_ERR) {
 		fk_log_error("fatal error occurs when sending response\n");
-		fk_svr_conn_remove(conn);
+		fk_conn_destroy(conn);
 		return 0;
 	}
 
@@ -444,7 +450,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 		if (sent_len < 0) {
 			if (errno != EAGAIN) {
 				fk_log_error("send error: %s\n", strerror(errno));
-				fk_svr_conn_remove(conn);/* close the connection directly */
+				fk_conn_destroy(conn);/* close the connection directly */
 				return 0;
 			} else {/* no free space in this write buffer of the socket */
 				break;

@@ -276,28 +276,6 @@ void fk_db_sklist_val_free(void *ptr)
 	fk_item_ref_dec(itm);
 }
 
-/* server interface */
-void fk_svr_conn_add(int fd)
-{
-	fk_conn *conn;
-
-	conn = fk_conn_create(fd);
-	server.conns_tab[conn->fd] = conn;
-	server.conn_cnt += 1;
-}
-
-/* call when conn disconnect */
-void fk_svr_conn_remove(fk_conn *conn)
-{
-	server.conns_tab[conn->fd] = NULL;
-	server.conn_cnt -= 1;
-	fk_conn_destroy(conn);
-}
-
-fk_conn *fk_svr_conn_get(int fd)
-{
-	return server.conns_tab[fd];
-}
 
 int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 {
@@ -315,7 +293,7 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 		close(fd);
 		return 0;
 	}
-	fk_svr_conn_add(fd);
+	fk_conn_create(fd);
 #ifdef FK_DEBUG
 	fk_log_debug("conn_cnt: %u, max_conn: %u\n", server.conn_cnt, server.max_conn);
 #endif

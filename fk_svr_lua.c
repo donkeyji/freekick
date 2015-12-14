@@ -10,7 +10,6 @@
 #include <fk_buf.h>
 #include <fk_vtr.h>
 #include <fk_item.h>
-#include <fk_conn.h>
 #include <freekick.h>
 
 #define FK_LUA_PARA_KEYS		0

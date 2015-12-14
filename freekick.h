@@ -9,10 +9,12 @@
 
 /* local headers */
 #include <fk_macro.h>
-#include <fk_conn.h>
 #include <fk_str.h>
 #include <fk_dict.h>
 #include <fk_sklist.h>
+#include <fk_ev.h>
+#include <fk_buf.h>
+#include <fk_vtr.h>
 
 /* status code definition copied from nginx */
 #define FK_OK			 0
@@ -31,12 +33,31 @@
 
 #define FK_PROTO_VARLEN		0
 
-typedef struct _fk_proto {
-	char *name;
-	int type;
-	unsigned arg_cnt;
-	int (*handler) (fk_conn *conn);
-} fk_proto;
+/* for fk_conn */
+#define FK_CONN_UNDONE	1
+#define FK_CONN_OK		0
+#define FK_CONN_ERR		-1
+
+typedef struct _fk_conn {
+	int fd;
+	fk_ioev *read_ev;
+	fk_ioev *write_ev;
+	int write_added;
+
+	fk_buf *rbuf;
+	fk_buf *wbuf;
+	time_t last_recv;/* time of last data receiving */
+	fk_tmev *timer;
+
+	fk_vtr *arg_vtr;
+	fk_vtr *len_vtr;
+	int arg_cnt;/* the number of arg_vtr of the current protocol, original 0; */
+	int arg_idx;/* the arg_idx arg is being parsing, original 0 */
+	int idx_flag;/* arg_len or arg */
+	int parse_done;/* original 0 */
+
+	int db_idx;
+} fk_conn;
 
 typedef struct _fk_server {
 	uint16_t port;
@@ -60,6 +81,13 @@ typedef struct _fk_server {
 	pid_t save_pid;/* -1: the save child process ended */
 } fk_server;
 
+typedef struct _fk_proto {
+	char *name;
+	int type;
+	unsigned arg_cnt;
+	int (*handler) (fk_conn *conn);
+} fk_proto;
+
 /* ---------------------------------------------------- */
 /* related to dump */
 void fk_svr_db_load(fk_str *db_file);
@@ -72,10 +100,6 @@ int fk_svr_sync_with_master();
 /* related to lua scripting */
 void fk_lua_init();
 
-/* related to fk_conn */
-void fk_svr_conn_add(int fd);
-void fk_svr_conn_remove(fk_conn *conn);
-fk_conn *fk_svr_conn_get(int fd);
 
 /* related to protocol */
 fk_proto *fk_proto_search(fk_str *name);
@@ -112,5 +136,24 @@ extern fk_server server;/* this "server" is visited in different .c files */
 extern fk_elt_op db_dict_eop;
 extern fk_node_op db_list_op;
 extern fk_sknode_op db_sklist_op;
+
+/* interface for fk_conn */
+fk_conn *fk_conn_create(int fd);
+void fk_conn_destroy(fk_conn *conn);
+
+#define fk_conn_arg_set(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
+
+#define fk_conn_arg_get(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
+
+#define fk_conn_arglen_set(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
+
+#define fk_conn_arglen_get(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
+
+int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len);
+int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len);
+int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len);
+int fk_conn_int_rsp_add(fk_conn *conn, int num);
+int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len);
+int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt);
 
 #endif
