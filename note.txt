@@ -142,3 +142,5 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 57.glibc支持iso c/posix/bsd/sysv/xopen5个standard，iso < posix < bsd(sysv).
 
 58.mac下/usr/include/AvailabilityMacros.h定义了MAC_OS_X_VERSION_10_0 --> MAC_OS_X_VERSION_10_*的定义，*表示当前的版本，例如10.9中就是9，10.10中就是10，用以区分当前mac的版本。
+
+59.fk_conn与fk_server有彼此数据的交互，还是作为一个模块比较好。fk_conn与fk_list这种纯粹的数据结构模块不一样，fk_conn有状态数据的维护，需要直接访问server全局变量。
