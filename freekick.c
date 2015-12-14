@@ -293,7 +293,7 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 		close(fd);
 		return 0;
 	}
-	fk_conn_create(fd);
+	fk_svr_conn_add(fd);
 #ifdef FK_DEBUG
 	fk_log_debug("conn_cnt: %u, max_conn: %u\n", server.conn_cnt, server.max_conn);
 #endif

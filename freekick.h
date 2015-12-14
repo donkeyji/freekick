@@ -102,6 +102,9 @@ int fk_conn_int_rsp_add(fk_conn *conn, int num);
 int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len);
 int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt);
 
+void fk_svr_conn_add(int fd);
+void fk_svr_conn_remove(fk_conn *conn);
+
 /* related to dump */
 void fk_svr_db_load(fk_str *db_file);
 void fk_svr_db_save_background();
