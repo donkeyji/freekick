@@ -7,7 +7,6 @@
 #include <sys/time.h>
 
 #include <fk_def.h>
-#include <fk_conf.h>
 #include <fk_ev.h>
 #include <fk_list.h>
 #include <fk_mem.h>
