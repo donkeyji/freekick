@@ -32,11 +32,11 @@ static fk_log logger = {
  * if fk_log_init() is not invoked, fk_log_info/error/debug/warn can also be called, 
  * when the log is redirected to stdout 
  */
-void fk_log_init(fk_str *log_path, int log_level)
+void fk_log_init(char *log_path, int log_level)
 {
 	FILE *fp;
 
-	fp = fopen(fk_str_raw(log_path), "a+");
+	fp = fopen(log_path, "a+");
 	if (fp == NULL) {
 		printf("null file\n");
 		exit(1);
