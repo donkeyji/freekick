@@ -1,3 +1,4 @@
+#include <fk_item.h>
 #include <freekick.h>
 
 static int fk_cmd_generic_push(fk_conn *conn, int pos);

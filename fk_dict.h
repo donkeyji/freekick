@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-#include <fk_item.h>
 #include <fk_list.h>
 #include <fk_str.h>
 

@@ -1,3 +1,4 @@
+#include <fk_item.h>
 #include <freekick.h>
 
 int fk_cmd_hset(fk_conn *conn)

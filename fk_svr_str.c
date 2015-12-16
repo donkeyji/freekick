@@ -1,3 +1,4 @@
+#include <fk_item.h>
 #include <freekick.h>
 
 /* 
