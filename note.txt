@@ -145,4 +145,6 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 
 59.fk_conn与fk_server有彼此数据的交互，还是作为一个模块比较好。fk_conn与fk_list这种纯粹的数据结构模块不一样，fk_conn有状态数据的维护，需要直接访问server全局变量。
 
-60.只在freekick.c和fk_svr_xxx.c里直接访问setting这个全局变量，其它模块需要读取配置的采用参数传递方式，例如fk_ev_init/fk_log_init，这样ev/log模块更加独立，与具体逻辑无关了。
+60.只在freekick.c和fk_svr_xxx.c里直接访问setting这个全局变量，其它模块需要读取配置的采用参数传递方式，例如fk_ev_init/fk_log_init，这样ev/log模块更加独立，与具体逻辑无关了。这样子好吗？
+
+61.模块层次：fk_str是最基础的一个模块，提供了最基础的fk_str对象实现，在整个项目中，除了一些必须以char *形式提供的库函数参数外，都以fk_str来表示字符串，包括在fk_conf中。
