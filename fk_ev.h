@@ -82,6 +82,8 @@ int fk_ev_ioev_remove(fk_ioev *ioev);
 int fk_ev_tmev_add(fk_tmev *tmev);
 int fk_ev_tmev_remove(fk_tmev *tmev);
 
+char *fk_ev_iompx_name();
+
 fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
 void fk_ioev_destroy(fk_ioev *ioev);
 fk_tmev *fk_tmev_create(unsigned timeout, char type, void *arg, fk_tmev_cb tmcb);

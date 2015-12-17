@@ -166,6 +166,11 @@ int fk_ev_ioev_remove(fk_ioev *ioev)
 	return FK_EV_OK;
 }
 
+char *fk_ev_iompx_name()
+{
+	return mpxop->iompx_name;
+}
+
 fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb)
 {
 	fk_ioev *ioev;
