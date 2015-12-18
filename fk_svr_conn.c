@@ -14,7 +14,7 @@
 #include <fk_util.h>
 #include <fk_conf.h>
 #include <fk_item.h>
-#include <freekick.h>/* it's OK to do so */
+#include <fk_svr.h>/* it's OK to do so */
 
 static int fk_conn_read_cb(int fd, char type, void *ext);
 static int fk_conn_write_cb(int fd, char type, void *ext);

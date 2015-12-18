@@ -1,5 +1,5 @@
 #include <fk_item.h>
-#include <freekick.h>
+#include <fk_svr.h>
 
 int fk_cmd_hset(fk_conn *conn)
 {
