@@ -239,11 +239,7 @@ void fk_main_init(char *conf_path)
 
 	fk_cache_init();
 
-	fk_proto_init();
-
 	fk_ev_init(fk_util_conns_to_files(setting.max_conn));
-
-	fk_lua_init();
 
 	fk_svr_init();
 }

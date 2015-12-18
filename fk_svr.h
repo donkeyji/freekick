@@ -106,7 +106,6 @@ void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);
 
 void fk_svr_init();
-void fk_proto_init();
 
 void fk_sigint(int sig);
 void fk_sigchld(int sig);
@@ -123,6 +122,7 @@ int fk_svr_sync_with_master();
 void fk_lua_init();
 
 /* related to protocol */
+void fk_proto_init();
 fk_proto *fk_proto_search(fk_str *name);
 
 /* 
