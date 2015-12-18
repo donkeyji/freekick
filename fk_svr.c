@@ -27,7 +27,6 @@
 static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
 static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
 
-
 static uint32_t fk_db_dict_key_hash(void *key);
 static int fk_db_dict_key_cmp(void *k1, void *k2);
 static void *fk_db_dict_key_copy(void *key);
@@ -170,7 +169,6 @@ void fk_db_sklist_val_free(void *ptr)
 	fk_item_ref_dec(itm);
 }
 
-
 int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 {
 	int fd;
@@ -237,8 +235,10 @@ void fk_svr_init()
 {
 	unsigned i;
 
+	/* sub module of fk_svr initialize */
 	fk_proto_init();
 	fk_lua_init();
+
 	/* 
 	 * copy setting from conf to server 
 	 * but is it necessary???
