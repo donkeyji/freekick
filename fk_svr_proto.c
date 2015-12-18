@@ -33,7 +33,6 @@ static fk_proto protos[] = {
 
 static fk_dict *pmap = NULL;
 
-
 static fk_elt_op proto_dict_eop = {
 	fk_dict_pto_key_hash,
 	fk_dict_pto_key_cmp,

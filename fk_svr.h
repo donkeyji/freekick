@@ -102,10 +102,9 @@ int fk_conn_int_rsp_add(fk_conn *conn, int num);
 int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len);
 int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt);
 
+void fk_svr_init();
 void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);
-
-void fk_svr_init();
 
 void fk_sigint(int sig);
 void fk_sigchld(int sig);
@@ -153,7 +152,6 @@ int fk_cmd_zadd(fk_conn *conn);
 /* extern declerations of global variables */
 
 extern fk_server server;/* this "server" is visited in different .c files */
-
 extern fk_elt_op db_dict_eop;
 extern fk_node_op db_list_op;
 extern fk_sknode_op db_sklist_op;
