@@ -8,7 +8,7 @@
 #include <fk_log.h>
 #include <fk_mem.h>
 #include <fk_item.h>
-#include <freekick.h>
+#include <fk_svr.h>
 
 typedef struct _fk_zline {
 	char *line;

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include <fk_item.h>
-#include <freekick.h>
+#include <fk_svr.h>
 
 int fk_cmd_zadd(fk_conn *conn)
 {

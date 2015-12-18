@@ -1,5 +1,5 @@
 #include <fk_item.h>
-#include <freekick.h>
+#include <fk_svr.h>
 
 static int fk_cmd_generic_push(fk_conn *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn *conn, int pos);

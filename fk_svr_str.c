@@ -1,10 +1,10 @@
 #include <fk_item.h>
-#include <freekick.h>
+#include <fk_svr.h>
 
 /* 
  * this fk_svr_str.c is just a part of the original freekick.c
  * I just split the freekick.c into defferent .c files, 
- * so just #include <freekick.h>
+ * so just #include <fk_svr.h>
  */
 int fk_cmd_set(fk_conn *conn)
 {
