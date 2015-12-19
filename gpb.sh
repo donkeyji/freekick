@@ -14,7 +14,6 @@ v3
 v4
 v5
 v6
-v7
 master
 '
 
@@ -26,11 +25,11 @@ else
 	branches=$1
 fi
 
-echo "try to push all branched to $branches ..."
+echo "Trying to push all branches to the remote repository..."
 for rt in $all_remotes; do
-	echo "======remote: $rt ======"
+	echo "======remote: $rt======"
 	for br in $branches; do
-		echo "---branch: $br ---"
+		echo "---branch: $br---"
 		git push $rt $br
 	done
 done
