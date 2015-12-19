@@ -297,5 +297,5 @@ int main(int argc, char **argv)
 
 	fk_main_final();
 
-	return FK_OK;
+	return 0;
 }
