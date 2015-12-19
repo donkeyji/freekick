@@ -284,13 +284,13 @@ void fk_svr_init()
 	fk_fkdb_load(server.db_file);
 }
 
-void fk_sigint(int sig)
+void fk_svr_sigint(int sig)
 {
 	fk_log_info("to exit by sigint\n");
 	server.stop = 1;
 }
 
-void fk_sigchld(int sig)
+void fk_svr_sigchld(int sig)
 {
 	int st;
 	pid_t pid;

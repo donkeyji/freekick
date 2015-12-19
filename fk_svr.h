@@ -86,15 +86,6 @@ typedef struct _fk_proto {
 /* interface of fk_conn */
 fk_conn *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn *conn);
-
-#define fk_conn_arg_set(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
-
-#define fk_conn_arg_get(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
-
-#define fk_conn_arglen_set(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
-
-#define fk_conn_arglen_get(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
-
 int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len);
 int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len);
 int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len);
@@ -102,12 +93,17 @@ int fk_conn_int_rsp_add(fk_conn *conn, int num);
 int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len);
 int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt);
 
+#define fk_conn_arg_set(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
+#define fk_conn_arg_get(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
+#define fk_conn_arglen_set(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
+#define fk_conn_arglen_get(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
+
 void fk_svr_init();
 void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);
 
-void fk_sigint(int sig);
-void fk_sigchld(int sig);
+void fk_svr_sigint(int sig);
+void fk_svr_sigchld(int sig);
 
 /* related to dump */
 void fk_fkdb_load(fk_str *db_file);

@@ -193,7 +193,7 @@ void fk_signal_reg()
 	int rt;
 	struct sigaction sa;
 
-	sa.sa_handler = fk_sigint;
+	sa.sa_handler = fk_svr_sigint;
 	sa.sa_flags = 0;
 	rt = sigemptyset(&sa.sa_mask);
 	if (rt < 0) {
@@ -202,7 +202,7 @@ void fk_signal_reg()
 	if (rt < 0) {
 	}
 
-	sa.sa_handler = fk_sigchld;
+	sa.sa_handler = fk_svr_sigchld;
 	sa.sa_flags = 0;
 	rt = sigemptyset(&sa.sa_mask);
 	if (rt < 0) {
