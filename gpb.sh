@@ -27,7 +27,7 @@ fi
 
 echo "Trying to push all branches to the remote repository..."
 for rt in $all_remotes; do
-	echo "======remote: $rt======"
+	echo "=============remote: $rt============="
 	for br in $branches; do
 		echo "---branch: $br---"
 		git push $rt $br
