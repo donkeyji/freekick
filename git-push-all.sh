@@ -18,6 +18,7 @@ v7
 master
 '
 
+echo "try to push all branched to all the remotes..."
 for rt in $remotes; do
 	echo "======remote: $rt ======"
 	for br in $branches; do

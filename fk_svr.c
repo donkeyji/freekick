@@ -235,9 +235,8 @@ void fk_svr_init()
 {
 	unsigned i;
 
-	/* sub module of fk_svr initialize */
+	/* protocol sub module */
 	fk_proto_init();
-	fk_lua_init();
 
 	/* 
 	 * copy setting from conf to server 
@@ -280,6 +279,10 @@ void fk_svr_init()
 	for (i = 0; i < server.dbcnt; i++) {
 		server.db[i] = fk_dict_create(&db_dict_eop);
 	}
+
+	/* lua sub module */
+	fk_lua_init();
+
 	/* load db from file */
 	fk_fkdb_load(server.db_file);
 }
