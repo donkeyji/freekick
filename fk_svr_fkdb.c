@@ -20,18 +20,18 @@ static void fk_zline_adjust(fk_zline *buf, size_t len);
 static void fk_zline_destroy(fk_zline *buf);
 
 /* related to dump */
-static int fk_fdb_dump(FILE *fp, unsigned db_idx);
-static int fk_fdb_str_elt_dump(FILE *fp, fk_elt *elt);
-static int fk_fdb_list_elt_dump(FILE *fp, fk_elt *elt);
-static int fk_fdb_dict_elt_dump(FILE *fp, fk_elt *elt);
+static int fk_fkdb_dump(FILE *fp, unsigned db_idx);
+static int fk_fkdb_str_elt_dump(FILE *fp, fk_elt *elt);
+static int fk_fkdb_list_elt_dump(FILE *fp, fk_elt *elt);
+static int fk_fkdb_dict_elt_dump(FILE *fp, fk_elt *elt);
 
 /* related to restore */
-static int fk_fdb_restore(FILE *fp, fk_zline *buf);
-static int fk_fdb_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
-static int fk_fdb_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
-static int fk_fdb_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
+static int fk_fkdb_restore(FILE *fp, fk_zline *buf);
+static int fk_fkdb_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
+static int fk_fkdb_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
+static int fk_fkdb_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf);
 
-void fk_fdb_save_background()
+void fk_fkdb_save_background()
 {
 	int rt;
 
@@ -54,7 +54,7 @@ void fk_fdb_save_background()
 		return;
 	} else {
 		/* execute only in child process */
-		if (fk_fdb_save() == FK_ERR) {
+		if (fk_fkdb_save() == FK_ERR) {
 			fk_log_error("db save failed\n");
 			exit(EXIT_FAILURE);
 		}
@@ -62,7 +62,7 @@ void fk_fdb_save_background()
 	}
 }
 
-int fk_fdb_save()
+int fk_fkdb_save()
 {
 	int rt;
 	FILE *fp;
@@ -78,7 +78,7 @@ int fk_fdb_save()
 	}
 
 	for (i = 0; i < server.dbcnt; i++) {
-		rt = fk_fdb_dump(fp, i);
+		rt = fk_fkdb_dump(fp, i);
 		if (rt == FK_ERR) {
 			fclose(fp);
 			remove(temp_db);/* remove this temporary db file */
@@ -101,7 +101,7 @@ int fk_fdb_save()
  * to do: 
  * error handling
  */
-int fk_fdb_dump(FILE *fp, unsigned db_idx)
+int fk_fkdb_dump(FILE *fp, unsigned db_idx)
 {
 	fk_elt *elt;
 	int type, rt;
@@ -138,13 +138,13 @@ int fk_fdb_dump(FILE *fp, unsigned db_idx)
 		}
 		switch (type) {
 		case FK_ITEM_STR:
-			rt = fk_fdb_str_elt_dump(fp, elt);
+			rt = fk_fkdb_str_elt_dump(fp, elt);
 			break;
 		case FK_ITEM_LIST:
-			rt = fk_fdb_list_elt_dump(fp, elt);
+			rt = fk_fkdb_list_elt_dump(fp, elt);
 			break;
 		case FK_ITEM_DICT:
-			rt = fk_fdb_dict_elt_dump(fp, elt);
+			rt = fk_fkdb_dict_elt_dump(fp, elt);
 			break;
 		}
 		if (rt == FK_ERR) {
@@ -157,7 +157,7 @@ int fk_fdb_dump(FILE *fp, unsigned db_idx)
 	return FK_OK;
 }
 
-int fk_fdb_str_elt_dump(FILE *fp, fk_elt *elt)
+int fk_fkdb_str_elt_dump(FILE *fp, fk_elt *elt)
 {
 	size_t len, wz;
 	fk_str *key, *value;
@@ -198,7 +198,7 @@ int fk_fdb_str_elt_dump(FILE *fp, fk_elt *elt)
 	return FK_OK;
 }
 
-int fk_fdb_list_elt_dump(FILE *fp, fk_elt *elt)
+int fk_fkdb_list_elt_dump(FILE *fp, fk_elt *elt)
 {
 	fk_node *nd;
 	fk_list *lst;
@@ -254,7 +254,7 @@ int fk_fdb_list_elt_dump(FILE *fp, fk_elt *elt)
 	return FK_OK;
 }
 
-int fk_fdb_dict_elt_dump(FILE *fp, fk_elt *elt)
+int fk_fkdb_dict_elt_dump(FILE *fp, fk_elt *elt)
 {
 	fk_elt *selt;
 	fk_dict *dct;
@@ -348,7 +348,7 @@ void fk_zline_destroy(fk_zline *buf)
 	fk_mem_free(buf);
 }
 
-void fk_fdb_load(fk_str *db_file)
+void fk_fkdb_load(fk_str *db_file)
 {
 	int rt;
 	FILE *fp; 
@@ -369,7 +369,7 @@ void fk_fdb_load(fk_str *db_file)
 	fseek(fp, 0, SEEK_SET);/* rewind to the head */
 
 	while (ftell(fp) != tail) {
-		rt = fk_fdb_restore(fp, buf);
+		rt = fk_fkdb_restore(fp, buf);
 		if (rt == FK_ERR) {
 			fk_log_error("load db body failed\n");
 			exit(EXIT_FAILURE);
@@ -386,7 +386,7 @@ void fk_fdb_load(fk_str *db_file)
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
-int fk_fdb_restore(FILE *fp, fk_zline *buf)
+int fk_fkdb_restore(FILE *fp, fk_zline *buf)
 {
 	int rt;
 	fk_dict *db;
@@ -422,13 +422,13 @@ int fk_fdb_restore(FILE *fp, fk_zline *buf)
 
 		switch (type) {
 		case FK_ITEM_STR:
-			rt = fk_fdb_str_elt_restore(fp, db, buf);
+			rt = fk_fkdb_str_elt_restore(fp, db, buf);
 			break;
 		case FK_ITEM_LIST:
-			rt = fk_fdb_list_elt_restore(fp, db, buf);
+			rt = fk_fkdb_list_elt_restore(fp, db, buf);
 			break;
 		case FK_ITEM_DICT:
-			rt = fk_fdb_dict_elt_restore(fp, db, buf);
+			rt = fk_fkdb_dict_elt_restore(fp, db, buf);
 			break;
 		default:
 			rt = -1;
@@ -446,7 +446,7 @@ int fk_fdb_restore(FILE *fp, fk_zline *buf)
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
-int fk_fdb_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
+int fk_fkdb_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 {
 	fk_str *key, *value;
 	fk_item *kitm, *vitm;
@@ -494,7 +494,7 @@ int fk_fdb_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
-int fk_fdb_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
+int fk_fkdb_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 {
 	fk_list *lst;
 	fk_str *key, *nds;
@@ -550,7 +550,7 @@ int fk_fdb_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
  * 1. error occurs when reading 
  * 2. reaching to the end of file 
  */
-int fk_fdb_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
+int fk_fkdb_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 {
 	fk_dict *sdct;
 	fk_str *key, *skey, *svalue;

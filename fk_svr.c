@@ -210,7 +210,7 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 		fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
 	}
 
-	fk_fdb_save_background();
+	fk_fkdb_save_background();
 
 	fk_svr_sync_with_master();
 
@@ -281,7 +281,7 @@ void fk_svr_init()
 		server.db[i] = fk_dict_create(&db_dict_eop);
 	}
 	/* load db from file */
-	fk_fdb_load(server.db_file);
+	fk_fkdb_load(server.db_file);
 }
 
 void fk_sigint(int sig)

@@ -84,7 +84,7 @@ int fk_cmd_save(fk_conn *conn)
 
 	/* saving child process ended */
 	if (server.save_done == 1) {
-		rt = fk_fdb_save();
+		rt = fk_fkdb_save();
 		if (rt == FK_OK) {
 			err = 0;
 		}
