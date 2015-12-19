@@ -62,7 +62,6 @@ typedef struct _fk_server {
 	unsigned conn_cnt;/* connection count */
 	time_t start_time;
 	time_t last_save;
-	int stop;
 	unsigned long long timer_cnt;
 	fk_ioev *listen_ev;
 	fk_tmev *svr_timer;

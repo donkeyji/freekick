@@ -57,6 +57,7 @@ typedef struct _fk_mpxop {
 } fk_mpxop;
 
 typedef struct _fk_evmgr {
+	int stop;
 	unsigned max_files;
 	/* use min_heap to save timer ev */
 	fk_heap *timer_heap;
@@ -76,7 +77,8 @@ typedef struct _fk_evmgr {
 
 void fk_ev_init(unsigned max_files);
 int fk_ev_dispatch();
-void fk_ev_cycle(int *stop);
+void fk_ev_cycle();
+void fk_ev_stop();
 int fk_ev_ioev_add(fk_ioev *ioev);
 int fk_ev_ioev_remove(fk_ioev *ioev);
 int fk_ev_tmev_add(fk_tmev *tmev);

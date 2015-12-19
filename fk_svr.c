@@ -253,7 +253,6 @@ void fk_svr_init()
 	server.save_pid = -1;/* -1 is a invalid pid */
 	server.start_time = time(NULL);
 	server.last_save = time(NULL);
-	server.stop = 0;
 	server.conn_cnt = 0;
 	server.timer_cnt = 0;
 	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_util_conns_to_files(server.max_conn));
@@ -290,7 +289,7 @@ void fk_svr_init()
 void fk_svr_sigint(int sig)
 {
 	fk_log_info("to exit by sigint\n");
-	server.stop = 1;
+	fk_ev_stop();/* stop the event cycle */
 }
 
 void fk_svr_sigchld(int sig)

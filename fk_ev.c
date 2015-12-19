@@ -40,6 +40,7 @@ static fk_leaf_op tmev_op = {
 
 void fk_ev_init(unsigned max_files)
 {
+	evmgr.stop = 0;/* never stop */
 	evmgr.max_files = max_files; 
 
 	evmgr.timer_heap = fk_heap_create(&tmev_op);
@@ -106,13 +107,14 @@ int fk_ev_dispatch()
 
 void fk_ev_cycle(int *stop)
 {
-	int flag = 0;/* default: never stop cycling */
-	if (stop == NULL) {
-		stop = &flag;
-	}
-	while (*stop != 1) {
+	while (evmgr.stop != 1) {
 		fk_ev_dispatch();/* we donot care the retrun value of fk_ev_dispatch() */
 	}
+}
+
+void fk_ev_stop()
+{
+	evmgr.stop = 1;
 }
 
 int fk_ev_ioev_add(fk_ioev *ioev)
