@@ -22,13 +22,13 @@ static int fk_ev_expired_tmev_proc();
 static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
 #if defined(FK_HAVE_EPOLL)
-	#include <fk_epoll.c>
+	#include <fk_ev_epoll.c>
 	static fk_mpxop *mpxop = &epoll_op;
 #elif defined(FK_HAVE_KQUEUE)
-	#include <fk_kqueue.c>
+	#include <fk_ev_kqueue.c>
 	static fk_mpxop *mpxop = &kqueue_op;
 #else
-	#include <fk_poll.c>
+	#include <fk_ev_poll.c>
 	static fk_mpxop *mpxop = &poll_op;
 #endif
 
