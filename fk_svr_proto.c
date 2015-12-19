@@ -3,8 +3,8 @@
 #include <fk_log.h>
 #include <fk_svr.h>
 
-static uint32_t fk_dict_pto_key_hash(void *key);
-static int fk_dict_pto_key_cmp(void *k1, void *k2);
+static uint32_t fk_proto_dict_key_hash(void *key);
+static int fk_proto_dict_key_cmp(void *k1, void *k2);
 
 /* all proto to deal */
 static fk_proto protos[] = {
@@ -34,8 +34,8 @@ static fk_proto protos[] = {
 static fk_dict *pmap = NULL;
 
 static fk_elt_op proto_dict_eop = {
-	fk_dict_pto_key_hash,
-	fk_dict_pto_key_cmp,
+	fk_proto_dict_key_hash,
+	fk_proto_dict_key_cmp,
 	NULL,
 	NULL,
 	NULL,
@@ -80,7 +80,7 @@ fk_proto *fk_proto_search(fk_str *name)
 	return pto;
 }
 
-uint32_t fk_dict_pto_key_hash(void *key)
+uint32_t fk_proto_dict_key_hash(void *key)
 {
 	fk_str *s;
 
@@ -88,7 +88,7 @@ uint32_t fk_dict_pto_key_hash(void *key)
 	return fk_str_hash(s);
 }
 
-int fk_dict_pto_key_cmp(void *k1, void *k2)
+int fk_proto_dict_key_cmp(void *k1, void *k2)
 {
 	fk_str *s1, *s2;
 
