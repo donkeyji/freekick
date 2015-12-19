@@ -153,3 +153,5 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 这是最下面2层的模块
 
 62.fk_epoll/fk_kqueue/fk_poll是fk_ev的plugin，fk_ev是framework，fk_ev提供了fk_ev_active()接口供plugin调用。
+
+63.将fk_svr从freekick.c单独出来，在freekick.c中只处理main函数的逻辑，让程序模块层次更清晰一些。fk_svr模块由fk_svr.h,fk_svr.c,fk_svr_xxx.c共同构成。
