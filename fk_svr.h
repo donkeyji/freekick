@@ -98,6 +98,7 @@ int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt);
 #define fk_conn_arglen_set(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
 #define fk_conn_arglen_get(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
 
+/* interface of fk_server */
 void fk_svr_init();
 void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);
@@ -105,7 +106,7 @@ void fk_svr_conn_remove(fk_conn *conn);
 void fk_svr_sigint(int sig);
 void fk_svr_sigchld(int sig);
 
-/* related to dump */
+/* related to dump/restore */
 void fk_fkdb_load(fk_str *db_file);
 void fk_fkdb_save_background();
 int fk_fkdb_save();
