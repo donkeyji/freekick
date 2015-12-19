@@ -253,7 +253,8 @@ void fk_main_final()
 {
 	int rt;
 	/* to do: free resource */
-	while (server.save_done == 0) {
+	//while (server.save_done == 0) {
+	while (fk_svr_is_saving() == 1) {
 		sleep(1);
 	}
 	if (setting.dump != 1) {
