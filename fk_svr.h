@@ -110,9 +110,9 @@ void fk_sigint(int sig);
 void fk_sigchld(int sig);
 
 /* related to dump */
-void fk_svr_db_load(fk_str *db_file);
-void fk_svr_db_save_background();
-int fk_svr_db_save();
+void fk_fdb_load(fk_str *db_file);
+void fk_fdb_save_background();
+int fk_fdb_save();
 
 /* related to replication */
 int fk_svr_sync_with_master();

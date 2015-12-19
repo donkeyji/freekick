@@ -265,7 +265,7 @@ void fk_main_final()
 		return;
 	}
 	/* save db once more */
-	rt = fk_svr_db_save();
+	rt = fk_fdb_save();
 	if (rt == FK_ERR) {
 		fk_log_error("db save failed\n");
 		exit(EXIT_FAILURE);
