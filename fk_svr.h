@@ -101,6 +101,7 @@ void fk_svr_init();
 void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);
 
+/* signal handler as a part of fk_server interfaces */
 void fk_svr_sigint(int sig);
 void fk_svr_sigchld(int sig);
 
