@@ -24,11 +24,6 @@
 #include <fk_svr.h>
 #include <freekick.h>
 
-/* ---------------------------------------------------- */
-static void fk_main_init(char *conf_path);
-static void fk_main_final();
-static void fk_main_cycle();
-
 static void fk_daemonize();
 static void fk_set_pwd();
 static void fk_signal_reg();
@@ -36,6 +31,9 @@ static void fk_setrlimit();
 static void fk_set_seed();
 static void fk_write_pid_file();
 
+static void fk_main_init(char *conf_path);
+static void fk_main_final();
+static void fk_main_cycle();
 
 /*
 static void fk_daemon_run_old()
