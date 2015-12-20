@@ -101,9 +101,7 @@ void fk_svr_init();
 void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);
 
-/* signal handler as a part of fk_server interfaces */
-void fk_svr_sigint(int sig);
-void fk_svr_sigchld(int sig);
+void fk_svr_on_child_exit();
 
 /* related to dump/restore */
 void fk_fkdb_load(fk_str *db_file);

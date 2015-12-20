@@ -186,21 +186,42 @@ void fk_set_pwd()
 	fk_log_info("change working diretory to %s\n", fk_str_raw(setting.dir));
 }
 
+void fk_exit_handler(int sig)
+{
+	switch (sig) {
+		case SIGINT:
+			break;
+		case SIGTERM:
+			break;
+		case SIGKILL:
+			break;
+		case SIGQUIT:
+			break;
+	}
+	exit(EXIT_SUCCESS);
+}
+
+void fk_child_handler(int sig)
+{
+	fk_svr_on_child_exit();
+}
+
 void fk_signal_reg()
 {
 	int rt;
 	struct sigaction sa;
 
-	sa.sa_handler = fk_svr_sigint;
+	sa.sa_handler = fk_exit_handler;
 	sa.sa_flags = 0;
 	rt = sigemptyset(&sa.sa_mask);
-	if (rt < 0) {
-	}
-	rt = sigaction(SIGINT, &sa, 0);
-	if (rt < 0) {
-	}
 
-	sa.sa_handler = fk_svr_sigchld;
+	/* use the same handler for different signals */
+	rt = sigaction(SIGINT, &sa, 0);
+	rt = sigaction(SIGTERM, &sa, 0);
+	rt = sigaction(SIGKILL, &sa, 0);
+	rt = sigaction(SIGQUIT, &sa, 0);
+
+	sa.sa_handler = fk_child_handler;
 	sa.sa_flags = 0;
 	rt = sigemptyset(&sa.sa_mask);
 	if (rt < 0) {

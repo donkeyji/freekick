@@ -291,7 +291,7 @@ void fk_svr_sigint(int sig)
 	fk_ev_stop();/* stop the event cycle */
 }
 
-void fk_svr_sigchld(int sig)
+void fk_svr_on_child_exit()
 {
 	int st;
 	pid_t pid;
