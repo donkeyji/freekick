@@ -261,10 +261,10 @@ void fk_main_final()
 	rt = wait(NULL);
 	if (rt < 0) {
 		if (errno == ECHILD) {
-			fprintf(stdout, "no child process now\n");
+			fk_log_info("no child process running now\n");
 			return;
 		}
-		fprintf(stderr, "%s\n", strerror(errno));
+		fk_log_error("call wait() error: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
