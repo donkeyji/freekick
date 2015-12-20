@@ -249,7 +249,6 @@ void fk_svr_init()
 	server.addr = fk_str_clone(setting.addr);
 
 	/* create global environment */
-	server.save_done = 1;/* no saving child process now */
 	server.save_pid = -1;/* -1 is a invalid pid */
 	server.start_time = time(NULL);
 	server.last_save = time(NULL);
@@ -302,7 +301,6 @@ void fk_svr_sigchld(int sig)
 		exit(EXIT_FAILURE);
 	}
 	if (st == 0) {
-		server.save_done = 1;
 		server.save_pid = -1;/* the saving child process is terminated */
 		server.last_save = time(NULL);
 	}

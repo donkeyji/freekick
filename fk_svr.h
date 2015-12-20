@@ -71,7 +71,6 @@ typedef struct _fk_server {
 	unsigned dbcnt;
 	fk_dict **db;
 	fk_str *db_file;
-	int save_done;/* maybe it's a redundancy */
 	pid_t save_pid;/* -1: the save child process ended */
 } fk_server;
 

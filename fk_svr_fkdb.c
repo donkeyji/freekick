@@ -39,7 +39,7 @@ void fk_fkdb_save_background()
 		return;
 	}
 
-	if (server.save_done != 1) {
+	if (server.save_pid != -1) {
 		return;
 	}
 
@@ -48,8 +48,7 @@ void fk_fkdb_save_background()
 	if (rt < 0) {/* should not exit here, just return */
 		fk_log_error("fork: %s\n", strerror(errno));
 		return;
-	} else if (rt > 0) {/* mark the save_done */
-		server.save_done = 0;
+	} else if (rt > 0) {/* mark the save_pid */
 		server.save_pid = rt;/* save the child process ID */
 		return;
 	} else {
