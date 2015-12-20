@@ -252,14 +252,22 @@ void fk_main_cycle()
 void fk_main_final()
 {
 	int rt;
-	/* to do: free resource */
-	//while (server.save_done == 0) {
-	while (fk_svr_is_saving() == 1) {
-		sleep(1);
-	}
+
 	if (setting.dump != 1) {
 		return;
 	}
+
+	/* maybe child process is running */
+	rt = wait(NULL);
+	if (rt < 0) {
+		if (errno == ECHILD) {
+			fprintf(stdout, "no child process now\n");
+			return;
+		}
+		fprintf(stderr, "%s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
 	/* save db once more */
 	rt = fk_fkdb_save();
 	if (rt == FK_ERR) {

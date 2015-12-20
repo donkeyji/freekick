@@ -309,11 +309,6 @@ void fk_svr_sigchld(int sig)
 	fk_log_debug("save db done\n");
 }
 
-int fk_svr_is_saving()
-{
-	return server.save_done == 0 ? 1 : 0;
-}
-
 int fk_svr_sync_with_master()
 {
 	return FK_OK;

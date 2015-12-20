@@ -104,7 +104,6 @@ void fk_svr_conn_remove(fk_conn *conn);
 
 void fk_svr_sigint(int sig);
 void fk_svr_sigchld(int sig);
-int fk_svr_is_saving();
 
 /* related to dump/restore */
 void fk_fkdb_load(fk_str *db_file);
