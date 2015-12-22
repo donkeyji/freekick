@@ -4,7 +4,7 @@ all_remotes='
 origin
 github
 bitbucket
-xosc
+osc
 '
 
 all_branches='
