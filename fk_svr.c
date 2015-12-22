@@ -285,6 +285,35 @@ void fk_svr_init()
 	fk_fkdb_load(server.db_file);
 }
 
+void fk_svr_final()
+{
+	int rt;
+
+	if (setting.dump != 1) {
+		return;
+	}
+
+	/* the child process is running at present */
+	if (server.save_pid != -1) {
+		rt = wait(NULL);
+		if (rt < 0) {
+			if (errno == ECHILD) {
+				fk_log_info("no child process running now\n");
+				return;
+			}
+			fk_log_error("call wait() error: %s\n", strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	/* save db once more */
+	rt = fk_fkdb_save();
+	if (rt == FK_ERR) {
+		fk_log_error("db save failed\n");
+		exit(EXIT_FAILURE);
+	}
+}
+
 void fk_svr_sigint(int sig)
 {
 	fk_log_info("to exit by sigint\n");

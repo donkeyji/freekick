@@ -270,29 +270,8 @@ void fk_main_cycle()
 
 void fk_main_final()
 {
-	int rt;
-
-	if (setting.dump != 1) {
-		return;
-	}
-
-	/* maybe child process is running */
-	rt = wait(NULL);
-	if (rt < 0) {
-		if (errno == ECHILD) {
-			fk_log_info("no child process running now\n");
-			return;
-		}
-		fk_log_error("call wait() error: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
-
-	/* save db once more */
-	rt = fk_fkdb_save();
-	if (rt == FK_ERR) {
-		fk_log_error("db save failed\n");
-		exit(EXIT_FAILURE);
-	}
+	/* maybe some other fk_xxx_final() to call here */
+	fk_svr_final();
 }
 
 int main(int argc, char **argv)
