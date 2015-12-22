@@ -1,6 +1,5 @@
 /* c standard library headers */
 #include <signal.h>
-#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -8,19 +7,15 @@
 /* system headers */
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
-#include <unistd.h>
 #include <fcntl.h>
-#include <sys/resource.h>
+#include <unistd.h>
 
 /* local headers */
 #include <fk_def.h>
 #include <fk_conf.h>
 #include <fk_log.h>
-#include <fk_mem.h>
-#include <fk_sock.h>
 #include <fk_cache.h>
-#include <fk_item.h>
+#include <fk_ev.h>
 #include <fk_svr.h>
 #include <freekick.h>
 
