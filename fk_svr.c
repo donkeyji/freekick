@@ -308,7 +308,7 @@ void fk_svr_final()
 
 	/* save db once more */
 	rt = fk_fkdb_save();
-	if (rt == FK_ERR) {
+	if (rt == FK_SVR_ERR) {
 		fk_log_error("db save failed\n");
 		exit(EXIT_FAILURE);
 	}
@@ -338,5 +338,5 @@ void fk_svr_on_child_exit()
 
 int fk_svr_sync_with_master()
 {
-	return FK_OK;
+	return FK_SVR_OK;
 }

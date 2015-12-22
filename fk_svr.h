@@ -17,13 +17,13 @@
 #include <fk_vtr.h>
 
 /* status code definition copied from nginx */
-#define FK_OK			 0
-#define FK_ERR			-1
-#define FK_AGAIN    	-2
-#define FK_BUSY     	-3
-#define FK_DONE     	-4
-#define FK_DECLINED   	-5
-#define FK_ABORT      	-6
+#define FK_SVR_OK			 0
+#define FK_SVR_ERR			-1
+#define FK_SVR_AGAIN    	-2
+#define FK_SVR_BUSY     	-3
+#define FK_SVR_DONE     	-4
+#define FK_SVR_DECLINED   	-5
+#define FK_SVR_ABORT      	-6
 
 /* protocol types definitions */
 #define FK_PROTO_INVALID 	0

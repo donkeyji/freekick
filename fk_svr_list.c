@@ -34,26 +34,26 @@ int fk_cmd_llen(fk_conn *conn)
 	value = fk_dict_get(server.db[conn->db_idx], key);
 	if (value == NULL) {
 		rt = fk_conn_int_rsp_add(conn, 0);
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 	if (fk_item_type(value) != FK_ITEM_LIST) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 
 	lst = (fk_list *)fk_item_raw(value);
 	len = fk_list_len(lst);
 	rt = fk_conn_int_rsp_add(conn, len);
-	if (rt == FK_ERR) {
-		return FK_ERR;
+	if (rt == FK_SVR_ERR) {
+		return FK_SVR_ERR;
 	}
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 int fk_cmd_generic_push(fk_conn *conn, int pos)
@@ -77,19 +77,19 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 		lst_itm = fk_item_create(FK_ITEM_LIST, lst);/* do not increase ref for local var */
 		fk_dict_add(server.db[conn->db_idx], key, lst_itm);
 		rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
 
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 
 	if (fk_item_type(lst_itm) != FK_ITEM_LIST) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 
 	lst = fk_item_raw(lst_itm);
@@ -102,10 +102,10 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 		}
 	}
 	rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);
-	if (rt == FK_ERR) {
-		return FK_ERR;
+	if (rt == FK_SVR_ERR) {
+		return FK_SVR_ERR;
 	}
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 int fk_cmd_generic_pop(fk_conn *conn, int pos)
@@ -120,27 +120,27 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	lst_itm = fk_dict_get(server.db[conn->db_idx], key);
 	if (lst_itm == NULL) {
 		rt = fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 
 	if (fk_item_type(lst_itm) != FK_ITEM_LIST) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 
 	lst = fk_item_raw(lst_itm);
 	if (fk_list_len(lst) == 0) {
 		rt = fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 
 	if (pos == 0) {
@@ -151,14 +151,14 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	itm = (fk_item *)fk_node_raw(nd_itm);
 	ss = (fk_str *)fk_item_raw(itm);
 	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss)));
-	if (rt == FK_ERR) {
-		return FK_ERR;
+	if (rt == FK_SVR_ERR) {
+		return FK_SVR_ERR;
 	}
 	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss));
-	if (rt == FK_ERR) {
-		return FK_ERR;
+	if (rt == FK_SVR_ERR) {
+		return FK_SVR_ERR;
 	}
 	fk_list_any_remove(lst, nd_itm);
 
-	return FK_OK;
+	return FK_SVR_OK;
 }

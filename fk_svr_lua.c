@@ -137,7 +137,7 @@ int fk_lua_conn_cmd_proc(fk_conn *conn)
 		return 0;
 	}
 	rt = pto->handler(conn);
-	if (rt == FK_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
+	if (rt == FK_SVR_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
 		fk_conn_error_rsp_add(conn, "cmd handler failed", strlen("cmd handler failed"));
 		return 0;
 	}
@@ -367,10 +367,10 @@ int fk_cmd_eval(fk_conn *conn)
 	str_nkey = (fk_str *)fk_item_raw(itm_nkey);
 	if (fk_str_is_nonminus(str_nkey) == 0) {
 		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 
 	nkey = atoi(fk_str_raw(str_nkey));
@@ -397,5 +397,5 @@ int fk_cmd_eval(fk_conn *conn)
 	code = fk_str_raw(str_code);
 	fk_lua_script_run(conn, code);
 
-	return FK_OK;
+	return FK_SVR_OK;
 }

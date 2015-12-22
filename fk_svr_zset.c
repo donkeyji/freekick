@@ -27,9 +27,9 @@ int fk_cmd_zadd(fk_conn *conn)
 		fk_sklist_insert(sl, score, itm_str);
 	}
 	rt = fk_conn_int_rsp_add(conn, (int)((conn->arg_cnt - 2) / 2));
-	if (rt == FK_ERR) {
-		return FK_ERR;
+	if (rt == FK_SVR_ERR) {
+		return FK_SVR_ERR;
 	}
 
-	return FK_OK;
+	return FK_SVR_OK;
 }

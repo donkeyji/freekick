@@ -53,7 +53,7 @@ void fk_fkdb_save_background()
 		return;
 	} else {
 		/* execute only in child process */
-		if (fk_fkdb_save() == FK_ERR) {
+		if (fk_fkdb_save() == FK_SVR_ERR) {
 			fk_log_error("db save failed\n");
 			exit(EXIT_FAILURE);
 		}
@@ -73,15 +73,15 @@ int fk_fkdb_save()
 	/* step 1: write to a temporary file */
 	fp = fopen(temp_db, "w+");
 	if (fp == NULL) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	for (i = 0; i < server.dbcnt; i++) {
 		rt = fk_fkdb_dump(fp, i);
-		if (rt == FK_ERR) {
+		if (rt == FK_SVR_ERR) {
 			fclose(fp);
 			remove(temp_db);/* remove this temporary db file */
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 	}
 	fclose(fp);/* close before rename */
@@ -90,10 +90,10 @@ int fk_fkdb_save()
 	rt = rename(temp_db, fk_str_raw(server.db_file));
 	if (rt < 0) {
 		remove(temp_db);/* remove this temporary db file */
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 /*
@@ -110,20 +110,20 @@ int fk_fkdb_dump(FILE *fp, unsigned db_idx)
 
 	dct = server.db[db_idx];
 	if (fk_dict_len(dct) == 0) {
-		return FK_OK;
+		return FK_SVR_OK;
 	}
 
 	/* I do not think it's necessary to call htonl() */
 	wz = fwrite(&db_idx, sizeof(db_idx), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	/* dump the len of the dict */
 	len = fk_dict_len(dct);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	/* dict body */
@@ -133,7 +133,7 @@ int fk_fkdb_dump(FILE *fp, unsigned db_idx)
 		wz = fwrite(&type, sizeof(type), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);/* need to release iterator */
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		switch (type) {
 		case FK_ITEM_STR:
@@ -146,14 +146,14 @@ int fk_fkdb_dump(FILE *fp, unsigned db_idx)
 			rt = fk_fkdb_dict_elt_dump(fp, elt);
 			break;
 		}
-		if (rt == FK_ERR) {
+		if (rt == FK_SVR_ERR) {
 			fk_dict_iter_end(iter);/* need to release iterator */
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 	}
 	fk_dict_iter_end(iter);/* must release this iterator of fk_dict */
 
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 int fk_fkdb_str_elt_dump(FILE *fp, fk_elt *elt)
@@ -172,11 +172,11 @@ int fk_fkdb_str_elt_dump(FILE *fp, fk_elt *elt)
 	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	/* value dump */
@@ -187,14 +187,14 @@ int fk_fkdb_str_elt_dump(FILE *fp, fk_elt *elt)
 	 * when len > 0  ==> wz > 0
 	 */
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	wz = fwrite(fk_str_raw(value), fk_str_len(value), 1, fp);
 	if (len > 0 && wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 int fk_fkdb_list_elt_dump(FILE *fp, fk_elt *elt)
@@ -216,18 +216,18 @@ int fk_fkdb_list_elt_dump(FILE *fp, fk_elt *elt)
 	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	/* size dump */
 	len = fk_list_len(lst);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	/* value dump */
@@ -239,18 +239,18 @@ int fk_fkdb_list_elt_dump(FILE *fp, fk_elt *elt)
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_list_iter_end(iter);
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 
 		wz = fwrite(fk_str_raw(vs), fk_str_len(vs), 1, fp);
 		if (len > 0 && wz == 0) {
 			fk_list_iter_end(iter);
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 	}
 	fk_list_iter_end(iter);/* must release this iterator of fk_list */
 
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 int fk_fkdb_dict_elt_dump(FILE *fp, fk_elt *elt)
@@ -272,18 +272,18 @@ int fk_fkdb_dict_elt_dump(FILE *fp, fk_elt *elt)
 	len = fk_str_len(key);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	/* size dump */
 	len = fk_dict_len(dct);
 	wz = fwrite(&len, sizeof(len), 1, fp);
 	if (wz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	iter = fk_dict_iter_begin(dct);
@@ -298,29 +298,29 @@ int fk_fkdb_dict_elt_dump(FILE *fp, fk_elt *elt)
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		wz = fwrite(fk_str_raw(skey), fk_str_len(skey), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 
 		len = fk_str_len(svs);
 		wz = fwrite(&len, sizeof(len), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		wz = fwrite(fk_str_raw(svs), fk_str_len(svs), 1, fp);
 		if (len > 0 && wz == 0) {
 			fk_dict_iter_end(iter);
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 	}
 	fk_dict_iter_end(iter);/* must release this iterator of fk_dict */
 
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 fk_zline *fk_zline_create(size_t len)
@@ -369,7 +369,7 @@ void fk_fkdb_load(fk_str *db_file)
 
 	while (ftell(fp) != tail) {
 		rt = fk_fkdb_restore(fp, buf);
-		if (rt == FK_ERR) {
+		if (rt == FK_SVR_ERR) {
 			fk_log_error("load db body failed\n");
 			exit(EXIT_FAILURE);
 		}
@@ -399,24 +399,24 @@ int fk_fkdb_restore(FILE *fp, fk_zline *buf)
 	/* restore the index */
 	rz = fread(&idx, sizeof(idx), 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	if (idx >= server.dbcnt) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	db = server.db[idx];
 
 	/* restore len of dictionary */
 	rz = fread(&cnt, sizeof(cnt), 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	/* load all the elements */
 	for (i = 0; i < cnt; i++) {
 		rz = fread(&type, sizeof(type), 1, fp);
 		if (rz == 0) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 
 		switch (type) {
@@ -433,11 +433,11 @@ int fk_fkdb_restore(FILE *fp, fk_zline *buf)
 			rt = -1;
 			break;
 		}
-		if (rt == FK_ERR) {
-			return FK_ERR;
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
 		}
 	}
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 /* 
@@ -453,31 +453,31 @@ int fk_fkdb_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 
 	rz = fread(&klen, sizeof(klen), 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	if (klen > FK_STR_HIGHWAT) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	fk_zline_adjust(buf, klen);
 	rz = fread(buf->line, klen, 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
 	rz = fread(&vlen, sizeof(vlen), 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	if (vlen > FK_STR_HIGHWAT) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	fk_zline_adjust(buf, vlen);
 	rz = fread(buf->line, vlen, 1, fp);
 	if (vlen > 0 && rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	value = fk_str_create(buf->line, vlen);
@@ -485,7 +485,7 @@ int fk_fkdb_str_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 
 	fk_dict_add(db, kitm, vitm);
 
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 /* 
@@ -502,37 +502,37 @@ int fk_fkdb_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 
 	rz = fread(&klen, sizeof(klen), 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	if (klen > FK_STR_HIGHWAT) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	fk_zline_adjust(buf, klen);
 	rz = fread(buf->line, klen, 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
 	rz = fread(&llen, sizeof(llen), 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	lst = fk_list_create(&db_list_op);
 	for (i = 0; i < llen; i++) {
 		rz = fread(&nlen, sizeof(nlen), 1, fp);
 		if (rz == 0) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		if (nlen > FK_STR_HIGHWAT) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		fk_zline_adjust(buf, nlen);
 		rz = fread(buf->line, nlen, 1, fp);
 		if (nlen > 0 && rz == 0) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		nds = fk_str_create(buf->line, nlen);
 		nitm = fk_item_create(FK_ITEM_STR, nds);
@@ -541,7 +541,7 @@ int fk_fkdb_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 	vitm = fk_item_create(FK_ITEM_LIST, lst);
 	fk_dict_add(db, kitm, vitm);
 
-	return FK_OK;
+	return FK_SVR_OK;
 }
 
 /* 
@@ -558,52 +558,52 @@ int fk_fkdb_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 
 	rz = fread(&klen, sizeof(klen), 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	if (klen > FK_STR_HIGHWAT) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	fk_zline_adjust(buf, klen);
 	rz = fread(buf->line, klen, 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 	key = fk_str_create(buf->line, klen);
 	kitm = fk_item_create(FK_ITEM_STR, key);
 
 	rz = fread(&dlen, sizeof(dlen), 1, fp);
 	if (rz == 0) {
-		return FK_ERR;
+		return FK_SVR_ERR;
 	}
 
 	sdct = fk_dict_create(&db_dict_eop);
 	for (i = 0; i < dlen; i++) {
 		rz = fread(&sklen, sizeof(sklen), 1, fp);
 		if (rz == 0) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		if (sklen > FK_STR_HIGHWAT) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		fk_zline_adjust(buf, sklen);
 		rz = fread(buf->line, sklen, 1, fp);
 		if (rz == 0) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		skey = fk_str_create(buf->line, sklen);
 		skitm = fk_item_create(FK_ITEM_STR, skey);
 
 		rz = fread(&svlen, sizeof(svlen), 1, fp);
 		if (rz == 0) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		if (svlen > FK_STR_HIGHWAT) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		fk_zline_adjust(buf, svlen);
 		rz = fread(buf->line, svlen, 1, fp);
 		if (svlen > 0 && rz == 0) {
-			return FK_ERR;
+			return FK_SVR_ERR;
 		}
 		svalue = fk_str_create(buf->line, svlen);
 		svitm = fk_item_create(FK_ITEM_STR, svalue);
@@ -613,5 +613,5 @@ int fk_fkdb_dict_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 	vitm = fk_item_create(FK_ITEM_DICT, sdct);
 	fk_dict_add(db, kitm, vitm);
 
-	return FK_OK;
+	return FK_SVR_OK;
 }
