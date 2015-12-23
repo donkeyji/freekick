@@ -27,8 +27,8 @@ static void fk_set_seed();
 static void fk_write_pid_file();
 
 static void fk_main_init(char *conf_path);
-static void fk_main_final();
 static void fk_main_cycle();
+static void fk_main_final();
 
 /*
 static void fk_daemon_run_old()
