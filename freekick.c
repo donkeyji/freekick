@@ -21,10 +21,14 @@
 
 static void fk_daemonize();
 static void fk_set_pwd();
-static void fk_signal_reg();
+static void fk_signal_register();
 static void fk_setrlimit();
 static void fk_set_seed();
 static void fk_write_pid_file();
+
+/* signal handlers */
+static void fk_signal_exit_handler(int sig);
+static void fk_signal_child_handler(int sig);
 
 static void fk_main_init(char *conf_path);
 static void fk_main_cycle();
@@ -181,32 +185,32 @@ void fk_set_pwd()
 	fk_log_info("change working diretory to %s\n", fk_str_raw(setting.dir));
 }
 
-void fk_exit_handler(int sig)
+void fk_signal_exit_handler(int sig)
 {
-	switch (sig) {
-		case SIGINT:
-			break;
-		case SIGTERM:
-			break;
-		case SIGKILL:
-			break;
-		case SIGQUIT:
-			break;
-	}
-	exit(EXIT_SUCCESS);
+	/* 
+	 * maybe some other process in other modules, like:
+	 * fk_a_signal_exit_handler(sig);
+	 * fk_b_signal_exit_handler(sig);
+	 */
+	fk_svr_signal_exit_handler(sig);
 }
 
-void fk_child_handler(int sig)
+void fk_signal_child_handler(int sig)
 {
-	fk_svr_on_child_exit();
+	/* 
+	 * maybe some other process in other modules, like:
+	 * fk_a_signal_child_handler(sig);
+	 * fk_b_signal_child_handler(sig);
+	 */
+	fk_svr_signal_child_handler(sig);
 }
 
-void fk_signal_reg()
+void fk_signal_register()
 {
 	int rt;
 	struct sigaction sa;
 
-	sa.sa_handler = fk_exit_handler;
+	sa.sa_handler = fk_signal_exit_handler;
 	sa.sa_flags = 0;
 	rt = sigemptyset(&sa.sa_mask);
 
@@ -216,7 +220,7 @@ void fk_signal_reg()
 	rt = sigaction(SIGKILL, &sa, 0);
 	rt = sigaction(SIGQUIT, &sa, 0);
 
-	sa.sa_handler = fk_child_handler;
+	sa.sa_handler = fk_signal_child_handler;
 	sa.sa_flags = 0;
 	rt = sigemptyset(&sa.sa_mask);
 	if (rt < 0) {
@@ -249,7 +253,7 @@ void fk_main_init(char *conf_path)
 
 	fk_write_pid_file();
 
-	fk_signal_reg();
+	fk_signal_register();
 
 	fk_cache_init();
 

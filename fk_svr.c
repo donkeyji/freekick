@@ -314,13 +314,24 @@ void fk_svr_final()
 	}
 }
 
-void fk_svr_sigint(int sig)
+void fk_svr_signal_exit_handler(int sig)
 {
-	fk_log_info("to exit by sigint\n");
+	switch (sig) {
+		case SIGINT:
+			break;
+		case SIGTERM:
+			break;
+		case SIGKILL:
+			break;
+		case SIGQUIT:
+			break;
+	}
+	fk_log_info("to exit by signal: %d\n", sig);
 	fk_ev_stop();/* stop the event cycle */
+	//exit(EXIT_SUCCESS);
 }
 
-void fk_svr_on_child_exit()
+void fk_svr_signal_child_handler(int sig)
 {
 	int st;
 	pid_t pid;

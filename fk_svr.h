@@ -102,7 +102,8 @@ void fk_svr_final();
 void fk_svr_conn_add(int fd);
 void fk_svr_conn_remove(fk_conn *conn);
 
-void fk_svr_on_child_exit();
+void fk_svr_signal_exit_handler(int sig);
+void fk_svr_signal_child_handler(int sig);
 
 /* related to dump/restore */
 void fk_fkdb_load(fk_str *db_file);
