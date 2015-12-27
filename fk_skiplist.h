@@ -1,5 +1,5 @@
-#ifndef _FK_SkLIST_H_
-#define _FK_SkLIST_H_
+#ifndef _FK_SkIPLIST_H_
+#define _FK_SkIPLIST_H_
 
 #include <sys/types.h>
 
