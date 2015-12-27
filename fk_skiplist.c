@@ -3,11 +3,11 @@
 #include <fk_mem.h>
 #include <fk_skiplist.h>
 
-#define fk_sknode_create(level)		fk_mem_alloc(sizeof(fk_sknode) + ((level) - 1) * sizeof(fk_sknode *))
+#define fk_skipnode_create(level)		fk_mem_alloc(sizeof(fk_skipnode) + ((level) - 1) * sizeof(fk_skipnode *))
 
-#define fk_sknode_destroy(nd)	fk_mem_free(nd)
+#define fk_skipnode_destroy(nd)	fk_mem_free(nd)
 
-#define fk_sknode_data_set(sl, nd, sc, dt)	{		\
+#define fk_skipnode_data_set(sl, nd, sc, dt)	{	\
 	(nd)->score = (sc);								\
 	if ((sl)->skop->data_copy != NULL) {			\
 		(nd)->data = (sl)->skop->data_copy((dt));	\
@@ -16,25 +16,25 @@
 	}												\
 }
 
-#define fk_sknode_data_free(sl, nd)	{				\
+#define fk_skipnode_data_free(sl, nd)	{			\
 	if ((sl)->skop->data_free != NULL) {			\
 		(sl)->skop->data_free((nd)->data);			\
 	}												\
 	(nd)->data = NULL;								\
 }
 
-static fk_sknode_op default_skop = {
+static fk_skipnode_op default_skop = {
 	NULL,
 	NULL,
 	NULL
 };
 
-static int fk_sknode_rand_level();
+static int fk_skipnode_rand_level();
 
-fk_skiplist *fk_skiplist_create(fk_sknode_op *skop)
+fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
 {
 	int i;
-	fk_sknode *nd;
+	fk_skipnode *nd;
 	fk_skiplist *sl;
 
 	sl = fk_mem_alloc(sizeof(fk_skiplist));
@@ -45,11 +45,11 @@ fk_skiplist *fk_skiplist_create(fk_sknode_op *skop)
 		sl->skop = skop;
 	}
 
-	nd = fk_sknode_create(FK_SKLIST_MAX_LEVEL);
+	nd = fk_skipnode_create(FK_SKLIST_MAX_LEVEL);
 	/* 
 	 * head is a empty node which donot hold a score nor a fk_item
 	 * the head node should be processed specially 
-	 * could not use fk_sknode_data_set(sl, nd, 0, NULL);
+	 * could not use fk_skipnode_data_set(sl, nd, 0, NULL);
 	 */
 	nd->score = 0;
 	nd->data = NULL;
@@ -63,20 +63,20 @@ fk_skiplist *fk_skiplist_create(fk_sknode_op *skop)
 
 void fk_skiplist_destroy(fk_skiplist *sl)
 {
-	fk_sknode *p, *q;
+	fk_skipnode *p, *q;
 
 	p = sl->head;
 
 	/* the head node should be processed specially */
 	q = p->next[0];
-	fk_sknode_destroy(p);/* free the head node */
+	fk_skipnode_destroy(p);/* free the head node */
 	p = q;
 
 	/* from the lowest list */
 	while (p != NULL) {
 		q = p->next[0];/* save the next node */
-		fk_sknode_data_free(sl, p);
-		fk_sknode_destroy(p);/* free the current node */
+		fk_skipnode_data_free(sl, p);
+		fk_skipnode_destroy(p);/* free the current node */
 		p = q;/* go to the next node */
 	}
 
@@ -87,7 +87,7 @@ void fk_skiplist_destroy(fk_skiplist *sl)
 void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 {
 	int i, nlv;
-	fk_sknode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
+	fk_skipnode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
 
 	p = sl->head;
 	q = NULL;
@@ -108,7 +108,7 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 	}
 
 	/* generate a random level for this new node */
-	nlv = fk_sknode_rand_level();
+	nlv = fk_skipnode_rand_level();
 
 	/* 
 	 * maybe nlv is greater than sl->level
@@ -121,8 +121,8 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 		sl->level = nlv;/* set this nlv as the level of skiplist */
 	}
 
-	nd = fk_sknode_create(nlv);
-	fk_sknode_data_set(sl, nd, score, data);
+	nd = fk_skipnode_create(nlv);
+	fk_skipnode_data_set(sl, nd, score, data);
 
 	/* insert in nlv levels */
 	for (i = 0; i < nlv; i++) {
@@ -137,7 +137,7 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 void fk_skiplist_remove(fk_skiplist *sl, int score)
 {
 	int i;
-	fk_sknode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
+	fk_skipnode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
 
 	p = sl->head;
 	q = NULL;
@@ -175,16 +175,16 @@ void fk_skiplist_remove(fk_skiplist *sl, int score)
 		}
 	}
 
-	fk_sknode_data_free(sl, nd);
-	fk_sknode_destroy(nd);
+	fk_skipnode_data_free(sl, nd);
+	fk_skipnode_destroy(nd);
 
 	sl->len--;
 }
 
-fk_sknode *fk_skiplist_search(fk_skiplist *sl, int score)
+fk_skipnode *fk_skiplist_search(fk_skiplist *sl, int score)
 {
 	int i;
-	fk_sknode *p, *q;
+	fk_skipnode *p, *q;
 
 	p = sl->head;
 	q = NULL;
@@ -204,7 +204,7 @@ fk_sknode *fk_skiplist_search(fk_skiplist *sl, int score)
 	return q;
 }
 
-int fk_sknode_rand_level()
+int fk_skipnode_rand_level()
 {
 	int level;
 

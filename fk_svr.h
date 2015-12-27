@@ -150,6 +150,6 @@ int fk_cmd_zadd(fk_conn *conn);
 extern fk_server server;/* this "server" is visited in different .c files */
 extern fk_elt_op db_dict_eop;
 extern fk_node_op db_list_op;
-extern fk_sknode_op db_skiplist_op;
+extern fk_skipnode_op db_skiplist_op;
 
 #endif

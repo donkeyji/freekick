@@ -59,7 +59,7 @@ fk_node_op db_list_op = {
 	NULL
 };
 
-fk_sknode_op db_skiplist_op = {
+fk_skipnode_op db_skiplist_op = {
 	fk_db_skiplist_val_copy,
 	fk_db_skiplist_val_free,
 	NULL
