@@ -11,7 +11,7 @@
 #include <fk_macro.h>
 #include <fk_str.h>
 #include <fk_dict.h>
-#include <fk_sklist.h>
+#include <fk_skiplist.h>
 #include <fk_ev.h>
 #include <fk_buf.h>
 #include <fk_vtr.h>
@@ -150,6 +150,6 @@ int fk_cmd_zadd(fk_conn *conn);
 extern fk_server server;/* this "server" is visited in different .c files */
 extern fk_elt_op db_dict_eop;
 extern fk_node_op db_list_op;
-extern fk_sknode_op db_sklist_op;
+extern fk_sknode_op db_skiplist_op;
 
 #endif

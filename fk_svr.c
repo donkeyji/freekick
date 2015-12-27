@@ -37,8 +37,8 @@ static void fk_db_dict_val_free(void *elt);
 static void *fk_db_list_val_copy(void *ptr);
 static void fk_db_list_val_free(void *ptr);
 
-static void *fk_db_sklist_val_copy(void *ptr);
-static void fk_db_sklist_val_free(void *ptr);
+static void *fk_db_skiplist_val_copy(void *ptr);
+static void fk_db_skiplist_val_free(void *ptr);
 
 /* global variable */
 fk_server server;
@@ -59,9 +59,9 @@ fk_node_op db_list_op = {
 	NULL
 };
 
-fk_sknode_op db_sklist_op = {
-	fk_db_sklist_val_copy,
-	fk_db_sklist_val_free,
+fk_sknode_op db_skiplist_op = {
+	fk_db_skiplist_val_copy,
+	fk_db_skiplist_val_free,
 	NULL
 };
 
@@ -149,7 +149,7 @@ void fk_db_list_val_free(void *ptr)
 	fk_item_ref_dec(itm);
 }
 
-void *fk_db_sklist_val_copy(void *ptr)
+void *fk_db_skiplist_val_copy(void *ptr)
 {
 	fk_item *itm;
 
@@ -160,7 +160,7 @@ void *fk_db_sklist_val_copy(void *ptr)
 	return ptr;
 }
 
-void fk_db_sklist_val_free(void *ptr)
+void fk_db_skiplist_val_free(void *ptr)
 {
 	fk_item *itm;
 

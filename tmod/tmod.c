@@ -8,7 +8,7 @@
 #include <fk_dict.h>
 #include <fk_item.h>
 #include <fk_list.h>
-#include <fk_sklist.h>
+#include <fk_skiplist.h>
 
 
 typedef struct {
@@ -112,23 +112,23 @@ void t_list()
 	fk_list_iter_end(iter);
 }
 
-void t_sklist()
+void t_skiplist()
 {
 	int i, level;
-	fk_sklist *sl;
+	fk_skiplist *sl;
 	fk_sknode *p, *q;
 
-	sl = fk_sklist_create(NULL);
+	sl = fk_skiplist_create(NULL);
 
-	fk_sklist_insert(sl, 5, NULL);
-	fk_sklist_insert(sl, 3, NULL);
-	fk_sklist_insert(sl, 4, NULL);
-	fk_sklist_insert(sl, 11, NULL);
-	fk_sklist_insert(sl, 44, NULL);
-	fk_sklist_insert(sl, 24, NULL);
-	fk_sklist_insert(sl, 33, NULL);
+	fk_skiplist_insert(sl, 5, NULL);
+	fk_skiplist_insert(sl, 3, NULL);
+	fk_skiplist_insert(sl, 4, NULL);
+	fk_skiplist_insert(sl, 11, NULL);
+	fk_skiplist_insert(sl, 44, NULL);
+	fk_skiplist_insert(sl, 24, NULL);
+	fk_skiplist_insert(sl, 33, NULL);
 
-	level = fk_sklist_level(sl);
+	level = fk_skiplist_level(sl);
 	printf("level: %d\n", level);
 
 	for (i = level - 1; i >= 0; i--) {
@@ -142,10 +142,10 @@ void t_sklist()
 	}
 
 	printf("remove node:\n");
-	fk_sklist_remove(sl, 44);
-	fk_sklist_remove(sl, 33);
+	fk_skiplist_remove(sl, 44);
+	fk_skiplist_remove(sl, 33);
 
-	level = fk_sklist_level(sl);
+	level = fk_skiplist_level(sl);
 	printf("new level: %d\n", level);
 	printf("after remove node:\n");
 	for (i = level - 1; i >= 0; i--) {
@@ -157,13 +157,13 @@ void t_sklist()
 			q = q->next[i];
 		}
 	}
-	fk_sklist_destroy(sl);
+	fk_skiplist_destroy(sl);
 }
 
 int main()
 {
 	//t_dict();	
 	//t_list();
-	t_sklist();
+	t_skiplist();
     return 0;
 }
