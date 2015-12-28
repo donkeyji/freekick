@@ -222,7 +222,7 @@ void fk_tmev_destroy(fk_tmev *tmev)
 	fk_mem_free(tmev);
 }
 
-int fk_ev_tmev_add(fk_tmev *tmev)
+int fk_ev_add_tmev(fk_tmev *tmev)
 {
 	fk_heap *tmhp;
 

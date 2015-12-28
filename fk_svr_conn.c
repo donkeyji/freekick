@@ -48,7 +48,7 @@ fk_conn *fk_conn_create(int fd)
 	conn->write_added = 0;
 	conn->last_recv = time(NULL);/* save the current time */
 	conn->timer = fk_tmev_create(5000, FK_TMEV_CYCLE, conn, fk_conn_timer_cb);
-	fk_ev_tmev_add(conn->timer);
+	fk_ev_add_tmev(conn->timer);
 
 	conn->arg_vtr = fk_vtr_create();
 	conn->len_vtr = fk_vtr_create();

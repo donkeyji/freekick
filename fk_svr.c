@@ -267,10 +267,10 @@ void fk_svr_init()
 	fk_ev_ioev_add(server.listen_ev);
 
 	server.svr_timer = fk_tmev_create(3000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb);
-	fk_ev_tmev_add(server.svr_timer);
+	fk_ev_add_tmev(server.svr_timer);
 #ifdef FK_DEBUG
 	server.svr_timer2 = fk_tmev_create(4000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb2);
-	fk_ev_tmev_add(server.svr_timer2);
+	fk_ev_add_tmev(server.svr_timer2);
 #endif
 
 	server.db = (fk_dict **)fk_mem_alloc(sizeof(fk_dict *) * server.dbcnt);
