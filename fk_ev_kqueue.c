@@ -175,7 +175,7 @@ int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 			type = FK_IOEV_WRITE;
 		}
 		//fk_log_debug("i: %d	fd: %lu	type: %d\n", i, iompx->evlist[i].ident, iompx->evlist[i].filter);
-		fk_ev_ioev_activate(fd, type);
+		fk_ev_activate_ioev(fd, type);
 	}
 
 	return FK_EV_OK;

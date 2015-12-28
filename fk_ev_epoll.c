@@ -181,7 +181,7 @@ int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 		if (iompx->evlist[i].events & (EPOLLOUT | EPOLLHUP | EPOLLERR)) {
 			type |= FK_IOEV_WRITE;
 		}
-		fk_ev_ioev_activate(fd, type);
+		fk_ev_activate_ioev(fd, type);
 	}
 
 	return FK_EV_OK;

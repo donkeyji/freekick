@@ -14,11 +14,11 @@
 #include <fk_macro.h>
 #include <fk_log.h>
 
-static int fk_ev_ioev_activate(int fd, char type);
+static int fk_ev_activate_ioev(int fd, char type);
 static fk_tmev *fk_ev_get_nearest_tmev();
-static int fk_ev_pending_tmev_update();
-static int fk_ev_active_ioev_proc();
-static int fk_ev_expired_tmev_proc();
+static int fk_ev_update_pending_tmev();
+static int fk_ev_proc_active_ioev();
+static int fk_ev_proc_expired_tmev();
 static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
 #if defined(FK_HAVE_EPOLL)
@@ -96,11 +96,11 @@ int fk_ev_dispatch()
 	 * remove the nearest timer from timer_heap, 
 	 * insert it to the exp_tmev 
 	 */
-	fk_ev_pending_tmev_update();
+	fk_ev_update_pending_tmev();
 
-	fk_ev_active_ioev_proc();
+	fk_ev_proc_active_ioev();
 
-	fk_ev_expired_tmev_proc();
+	fk_ev_proc_expired_tmev();
 
 	return FK_EV_OK;
 }
@@ -248,7 +248,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 	return FK_EV_OK;
 }
 
-int fk_ev_pending_tmev_update()
+int fk_ev_update_pending_tmev()
 {
 	int cmp;
 	fk_leaf *root;
@@ -273,7 +273,7 @@ int fk_ev_pending_tmev_update()
 	return FK_EV_OK;
 }
 
-int fk_ev_expired_tmev_proc()
+int fk_ev_proc_expired_tmev()
 {
 	int rt;
 	char type;
@@ -307,7 +307,7 @@ int fk_ev_expired_tmev_proc()
 	return FK_EV_OK;
 }
 
-int fk_ev_active_ioev_proc()
+int fk_ev_proc_active_ioev()
 {
 	void *arg;
 	char type;
@@ -347,7 +347,7 @@ fk_tmev *fk_ev_get_nearest_tmev()
 	return tmev;
 }
 
-int fk_ev_ioev_activate(int fd, char type)
+int fk_ev_activate_ioev(int fd, char type)
 {
 	fk_ioev *rioev, *wioev;
 
