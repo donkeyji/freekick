@@ -21,7 +21,7 @@ static int fk_conn_write_cb(int fd, char type, void *ext);
 static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
 static void fk_conn_free_args(fk_conn *conn);
 static int fk_conn_parse_req(fk_conn *conn);
-static int fk_conn_data_recv(fk_conn *conn);
+static int fk_conn_recv_data(fk_conn *conn);
 static int fk_conn_cmd_proc(fk_conn *conn);
 static int fk_conn_rsp_send(fk_conn *conn);
 
@@ -103,7 +103,7 @@ void fk_svr_conn_remove(fk_conn *conn)
 	fk_conn_destroy(conn);
 }
 
-int fk_conn_data_recv(fk_conn *conn)
+int fk_conn_recv_data(fk_conn *conn)
 {
 	char *free_buf;
 	size_t free_len;
@@ -399,7 +399,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 
 	conn = (fk_conn *)ext;
 
-	rt = fk_conn_data_recv(conn);
+	rt = fk_conn_recv_data(conn);
 	if (rt == FK_SVR_ERR) {/* conn closed */
 		fk_svr_conn_remove(conn);
 		return 0;
