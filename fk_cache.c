@@ -12,7 +12,7 @@ void fk_cache_init()
 	fk_rawlist_init(free_nodes);
 }
 
-fk_node *fk_cache_free_node_get()
+fk_node *fk_cache_get_free_node()
 {
 	fk_node *nd;
 
@@ -31,7 +31,7 @@ fk_node *fk_cache_free_node_get()
 	return nd;
 }
 
-void fk_cache_free_node_put(fk_node *nd)
+void fk_cache_put_free_node(fk_node *nd)
 {
 	nd->prev = NULL;
 	nd->next = NULL;
