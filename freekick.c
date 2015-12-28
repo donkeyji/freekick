@@ -24,7 +24,7 @@ static void fk_set_pwd();
 static void fk_signal_register();
 static void fk_setrlimit();
 static void fk_set_seed();
-static void fk_write_pid_file();
+static void fk_create_pidfile();
 
 /* signal handlers */
 static void fk_signal_exit_handler(int sig);
@@ -100,7 +100,7 @@ void fk_daemonize()
 	}
 }
 
-void fk_write_pid_file()
+void fk_create_pidfile()
 {
 	pid_t pid;
 	FILE *pid_file;
@@ -251,7 +251,7 @@ void fk_main_init(char *conf_path)
 	 */
 	fk_log_init(fk_str_raw(setting.log_path), setting.log_level);
 
-	fk_write_pid_file();
+	fk_create_pidfile();
 
 	fk_signal_register();
 
