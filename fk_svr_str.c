@@ -72,7 +72,7 @@ int fk_cmd_mget(fk_conn *conn)
 	fk_str *ss;
 	fk_item *value, *key;
 
-	rt = fk_conn_mbulk_rsp_add(conn, conn->arg_cnt - 1);
+	rt = fk_conn_add_mbulk_rsp(conn, conn->arg_cnt - 1);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}

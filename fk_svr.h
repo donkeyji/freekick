@@ -89,7 +89,7 @@ int fk_conn_add_error_rsp(fk_conn *conn, char *error, size_t error_len);
 int fk_conn_add_content_rsp(fk_conn *conn, char *content, size_t content_len);
 int fk_conn_int_rsp_add(fk_conn *conn, int num);
 int fk_conn_add_bulk_rsp(fk_conn *conn, int bulk_len);
-int fk_conn_mbulk_rsp_add(fk_conn *conn, int bulk_cnt);
+int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt);
 
 #define fk_conn_arg_set(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
 #define fk_conn_arg_get(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))

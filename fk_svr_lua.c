@@ -328,7 +328,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		break;
 	case LUA_TTABLE:
 		olen = lua_objlen(gL, idx);
-		fk_conn_mbulk_rsp_add(conn, olen);
+		fk_conn_add_mbulk_rsp(conn, olen);
 		for (i = 1; i <= olen; i++) {
 			lua_rawgeti(gL, idx, i);
 			stype = lua_type(gL, -1);
