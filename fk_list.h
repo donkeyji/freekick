@@ -45,7 +45,7 @@ typedef struct {					\
 }
 
 /* insert to the tail */
-#define fk_rawlist_tail_insert(lst, nd) {	\
+#define fk_rawlist_insert_tail(lst, nd) {	\
     if ((lst)->len == 0) {					\
         (nd)->next = NULL;					\
         (nd)->prev = NULL;					\
@@ -113,7 +113,7 @@ void fk_list_sorted_insert(fk_list *lst, void *val);
 void fk_list_remove_any(fk_list *lst, fk_node *nd);
 
 #define fk_list_insert_head_only	fk_rawlist_insert_head
-#define fk_list_insert_tail_only	fk_rawlist_tail_insert
+#define fk_list_insert_tail_only	fk_rawlist_insert_tail
 #define fk_list_remove_any_only		fk_rawlist_any_remove
 void fk_list_insert_sorted_only(fk_list *lst, fk_node *nd);
 
