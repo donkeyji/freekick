@@ -92,7 +92,7 @@ void fk_dict_clear(fk_dict *dct)
 		}
 		nd = fk_rawlist_head(lst);/* get the new head */
 		while (nd != NULL) {
-			fk_rawlist_any_remove(lst, nd);
+			fk_rawlist_remove_any(lst, nd);
 			fk_elt_key_free(dct, nd);/* free key */
 			fk_elt_value_free(dct, nd);/* free value */
 			fk_elt_destroy(nd);/* free element */
@@ -238,7 +238,7 @@ int fk_dict_remove(fk_dict *dct, void *key)
 
 	lst = dct->buckets[idx];
 
-	fk_rawlist_any_remove(lst, elt);
+	fk_rawlist_remove_any(lst, elt);
 	fk_elt_key_free(dct, elt);
 	fk_elt_value_free(dct, elt);
 	fk_elt_destroy(elt);
@@ -270,7 +270,7 @@ int fk_dict_stretch(fk_dict *dct)
 		}
 		nd = fk_rawlist_head(lst);
 		while (nd != NULL) {
-			fk_rawlist_any_remove(lst, nd);
+			fk_rawlist_remove_any(lst, nd);
 			key = nd->key;
 			hash = dct->eop->key_hash(key);
 			idx = (size_t)hash & (new_size - 1);

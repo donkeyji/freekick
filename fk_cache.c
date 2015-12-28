@@ -19,7 +19,7 @@ fk_node *fk_cache_free_node_get()
 	nd = NULL;
 	if (fk_rawlist_len(free_nodes) > 0) {
 		nd = fk_rawlist_head(free_nodes);
-		fk_rawlist_any_remove(free_nodes, nd);
+		fk_rawlist_remove_any(free_nodes, nd);
 	}
 
 	if (nd == NULL) {
