@@ -43,7 +43,7 @@ fk_conn *fk_conn_create(int fd)
 	conn->rbuf = fk_buf_create();
 	conn->wbuf = fk_buf_create();
 	conn->read_ev = fk_ioev_create(fd, FK_IOEV_READ, conn, fk_conn_read_cb);
-	fk_ev_ioev_add(conn->read_ev);
+	fk_ev_add_ioev(conn->read_ev);
 	conn->write_ev = fk_ioev_create(fd, FK_IOEV_WRITE, conn, fk_conn_write_cb);
 	conn->write_added = 0;
 	conn->last_recv = time(NULL);/* save the current time */
@@ -501,7 +501,7 @@ int fk_conn_rsp_send(fk_conn *conn)
 	wbuf = conn->wbuf;
 	/* if any data in write buf and never add write ioev yet */
 	if (fk_buf_payload_len(wbuf) > 0 && conn->write_added == 0) {
-		fk_ev_ioev_add(conn->write_ev);
+		fk_ev_add_ioev(conn->write_ev);
 		conn->write_added = 1;
 	}
 	return FK_SVR_OK;

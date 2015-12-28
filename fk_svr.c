@@ -264,7 +264,7 @@ void fk_svr_init()
 	fk_log_debug("listen fd: %d\n", server.listen_fd);
 #endif
 	server.listen_ev = fk_ioev_create(server.listen_fd, FK_IOEV_READ, NULL, fk_svr_listen_cb);
-	fk_ev_ioev_add(server.listen_ev);
+	fk_ev_add_ioev(server.listen_ev);
 
 	server.svr_timer = fk_tmev_create(3000, FK_TMEV_CYCLE, NULL, fk_svr_timer_cb);
 	fk_ev_add_tmev(server.svr_timer);
