@@ -47,7 +47,7 @@ fk_list *fk_list_create(fk_node_op *nop)
 }
 
 
-void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd)
+void fk_list_insert_sorted_only(fk_list *lst, fk_node *nd)
 {
 	int pos;
 	fk_node *low, *high;
@@ -183,7 +183,7 @@ void fk_list_sorted_insert(fk_list *lst, void *val)
 
 	fk_node_data_set(lst, nd, val);
 
-	fk_list_sorted_insert_only(lst, nd);
+	fk_list_insert_sorted_only(lst, nd);
 }
 
 void fk_list_remove_any(fk_list *lst, fk_node *nd)
