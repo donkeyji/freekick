@@ -83,7 +83,7 @@ void fk_conn_destroy(fk_conn *conn)
 	fk_mem_free(conn);/* should be the last step */
 }
 
-void fk_svr_conn_add(int fd)
+void fk_svr_add_conn(int fd)
 {
 	fk_conn *conn;
 
