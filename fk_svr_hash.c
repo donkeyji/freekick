@@ -35,7 +35,7 @@ int fk_cmd_hset(fk_conn *conn)
 		return FK_SVR_OK;
 	}
 
-	rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
+	rt = fk_conn_add_error_rsp(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
@@ -61,7 +61,7 @@ int fk_cmd_hget(fk_conn *conn)
 	} 
 
 	if (fk_item_type(hitm) != FK_ITEM_DICT) {
-		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
+		rt = fk_conn_add_error_rsp(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
@@ -79,7 +79,7 @@ int fk_cmd_hget(fk_conn *conn)
 	} 
 
 	if (itm->type != FK_ITEM_STR) {
-		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
+		rt = fk_conn_add_error_rsp(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}

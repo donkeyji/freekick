@@ -112,7 +112,7 @@ int fk_cmd_select(fk_conn *conn)
 	s = (fk_str *)fk_item_raw(itm);
 	db_idx = atoi(fk_str_raw(s));
 	if (db_idx < 0 || db_idx >= server.dbcnt) {
-		rt = fk_conn_error_rsp_add(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);
+		rt = fk_conn_add_error_rsp(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}

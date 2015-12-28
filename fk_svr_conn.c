@@ -346,13 +346,13 @@ int fk_conn_proc_cmd(fk_conn *conn)
 	if (pto == NULL) {
 		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg_get(conn, 0)));
 		fk_conn_free_args(conn);
-		fk_conn_error_rsp_add(conn, "Invalid Protocol", strlen("Invalid Protocol"));
+		fk_conn_add_error_rsp(conn, "Invalid Protocol", strlen("Invalid Protocol"));
 		return FK_SVR_OK;
 	}
 	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_free_args(conn);
-		fk_conn_error_rsp_add(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
+		fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
 		return FK_SVR_OK;
 	}
 	rt = pto->handler(conn);
@@ -524,7 +524,7 @@ int fk_conn_add_status_rsp(fk_conn *conn, char *stat, size_t stat_len)
 	return FK_SVR_OK;
 }
 
-int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len)
+int fk_conn_add_error_rsp(fk_conn *conn, char *error, size_t error_len)
 {
 	size_t len;
 

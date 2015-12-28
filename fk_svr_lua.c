@@ -129,16 +129,16 @@ int fk_lua_conn_cmd_proc(fk_conn *conn)
 	fk_str_2upper(cmd);
 	pto = fk_proto_search(cmd);
 	if (pto == NULL) {
-		fk_conn_error_rsp_add(conn, "Invalid Protocol", strlen("Invalid Protocol"));
+		fk_conn_add_error_rsp(conn, "Invalid Protocol", strlen("Invalid Protocol"));
 		return 0;
 	}
 	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
-		fk_conn_error_rsp_add(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
+		fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
 		return 0;
 	}
 	rt = pto->handler(conn);
 	if (rt == FK_SVR_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
-		fk_conn_error_rsp_add(conn, "cmd handler failed", strlen("cmd handler failed"));
+		fk_conn_add_error_rsp(conn, "cmd handler failed", strlen("cmd handler failed"));
 		return 0;
 	}
 
@@ -366,7 +366,7 @@ int fk_cmd_eval(fk_conn *conn)
 
 	str_nkey = (fk_str *)fk_item_raw(itm_nkey);
 	if (fk_str_is_nonminus(str_nkey) == 0) {
-		rt = fk_conn_error_rsp_add(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
+		rt = fk_conn_add_error_rsp(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
