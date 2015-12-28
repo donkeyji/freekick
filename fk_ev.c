@@ -15,7 +15,7 @@
 #include <fk_log.h>
 
 static int fk_ev_ioev_activate(int fd, char type);
-static fk_tmev *fk_ev_nearest_tmev_get();
+static fk_tmev *fk_ev_get_nearest_tmev();
 static int fk_ev_pending_tmev_update();
 static int fk_ev_active_ioev_proc();
 static int fk_ev_expired_tmev_proc();
@@ -69,7 +69,7 @@ int fk_ev_dispatch()
 
 	pto = NULL;/* indefinitely wait */
 
-	tmev = fk_ev_nearest_tmev_get(evmgr);
+	tmev = fk_ev_get_nearest_tmev(evmgr);
 	if (tmev != NULL) {
 		gettimeofday(&now, NULL);
 		fk_util_tmval_sub(&(tmev->when), &now, &timeout);
@@ -337,7 +337,7 @@ int fk_ev_active_ioev_proc()
 	return FK_EV_OK;
 }
 
-fk_tmev *fk_ev_nearest_tmev_get()
+fk_tmev *fk_ev_get_nearest_tmev()
 {
 	void *root;
 	fk_tmev *tmev;
