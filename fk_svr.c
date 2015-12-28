@@ -106,7 +106,7 @@ void fk_db_dict_key_free(void *key)
 
 	itm = (fk_item *)key;
 
-	fk_item_ref_dec(itm);/* decrease the ref here */
+	fk_item_dec_ref(itm);/* decrease the ref here */
 }
 
 void *fk_db_dict_val_copy(void *val)
@@ -125,7 +125,7 @@ void fk_db_dict_val_free(void *val)
 	fk_item *itm;
 	itm = (fk_item *)val;
 
-	fk_item_ref_dec(itm);
+	fk_item_dec_ref(itm);
 }
 
 void *fk_db_list_val_copy(void *ptr)
@@ -146,7 +146,7 @@ void fk_db_list_val_free(void *ptr)
 
 	itm = (fk_item *)ptr;
 
-	fk_item_ref_dec(itm);
+	fk_item_dec_ref(itm);
 }
 
 void *fk_db_skiplist_val_copy(void *ptr)
@@ -166,7 +166,7 @@ void fk_db_skiplist_val_free(void *ptr)
 
 	itm = (fk_item *)ptr;
 
-	fk_item_ref_dec(itm);
+	fk_item_dec_ref(itm);
 }
 
 int fk_svr_listen_cb(int listen_fd, char type, void *arg)

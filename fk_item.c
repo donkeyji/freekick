@@ -71,7 +71,7 @@ fk_item *fk_item_create(int type, void *entity)
 	return itm;
 }
 
-void fk_item_ref_dec(fk_item *itm)
+void fk_item_dec_ref(fk_item *itm)
 {
 	if (itm->ref > 0) {
 		itm->ref--;
