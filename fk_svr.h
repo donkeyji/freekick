@@ -100,7 +100,7 @@ int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt);
 void fk_svr_init();
 void fk_svr_final();
 void fk_svr_add_conn(int fd);
-void fk_svr_conn_remove(fk_conn *conn);
+void fk_svr_remove_conn(fk_conn *conn);
 
 void fk_svr_signal_exit_handler(int sig);
 void fk_svr_signal_child_handler(int sig);

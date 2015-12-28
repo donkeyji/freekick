@@ -192,7 +192,7 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 	/* why redis do like below? */
 	//if (server.conn_cnt > server.max_conn) {
 		//fk_log_info("beyond max connections\n");
-		//fk_svr_conn_remove(fk_svr_conn_get(fd));
+		//fk_svr_remove_conn(fk_svr_conn_get(fd));
 		//return 0;
 	//}
 	fk_log_info("new connection fd: %d\n", fd);

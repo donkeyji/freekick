@@ -94,7 +94,7 @@ void fk_svr_add_conn(int fd)
 	server.conn_cnt += 1;
 }
 
-void fk_svr_conn_remove(fk_conn *conn)
+void fk_svr_remove_conn(fk_conn *conn)
 {
 	/* removed from the map */
 	server.conns_tab[conn->fd] = NULL;
@@ -378,7 +378,7 @@ int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 
 	if (now - conn->last_recv > setting.timeout) {
 		fk_log_debug("connection timeout\n");
-		fk_svr_conn_remove(conn);
+		fk_svr_remove_conn(conn);
 		return -1;/* tell evmgr not to add this timer again */
 	}
 	return 0;
@@ -401,7 +401,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 
 	rt = fk_conn_recv_data(conn);
 	if (rt == FK_SVR_ERR) {/* conn closed */
-		fk_svr_conn_remove(conn);
+		fk_svr_remove_conn(conn);
 		return 0;
 	}
 
@@ -413,7 +413,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 		rt = fk_conn_parse_req(conn);
 		if (rt == FK_SVR_ERR) {/* error when parsing */
 			fk_log_error("fatal error occured when parsing protocol\n");
-			fk_svr_conn_remove(conn);
+			fk_svr_remove_conn(conn);
 			return 0;
 		} else if (rt == FK_SVR_AGAIN) {/* parsing not completed */
 			break;
@@ -422,7 +422,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 		rt = fk_conn_proc_cmd(conn);
 		if (rt == FK_SVR_ERR) {
 			fk_log_error("fatal error occured when processing cmd\n");
-			fk_svr_conn_remove(conn);
+			fk_svr_remove_conn(conn);
 			return 0;
 		}
 	}
@@ -430,7 +430,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	rt = fk_conn_send_rsp(conn);
 	if (rt == FK_SVR_ERR) {
 		fk_log_error("fatal error occurs when sending response\n");
-		fk_svr_conn_remove(conn);
+		fk_svr_remove_conn(conn);
 		return 0;
 	}
 
@@ -463,7 +463,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 		if (sent_len < 0) {
 			if (errno != EAGAIN) {
 				fk_log_error("send error: %s\n", strerror(errno));
-				fk_svr_conn_remove(conn);/* close the connection directly */
+				fk_svr_remove_conn(conn);/* close the connection directly */
 				return 0;
 			} else {/* no free space in this write buffer of the socket */
 				break;
