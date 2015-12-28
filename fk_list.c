@@ -161,7 +161,7 @@ void fk_list_head_insert(fk_list *lst, void *val)
 
 	fk_node_data_set(lst, nd, val);
 
-	fk_list_head_insert_only(lst, nd);
+	fk_list_insert_head_only(lst, nd);
 }
 
 void fk_list_tail_insert(fk_list *lst, void *val)

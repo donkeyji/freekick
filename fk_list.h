@@ -112,7 +112,7 @@ void fk_list_tail_insert(fk_list *lst, void *val);
 void fk_list_sorted_insert(fk_list *lst, void *val);
 void fk_list_any_remove(fk_list *lst, fk_node *nd);
 
-#define fk_list_head_insert_only	fk_rawlist_head_insert
+#define fk_list_insert_head_only	fk_rawlist_head_insert
 #define fk_list_tail_insert_only	fk_rawlist_tail_insert
 #define fk_list_any_remove_only		fk_rawlist_any_remove
 void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd);
