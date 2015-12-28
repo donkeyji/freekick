@@ -81,7 +81,7 @@ int fk_lua_pcall(lua_State *L)
 		arg = lua_tolstring(L, i + 1, &len);
 		itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
 		fk_conn_set_arg(lua_conn, lua_conn->arg_idx, itm);
-		fk_conn_arglen_set(lua_conn, lua_conn->arg_idx, (void *)((size_t)len));
+		fk_conn_set_arglen(lua_conn, lua_conn->arg_idx, (void *)((size_t)len));
 		fk_item_ref_inc(itm);
 		lua_conn->arg_idx += 1;
 	}

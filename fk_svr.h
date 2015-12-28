@@ -93,7 +93,7 @@ int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt);
 
 #define fk_conn_set_arg(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
 #define fk_conn_get_arg(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
-#define fk_conn_arglen_set(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
+#define fk_conn_set_arglen(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
 #define fk_conn_arglen_get(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
 
 /* interface of fk_server */

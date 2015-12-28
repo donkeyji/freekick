@@ -269,7 +269,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				fk_log_debug("invalid argument length\n");
 				return FK_SVR_ERR;
 			}
-			fk_conn_arglen_set(conn, conn->arg_idx, (void *)((size_t)argl));
+			fk_conn_set_arglen(conn, conn->arg_idx, (void *)((size_t)argl));
 			conn->idx_flag = 1;/* need to parse arg */
 			fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
 		}
@@ -318,7 +318,7 @@ void fk_conn_free_args(fk_conn *conn)
 	for (i = 0; i < conn->arg_cnt; i++) {
 		fk_item_ref_dec(fk_conn_get_arg(conn, i));/* just decrease the ref */
 		fk_conn_set_arg(conn, i, NULL);/* do not ref to this item */
-		fk_conn_arglen_set(conn, i, (void *)0);
+		fk_conn_set_arglen(conn, i, (void *)0);
 	}
 	conn->arg_cnt = 0;
 	conn->parse_done = 0;
