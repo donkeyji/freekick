@@ -108,12 +108,12 @@ void fk_list_empty(fk_list *lst);
 void fk_list_destroy(fk_list *lst);
 
 void fk_list_insert_head(fk_list *lst, void *val);
-void fk_list_tail_insert(fk_list *lst, void *val);
+void fk_list_insert_tail(fk_list *lst, void *val);
 void fk_list_sorted_insert(fk_list *lst, void *val);
 void fk_list_any_remove(fk_list *lst, fk_node *nd);
 
 #define fk_list_insert_head_only	fk_rawlist_head_insert
-#define fk_list_tail_insert_only	fk_rawlist_tail_insert
+#define fk_list_insert_tail_only	fk_rawlist_tail_insert
 #define fk_list_any_remove_only		fk_rawlist_any_remove
 void fk_list_sorted_insert_only(fk_list *lst, fk_node *nd);
 

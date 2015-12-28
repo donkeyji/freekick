@@ -71,7 +71,7 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 			if (pos == 0) {/* lpush */
 				fk_list_insert_head(lst, str_itm);
 			} else {/* rpush */
-				fk_list_tail_insert(lst, str_itm);
+				fk_list_insert_tail(lst, str_itm);
 			}
 		}
 		lst_itm = fk_item_create(FK_ITEM_LIST, lst);/* do not increase ref for local var */
@@ -98,7 +98,7 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 		if (pos == 0) {/* lpush */
 			fk_list_insert_head(lst, str_itm);
 		} else {/* rpush */
-			fk_list_tail_insert(lst, str_itm);
+			fk_list_insert_tail(lst, str_itm);
 		}
 	}
 	rt = fk_conn_int_rsp_add(conn, conn->arg_cnt - 2);

@@ -536,7 +536,7 @@ int fk_fkdb_list_elt_restore(FILE *fp, fk_dict *db, fk_zline *buf)
 		}
 		nds = fk_str_create(buf->line, nlen);
 		nitm = fk_item_create(FK_ITEM_STR, nds);
-		fk_list_tail_insert(lst, nitm);
+		fk_list_insert_tail(lst, nitm);
 	}
 	vitm = fk_item_create(FK_ITEM_LIST, lst);
 	fk_dict_add(db, kitm, vitm);
