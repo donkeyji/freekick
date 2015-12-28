@@ -23,7 +23,7 @@ static void fk_conn_free_args(fk_conn *conn);
 static int fk_conn_parse_req(fk_conn *conn);
 static int fk_conn_recv_data(fk_conn *conn);
 static int fk_conn_proc_cmd(fk_conn *conn);
-static int fk_conn_rsp_send(fk_conn *conn);
+static int fk_conn_send_rsp(fk_conn *conn);
 
 /* response format */
 static char *rsp_status 	= "+%s\r\n";
@@ -427,7 +427,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 		}
 	}
 
-	rt = fk_conn_rsp_send(conn);
+	rt = fk_conn_send_rsp(conn);
 	if (rt == FK_SVR_ERR) {
 		fk_log_error("fatal error occurs when sending response\n");
 		fk_svr_conn_remove(conn);
@@ -489,7 +489,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 	return 0;
 }
 
-int fk_conn_rsp_send(fk_conn *conn)
+int fk_conn_send_rsp(fk_conn *conn)
 {
 	fk_buf *wbuf;
 
