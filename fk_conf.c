@@ -14,43 +14,43 @@
 #define FK_CONF_MAX_FIELDS 	5
 #define FK_CONF_MAX_LEN 	1024
 
-typedef struct _fk_line {
+typedef struct _fk_cfline {
 	unsigned no;/* line number */
 	unsigned cnt;/* the cnt field to parse */
 	size_t len;
 	char *buf;
 	char err[FK_CONF_MAX_LEN];
 	fk_str *fields[FK_CONF_MAX_FIELDS];
-} fk_line;
+} fk_cfline;
 
 typedef struct _fk_dtv {/* directive */
 	char *name;
 	unsigned field_cnt;
-	int (*handler) (fk_line *line);
+	int (*handler) (fk_cfline *line);
 } fk_dtv;
 
-static fk_line *fk_line_create();
-static void fk_line_destroy(fk_line *line);
+static fk_cfline *fk_cfline_create();
+static void fk_cfline_destroy(fk_cfline *line);
 
 static int fk_conf_parse_file(char *conf_path);
-static int fk_conf_read_line(fk_line *line, FILE *fp);
-static int fk_conf_parse_line(fk_line *line);
-static int fk_conf_proc_line(fk_line *line);
-static void fk_conf_reset_line(fk_line *line);
+static int fk_conf_read_line(fk_cfline *line, FILE *fp);
+static int fk_conf_parse_line(fk_cfline *line);
+static int fk_conf_proc_line(fk_cfline *line);
+static void fk_conf_reset_line(fk_cfline *line);
 static fk_dtv *fk_conf_search(fk_str *name);
 
-static int fk_conf_handle_port(fk_line *line);
-static int fk_conf_handle_daemon(fk_line *line);
-static int fk_conf_handle_dump(fk_line *line);
-static int fk_conf_handle_pidpath(fk_line *line);
-static int fk_conf_handle_logpath(fk_line *line);
-static int fk_conf_handle_maxconn(fk_line *line);
-static int fk_conf_handle_dbcnt(fk_line *line);
-static int fk_conf_handle_addr(fk_line *line);
-static int fk_conf_handle_loglevel(fk_line *line);
-static int fk_conf_handle_dbfile(fk_line *line);
-static int fk_conf_handle_timeout(fk_line *line);
-static int fk_conf_handle_dir(fk_line *line);
+static int fk_conf_handle_port(fk_cfline *line);
+static int fk_conf_handle_daemon(fk_cfline *line);
+static int fk_conf_handle_dump(fk_cfline *line);
+static int fk_conf_handle_pidpath(fk_cfline *line);
+static int fk_conf_handle_logpath(fk_cfline *line);
+static int fk_conf_handle_maxconn(fk_cfline *line);
+static int fk_conf_handle_dbcnt(fk_cfline *line);
+static int fk_conf_handle_addr(fk_cfline *line);
+static int fk_conf_handle_loglevel(fk_cfline *line);
+static int fk_conf_handle_dbfile(fk_cfline *line);
+static int fk_conf_handle_timeout(fk_cfline *line);
+static int fk_conf_handle_dir(fk_cfline *line);
 
 static fk_dtv dtv_map[] = {
 	{"port", 2, fk_conf_handle_port},
@@ -71,9 +71,9 @@ static fk_dtv dtv_map[] = {
 /* global variable, referencd by other modules */
 fk_conf setting;
 
-fk_line *fk_line_create()
+fk_cfline *fk_cfline_create()
 {
-	fk_line *line = (fk_line *)fk_mem_alloc(sizeof(fk_line));
+	fk_cfline *line = (fk_cfline *)fk_mem_alloc(sizeof(fk_cfline));
 	line->no = 0;/* line number */
 	line->cnt = 0;
 	line->buf = NULL;
@@ -83,7 +83,7 @@ fk_line *fk_line_create()
 	return line;
 }
 
-void fk_line_destroy(fk_line *line)
+void fk_cfline_destroy(fk_cfline *line)
 {
 	unsigned i;
 
@@ -130,7 +130,7 @@ int fk_conf_parse_file(char *conf_path)
 	int rt;
 	FILE *fp;
 	long tail;
-	fk_line *line;
+	fk_cfline *line;
 	unsigned line_num;
 
 	fp = fopen(conf_path, "r");
@@ -142,7 +142,7 @@ int fk_conf_parse_file(char *conf_path)
 	tail = ftell(fp);
 	rewind(fp);/* fseek(fp, 0, SEEK_SET); */
 	line_num = 0;
-	line = fk_line_create();
+	line = fk_cfline_create();
 
 	/* do not reach the end of the file */
 	while (ftell(fp) != tail) {
@@ -166,14 +166,14 @@ int fk_conf_parse_file(char *conf_path)
 		}
 	}
 
-	fk_line_destroy(line);
+	fk_cfline_destroy(line);
 
 	fclose(fp);
 
 	return FK_CONF_OK;
 }
 
-int fk_conf_read_line(fk_line *line, FILE *fp)
+int fk_conf_read_line(fk_cfline *line, FILE *fp)
 {
 	int rt;
 
@@ -186,7 +186,7 @@ int fk_conf_read_line(fk_line *line, FILE *fp)
 	return FK_CONF_OK;
 }
 
-int fk_conf_parse_line(fk_line *line)
+int fk_conf_parse_line(fk_cfline *line)
 {
 	char *buf;
 	size_t i, start, end;
@@ -234,7 +234,7 @@ fk_dtv *fk_conf_search(fk_str *name)
 	return NULL;
 }
 
-int fk_conf_proc_line(fk_line *line)
+int fk_conf_proc_line(fk_cfline *line)
 {
 	int rt;
 	fk_str *cmd;
@@ -262,7 +262,7 @@ int fk_conf_proc_line(fk_line *line)
 	return FK_CONF_OK;
 }
 
-void fk_conf_reset_line(fk_line *line)
+void fk_conf_reset_line(fk_cfline *line)
 {
 	unsigned i;
 
@@ -278,7 +278,7 @@ void fk_conf_reset_line(fk_line *line)
 	}
 }
 
-int fk_conf_handle_port(fk_line *line)
+int fk_conf_handle_port(fk_cfline *line)
 {
 	int rt, port;
 
@@ -301,37 +301,37 @@ int fk_conf_handle_port(fk_line *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_daemon(fk_line *line)
+int fk_conf_handle_daemon(fk_cfline *line)
 {
 	setting.daemon = 1;
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_dump(fk_line *line)
+int fk_conf_handle_dump(fk_cfline *line)
 {
 	setting.dump = 1;
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_pidpath(fk_line *line)
+int fk_conf_handle_pidpath(fk_cfline *line)
 {
 	setting.pid_path = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_logpath(fk_line *line)
+int fk_conf_handle_logpath(fk_cfline *line)
 {
 	setting.log_path = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_dbfile(fk_line *line)
+int fk_conf_handle_dbfile(fk_cfline *line)
 {
 	setting.db_file = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_maxconn(fk_line *line)
+int fk_conf_handle_maxconn(fk_cfline *line)
 {
 	int rt, max_conn;
 
@@ -345,7 +345,7 @@ int fk_conf_handle_maxconn(fk_line *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_dbcnt(fk_line *line)
+int fk_conf_handle_dbcnt(fk_cfline *line)
 {
 	int rt, dbcnt;
 
@@ -359,13 +359,13 @@ int fk_conf_handle_dbcnt(fk_line *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_addr(fk_line *line)
+int fk_conf_handle_addr(fk_cfline *line)
 {
 	setting.addr = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_loglevel(fk_line *line)
+int fk_conf_handle_loglevel(fk_cfline *line)
 {
 	char *level;
 
@@ -385,7 +385,7 @@ int fk_conf_handle_loglevel(fk_line *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_timeout(fk_line *line)
+int fk_conf_handle_timeout(fk_cfline *line)
 {
 	int rt, timeout;
 
@@ -400,7 +400,7 @@ int fk_conf_handle_timeout(fk_line *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_dir(fk_line *line)
+int fk_conf_handle_dir(fk_cfline *line)
 {
 	setting.dir = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
