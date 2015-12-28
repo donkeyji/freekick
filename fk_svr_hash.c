@@ -53,7 +53,7 @@ int fk_cmd_hget(fk_conn *conn)
 	key = fk_conn_arg_get(conn, 2);
 	hitm = fk_dict_get(server.db[conn->db_idx], hkey);
 	if (hitm == NULL) {
-		rt = fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+		rt = fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
@@ -71,7 +71,7 @@ int fk_cmd_hget(fk_conn *conn)
 	dct = (fk_dict *)fk_item_raw(hitm);
 	itm = fk_dict_get(dct, key);
 	if (itm == NULL) {
-		rt = fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+		rt = fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
@@ -87,7 +87,7 @@ int fk_cmd_hget(fk_conn *conn)
 	}
 
 	value = (fk_str *)fk_item_raw(itm);
-	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(value)));
+	rt = fk_conn_add_bulk_rsp(conn, (int)(fk_str_len(value)));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}

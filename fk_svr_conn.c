@@ -576,7 +576,7 @@ int fk_conn_int_rsp_add(fk_conn *conn, int num)
 	return FK_SVR_OK;
 }
 
-int fk_conn_bulk_rsp_add(fk_conn *conn, int bulk_len)
+int fk_conn_add_bulk_rsp(fk_conn *conn, int bulk_len)
 {
 	size_t len;
 

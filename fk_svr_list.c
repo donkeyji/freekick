@@ -119,7 +119,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	key = fk_conn_arg_get(conn, 1);
 	lst_itm = fk_dict_get(server.db[conn->db_idx], key);
 	if (lst_itm == NULL) {
-		rt = fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+		rt = fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
@@ -136,7 +136,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 
 	lst = fk_item_raw(lst_itm);
 	if (fk_list_len(lst) == 0) {
-		rt = fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
+		rt = fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
@@ -150,7 +150,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	}
 	itm = (fk_item *)fk_node_raw(nd_itm);
 	ss = (fk_str *)fk_item_raw(itm);
-	rt = fk_conn_bulk_rsp_add(conn, (int)(fk_str_len(ss)));
+	rt = fk_conn_add_bulk_rsp(conn, (int)(fk_str_len(ss)));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
