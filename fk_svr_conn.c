@@ -276,7 +276,7 @@ int fk_conn_parse_req(fk_conn *conn)
 
 		if (conn->idx_flag == 1) {
 			start = fk_buf_payload_start(rbuf);
-			arg_len = (size_t)fk_conn_arglen_get(conn, conn->arg_idx);
+			arg_len = (size_t)fk_conn_get_arglen(conn, conn->arg_idx);
 #ifdef FK_DEBUG
 			fk_log_debug("saved arg_len: %lu\n", arg_len);
 #endif
