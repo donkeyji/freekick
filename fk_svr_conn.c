@@ -288,7 +288,7 @@ int fk_conn_parse_req(fk_conn *conn)
 					return FK_SVR_ERR;
 				}
 				itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
-				fk_conn_arg_set(conn, conn->arg_idx, itm);
+				fk_conn_set_arg(conn, conn->arg_idx, itm);
 				fk_item_ref_inc(itm);/* ref: from 0 to 1 */
 				conn->arg_idx += 1;
 				conn->idx_flag = 0;
@@ -317,7 +317,7 @@ void fk_conn_free_args(fk_conn *conn)
 
 	for (i = 0; i < conn->arg_cnt; i++) {
 		fk_item_ref_dec(fk_conn_arg_get(conn, i));/* just decrease the ref */
-		fk_conn_arg_set(conn, i, NULL);/* do not ref to this item */
+		fk_conn_set_arg(conn, i, NULL);/* do not ref to this item */
 		fk_conn_arglen_set(conn, i, (void *)0);
 	}
 	conn->arg_cnt = 0;

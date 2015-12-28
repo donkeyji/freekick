@@ -91,7 +91,7 @@ int fk_conn_add_int_rsp(fk_conn *conn, int num);
 int fk_conn_add_bulk_rsp(fk_conn *conn, int bulk_len);
 int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt);
 
-#define fk_conn_arg_set(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
+#define fk_conn_set_arg(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
 #define fk_conn_arg_get(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
 #define fk_conn_arglen_set(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
 #define fk_conn_arglen_get(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
