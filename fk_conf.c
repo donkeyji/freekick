@@ -29,11 +29,14 @@ typedef struct _fk_dtv {/* directive */
 	int (*handler) (fk_line *line);
 } fk_dtv;
 
+static fk_line *fk_line_create();
+static void fk_line_destroy(fk_line *line);
+
 static int fk_conf_parse_file(char *conf_path);
-static int fk_conf_line_read(fk_line *line, FILE *fp);
-static int fk_conf_line_parse(fk_line *line);
-static int fk_conf_line_proc(fk_line *line);
-static void fk_conf_line_reset(fk_line *line);
+static int fk_conf_read_line(fk_line *line, FILE *fp);
+static int fk_conf_parse_line(fk_line *line);
+static int fk_conf_proc_line(fk_line *line);
+static void fk_conf_reset_line(fk_line *line);
 static fk_dtv *fk_conf_search(fk_str *name);
 
 static int fk_conf_handle_port(fk_line *line);
@@ -68,7 +71,7 @@ static fk_dtv dtv_map[] = {
 /* global variable, referencd by other modules */
 fk_conf setting;
 
-fk_line *fk_conf_line_create()
+fk_line *fk_line_create()
 {
 	fk_line *line = (fk_line *)fk_mem_alloc(sizeof(fk_line));
 	line->no = 0;/* line number */
@@ -80,7 +83,7 @@ fk_line *fk_conf_line_create()
 	return line;
 }
 
-void fk_conf_line_destroy(fk_line *line)
+void fk_line_destroy(fk_line *line)
 {
 	unsigned i;
 
@@ -139,38 +142,38 @@ int fk_conf_parse_file(char *conf_path)
 	tail = ftell(fp);
 	rewind(fp);/* fseek(fp, 0, SEEK_SET); */
 	line_num = 0;
-	line = fk_conf_line_create();
+	line = fk_line_create();
 
 	/* do not reach the end of the file */
 	while (ftell(fp) != tail) {
 		line_num++;/* it begins from 1, not 0 */
-		fk_conf_line_reset(line);
+		fk_conf_reset_line(line);
 		line->no = line_num;
-		rt = fk_conf_line_read(line, fp);
+		rt = fk_conf_read_line(line, fp);
 		if (rt < 0) {
 			printf("%s", line->err);
 			return FK_CONF_ERR;
 		}
-		rt = fk_conf_line_parse(line);
+		rt = fk_conf_parse_line(line);
 		if (rt < 0) {
 			printf("%s", line->err);
 			return FK_CONF_ERR;
 		}
-		rt = fk_conf_line_proc(line);
+		rt = fk_conf_proc_line(line);
 		if (rt < 0) {
 			printf("%s", line->err);
 			return FK_CONF_ERR;
 		}
 	}
 
-	fk_conf_line_destroy(line);
+	fk_line_destroy(line);
 
 	fclose(fp);
 
 	return FK_CONF_OK;
 }
 
-int fk_conf_line_read(fk_line *line, FILE *fp)
+int fk_conf_read_line(fk_line *line, FILE *fp)
 {
 	int rt;
 
@@ -183,7 +186,7 @@ int fk_conf_line_read(fk_line *line, FILE *fp)
 	return FK_CONF_OK;
 }
 
-int fk_conf_line_parse(fk_line *line)
+int fk_conf_parse_line(fk_line *line)
 {
 	char *buf;
 	size_t i, start, end;
@@ -231,7 +234,7 @@ fk_dtv *fk_conf_search(fk_str *name)
 	return NULL;
 }
 
-int fk_conf_line_proc(fk_line *line)
+int fk_conf_proc_line(fk_line *line)
 {
 	int rt;
 	fk_str *cmd;
@@ -259,7 +262,7 @@ int fk_conf_line_proc(fk_line *line)
 	return FK_CONF_OK;
 }
 
-void fk_conf_line_reset(fk_line *line)
+void fk_conf_reset_line(fk_line *line)
 {
 	unsigned i;
 
