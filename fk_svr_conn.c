@@ -19,7 +19,7 @@
 static int fk_conn_read_cb(int fd, char type, void *ext);
 static int fk_conn_write_cb(int fd, char type, void *ext);
 static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
-static void fk_conn_args_free(fk_conn *conn);
+static void fk_conn_free_args(fk_conn *conn);
 static int fk_conn_req_parse(fk_conn *conn);
 static int fk_conn_data_recv(fk_conn *conn);
 static int fk_conn_cmd_proc(fk_conn *conn);
@@ -70,7 +70,7 @@ void fk_conn_destroy(fk_conn *conn)
 	fk_buf_destroy(conn->rbuf);
 	fk_buf_destroy(conn->wbuf);
 
-	fk_conn_args_free(conn);/* free arg_vtr first */
+	fk_conn_free_args(conn);/* free arg_vtr first */
 	fk_vtr_destroy(conn->arg_vtr);/* then free vector */
 	fk_vtr_destroy(conn->len_vtr);
 
@@ -311,7 +311,7 @@ int fk_conn_req_parse(fk_conn *conn)
 	return FK_SVR_AGAIN;
 }
 
-void fk_conn_args_free(fk_conn *conn)
+void fk_conn_free_args(fk_conn *conn)
 {
 	int i;
 
@@ -345,22 +345,22 @@ int fk_conn_cmd_proc(fk_conn *conn)
 	pto = fk_proto_search(cmd);
 	if (pto == NULL) {
 		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_arg_get(conn, 0)));
-		fk_conn_args_free(conn);
+		fk_conn_free_args(conn);
 		fk_conn_error_rsp_add(conn, "Invalid Protocol", strlen("Invalid Protocol"));
 		return FK_SVR_OK;
 	}
 	if (pto->arg_cnt != FK_PROTO_VARLEN && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
-		fk_conn_args_free(conn);
+		fk_conn_free_args(conn);
 		fk_conn_error_rsp_add(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
 		return FK_SVR_OK;
 	}
 	rt = pto->handler(conn);
 	if (rt == FK_SVR_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
-		fk_conn_args_free(conn);
+		fk_conn_free_args(conn);
 		return FK_SVR_ERR;
 	}
-	fk_conn_args_free(conn);
+	fk_conn_free_args(conn);
 	return FK_SVR_OK;
 }
 
