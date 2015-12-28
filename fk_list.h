@@ -107,7 +107,7 @@ fk_list *fk_list_create(fk_node_op *nop);
 void fk_list_empty(fk_list *lst);
 void fk_list_destroy(fk_list *lst);
 
-void fk_list_head_insert(fk_list *lst, void *val);
+void fk_list_insert_head(fk_list *lst, void *val);
 void fk_list_tail_insert(fk_list *lst, void *val);
 void fk_list_sorted_insert(fk_list *lst, void *val);
 void fk_list_any_remove(fk_list *lst, fk_node *nd);

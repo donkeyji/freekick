@@ -69,7 +69,7 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 		for (i = 2; i < conn->arg_cnt; i++) {
 			str_itm = fk_conn_arg_get(conn, i);
 			if (pos == 0) {/* lpush */
-				fk_list_head_insert(lst, str_itm);
+				fk_list_insert_head(lst, str_itm);
 			} else {/* rpush */
 				fk_list_tail_insert(lst, str_itm);
 			}
@@ -96,7 +96,7 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 	for (i = 2; i < conn->arg_cnt; i++) {
 		str_itm = fk_conn_arg_get(conn, i);
 		if (pos == 0) {/* lpush */
-			fk_list_head_insert(lst, str_itm);
+			fk_list_insert_head(lst, str_itm);
 		} else {/* rpush */
 			fk_list_tail_insert(lst, str_itm);
 		}

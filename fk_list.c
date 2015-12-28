@@ -153,7 +153,7 @@ void fk_list_iter_end(fk_list_iter *iter)
 	fk_mem_free(iter);/* just release the memory */
 }
 
-void fk_list_head_insert(fk_list *lst, void *val)
+void fk_list_insert_head(fk_list *lst, void *val)
 {
 	fk_node *nd;
 
