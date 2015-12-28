@@ -193,7 +193,7 @@ int fk_dict_add(fk_dict *dct, void *key, void *value)
 	fk_elt_key_set(dct, elt, key);
 	fk_elt_value_set(dct, elt, value);
 
-	fk_rawlist_head_insert(lst, elt);
+	fk_rawlist_insert_head(lst, elt);
 	dct->used++;
 
 	return FK_DICT_OK;
@@ -278,7 +278,7 @@ int fk_dict_stretch(fk_dict *dct)
 				bks[idx] = fk_rawlist_create(fk_elt_list);
 				fk_rawlist_init(bks[idx]);
 			}
-			fk_rawlist_head_insert(bks[idx], nd);
+			fk_rawlist_insert_head(bks[idx], nd);
 			nd = fk_rawlist_head(lst);
 		}
 	}

@@ -36,5 +36,5 @@ void fk_cache_free_node_put(fk_node *nd)
 	nd->prev = NULL;
 	nd->next = NULL;
 	nd->data = NULL;
-	fk_rawlist_head_insert(free_nodes, nd);
+	fk_rawlist_insert_head(free_nodes, nd);
 }

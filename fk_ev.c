@@ -263,7 +263,7 @@ void fk_ev_update_pending_tmev()
 		cmp = fk_util_tmval_cmp(&now, &(tmev->when));
 		if (cmp >= 0) {
 			fk_heap_pop(evmgr.timer_heap);/* pop root from the heap */
-			fk_rawlist_head_insert(evmgr.exp_tmev, tmev);/* add to the exp list */
+			fk_rawlist_insert_head(evmgr.exp_tmev, tmev);/* add to the exp list */
 			tmev->expired = 1;
 			root = fk_heap_root(evmgr.timer_heap);/* get new root */
 		} else {/* break directly */
@@ -355,7 +355,7 @@ void fk_ev_activate_ioev(int fd, char type)
 		rioev = evmgr.read_ev[fd];
 		if (rioev != NULL) {/* when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null */
 			if (rioev->active == 0) {
-				fk_rawlist_head_insert(evmgr.act_ioev, rioev);/* add to the exp list */
+				fk_rawlist_insert_head(evmgr.act_ioev, rioev);/* add to the exp list */
 				rioev->active = 1;
 			}
 		}
@@ -364,7 +364,7 @@ void fk_ev_activate_ioev(int fd, char type)
 		wioev = evmgr.write_ev[fd];
 		if (wioev != NULL) {
 			if (wioev->active == 0) {
-				fk_rawlist_head_insert(evmgr.act_ioev, wioev);/* add to the exp list */
+				fk_rawlist_insert_head(evmgr.act_ioev, wioev);/* add to the exp list */
 				wioev->active = 1;
 			}
 		}
