@@ -96,7 +96,7 @@ int fk_cmd_mget(fk_conn *conn)
 				if (rt == FK_SVR_ERR) {
 					return FK_SVR_ERR;
 				}
-				rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss));
+				rt = fk_conn_add_content_rsp(conn, fk_str_raw(ss), fk_str_len(ss));
 				if (rt == FK_SVR_ERR) {
 					return FK_SVR_ERR;
 				}
@@ -135,7 +135,7 @@ int fk_cmd_get(fk_conn *conn)
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
-	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss));
+	rt = fk_conn_add_content_rsp(conn, fk_str_raw(ss), fk_str_len(ss));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}

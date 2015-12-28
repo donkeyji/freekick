@@ -91,7 +91,7 @@ int fk_cmd_hget(fk_conn *conn)
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
-	rt = fk_conn_content_rsp_add(conn, fk_str_raw(value), fk_str_len(value));
+	rt = fk_conn_add_content_rsp(conn, fk_str_raw(value), fk_str_len(value));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}

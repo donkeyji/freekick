@@ -154,7 +154,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
-	rt = fk_conn_content_rsp_add(conn, fk_str_raw(ss), fk_str_len(ss));
+	rt = fk_conn_add_content_rsp(conn, fk_str_raw(ss), fk_str_len(ss));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}

@@ -282,7 +282,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		fk_log_info("load string failed\n");
 		err = lua_tolstring(gL, -1, &slen);
 		fk_conn_bulk_rsp_add(conn, slen);
-		fk_conn_content_rsp_add(conn, (char *)err, slen);
+		fk_conn_add_content_rsp(conn, (char *)err, slen);
 		lua_pop(gL, 1);/* must pop this error message */
 		return 0;
 	}
@@ -294,7 +294,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 		fk_log_info("run string failed\n");
 		err = lua_tolstring(gL, -1, &slen);
 		fk_conn_bulk_rsp_add(conn, slen);
-		fk_conn_content_rsp_add(conn, (char *)err, slen);
+		fk_conn_add_content_rsp(conn, (char *)err, slen);
 		lua_pop(gL, 1);/* must pop this error message */
 		fk_conn_destroy(lua_conn);/* destroy this fake client */
 		return 0;
@@ -319,7 +319,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 	case LUA_TSTRING:
 		p = lua_tolstring(gL, idx, &len);
 		fk_conn_bulk_rsp_add(conn, (int)len);
-		fk_conn_content_rsp_add(conn, (char *)p, len);
+		fk_conn_add_content_rsp(conn, (char *)p, len);
 		break;
 	case LUA_TNIL:
 		fk_conn_bulk_rsp_add(conn, FK_RSP_NIL);
@@ -336,7 +336,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 			case LUA_TSTRING:
 				sp = lua_tolstring(gL, -1, &slen);
 				fk_conn_bulk_rsp_add(conn, (int)slen);
-				fk_conn_content_rsp_add(conn, (char *)sp, slen);
+				fk_conn_add_content_rsp(conn, (char *)sp, slen);
 				break;
 			case LUA_TNUMBER:
 				fk_conn_int_rsp_add(conn, lua_tointeger(gL, -1));

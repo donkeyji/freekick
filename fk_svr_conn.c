@@ -541,7 +541,7 @@ int fk_conn_add_error_rsp(fk_conn *conn, char *error, size_t error_len)
 	return FK_SVR_OK;
 }
 
-int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len)
+int fk_conn_add_content_rsp(fk_conn *conn, char *content, size_t content_len)
 {
 	size_t len;
 
