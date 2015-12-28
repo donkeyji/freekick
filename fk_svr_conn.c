@@ -22,7 +22,7 @@ static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
 static void fk_conn_free_args(fk_conn *conn);
 static int fk_conn_parse_req(fk_conn *conn);
 static int fk_conn_recv_data(fk_conn *conn);
-static int fk_conn_cmd_proc(fk_conn *conn);
+static int fk_conn_proc_cmd(fk_conn *conn);
 static int fk_conn_rsp_send(fk_conn *conn);
 
 /* response format */
@@ -326,7 +326,7 @@ void fk_conn_free_args(fk_conn *conn)
 	conn->idx_flag = 0;
 }
 
-int fk_conn_cmd_proc(fk_conn *conn)
+int fk_conn_proc_cmd(fk_conn *conn)
 {
 	int rt;
 	fk_str *cmd;
@@ -419,7 +419,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 			break;
 		}
 
-		rt = fk_conn_cmd_proc(conn);
+		rt = fk_conn_proc_cmd(conn);
 		if (rt == FK_SVR_ERR) {
 			fk_log_error("fatal error occured when processing cmd\n");
 			fk_svr_conn_remove(conn);
