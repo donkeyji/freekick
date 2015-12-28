@@ -139,7 +139,7 @@ int fk_ev_add_ioev(fk_ioev *ioev)
 	return FK_EV_OK;
 }
 
-int fk_ev_ioev_remove(fk_ioev *ioev)
+int fk_ev_remove_ioev(fk_ioev *ioev)
 {
 	char type;
 	int fd, rt;

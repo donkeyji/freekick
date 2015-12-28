@@ -80,7 +80,7 @@ int fk_ev_dispatch();
 void fk_ev_cycle();
 void fk_ev_stop();
 int fk_ev_add_ioev(fk_ioev *ioev);
-int fk_ev_ioev_remove(fk_ioev *ioev);
+int fk_ev_remove_ioev(fk_ioev *ioev);
 int fk_ev_add_tmev(fk_tmev *tmev);
 int fk_ev_tmev_remove(fk_tmev *tmev);
 

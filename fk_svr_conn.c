@@ -64,7 +64,7 @@ fk_conn *fk_conn_create(int fd)
 void fk_conn_destroy(fk_conn *conn)
 {
 	/* remove from freekick and unregister event from event manager */
-	fk_ev_ioev_remove(conn->read_ev);
+	fk_ev_remove_ioev(conn->read_ev);
 	fk_ioev_destroy(conn->read_ev);
 
 	fk_buf_destroy(conn->rbuf);
@@ -482,7 +482,7 @@ int fk_conn_write_cb(int fd, char type, void *ext)
 	 * but donot destroy the write ioev 
 	 */
 	if (fk_buf_payload_len(conn->wbuf) == 0) {
-		fk_ev_ioev_remove(conn->write_ev);
+		fk_ev_remove_ioev(conn->write_ev);
 		conn->write_added = 0;
 	}
 
