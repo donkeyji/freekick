@@ -30,7 +30,7 @@ int fk_cmd_llen(fk_conn *conn)
 	fk_list *lst;
 	fk_item *key, *value;
 
-	key = fk_conn_arg_get(conn, 1);
+	key = fk_conn_get_arg(conn, 1);
 	value = fk_dict_get(server.db[conn->db_idx], key);
 	if (value == NULL) {
 		rt = fk_conn_add_int_rsp(conn, 0);
@@ -62,12 +62,12 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 	fk_list *lst;
 	fk_item *key, *lst_itm, *str_itm;
 
-	key = fk_conn_arg_get(conn, 1);
+	key = fk_conn_get_arg(conn, 1);
 	lst_itm = fk_dict_get(server.db[conn->db_idx], key);
 	if (lst_itm == NULL) {
 		lst = fk_list_create(&db_list_op);
 		for (i = 2; i < conn->arg_cnt; i++) {
-			str_itm = fk_conn_arg_get(conn, i);
+			str_itm = fk_conn_get_arg(conn, i);
 			if (pos == 0) {/* lpush */
 				fk_list_insert_head(lst, str_itm);
 			} else {/* rpush */
@@ -94,7 +94,7 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 
 	lst = fk_item_raw(lst_itm);
 	for (i = 2; i < conn->arg_cnt; i++) {
-		str_itm = fk_conn_arg_get(conn, i);
+		str_itm = fk_conn_get_arg(conn, i);
 		if (pos == 0) {/* lpush */
 			fk_list_insert_head(lst, str_itm);
 		} else {/* rpush */
@@ -116,7 +116,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	fk_node *nd_itm;
 	fk_item *key, *lst_itm, *itm;
 
-	key = fk_conn_arg_get(conn, 1);
+	key = fk_conn_get_arg(conn, 1);
 	lst_itm = fk_dict_get(server.db[conn->db_idx], key);
 	if (lst_itm == NULL) {
 		rt = fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);

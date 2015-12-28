@@ -124,7 +124,7 @@ int fk_lua_conn_cmd_proc(fk_conn *conn)
 	fk_item *itm;
 	fk_proto *pto;
 
-	itm = (fk_item *)fk_conn_arg_get(conn, 0);
+	itm = (fk_item *)fk_conn_get_arg(conn, 0);
 	cmd = (fk_str *)fk_item_raw(itm);
 	fk_str_2upper(cmd);
 	pto = fk_proto_search(cmd);
@@ -361,8 +361,8 @@ int fk_cmd_eval(fk_conn *conn)
 	fk_str *str_nkey, *str_code;
 	fk_item *itm_code, *itm_nkey, *itm_arg;
 
-	itm_code = fk_conn_arg_get(conn, 1);
-	itm_nkey = fk_conn_arg_get(conn, 2);
+	itm_code = fk_conn_get_arg(conn, 1);
+	itm_nkey = fk_conn_get_arg(conn, 2);
 
 	str_nkey = (fk_str *)fk_item_raw(itm_nkey);
 	if (fk_str_is_nonminus(str_nkey) == 0) {
@@ -376,7 +376,7 @@ int fk_cmd_eval(fk_conn *conn)
 	nkey = atoi(fk_str_raw(str_nkey));
 	keys = (char **)calloc(nkey, sizeof(char *));
 	for (i = 0; i < nkey; i++) {
-		itm_arg = fk_conn_arg_get(conn, 3 + i);
+		itm_arg = fk_conn_get_arg(conn, 3 + i);
 		keys[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
 	}
 	fk_lua_paras_push(keys, nkey, FK_LUA_PARA_KEYS);
@@ -384,7 +384,7 @@ int fk_cmd_eval(fk_conn *conn)
 	nargv = conn->arg_cnt - 1 - 2 - nkey;
 	argv = (char **)calloc(nargv, sizeof(char *));
 	for (i = 0; i < nargv; i++) {
-		itm_arg = fk_conn_arg_get(conn, 3 + nkey + i);
+		itm_arg = fk_conn_get_arg(conn, 3 + nkey + i);
 		argv[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
 	}
 	fk_lua_paras_push(argv, nargv, FK_LUA_PARA_ARGV);

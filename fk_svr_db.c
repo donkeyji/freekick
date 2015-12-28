@@ -14,7 +14,7 @@ int fk_cmd_del(fk_conn *conn)
 	deleted = 0;
 
 	for (i = 1; i < conn->arg_cnt; i++) {
-		key = fk_conn_arg_get(conn, i);
+		key = fk_conn_get_arg(conn, i);
 		rt = fk_dict_remove(server.db[conn->db_idx], key);
 		if (rt == FK_DICT_OK) {
 			deleted++;
@@ -62,7 +62,7 @@ int fk_cmd_exists(fk_conn *conn)
 	int rt, n;
 	fk_item *key, *value;
 
-	key = fk_conn_arg_get(conn, 1);
+	key = fk_conn_get_arg(conn, 1);
 	value = fk_dict_get(server.db[conn->db_idx], key);
 	n = 0;
 	if (value != NULL) {
@@ -108,7 +108,7 @@ int fk_cmd_select(fk_conn *conn)
 	fk_item *itm;
 	int db_idx, rt;
 
-	itm = fk_conn_arg_get(conn, 1);
+	itm = fk_conn_get_arg(conn, 1);
 	s = (fk_str *)fk_item_raw(itm);
 	db_idx = atoi(fk_str_raw(s));
 	if (db_idx < 0 || db_idx >= server.dbcnt) {

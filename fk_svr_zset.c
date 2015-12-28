@@ -9,7 +9,7 @@ int fk_cmd_zadd(fk_conn *conn)
 	int score, i, rt;
 	fk_item *itm_key, *itm_score, *itm_str, *itm_sl;
 
-	itm_key = fk_conn_arg_get(conn, 1);
+	itm_key = fk_conn_get_arg(conn, 1);
 	itm_sl = fk_dict_get(server.db[conn->db_idx], itm_key);
 	if (itm_sl == NULL) {
 		sl = fk_skiplist_create(&db_skiplist_op);
@@ -19,8 +19,8 @@ int fk_cmd_zadd(fk_conn *conn)
 	sl = (fk_skiplist *)fk_item_raw(itm_sl);
 
 	for (i = 2; i < conn->arg_cnt; i += 2) {
-		itm_score = fk_conn_arg_get(conn, i);
-		itm_str = fk_conn_arg_get(conn, i + 1);
+		itm_score = fk_conn_get_arg(conn, i);
+		itm_str = fk_conn_get_arg(conn, i + 1);
 
 		score = atoi(fk_str_raw((fk_str *)fk_item_raw(itm_score)));
 		//printf("score: %d\n", score);
