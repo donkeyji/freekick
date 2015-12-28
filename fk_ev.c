@@ -14,11 +14,11 @@
 #include <fk_macro.h>
 #include <fk_log.h>
 
-static int fk_ev_activate_ioev(int fd, char type);
+static void fk_ev_activate_ioev(int fd, char type);
 static fk_tmev *fk_ev_get_nearest_tmev();
-static int fk_ev_update_pending_tmev();
-static int fk_ev_proc_active_ioev();
-static int fk_ev_proc_expired_tmev();
+static void fk_ev_update_pending_tmev();
+static void fk_ev_proc_active_ioev();
+static void fk_ev_proc_expired_tmev();
 static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
 #if defined(FK_HAVE_EPOLL)
@@ -248,7 +248,7 @@ int fk_ev_tmev_remove(fk_tmev *tmev)
 	return FK_EV_OK;
 }
 
-int fk_ev_update_pending_tmev()
+void fk_ev_update_pending_tmev()
 {
 	int cmp;
 	fk_leaf *root;
@@ -270,10 +270,9 @@ int fk_ev_update_pending_tmev()
 			break;
 		}
 	}
-	return FK_EV_OK;
 }
 
-int fk_ev_proc_expired_tmev()
+void fk_ev_proc_expired_tmev()
 {
 	int rt;
 	char type;
@@ -303,11 +302,9 @@ int fk_ev_proc_expired_tmev()
 		}
 		tmev = fk_rawlist_head(evmgr.exp_tmev);
 	}
-
-	return FK_EV_OK;
 }
 
-int fk_ev_proc_active_ioev()
+void fk_ev_proc_active_ioev()
 {
 	void *arg;
 	char type;
@@ -333,8 +330,6 @@ int fk_ev_proc_active_ioev()
 		}
 		ioev = fk_rawlist_head(evmgr.act_ioev);
 	}
-
-	return FK_EV_OK;
 }
 
 fk_tmev *fk_ev_get_nearest_tmev()
@@ -347,7 +342,7 @@ fk_tmev *fk_ev_get_nearest_tmev()
 	return tmev;
 }
 
-int fk_ev_activate_ioev(int fd, char type)
+void fk_ev_activate_ioev(int fd, char type)
 {
 	fk_ioev *rioev, *wioev;
 
@@ -374,8 +369,6 @@ int fk_ev_activate_ioev(int fd, char type)
 			}
 		}
 	}
-
-	return FK_EV_OK;
 }
 
 int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
