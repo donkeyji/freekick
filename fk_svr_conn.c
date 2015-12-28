@@ -20,7 +20,7 @@ static int fk_conn_read_cb(int fd, char type, void *ext);
 static int fk_conn_write_cb(int fd, char type, void *ext);
 static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
 static void fk_conn_free_args(fk_conn *conn);
-static int fk_conn_req_parse(fk_conn *conn);
+static int fk_conn_parse_req(fk_conn *conn);
 static int fk_conn_data_recv(fk_conn *conn);
 static int fk_conn_cmd_proc(fk_conn *conn);
 static int fk_conn_rsp_send(fk_conn *conn);
@@ -171,7 +171,7 @@ int fk_conn_data_recv(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
-int fk_conn_req_parse(fk_conn *conn)
+int fk_conn_parse_req(fk_conn *conn)
 {
 	int rt, argl;
 	fk_buf *rbuf;
@@ -410,7 +410,7 @@ int fk_conn_read_cb(int fd, char type, void *ext)
 	 * parse all the complete protocol received yet 
 	 */
 	while (fk_buf_payload_len(conn->rbuf) > 0) {
-		rt = fk_conn_req_parse(conn);
+		rt = fk_conn_parse_req(conn);
 		if (rt == FK_SVR_ERR) {/* error when parsing */
 			fk_log_error("fatal error occured when parsing protocol\n");
 			fk_svr_conn_remove(conn);
