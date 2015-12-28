@@ -26,7 +26,7 @@ int fk_cmd_zadd(fk_conn *conn)
 		//printf("score: %d\n", score);
 		fk_skiplist_insert(sl, score, itm_str);
 	}
-	rt = fk_conn_int_rsp_add(conn, (int)((conn->arg_cnt - 2) / 2));
+	rt = fk_conn_add_int_rsp(conn, (int)((conn->arg_cnt - 2) / 2));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}

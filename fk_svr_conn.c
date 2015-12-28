@@ -558,7 +558,7 @@ int fk_conn_add_content_rsp(fk_conn *conn, char *content, size_t content_len)
 	return FK_SVR_OK;
 }
 
-int fk_conn_int_rsp_add(fk_conn *conn, int num)
+int fk_conn_add_int_rsp(fk_conn *conn, int num)
 {
 	size_t len;
 

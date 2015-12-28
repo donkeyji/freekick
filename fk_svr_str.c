@@ -32,7 +32,7 @@ int fk_cmd_setnx(fk_conn *conn)
 	key = fk_conn_arg_get(conn, 1);
 	value = fk_dict_get(server.db[conn->db_idx], key);
 	if (value != NULL) {
-		rt = fk_conn_int_rsp_add(conn, 0);
+		rt = fk_conn_add_int_rsp(conn, 0);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
@@ -42,7 +42,7 @@ int fk_cmd_setnx(fk_conn *conn)
 	value = fk_conn_arg_get(conn, 2);
 	fk_dict_add(server.db[conn->db_idx], key, value);
 
-	rt = fk_conn_int_rsp_add(conn, 1);
+	rt = fk_conn_add_int_rsp(conn, 1);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}

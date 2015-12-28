@@ -17,7 +17,7 @@ int fk_cmd_hset(fk_conn *conn)
 		fk_dict_add(dct, key, itm);
 		hitm = fk_item_create(FK_ITEM_DICT, dct);/* do not increase ref for local var */
 		fk_dict_add(server.db[conn->db_idx], hkey, hitm);
-		rt = fk_conn_int_rsp_add(conn, 1);
+		rt = fk_conn_add_int_rsp(conn, 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
@@ -28,7 +28,7 @@ int fk_cmd_hset(fk_conn *conn)
 		dct = (fk_dict *)fk_item_raw(hitm);
 		itm = fk_conn_arg_get(conn, 3);
 		fk_dict_add(dct, key, itm);
-		rt = fk_conn_int_rsp_add(conn, 1);
+		rt = fk_conn_add_int_rsp(conn, 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}

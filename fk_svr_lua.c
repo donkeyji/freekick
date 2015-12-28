@@ -314,7 +314,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 	type = lua_type(gL, idx);
 	switch (type) {
 	case LUA_TNUMBER:
-		fk_conn_int_rsp_add(conn, (int)lua_tointeger(gL, idx));
+		fk_conn_add_int_rsp(conn, (int)lua_tointeger(gL, idx));
 		break;
 	case LUA_TSTRING:
 		p = lua_tolstring(gL, idx, &len);
@@ -339,7 +339,7 @@ int fk_lua_script_run(fk_conn *conn, char *code)
 				fk_conn_add_content_rsp(conn, (char *)sp, slen);
 				break;
 			case LUA_TNUMBER:
-				fk_conn_int_rsp_add(conn, lua_tointeger(gL, -1));
+				fk_conn_add_int_rsp(conn, lua_tointeger(gL, -1));
 				break;
 			}
 			lua_pop(gL, 1);

@@ -21,7 +21,7 @@ int fk_cmd_del(fk_conn *conn)
 		}
 	}
 
-	rt = fk_conn_int_rsp_add(conn, deleted);
+	rt = fk_conn_add_int_rsp(conn, deleted);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
@@ -68,7 +68,7 @@ int fk_cmd_exists(fk_conn *conn)
 	if (value != NULL) {
 		n = 1;
 	}
-	rt = fk_conn_int_rsp_add(conn, n);
+	rt = fk_conn_add_int_rsp(conn, n);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
