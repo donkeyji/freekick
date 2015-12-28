@@ -41,7 +41,7 @@ static void *fk_db_skiplist_val_copy(void *ptr);
 static void fk_db_skiplist_val_free(void *ptr);
 
 /* global variable */
-fk_server server;
+fk_svr server;
 
 fk_elt_op db_dict_eop = {
 	fk_db_dict_key_hash,

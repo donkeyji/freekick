@@ -54,7 +54,7 @@ typedef struct _fk_conn {
 	int db_idx;
 } fk_conn;
 
-typedef struct _fk_server {
+typedef struct _fk_svr {
 	uint16_t port;
 	fk_str *addr;
 	int listen_fd;
@@ -72,7 +72,7 @@ typedef struct _fk_server {
 	fk_dict **db;
 	fk_str *db_file;
 	pid_t save_pid;/* -1: the save child process ended */
-} fk_server;
+} fk_svr;
 
 typedef struct _fk_proto {
 	char *name;
@@ -96,7 +96,7 @@ int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt);
 #define fk_conn_set_arglen(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
 #define fk_conn_get_arglen(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
 
-/* interface of fk_server */
+/* interface of fk_svr */
 void fk_svr_init();
 void fk_svr_final();
 void fk_svr_conn_add(int fd);
@@ -147,7 +147,7 @@ int fk_cmd_zadd(fk_conn *conn);
 
 /* extern declerations of global variables */
 
-extern fk_server server;/* this "server" is visited in different .c files */
+extern fk_svr server;/* this "server" is visited in different .c files */
 extern fk_elt_op db_dict_eop;
 extern fk_node_op db_list_op;
 extern fk_skipnode_op db_skiplist_op;
