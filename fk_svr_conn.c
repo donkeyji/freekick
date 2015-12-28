@@ -507,7 +507,7 @@ int fk_conn_send_rsp(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
-int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len)
+int fk_conn_add_status_rsp(fk_conn *conn, char *stat, size_t stat_len)
 {
 	size_t len;
 

@@ -84,7 +84,7 @@ typedef struct _fk_proto {
 /* interface of fk_conn */
 fk_conn *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn *conn);
-int fk_conn_status_rsp_add(fk_conn *conn, char *stat, size_t stat_len);
+int fk_conn_add_status_rsp(fk_conn *conn, char *stat, size_t stat_len);
 int fk_conn_error_rsp_add(fk_conn *conn, char *error, size_t error_len);
 int fk_conn_content_rsp_add(fk_conn *conn, char *content, size_t content_len);
 int fk_conn_int_rsp_add(fk_conn *conn, int num);

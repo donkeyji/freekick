@@ -16,7 +16,7 @@ int fk_cmd_set(fk_conn *conn)
 
 	fk_dict_replace(server.db[conn->db_idx], key, value);
 
-	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
@@ -59,7 +59,7 @@ int fk_cmd_mset(fk_conn *conn)
 		value = fk_conn_arg_get(conn, i + 1);
 		fk_dict_replace(server.db[conn->db_idx], key, value);
 	}
-	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}

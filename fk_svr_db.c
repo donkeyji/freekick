@@ -34,7 +34,7 @@ int fk_cmd_flushdb(fk_conn *conn)
 	int rt;
 
 	fk_dict_empty(server.db[conn->db_idx]);
-	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
@@ -49,7 +49,7 @@ int fk_cmd_flushall(fk_conn *conn)
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_dict_empty(server.db[i]);
 	}
-	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
@@ -91,9 +91,9 @@ int fk_cmd_save(fk_conn *conn)
 	}
 
 	if (err == 1) {
-		rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+		rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	} else {
-		rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+		rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	}
 
 	if (rt == FK_SVR_ERR) {
@@ -120,7 +120,7 @@ int fk_cmd_select(fk_conn *conn)
 	}
 
 	conn->db_idx = db_idx;
-	rt = fk_conn_status_rsp_add(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
+	rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
