@@ -82,7 +82,7 @@ int fk_lua_pcall(lua_State *L)
 		itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
 		fk_conn_set_arg(lua_conn, lua_conn->arg_idx, itm);
 		fk_conn_set_arglen(lua_conn, lua_conn->arg_idx, (void *)((size_t)len));
-		fk_item_ref_inc(itm);
+		fk_item_inc_ref(itm);
 		lua_conn->arg_idx += 1;
 	}
 	lua_conn->parse_done = 1;

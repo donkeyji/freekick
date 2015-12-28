@@ -289,7 +289,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				}
 				itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
 				fk_conn_set_arg(conn, conn->arg_idx, itm);
-				fk_item_ref_inc(itm);/* ref: from 0 to 1 */
+				fk_item_inc_ref(itm);/* ref: from 0 to 1 */
 				conn->arg_idx += 1;
 				conn->idx_flag = 0;
 				fk_buf_low_inc(rbuf, arg_len + 2);

@@ -95,7 +95,7 @@ void fk_item_ref_dec(fk_item *itm)
 	}
 }
 
-void fk_item_ref_inc(fk_item *itm)
+void fk_item_inc_ref(fk_item *itm)
 {
 	itm->ref++;
 }

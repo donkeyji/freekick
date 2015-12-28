@@ -95,7 +95,7 @@ void *fk_db_dict_key_copy(void *key)
 
 	itm = (fk_item *)key;
 
-	fk_item_ref_inc(itm);/* increase the ref here */
+	fk_item_inc_ref(itm);/* increase the ref here */
 
 	return key;
 }
@@ -115,7 +115,7 @@ void *fk_db_dict_val_copy(void *val)
 
 	itm = (fk_item *)val;
 
-	fk_item_ref_inc(itm);
+	fk_item_inc_ref(itm);
 
 	return val;
 }
@@ -134,7 +134,7 @@ void *fk_db_list_val_copy(void *ptr)
 
 	itm = (fk_item *)ptr;
 
-	fk_item_ref_inc(itm);
+	fk_item_inc_ref(itm);
 
 	return ptr;
 }
@@ -155,7 +155,7 @@ void *fk_db_skiplist_val_copy(void *ptr)
 
 	itm = (fk_item *)ptr;
 
-	fk_item_ref_inc(itm);
+	fk_item_inc_ref(itm);
 
 	return ptr;
 }

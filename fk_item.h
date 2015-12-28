@@ -16,7 +16,7 @@ typedef struct _fk_item {
 void fk_item_init();
 fk_item *fk_item_create(int type, void *entity);
 void fk_item_ref_dec(fk_item *itm);
-void fk_item_ref_inc(fk_item *itm);
+void fk_item_inc_ref(fk_item *itm);
 
 #define fk_item_type(itm)	((itm)->type)
 #define fk_item_ref(itm)	((itm)->ref)
