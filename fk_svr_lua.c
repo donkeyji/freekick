@@ -17,16 +17,16 @@
 
 static int fk_lua_pcall(lua_State *L);
 
-static int fk_lua_conn_cmd_proc(fk_conn *conn);
+static int fk_lua_conn_proc_cmd(fk_conn *conn);
 
-static int fk_lua_paras_push(char **paras, int npara, int type);
-static int fk_lua_script_run(fk_conn *conn, char *code);
+static int fk_lua_push_paras(char **paras, int npara, int type);
+static int fk_lua_run_script(fk_conn *conn, char *code);
 
-static int fk_lua_status_parse(lua_State *L, fk_buf *buf);
-static int fk_lua_error_parse(lua_State *L, fk_buf *buf);
-static int fk_lua_integer_parse(lua_State *L, fk_buf *buf);
-static int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf);
-static int fk_lua_bulk_parse(lua_State *L, fk_buf *buf);
+static int fk_lua_parse_status(lua_State *L, fk_buf *buf);
+static int fk_lua_parse_error(lua_State *L, fk_buf *buf);
+static int fk_lua_parse_integer(lua_State *L, fk_buf *buf);
+static int fk_lua_parse_mbulk(lua_State *L, fk_buf *buf);
+static int fk_lua_parse_bulk(lua_State *L, fk_buf *buf);
 
 static lua_State *gL = NULL;
 static fk_conn *lua_conn = NULL;
@@ -87,7 +87,7 @@ int fk_lua_pcall(lua_State *L)
 	}
 	lua_conn->parse_done = 1;
 
-	fk_lua_conn_cmd_proc(lua_conn);
+	fk_lua_conn_proc_cmd(lua_conn);
 
 	/* 
 	 * parse data in lua_conn->wbuf, which is the reply to the client.
@@ -97,19 +97,19 @@ int fk_lua_pcall(lua_State *L)
 	start = fk_buf_payload_start(buf);
 	switch (*start) {
 	case '+':
-		rt = fk_lua_status_parse(L, buf);
+		rt = fk_lua_parse_status(L, buf);
 		break;
 	case '-':
-		rt = fk_lua_error_parse(L, buf);
+		rt = fk_lua_parse_error(L, buf);
 		break;
 	case ':':
-		rt = fk_lua_integer_parse(L, buf);
+		rt = fk_lua_parse_integer(L, buf);
 		break;
 	case '*':
-		rt = fk_lua_mbulk_parse(L, buf);
+		rt = fk_lua_parse_mbulk(L, buf);
 		break;
 	case '$':
-		rt = fk_lua_bulk_parse(L, buf);
+		rt = fk_lua_parse_bulk(L, buf);
 		break;
 	}
 
@@ -117,7 +117,7 @@ int fk_lua_pcall(lua_State *L)
 	return rt;/* number of return value */
 }
 
-int fk_lua_conn_cmd_proc(fk_conn *conn)
+int fk_lua_conn_proc_cmd(fk_conn *conn)
 {
 	int rt;
 	fk_str *cmd;
@@ -145,7 +145,7 @@ int fk_lua_conn_cmd_proc(fk_conn *conn)
 	return 0;
 }
 
-int fk_lua_status_parse(lua_State *L, fk_buf *buf)
+int fk_lua_parse_status(lua_State *L, fk_buf *buf)
 {
 	char *s;
 
@@ -160,7 +160,7 @@ int fk_lua_status_parse(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_error_parse(lua_State *L, fk_buf *buf)
+int fk_lua_parse_error(lua_State *L, fk_buf *buf)
 {
 	char *s;
 
@@ -175,7 +175,7 @@ int fk_lua_error_parse(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_integer_parse(lua_State *L, fk_buf *buf)
+int fk_lua_parse_integer(lua_State *L, fk_buf *buf)
 {
 	int n;
 	char *s;
@@ -188,7 +188,7 @@ int fk_lua_integer_parse(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_bulk_parse(lua_State *L, fk_buf *buf)
+int fk_lua_parse_bulk(lua_State *L, fk_buf *buf)
 {
 	int blen;
 	char *s, *e;
@@ -207,7 +207,7 @@ int fk_lua_bulk_parse(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf)
+int fk_lua_parse_mbulk(lua_State *L, fk_buf *buf)
 {
 	int mbulk, i, blen, n;
 	char *s, *e;
@@ -244,7 +244,7 @@ int fk_lua_mbulk_parse(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_paras_push(char **paras, int npara, int type)
+int fk_lua_push_paras(char **paras, int npara, int type)
 {
 	int i;
 	char *name;
@@ -269,7 +269,7 @@ int fk_lua_paras_push(char **paras, int npara, int type)
 	return 0;
 }
 
-int fk_lua_script_run(fk_conn *conn, char *code)
+int fk_lua_run_script(fk_conn *conn, char *code)
 {
 	size_t len, slen, olen;
 	const char *p, *sp, *err;
@@ -379,7 +379,7 @@ int fk_cmd_eval(fk_conn *conn)
 		itm_arg = fk_conn_get_arg(conn, 3 + i);
 		keys[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
 	}
-	fk_lua_paras_push(keys, nkey, FK_LUA_PARA_KEYS);
+	fk_lua_push_paras(keys, nkey, FK_LUA_PARA_KEYS);
 
 	nargv = conn->arg_cnt - 1 - 2 - nkey;
 	argv = (char **)calloc(nargv, sizeof(char *));
@@ -387,7 +387,7 @@ int fk_cmd_eval(fk_conn *conn)
 		itm_arg = fk_conn_get_arg(conn, 3 + nkey + i);
 		argv[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
 	}
-	fk_lua_paras_push(argv, nargv, FK_LUA_PARA_ARGV);
+	fk_lua_push_paras(argv, nargv, FK_LUA_PARA_ARGV);
 
 	/* just release the array, but not the every item in it */
 	fk_mem_free(keys);
@@ -395,7 +395,7 @@ int fk_cmd_eval(fk_conn *conn)
 
 	str_code = (fk_str *)fk_item_raw(itm_code);
 	code = fk_str_raw(str_code);
-	fk_lua_script_run(conn, code);
+	fk_lua_run_script(conn, code);
 
 	return FK_SVR_OK;
 }
