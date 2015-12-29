@@ -7,7 +7,7 @@
 
 #define fk_skipnode_destroy(nd)	fk_mem_free(nd)
 
-#define fk_skipnode_data_set(sl, nd, sc, dt)	{	\
+#define fk_skipnode_set_data(sl, nd, sc, dt)	{	\
 	(nd)->score = (sc);								\
 	if ((sl)->skop->data_copy != NULL) {			\
 		(nd)->data = (sl)->skop->data_copy((dt));	\
@@ -16,7 +16,7 @@
 	}												\
 }
 
-#define fk_skipnode_data_free(sl, nd)	{			\
+#define fk_skipnode_free_data(sl, nd)	{			\
 	if ((sl)->skop->data_free != NULL) {			\
 		(sl)->skop->data_free((nd)->data);			\
 	}												\
@@ -49,7 +49,7 @@ fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
 	/* 
 	 * head is a empty node which donot hold a score nor a fk_item
 	 * the head node should be processed specially 
-	 * could not use fk_skipnode_data_set(sl, nd, 0, NULL);
+	 * could not use fk_skipnode_set_data(sl, nd, 0, NULL);
 	 */
 	nd->score = 0;
 	nd->data = NULL;
@@ -75,7 +75,7 @@ void fk_skiplist_destroy(fk_skiplist *sl)
 	/* from the lowest list */
 	while (p != NULL) {
 		q = p->next[0];/* save the next node */
-		fk_skipnode_data_free(sl, p);
+		fk_skipnode_free_data(sl, p);
 		fk_skipnode_destroy(p);/* free the current node */
 		p = q;/* go to the next node */
 	}
@@ -122,7 +122,7 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 	}
 
 	nd = fk_skipnode_create(nlv);
-	fk_skipnode_data_set(sl, nd, score, data);
+	fk_skipnode_set_data(sl, nd, score, data);
 
 	/* insert in nlv levels */
 	for (i = 0; i < nlv; i++) {
@@ -175,7 +175,7 @@ void fk_skiplist_remove(fk_skiplist *sl, int score)
 		}
 	}
 
-	fk_skipnode_data_free(sl, nd);
+	fk_skipnode_free_data(sl, nd);
 	fk_skipnode_destroy(nd);
 
 	sl->len--;
