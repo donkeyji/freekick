@@ -75,7 +75,7 @@ void fk_conn_destroy(fk_conn *conn)
 	fk_vtr_destroy(conn->len_vtr);
 
 	conn->last_recv = -1;
-	fk_ev_tmev_remove(conn->timer);
+	fk_ev_remove_tmev(conn->timer);
 	fk_tmev_destroy(conn->timer);
 
 	close(conn->fd);

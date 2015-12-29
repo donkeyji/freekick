@@ -225,7 +225,7 @@ int fk_svr_timer_cb2(unsigned interval, char type, void *arg)
 	tmev = server.svr_timer2;
 
 	fk_log_info("[timer 2]\n");
-	fk_ev_tmev_remove(tmev);
+	fk_ev_remove_tmev(tmev);
 
 	return -1;/* do not cycle once more */
 }

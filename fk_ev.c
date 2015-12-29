@@ -232,7 +232,7 @@ int fk_ev_add_tmev(fk_tmev *tmev)
 	return FK_EV_OK;
 }
 
-int fk_ev_tmev_remove(fk_tmev *tmev)
+int fk_ev_remove_tmev(fk_tmev *tmev)
 {
 	/* in the min heap */
 	if (tmev->expired == 0) {
