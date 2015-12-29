@@ -25,6 +25,9 @@
 
 /* ---------------------------------------------------- */
 static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
+#ifdef FK_DEBUG
+static int fk_svr_timer_cb2(unsigned interval, char type, void *arg);
+#endif
 static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
 
 static uint32_t fk_db_dict_key_hash(void *key);
@@ -225,6 +228,11 @@ int fk_svr_timer_cb2(unsigned interval, char type, void *arg)
 	tmev = server.svr_timer2;
 
 	fk_log_info("[timer 2]\n");
+
+	/*
+	 * if we donot want to use this timer any more, remove it in this callback
+	 * because fk_ev donot remove any timer
+	 */
 	fk_ev_remove_tmev(tmev);
 
 	return -1;/* do not cycle once more */
