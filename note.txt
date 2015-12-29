@@ -3,7 +3,7 @@
 
 2.container默认都不负责其中存放对象的生命周期。fk_list/fk_dict通过指定copy/free函数来定制是否管理对象的生命周期。
 
-3.fk_evmgr不管理tmev/ioev对象的生命周期，由外部来create/destroy tmev/ioev对象。kk
+3.fk_evmgr不管理tmev/ioev对象的生命周期，由外部来create/destroy tmev/ioev对象，fk_evmgr也不负责remove tmev/ioev，全部由外部来调用add/remove tmev/ioev对象。
 
 4.对象的管理原则：
 		A--own-->B 
