@@ -29,8 +29,8 @@
 
 #define FK_POOL_MAX_EMPTY_BLOCKS 1
 
-static fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt);
-static void fk_pool_block_destroy(fk_block *blk);
+static fk_block *fk_block_create(uint16_t unit_size, uint16_t unit_cnt);
+static void fk_block_destroy(fk_block *blk);
 
 static uint16_t fk_pool_align = 2;
 static fk_pool *node_pool = NULL;
@@ -85,7 +85,7 @@ void *fk_pool_malloc(fk_pool *pool)
 
 	/* to create a new block */
 	if (blk == NULL) {
-		blk = (fk_block *)fk_pool_block_create(pool->unit_size, pool->init_cnt);
+		blk = (fk_block *)fk_block_create(pool->unit_size, pool->init_cnt);
 		if (blk == NULL) {
 			return NULL;
 		}
@@ -122,7 +122,7 @@ void fk_pool_free(fk_pool *pool, void *ptr)
 			} else {
 				prev_blk->next = cur_blk->next;
 			}
-			fk_pool_block_destroy(cur_blk);
+			fk_block_destroy(cur_blk);
 			return;
 		} else {
 			pool->empty_blks++;
@@ -141,7 +141,7 @@ void fk_pool_destroy(fk_pool *pool)
 {
 }
 
-fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt)
+fk_block *fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
 	char *ptr;
 	uint16_t i;
@@ -163,7 +163,7 @@ fk_block *fk_pool_block_create(uint16_t unit_size, uint16_t unit_cnt)
 	return blk;
 }
 
-void fk_pool_block_destroy(fk_block *blk)
+void fk_block_destroy(fk_block *blk)
 {
 	blk->next = NULL;
 	fk_mem_free(blk);
