@@ -332,6 +332,10 @@ void fk_ev_proc_active_ioev()
 		rt = iocb(fd, type, arg);
 		/* step 3: how to process the return value of the callback???? */
 		if (rt < 0) {
+			/* 
+			 * we do nothing here, we donot call fk_ev_remove_ioev() here
+			 * fk_ev_remove_ioev() should be called in outside modules
+			 */
 			fk_log_error("error occurs when callback. fd: %d, type: %d\n", fd, type);
 		}
 		ioev = fk_rawlist_head(evmgr.act_ioev);
