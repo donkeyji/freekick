@@ -293,7 +293,13 @@ void fk_ev_proc_expired_tmev()
 		tmev->expired = 0;
 		/* step 2: call the callback of the expired tmev */
 		rt = tmcb(interval, type, arg);
-		/* step 3: how to handle the return value of the callback??? */
+		/* 
+		 * step 3:
+		 * fk_ev_remove_tmev() should not be called here, even if the return value
+		 * of tmcb < 0
+		 * if we do not want to use this timer anymore, we should manually call
+		 * fk_ev_remove_tmev() in outside modules
+		 */
 		if (rt == 0) {
 			if (type == FK_TMEV_CYCLE) {
 				fk_util_cal_expire(&(tmev->when), interval);
