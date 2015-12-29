@@ -14,7 +14,7 @@
  
 #define fk_elt_destroy(elt)	fk_mem_free(elt)
 
-#define fk_elt_key_set(dct, elt, k)	{				\
+#define fk_elt_set_key(dct, elt, k)	{				\
 	if ((dct)->eop->key_copy != NULL) {				\
 		(elt)->key = (dct)->eop->key_copy((k));		\
 	} else {										\
@@ -22,7 +22,7 @@
 	}												\
 }
 
-#define fk_elt_value_set(dct, elt, v)	{			\
+#define fk_elt_set_value(dct, elt, v)	{			\
 	if ((dct)->eop->val_copy != NULL) {				\
 		(elt)->value = (dct)->eop->val_copy((v));	\
 	} else {										\
@@ -190,8 +190,8 @@ int fk_dict_add(fk_dict *dct, void *key, void *value)
 		dct->buckets[idx] = lst;
 	}
 	elt = fk_elt_create();
-	fk_elt_key_set(dct, elt, key);
-	fk_elt_value_set(dct, elt, value);
+	fk_elt_set_key(dct, elt, key);
+	fk_elt_set_value(dct, elt, value);
 
 	fk_rawlist_insert_head(lst, elt);
 	dct->used++;
@@ -220,7 +220,7 @@ int fk_dict_replace(fk_dict *dct, void *key, void *value)
 	/* free old value */
 	fk_elt_value_free(dct, elt);
 	/* use new value to replace */
-	fk_elt_value_set(dct, elt, value);
+	fk_elt_set_value(dct, elt, value);
 
 	return 1;/* the key exist already */
 }
