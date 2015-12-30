@@ -338,6 +338,8 @@ void fk_ev_proc_active_ioev()
 		/* step 2: call the callback of the active ioev */
 		iocb(fd, type, arg);
 		/* 
+		 * we donot care about the return value of iocb, all error should be handled
+		 * by iocb itself, but not here.
 		 * we do nothing here, we donot call fk_ev_remove_ioev() here
 		 * fk_ev_remove_ioev() should be called in outside modules
 		 */
