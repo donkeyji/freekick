@@ -138,6 +138,7 @@ int fk_ev_add_ioev(fk_ioev *ioev)
 	if (type & FK_IOEV_WRITE) {
 		evmgr.write_ev[fd] = ioev;
 	}
+	ioev->active = 0;/* necessary? */
 	evmgr.ioev_cnt++;
 
 	return FK_EV_OK;
@@ -233,6 +234,7 @@ int fk_ev_add_tmev(fk_tmev *tmev)
 
 	tmhp = evmgr.timer_heap;
 	fk_heap_push(tmhp, (fk_leaf *)tmev);
+	tmev->expired = 0;/* in the min_heap, not in the expired list */
 	evmgr.tmev_cnt++;
 
 	return FK_EV_OK;
