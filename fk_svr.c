@@ -28,7 +28,7 @@ static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
 #ifdef FK_DEBUG
 static int fk_svr_timer_cb2(unsigned interval, char type, void *arg);
 #endif
-static int fk_svr_listen_cb(int listen_fd, char type, void *arg);
+static void fk_svr_listen_cb(int listen_fd, char type, void *arg);
 
 static uint32_t fk_db_dict_key_hash(void *key);
 static int fk_db_dict_key_cmp(void *k1, void *k2);
@@ -172,21 +172,21 @@ void fk_db_skiplist_val_free(void *ptr)
 	fk_item_dec_ref(itm);
 }
 
-int fk_svr_listen_cb(int listen_fd, char type, void *arg)
+void fk_svr_listen_cb(int listen_fd, char type, void *arg)
 {
 	int fd;
 
 	fd = fk_sock_accept(listen_fd);
 	if (fd == FK_SOCK_ERR) {
 		fk_log_error("accept fd failed\n");
-		return 0;
+		return;
 	}
 
 	/* anything wrong by closing the fd directly? */
 	if (server.conn_cnt == server.max_conn) {
 		fk_log_warn("beyond max connections\n");
 		close(fd);
-		return 0;
+		return;
 	}
 	fk_svr_add_conn(fd);
 #ifdef FK_DEBUG
@@ -196,10 +196,10 @@ int fk_svr_listen_cb(int listen_fd, char type, void *arg)
 	//if (server.conn_cnt > server.max_conn) {
 		//fk_log_info("beyond max connections\n");
 		//fk_svr_remove_conn(fk_svr_conn_get(fd));
-		//return 0;
+		//return;
 	//}
 	fk_log_info("new connection fd: %d\n", fd);
-	return 0;
+	return;
 }
 
 int fk_svr_timer_cb(unsigned interval, char type, void *arg)
