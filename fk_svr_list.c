@@ -158,7 +158,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
-	fk_list_remove_any(lst, nd_itm);
+	fk_list_remove_anyone(lst, nd_itm);
 
 	return FK_SVR_OK;
 }
