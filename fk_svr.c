@@ -212,6 +212,9 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 	for (i = 0; i < server.dbcnt; i++) {
 		fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
 	}
+#ifdef FK_DEBUG
+	fk_ev_stat();
+#endif
 
 	fk_fkdb_save_background();
 

@@ -42,6 +42,8 @@ void fk_ev_init(unsigned max_files)
 {
 	evmgr.stop = 0;/* never stop */
 	evmgr.max_files = max_files; 
+	evmgr.ioev_cnt = 0;
+	evmgr.tmev_cnt = 0;
 
 	evmgr.timer_heap = fk_heap_create(&tmev_op);
 
@@ -136,6 +138,8 @@ int fk_ev_add_ioev(fk_ioev *ioev)
 	if (type & FK_IOEV_WRITE) {
 		evmgr.write_ev[fd] = ioev;
 	}
+	evmgr.ioev_cnt++;
+
 	return FK_EV_OK;
 }
 
@@ -164,6 +168,7 @@ int fk_ev_remove_ioev(fk_ioev *ioev)
 	if (type & FK_IOEV_WRITE) {
 		evmgr.write_ev[fd] = NULL;
 	}
+	evmgr.ioev_cnt--;
 
 	return FK_EV_OK;
 }
@@ -228,6 +233,7 @@ int fk_ev_add_tmev(fk_tmev *tmev)
 
 	tmhp = evmgr.timer_heap;
 	fk_heap_push(tmhp, (fk_leaf *)tmev);
+	evmgr.tmev_cnt++;
 
 	return FK_EV_OK;
 }
@@ -244,6 +250,7 @@ int fk_ev_remove_tmev(fk_tmev *tmev)
 		fk_rawlist_remove_any(evmgr.exp_tmev, tmev);
 		tmev->expired = 0;
 	}
+	evmgr.tmev_cnt--;
 
 	return FK_EV_OK;
 }
@@ -389,3 +396,10 @@ int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
 	t2 = (fk_tmev *)tmev2;
 	return fk_util_tmval_cmp(&(t1->when), &(t2->when));
 }
+
+#ifdef FK_DEBUG
+void fk_ev_stat()
+{
+	fprintf(stdout, "ioev_cnt: %llu, tmev_cnt: %llu\n", evmgr.ioev_cnt, evmgr.tmev_cnt);
+}
+#endif

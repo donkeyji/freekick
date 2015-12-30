@@ -59,6 +59,8 @@ typedef struct _fk_mpxop {
 typedef struct _fk_evmgr {
 	int stop;
 	unsigned max_files;
+	unsigned long long ioev_cnt;
+	unsigned long long tmev_cnt;
 	/* use min_heap to save timer ev */
 	fk_heap *timer_heap;
 
@@ -90,5 +92,9 @@ fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
 void fk_ioev_destroy(fk_ioev *ioev);
 fk_tmev *fk_tmev_create(unsigned timeout, char type, void *arg, fk_tmev_cb tmcb);
 void fk_tmev_destroy(fk_tmev *tmev);
+
+#ifdef FK_DEBUG
+void fk_ev_stat();
+#endif
 
 #endif
