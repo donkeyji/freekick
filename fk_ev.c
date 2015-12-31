@@ -18,7 +18,7 @@
 /* finite state machine for ioev */
 /* 3 kinds of states for fk_ioev */
 #define FK_IOEV_INIT 			0/* never added to the evmgr */
-#define FK_IOEV_UNACTIVATED 	1/* not in the activated list */
+#define FK_IOEV_PENDING 	1/* not in the activated list */
 #define FK_IOEV_ACTIVATED 		2/* in the activated list */
 
 /* finite state machine for tmev */
@@ -157,7 +157,7 @@ int fk_ev_add_ioev(fk_ioev *ioev)
 	if (type & FK_IOEV_WRITE) {
 		evmgr.write_ev[fd] = ioev;
 	}
-	ioev->activated = FK_IOEV_UNACTIVATED;/* necessary? */
+	ioev->activated = FK_IOEV_PENDING;/* necessary? */
 	evmgr.ioev_cnt++;
 
 	return FK_EV_OK;
@@ -373,7 +373,7 @@ void fk_ev_proc_activated_ioev()
 
 		/* step 1: remove the activated ioev from the activated list first!!!! */
 		fk_rawlist_remove_anyone(evmgr.act_ioev, ioev);
-		ioev->activated = FK_IOEV_UNACTIVATED;/* not in the activated list now */
+		ioev->activated = FK_IOEV_PENDING;/* not in the activated list now */
 		/* step 2: call the callback of the activated ioev */
 		iocb(fd, type, arg);/* maybe fk_ev_remove_ioev() is called in iocb */
 		/* 
@@ -408,7 +408,7 @@ void fk_ev_activate_ioev(int fd, char type)
 	if (type & FK_IOEV_READ) {
 		rioev = evmgr.read_ev[fd];
 		if (rioev != NULL) {/* when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null */
-			if (rioev->activated == FK_IOEV_UNACTIVATED) {
+			if (rioev->activated == FK_IOEV_PENDING) {
 				fk_rawlist_insert_head(evmgr.act_ioev, rioev);/* add to the exp list */
 				rioev->activated = FK_IOEV_ACTIVATED;
 			}
@@ -417,7 +417,7 @@ void fk_ev_activate_ioev(int fd, char type)
 	if (type & FK_IOEV_WRITE) {
 		wioev = evmgr.write_ev[fd];
 		if (wioev != NULL) {
-			if (wioev->activated == FK_IOEV_UNACTIVATED) {
+			if (wioev->activated == FK_IOEV_PENDING) {
 				fk_rawlist_insert_head(evmgr.act_ioev, wioev);/* add to the exp list */
 				wioev->activated = FK_IOEV_ACTIVATED;
 			}
