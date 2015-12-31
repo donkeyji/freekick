@@ -30,7 +30,7 @@
 static void fk_ev_activate_ioev(int fd, char type);
 static fk_tmev *fk_ev_get_nearest_tmev();
 static void fk_ev_update_pending_tmev();
-static void fk_ev_proc_active_ioev();
+static void fk_ev_proc_activated_ioev();
 static void fk_ev_proc_expired_tmev();
 static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
@@ -113,7 +113,7 @@ int fk_ev_dispatch()
 	 */
 	fk_ev_update_pending_tmev();
 
-	fk_ev_proc_active_ioev();
+	fk_ev_proc_activated_ioev();
 
 	fk_ev_proc_expired_tmev();
 
@@ -137,7 +137,7 @@ int fk_ev_add_ioev(fk_ioev *ioev)
 	char type;
 	int fd, rt;
 
-	/* must be init */
+	/* unnecessary to do so? */
 	if (ioev->activated != FK_IOEV_INIT) {
 		return FK_EV_ERR;
 	}
@@ -167,6 +167,7 @@ int fk_ev_remove_ioev(fk_ioev *ioev)
 	char type;
 	int fd, rt;
 
+	/* unnecessary ? */
 	if (ioev->activated == FK_IOEV_INIT) {
 		return FK_EV_ERR;
 	}
@@ -183,7 +184,7 @@ int fk_ev_remove_ioev(fk_ioev *ioev)
 	if (ioev->activated == FK_IOEV_ACTIVATED) {
 		fk_rawlist_remove_anyone(evmgr.act_ioev, ioev);
 	}
-	ioev->activated = FK_IOEV_INIT;
+	ioev->activated = FK_IOEV_INIT;/* go back to init state */
 
 	if (type & FK_IOEV_READ) {
 		evmgr.read_ev[fd] = NULL;
@@ -354,7 +355,7 @@ void fk_ev_proc_expired_tmev()
 	}
 }
 
-void fk_ev_proc_active_ioev()
+void fk_ev_proc_activated_ioev()
 {
 	int fd;
 	void *arg;
@@ -371,7 +372,7 @@ void fk_ev_proc_active_ioev()
 
 		/* step 1: remove the activated ioev from the activated list first!!!! */
 		fk_rawlist_remove_anyone(evmgr.act_ioev, ioev);
-		ioev->activated = FK_IOEV_UNACTIVATED;
+		ioev->activated = FK_IOEV_UNACTIVATED;/* not in the activated list now */
 		/* step 2: call the callback of the activated ioev */
 		iocb(fd, type, arg);/* maybe fk_ev_remove_ioev() is called in iocb */
 		/* 
