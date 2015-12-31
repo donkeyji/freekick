@@ -23,7 +23,7 @@ typedef int (*fk_tmev_cb) (unsigned, char, void *);
 typedef struct _fk_ioev {
 	int fd;
 	char type;/* FK_IOEV_READ|FK_IOEV_WRITE */
-	int active;/* whether in active list */
+	int activated;/* whether in activated list */
 	void *arg;
 	fk_ioev_cb iocb;
 
