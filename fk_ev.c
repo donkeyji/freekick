@@ -24,7 +24,7 @@
 /* finite state machine for tmev */
 /* 4 kinds of states for fk_tmev */
 #define FK_TMEV_INIT		0/* never added to the evmgr */
-#define FK_TMEV_UNEXPIRED	1/* in the min heap, not in the expired list */
+#define FK_TMEV_PENDING		1/* in the min heap, not in the expired list */
 #define FK_TMEV_EXPIRED		2/* in the expired list, not in the min heap */
 #define FK_TMEV_TEMP		3/* added to the evmgr, but not in the min heap, neither the expired list*/
 
@@ -262,7 +262,7 @@ int fk_ev_add_tmev(fk_tmev *tmev)
 	}
 	tmhp = evmgr.timer_heap;
 	fk_heap_push(tmhp, (fk_leaf *)tmev);
-	tmev->expired = FK_TMEV_UNEXPIRED;/* in the min_heap, not in the expired list */
+	tmev->expired = FK_TMEV_PENDING;/* in the min_heap, not in the expired list */
 	evmgr.tmev_cnt++;
 
 	return FK_EV_OK;
@@ -279,7 +279,7 @@ int fk_ev_remove_tmev(fk_tmev *tmev)
 	}
 
 	/* in the min heap */
-	if (tmev->expired == FK_TMEV_UNEXPIRED) {
+	if (tmev->expired == FK_TMEV_PENDING) {
 		fk_heap_remove(evmgr.timer_heap, (fk_leaf *)tmev);
 	}
 
@@ -349,7 +349,7 @@ void fk_ev_proc_expired_tmev()
 			if (type == FK_TMEV_CYCLE) {
 				fk_util_cal_expire(&(tmev->when), interval);
 				fk_heap_push(evmgr.timer_heap, (fk_leaf *)tmev);
-				tmev->expired = FK_TMEV_UNEXPIRED;/* add to min heap again */
+				tmev->expired = FK_TMEV_PENDING;/* add to min heap again */
 			}
 		}
 		tmev = fk_rawlist_head(evmgr.exp_tmev);
