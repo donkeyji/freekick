@@ -33,7 +33,7 @@ static fk_tmev *fk_ev_get_nearest_tmev();
 static void fk_ev_update_pending_tmev();
 static void fk_ev_proc_activated_ioev();
 static void fk_ev_proc_expired_tmev();
-static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
+static int fk_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
 #if defined(FK_HAVE_EPOLL)
 	#include <fk_ev_epoll.c>
@@ -49,7 +49,7 @@ static int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 static fk_evmgr evmgr;
 
 static fk_leaf_op tmev_op = {
-	fk_ev_tmev_cmp
+	fk_tmev_cmp
 };
 
 void fk_ev_init(unsigned max_files)
@@ -425,7 +425,7 @@ void fk_ev_activate_ioev(int fd, char type)
 	}
 }
 
-int fk_ev_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
+int fk_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
 {
 	fk_tmev *t1, *t2;
 
