@@ -14,6 +14,7 @@
 #include <fk_macro.h>
 #include <fk_log.h>
 
+/* finite state is useful when add/remove ioev or tmev */
 /* finite state machine for ioev */
 /* 3 kinds of states for fk_ioev */
 #define FK_IOEV_INIT 			0/* never added to the evmgr */
