@@ -14,13 +14,18 @@
 #include <fk_macro.h>
 #include <fk_log.h>
 
-#define FK_IOEV_INIT 		0
+/* finite state machine for ioev */
+/* 3 kinds of states for fk_ioev */
+#define FK_IOEV_INIT 			0/* never added to the evmgr */
 #define FK_IOEV_UNACTIVATED 	1/* not in the activated list */
 #define FK_IOEV_ACTIVATED 		2/* in the activated list */
 
-#define FK_TMEV_INIT		0
+/* finite state machine for tmev */
+/* 4 kinds of states for fk_tmev */
+#define FK_TMEV_INIT		0/* never added to the evmgr */
 #define FK_TMEV_UNEXPIRED	1/* in the min heap, not in the expired list */
 #define FK_TMEV_EXPIRED		2/* in the expired list, not in the min heap */
+#define FK_TMEV_PENDING		3/* added to the evmgr, but not in the min heap, neither the expired list*/
 
 static void fk_ev_activate_ioev(int fd, char type);
 static fk_tmev *fk_ev_get_nearest_tmev();
@@ -132,6 +137,11 @@ int fk_ev_add_ioev(fk_ioev *ioev)
 	char type;
 	int fd, rt;
 
+	/* must be init */
+	if (ioev->activated != FK_IOEV_INIT) {
+		return FK_EV_ERR;
+	}
+
 	fd = ioev->fd;
 	type = ioev->type;
 
@@ -156,6 +166,10 @@ int fk_ev_remove_ioev(fk_ioev *ioev)
 {
 	char type;
 	int fd, rt;
+
+	if (ioev->activated == FK_IOEV_INIT) {
+		return FK_EV_ERR;
+	}
 
 	/* must be in the read/write event array */
 	fd = ioev->fd;
@@ -240,6 +254,10 @@ int fk_ev_add_tmev(fk_tmev *tmev)
 {
 	fk_heap *tmhp;
 
+	/* only when the tmev->expired == FK_TMEV_INIT is legal */
+	if (tmev->expired != FK_TMEV_INIT) {
+		return FK_EV_ERR;
+	}
 	tmhp = evmgr.timer_heap;
 	fk_heap_push(tmhp, (fk_leaf *)tmev);
 	tmev->expired = FK_TMEV_UNEXPIRED;/* in the min_heap, not in the expired list */
@@ -248,8 +266,16 @@ int fk_ev_add_tmev(fk_tmev *tmev)
 	return FK_EV_OK;
 }
 
+/*
+ * when tmev->expired == FK_TMEV_PENDING, this interface also works
+ */
 int fk_ev_remove_tmev(fk_tmev *tmev)
 {
+	/* this means the tmev has never been added */
+	if (tmev->expired == FK_TMEV_INIT) {
+		return FK_EV_ERR;
+	}
+
 	/* in the min heap */
 	if (tmev->expired == FK_TMEV_UNEXPIRED) {
 		fk_heap_remove(evmgr.timer_heap, (fk_leaf *)tmev);
@@ -307,7 +333,7 @@ void fk_ev_proc_expired_tmev()
 
 		/* step 1: remove the expired tmev from the expired list first!!!! */
 		fk_rawlist_remove_anyone(evmgr.exp_tmev, tmev);
-		tmev->expired = FK_TMEV_INIT;/* not in the min heap, neither the expired list */
+		tmev->expired = FK_TMEV_PENDING;/* not init, not in the min heap, neither the expired list */
 		/* step 2: call the callback of the expired tmev */
 		rt = tmcb(interval, type, arg);/* maybe fk_ev_remove_tmev() is called in tmcb*/
 		/* 
