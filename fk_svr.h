@@ -107,7 +107,7 @@ void fk_svr_signal_child_handler(int sig);
 
 /* related to dump/restore */
 void fk_fkdb_load(fk_str *db_file);
-void fk_fkdb_save_background();
+void fk_fkdb_bgsave();
 int fk_fkdb_save();
 
 /* related to replication */

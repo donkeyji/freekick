@@ -216,7 +216,7 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 	fk_ev_stat();
 #endif
 
-	fk_fkdb_save_background();
+	fk_fkdb_bgsave();
 
 	fk_svr_sync_with_master();
 
