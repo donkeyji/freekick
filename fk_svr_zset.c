@@ -18,6 +18,14 @@ int fk_cmd_zadd(fk_conn *conn)
 	}
 	sl = (fk_skiplist *)fk_item_raw(itm_sl);
 
+	if ((conn->arg_cnt - 2) % 2 != 0) {
+		rt = fk_conn_add_error_rsp(conn, FK_RSP_ARGC_ERR, sizeof(FK_RSP_ARGC_ERR) - 1);
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
+		}
+		return FK_SVR_OK;
+	}
+
 	for (i = 2; i < conn->arg_cnt; i += 2) {
 		itm_score = fk_conn_get_arg(conn, i);
 		itm_str = fk_conn_get_arg(conn, i + 1);
