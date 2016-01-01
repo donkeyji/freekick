@@ -100,7 +100,7 @@ void t_list()
 	int x[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	fk_list *ll = fk_list_create(&oopp);
 	for (i = 0; i < 10; i++) {
-		fk_list_head_insert(ll, x+i);
+		fk_list_insert_head(ll, x+i);
 	}
 	printf("list len: %zu\n", ll->len);
 	fk_list_iter *iter = fk_list_iter_begin(ll, FK_LIST_ITER_H2T);
