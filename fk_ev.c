@@ -226,10 +226,6 @@ void fk_ioev_destroy(fk_ioev *ioev)
 	fk_mem_free(ioev);
 }
 
-/* 
- * no need to delete timer
- * so fk_ev_timer_del not supplied 
- */
 fk_tmev *fk_tmev_create(unsigned interval, char type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev *tmev;
