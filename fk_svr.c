@@ -296,7 +296,7 @@ void fk_svr_init()
 	fk_fkdb_load(server.db_file);
 }
 
-void fk_svr_final()
+void fk_svr_exit()
 {
 	int rt;
 

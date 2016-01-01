@@ -20,7 +20,7 @@ typedef struct _fk_pool {
 } fk_pool;
 
 void fk_pool_init();
-void fk_pool_final();
+void fk_pool_exit();
 fk_pool *fk_pool_create(uint16_t unit_size, uint16_t init_cnt);
 void fk_pool_destroy(fk_pool *pool);
 void *fk_pool_malloc(fk_pool *pool);

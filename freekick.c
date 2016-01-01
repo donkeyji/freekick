@@ -32,7 +32,7 @@ static void fk_signal_child_handler(int sig);
 
 static void fk_main_init(char *conf_path);
 static void fk_main_cycle();
-static void fk_main_final();
+static void fk_main_exit();
 
 /*
 static void fk_daemon_run_old()
@@ -267,10 +267,10 @@ void fk_main_cycle()
 	fk_ev_cycle();
 }
 
-void fk_main_final()
+void fk_main_exit()
 {
-	/* maybe some other fk_xxx_final() to call here */
-	fk_svr_final();
+	/* maybe some other fk_xxx_exit() to call here */
+	fk_svr_exit();
 }
 
 int main(int argc, char **argv)
@@ -296,7 +296,7 @@ int main(int argc, char **argv)
 
 	fk_main_cycle();
 
-	fk_main_final();
+	fk_main_exit();
 
 	return 0;
 }
