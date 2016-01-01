@@ -67,6 +67,7 @@ typedef struct _fk_evmgr {
 	/* actived file ev */
 	fk_ioev_list *act_ioev;
 	fk_tmev_list *exp_tmev;/* when SINGLE expire, fk_mem_free() */
+	fk_tmev_list *old_tmev;
 
 	/* use array to save file ev */
 	/* conn + listen */
