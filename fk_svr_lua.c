@@ -374,6 +374,15 @@ int fk_cmd_eval(fk_conn *conn)
 	}
 
 	nkey = atoi(fk_str_raw(str_nkey));
+
+	if (nkey != conn->arg_cnt - 3) {
+		rt = fk_conn_add_error_rsp(conn, FK_RSP_ARGC_ERR, sizeof(FK_RSP_ARGC_ERR) - 1);
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
+		}
+		return FK_SVR_OK;
+	}
+
 	keys = (char **)calloc(nkey, sizeof(char *));
 	for (i = 0; i < nkey; i++) {
 		itm_arg = fk_conn_get_arg(conn, 3 + i);

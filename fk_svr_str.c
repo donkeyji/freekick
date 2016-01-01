@@ -54,6 +54,14 @@ int fk_cmd_mset(fk_conn *conn)
 	int rt, i;
 	fk_item *key, *value;
 
+	if ((conn->arg_cnt - 1) % 2 != 0) {
+		rt = fk_conn_add_error_rsp(conn, FK_RSP_ARGC_ERR, sizeof(FK_RSP_ARGC_ERR) - 1);
+		if (rt == FK_SVR_ERR) {
+			return FK_SVR_ERR;
+		}
+		return FK_SVR_OK;
+	}
+
 	for (i = 1; i < conn->arg_cnt; i += 2) {
 		key = fk_conn_get_arg(conn, i);
 		value = fk_conn_get_arg(conn, i + 1);

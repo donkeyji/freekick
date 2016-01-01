@@ -77,7 +77,7 @@ typedef struct _fk_svr {
 typedef struct _fk_proto {
 	char *name;
 	int type;
-	unsigned arg_cnt;
+	int arg_cnt;
 	int (*handler) (fk_conn *conn);
 } fk_proto;
 
