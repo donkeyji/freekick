@@ -384,7 +384,7 @@ int fk_cmd_eval(fk_conn *conn)
 		return FK_SVR_OK;
 	}
 
-	keys = (char **)calloc(nkey, sizeof(char *));
+	keys = (char **)fk_mem_calloc(nkey, sizeof(char *));
 	for (i = 0; i < nkey; i++) {
 		itm_arg = fk_conn_get_arg(conn, 3 + i);
 		keys[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
@@ -392,7 +392,7 @@ int fk_cmd_eval(fk_conn *conn)
 	fk_lua_push_paras(keys, nkey, FK_LUA_PARA_KEYS);
 
 	nargv = conn->arg_cnt - 1 - 2 - nkey;
-	argv = (char **)calloc(nargv, sizeof(char *));
+	argv = (char **)fk_mem_calloc(nargv, sizeof(char *));
 	for (i = 0; i < nargv; i++) {
 		itm_arg = fk_conn_get_arg(conn, 3 + nkey + i);
 		argv[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
