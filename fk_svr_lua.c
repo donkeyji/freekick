@@ -387,7 +387,7 @@ int fk_cmd_eval(fk_conn *conn)
 	nkey = atoi(fk_str_raw(str_nkey));
 
 	/* check the number of the arguments */
-	if (nkey != conn->arg_cnt - 3) {
+	if (3 + nkey > conn->arg_cnt) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_ARGC_ERR, sizeof(FK_RSP_ARGC_ERR) - 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
