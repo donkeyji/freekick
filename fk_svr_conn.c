@@ -19,7 +19,6 @@
 static void fk_conn_read_cb(int fd, char type, void *ext);
 static void fk_conn_write_cb(int fd, char type, void *ext);
 static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
-static void fk_conn_free_args(fk_conn *conn);
 static int fk_conn_parse_req(fk_conn *conn);
 static int fk_conn_recv_data(fk_conn *conn);
 static int fk_conn_proc_cmd(fk_conn *conn);
