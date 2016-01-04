@@ -46,7 +46,6 @@ fk_conn *fk_conn_create(int fd)
 	conn->read_ev = NULL;
 	conn->write_ev = NULL;
 	conn->timer = NULL;
-	conn->write_added = 0;
 	if (fd != FK_CONN_FAKE) {
 		conn->read_ev = fk_ioev_create(fd, FK_IOEV_READ, conn, fk_conn_read_cb);
 		fk_ev_add_ioev(conn->read_ev);
@@ -56,6 +55,8 @@ fk_conn *fk_conn_create(int fd)
 		conn->timer = fk_tmev_create(5000, FK_TMEV_CYCLE, conn, fk_conn_timer_cb);
 		fk_ev_add_tmev(conn->timer);
 	}
+	conn->write_added = 0;
+
 	conn->last_recv = time(NULL);/* save the current time */
 
 	conn->arg_vtr = fk_vtr_create();
