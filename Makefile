@@ -45,8 +45,8 @@ $(SVRBIN) : $(SVROBJS)
 #-include $(SVRDEPS) $(CLTDEPS)
 -include $(DEPS)
 
-$(DEPS): $(SVRSRCS) $(CLTSRCS)
-	@$(CC) -MM $(CFLAGS) $^ > $(DEPS)
+$(DEPS):
+	@$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
 
 #$(CLTDEPS): %.d : %.c 
 	#@$(CC) -MM $(CFLAGS) $< -o $@
@@ -80,5 +80,5 @@ $(DEPS): $(SVRSRCS) $(CLTSRCS)
 
 rebuild: clean all
 
-clean :
+clean:
 	@$(RM) $(SVROBJS) $(SVRBIN) $(DEPS)
