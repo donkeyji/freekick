@@ -42,12 +42,16 @@ fk_conn *fk_conn_create(int fd)
 	conn->rbuf = fk_buf_create();
 	conn->wbuf = fk_buf_create();
 
+	/* every fields should be initialized */
+	conn->read_ev = NULL;
+	conn->write_ev = NULL;
+	conn->timer = NULL;
+	conn->write_added = 0;
 	if (fd != FK_CONN_FAKE) {
 		conn->read_ev = fk_ioev_create(fd, FK_IOEV_READ, conn, fk_conn_read_cb);
 		fk_ev_add_ioev(conn->read_ev);
 
 		conn->write_ev = fk_ioev_create(fd, FK_IOEV_WRITE, conn, fk_conn_write_cb);
-		conn->write_added = 0;
 
 		conn->timer = fk_tmev_create(5000, FK_TMEV_CYCLE, conn, fk_conn_timer_cb);
 		fk_ev_add_tmev(conn->timer);
@@ -76,11 +80,11 @@ void fk_conn_destroy(fk_conn *conn)
 			fk_ev_remove_ioev(conn->write_ev);
 		}
 		fk_ioev_destroy(conn->write_ev);
-		conn->write_added = 0;
 
 		fk_ev_remove_tmev(conn->timer);
 		fk_tmev_destroy(conn->timer);
 	}
+	conn->write_added = 0;
 
 	fk_buf_destroy(conn->rbuf);
 	fk_buf_destroy(conn->wbuf);

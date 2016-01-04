@@ -45,7 +45,7 @@ void fk_lua_init()
 	//luaL_register(gL, "freekick", fklib);
 	luaL_register(gL, "redis", fklib);/* just for convenience when debuging by using "redis" */
 
-	lua_conn = fk_conn_create(FK_CONN_FAKE);
+	//lua_conn = fk_conn_create(FK_CONN_FAKE);
 }
 
 int fk_lua_pcall(lua_State *L)
@@ -300,7 +300,7 @@ int fk_lua_run_script(fk_conn *conn, char *code)
 		return 0;
 	}
 
-	//lua_conn = fk_conn_create(FK_CONN_FAKE);
+	lua_conn = fk_conn_create(FK_CONN_FAKE);
 	lua_conn->db_idx = conn->db_idx;/* keep the same db_idx */
    	rt = lua_pcall(gL, 0, LUA_MULTRET, 0);
 	if (rt != 0) {/* error occurs when run script */
@@ -312,8 +312,8 @@ int fk_lua_run_script(fk_conn *conn, char *code)
 		fk_conn_destroy(lua_conn);/* destroy this fake client */
 		return 0;
 	}
-	//fk_conn_destroy(lua_conn);/* destroy this fake client */
-	fk_conn_free_args(lua_conn);
+	fk_conn_destroy(lua_conn);/* destroy this fake client */
+	//fk_conn_free_args(lua_conn);
 
 	top2 = lua_gettop(gL);
 	nret = top2 - top1;/* get the number of return value */
