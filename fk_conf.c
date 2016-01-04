@@ -39,32 +39,32 @@ static int fk_conf_proc_line(fk_cfline *line);
 static void fk_conf_reset_line(fk_cfline *line);
 static fk_dtv *fk_conf_search(fk_str *name);
 
-static int fk_conf_handle_port(fk_cfline *line);
-static int fk_conf_handle_daemon(fk_cfline *line);
-static int fk_conf_handle_dump(fk_cfline *line);
-static int fk_conf_handle_pidpath(fk_cfline *line);
-static int fk_conf_handle_logpath(fk_cfline *line);
-static int fk_conf_handle_maxconn(fk_cfline *line);
-static int fk_conf_handle_dbcnt(fk_cfline *line);
-static int fk_conf_handle_addr(fk_cfline *line);
-static int fk_conf_handle_loglevel(fk_cfline *line);
-static int fk_conf_handle_dbfile(fk_cfline *line);
-static int fk_conf_handle_timeout(fk_cfline *line);
-static int fk_conf_handle_dir(fk_cfline *line);
+static int fk_conf_parse_port(fk_cfline *line);
+static int fk_conf_parse_daemon(fk_cfline *line);
+static int fk_conf_parse_dump(fk_cfline *line);
+static int fk_conf_parse_pidpath(fk_cfline *line);
+static int fk_conf_parse_logpath(fk_cfline *line);
+static int fk_conf_parse_maxconn(fk_cfline *line);
+static int fk_conf_parse_dbcnt(fk_cfline *line);
+static int fk_conf_parse_addr(fk_cfline *line);
+static int fk_conf_parse_loglevel(fk_cfline *line);
+static int fk_conf_parse_dbfile(fk_cfline *line);
+static int fk_conf_parse_timeout(fk_cfline *line);
+static int fk_conf_parse_dir(fk_cfline *line);
 
 static fk_dtv dtv_map[] = {
-	{"port", 2, fk_conf_handle_port},
-	{"daemon", 1, fk_conf_handle_daemon},
-	{"pidpath", 2, fk_conf_handle_pidpath},
-	{"logpath", 2, fk_conf_handle_logpath},
-	{"dump", 1, fk_conf_handle_dump},
-	{"dbfile", 2, fk_conf_handle_dbfile},
-	{"dir", 2, fk_conf_handle_dir},
-	{"loglevel", 2, fk_conf_handle_loglevel},
-	{"maxconn", 2, fk_conf_handle_maxconn},
-	{"dbcnt", 2, fk_conf_handle_dbcnt},
-	{"timeout", 2, fk_conf_handle_timeout},
-	{"addr", 2, fk_conf_handle_addr},
+	{"port", 2, fk_conf_parse_port},
+	{"daemon", 1, fk_conf_parse_daemon},
+	{"pidpath", 2, fk_conf_parse_pidpath},
+	{"logpath", 2, fk_conf_parse_logpath},
+	{"dump", 1, fk_conf_parse_dump},
+	{"dbfile", 2, fk_conf_parse_dbfile},
+	{"dir", 2, fk_conf_parse_dir},
+	{"loglevel", 2, fk_conf_parse_loglevel},
+	{"maxconn", 2, fk_conf_parse_maxconn},
+	{"dbcnt", 2, fk_conf_parse_dbcnt},
+	{"timeout", 2, fk_conf_parse_timeout},
+	{"addr", 2, fk_conf_parse_addr},
 	{NULL, 0, NULL}
 };
 
@@ -278,7 +278,7 @@ void fk_conf_reset_line(fk_cfline *line)
 	}
 }
 
-int fk_conf_handle_port(fk_cfline *line)
+int fk_conf_parse_port(fk_cfline *line)
 {
 	int rt, port;
 
@@ -301,37 +301,37 @@ int fk_conf_handle_port(fk_cfline *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_daemon(fk_cfline *line)
+int fk_conf_parse_daemon(fk_cfline *line)
 {
 	setting.daemon = 1;
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_dump(fk_cfline *line)
+int fk_conf_parse_dump(fk_cfline *line)
 {
 	setting.dump = 1;
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_pidpath(fk_cfline *line)
+int fk_conf_parse_pidpath(fk_cfline *line)
 {
 	setting.pid_path = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_logpath(fk_cfline *line)
+int fk_conf_parse_logpath(fk_cfline *line)
 {
 	setting.log_path = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_dbfile(fk_cfline *line)
+int fk_conf_parse_dbfile(fk_cfline *line)
 {
 	setting.db_file = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_maxconn(fk_cfline *line)
+int fk_conf_parse_maxconn(fk_cfline *line)
 {
 	int rt, max_conn;
 
@@ -345,7 +345,7 @@ int fk_conf_handle_maxconn(fk_cfline *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_dbcnt(fk_cfline *line)
+int fk_conf_parse_dbcnt(fk_cfline *line)
 {
 	int rt, dbcnt;
 
@@ -359,13 +359,13 @@ int fk_conf_handle_dbcnt(fk_cfline *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_addr(fk_cfline *line)
+int fk_conf_parse_addr(fk_cfline *line)
 {
 	setting.addr = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_loglevel(fk_cfline *line)
+int fk_conf_parse_loglevel(fk_cfline *line)
 {
 	char *level;
 
@@ -385,7 +385,7 @@ int fk_conf_handle_loglevel(fk_cfline *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_timeout(fk_cfline *line)
+int fk_conf_parse_timeout(fk_cfline *line)
 {
 	int rt, timeout;
 
@@ -400,7 +400,7 @@ int fk_conf_handle_timeout(fk_cfline *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_handle_dir(fk_cfline *line)
+int fk_conf_parse_dir(fk_cfline *line)
 {
 	setting.dir = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
