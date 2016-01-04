@@ -82,6 +82,7 @@ typedef struct _fk_proto {
 } fk_proto;
 
 /* interface of fk_conn */
+#define FK_CONN_FAKE	-1	/* a fake connection, of which fd is -1 */
 fk_conn *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn *conn);
 void fk_conn_free_args(fk_conn *conn);
