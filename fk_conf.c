@@ -226,6 +226,7 @@ fk_dtv *fk_conf_search(fk_str *name)
 {
 	unsigned i;
 
+	/* no need to use dictionary */
 	for (i = 0; dtv_map[i].name != NULL; i++) {
 		if (strcasecmp(fk_str_raw(name), dtv_map[i].name) == 0) {
 			return &dtv_map[i];
