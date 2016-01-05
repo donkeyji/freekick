@@ -85,6 +85,9 @@ void fk_conn_destroy(fk_conn *conn)
 		fk_ev_remove_tmev(conn->timer);
 		fk_tmev_destroy(conn->timer);
 	}
+	conn->read_ev = NULL;
+	conn->write_ev = NULL;
+	conn->timer = NULL;
 	conn->write_added = 0;
 
 	fk_buf_destroy(conn->rbuf);
