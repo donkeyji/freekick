@@ -159,3 +159,5 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 64.把fk_epoll.c/fk_kqueue.c/fk_poll.c改名为fk_ev_epoll.c/fk_ev_kqueue.c/fk_ev_poll.c，更好的表明这三个模块实质为fk_ev.c子模块。
 
 65.关于fk_ev模块的使用:必须按照规则调用，先create-->add-->remove，fk_ev不保证event对象的产生和回收，全部由外部逻辑处理，不正确的调用会导致内存泄露，段错误等问题。
+
+66.fk_svr_lua中lua_conn的create/free/destroy的时机。
