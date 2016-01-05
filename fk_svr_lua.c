@@ -45,9 +45,10 @@ void fk_lua_init()
 	//luaL_register(gL, "freekick", fklib);
 	luaL_register(gL, "redis", fklib);/* just for convenience when debuging by using "redis" */
 
-	//lua_conn = fk_conn_create(FK_CONN_FAKE);
+	lua_conn = fk_conn_create(FK_CONN_FAKE);
 }
 
+/* similar to fk_conn_read_cb */
 int fk_lua_pcall(lua_State *L)
 {
 	int i, rt;
@@ -57,20 +58,13 @@ int fk_lua_pcall(lua_State *L)
 	fk_item *itm;
 	const char *arg;
 
-	/* 
-	 * create a fake client used for executing a freekick command,
-	 * of which fd is invalid, just ignore the error generated 
-	 * when calling fk_ioev_add()
-	 */
-
-	/* get the argument count */
-	lua_conn->arg_cnt = lua_gettop(L);
+	/* 1. similar to the function: fk_conn_req_parse() */
+	lua_conn->arg_cnt = lua_gettop(L); /* get the argument count */
 
 	/* allocate memory for arguments */
 	fk_vtr_stretch(lua_conn->arg_vtr, (size_t)(lua_conn->arg_cnt));
 	fk_vtr_stretch(lua_conn->len_vtr, (size_t)(lua_conn->arg_cnt));
 
-	/* similar to the function: fk_conn_req_parse() */
 	for (i = 0; i < lua_conn->arg_cnt; i++) {
 		/* do not use luaL_checklstring() here, because if luaL_checklstring()
 		 * fails, this function will return to lua directly, so that error 
@@ -89,8 +83,10 @@ int fk_lua_pcall(lua_State *L)
 	}
 	lua_conn->parse_done = 1;
 
+	/* 2. process command */
 	fk_lua_conn_proc_cmd(lua_conn);
 
+	/* 3. parse the reply in lua_conn->wbuf */
 	/* 
 	 * parse data in lua_conn->wbuf, which is the reply to the client.
 	 * push them to lua level
@@ -114,7 +110,6 @@ int fk_lua_pcall(lua_State *L)
 		rt = fk_lua_parse_bulk(L, buf);
 		break;
 	}
-
 
 	return rt;/* number of return value */
 }
@@ -154,6 +149,7 @@ int fk_lua_conn_proc_cmd(fk_conn *conn)
 		fk_conn_add_error_rsp(conn, "cmd handler failed", strlen("cmd handler failed"));
 		return 0;
 	}
+	fk_conn_free_args(conn);
 
 	return 0;
 }
@@ -300,8 +296,8 @@ int fk_lua_run_script(fk_conn *conn, char *code)
 		return 0;
 	}
 
-	lua_conn = fk_conn_create(FK_CONN_FAKE);
 	lua_conn->db_idx = conn->db_idx;/* keep the same db_idx */
+
    	rt = lua_pcall(gL, 0, LUA_MULTRET, 0);
 	if (rt != 0) {/* error occurs when run script */
 		fk_log_info("run string failed\n");
@@ -309,11 +305,8 @@ int fk_lua_run_script(fk_conn *conn, char *code)
 		fk_conn_add_bulk_rsp(conn, slen);
 		fk_conn_add_content_rsp(conn, (char *)err, slen);
 		lua_pop(gL, 1);/* must pop this error message */
-		fk_conn_destroy(lua_conn);/* destroy this fake client */
 		return 0;
 	}
-	fk_conn_destroy(lua_conn);/* destroy this fake client */
-	//fk_conn_free_args(lua_conn);
 
 	top2 = lua_gettop(gL);
 	nret = top2 - top1;/* get the number of return value */
