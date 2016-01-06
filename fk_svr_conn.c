@@ -46,7 +46,7 @@ fk_conn *fk_conn_create(int fd)
 	conn->read_ev = NULL;
 	conn->write_ev = NULL;
 	conn->timer = NULL;
-	if (fd != FK_CONN_FAKE) {
+	if (fd != FK_CONN_FAKE_FD) {
 		conn->read_ev = fk_ioev_create(fd, FK_IOEV_READ, conn, fk_conn_read_cb);
 		fk_ev_add_ioev(conn->read_ev);
 
@@ -73,7 +73,7 @@ fk_conn *fk_conn_create(int fd)
 void fk_conn_destroy(fk_conn *conn)
 {
 	/* remove from freekick and unregister event from event manager */
-	if (conn->fd != FK_CONN_FAKE) {
+	if (conn->fd != FK_CONN_FAKE_FD) {
 		fk_ev_remove_ioev(conn->read_ev);
 		fk_ioev_destroy(conn->read_ev);
 
@@ -114,6 +114,7 @@ void fk_svr_add_conn(int fd)
 	fk_conn *conn;
 
 	conn = fk_conn_create(fd);
+	fk_conn_set_type(conn, FK_CONN_REAL);
 
 	/* added to the map */
 	server.conns_tab[conn->fd] = conn;

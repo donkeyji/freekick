@@ -33,8 +33,11 @@
 
 #define FK_PROTO_VARLEN		0
 
+#define FK_CONN_REAL	0
+#define FK_CONN_FAKE	1
 typedef struct _fk_conn {
 	int fd;
+	int type;/* FK_CONN_REAL | FK_CONN_FAKE */
 	fk_ioev *read_ev;
 	fk_ioev *write_ev;
 	int write_added;
@@ -82,10 +85,12 @@ typedef struct _fk_proto {
 } fk_proto;
 
 /* interface of fk_conn */
-#define FK_CONN_FAKE	-1	/* a fake connection, of which fd is -1 */
+#define FK_CONN_FAKE_FD		-1	/* a fake connection, of which fd is -1 */
 fk_conn *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn *conn);
 void fk_conn_free_args(fk_conn *conn);
+#define fk_conn_set_type(conn, t)		((conn)->type = (t))
+#define fk_conn_get_type(conn)			((conn)->type)
 int fk_conn_add_status_rsp(fk_conn *conn, char *stat, size_t stat_len);
 int fk_conn_add_error_rsp(fk_conn *conn, char *error, size_t error_len);
 int fk_conn_add_content_rsp(fk_conn *conn, char *content, size_t content_len);

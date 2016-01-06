@@ -45,7 +45,8 @@ void fk_lua_init()
 	//luaL_register(gL, "freekick", fklib);
 	luaL_register(gL, "redis", fklib);/* just for convenience when debuging by using "redis" */
 
-	lua_conn = fk_conn_create(FK_CONN_FAKE);
+	lua_conn = fk_conn_create(FK_CONN_FAKE_FD);
+	fk_conn_set_type(lua_conn, FK_CONN_FAKE);
 }
 
 /* similar to fk_conn_read_cb */
@@ -167,6 +168,8 @@ int fk_lua_parse_status(lua_State *L, fk_buf *buf)
 
 	lua_rawset(L, -3);
 
+	fk_buf_low_inc(buf, fk_buf_payload_len(buf));
+
 	return 1;
 }
 
@@ -182,6 +185,7 @@ int fk_lua_parse_error(lua_State *L, fk_buf *buf)
 
 	lua_rawset(L, -3);
 
+	fk_buf_low_inc(buf, fk_buf_payload_len(buf));
 	return 1;
 }
 
