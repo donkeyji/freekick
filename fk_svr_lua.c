@@ -90,6 +90,7 @@ int fk_lua_pcall(lua_State *L)
 	/* 
 	 * parse data in lua_conn->wbuf, which is the reply to the client.
 	 * push them to lua level
+	 * to do: consume the lua_conn->wbuf ????
 	 */
 	buf = lua_conn->wbuf;
 	start = fk_buf_payload_start(buf);
