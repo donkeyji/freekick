@@ -19,6 +19,5 @@ fk_vtr *fk_vtr_create()
 void fk_vtr_destroy(fk_vtr *vtr)
 {
 	fk_mem_free(vtr->array);
-	vtr->array = NULL;
 	fk_mem_free(vtr);
 }
