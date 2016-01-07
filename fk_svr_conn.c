@@ -91,15 +91,11 @@ void fk_conn_destroy(fk_conn *conn)
 	conn->write_added = 0;
 
 	fk_buf_destroy(conn->rbuf);
-	conn->rbuf = NULL;
 	fk_buf_destroy(conn->wbuf);
-	conn->wbuf = NULL;
 
 	fk_conn_free_args(conn);/* free arg_vtr first */
 	fk_vtr_destroy(conn->arg_vtr);/* then free vector */
-	conn->arg_vtr = NULL;
 	fk_vtr_destroy(conn->len_vtr);
-	conn->len_vtr = NULL;
 
 	conn->last_recv = -1;
 
