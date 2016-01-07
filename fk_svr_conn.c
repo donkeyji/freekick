@@ -99,8 +99,9 @@ void fk_conn_destroy(fk_conn *conn)
 
 	conn->last_recv = -1;
 
-	close(conn->fd);
-	conn->fd = -1;
+	if (conn->fd != FK_CONN_FAKE_FD) {
+		close(conn->fd);
+	}
 
 	fk_mem_free(conn);/* should be the last step */
 }
