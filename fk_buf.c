@@ -20,7 +20,7 @@ void fk_buf_destroy(fk_buf *buf)
 }
 
 #ifdef FK_DEBUG
-void fk_buf_print(fk_buf *buf)
+void fk_buf_print(const fk_buf *buf)
 {
 	size_t len;
 	char ps[4096];
