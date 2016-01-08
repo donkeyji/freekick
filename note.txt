@@ -165,6 +165,10 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 67.在fk_xxx_destroy函数中，不必要在调用了某个field的destroy函数后对其赋值NULL。
 
 68.命名方式:
-函数:
+(1)function:
 对struct:fk_class_verb[_obj]，如fk_list_insert_head/fk_str_create
 对module:fk_mod_verb[_obj]，如fk_log_init/fk_ev_add_ioev
+(2)struct:
+fk_class
+(3)macro:
+FK_CLASS_XXX/FK_MOD_XXX
