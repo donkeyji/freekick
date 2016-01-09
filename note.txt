@@ -172,3 +172,5 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 fk_class
 (3)macro:
 FK_CLASS_XXX/FK_MOD_XXX
+
+69.为何我使用jemalloc时就无法使用valgrind来检查memory leak呢？去掉Makefile中与jemalloc相关的option，使用原生的libc的malloc就可以使用valgrind检测memory leak了。
