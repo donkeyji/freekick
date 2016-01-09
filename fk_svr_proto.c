@@ -68,6 +68,7 @@ void fk_proto_init()
 		value = fk_elt_value(elt);
 		fk_log_debug("proto key: %s\n", fk_str_raw(key));
 	}
+	fk_dict_iter_end(iter);
 #endif
 }
 
