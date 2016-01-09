@@ -174,3 +174,5 @@ fk_class
 FK_CLASS_XXX/FK_MOD_XXX
 
 69.为何我使用jemalloc时就无法使用valgrind来检查memory leak呢？去掉Makefile中与jemalloc相关的option，使用原生的libc的malloc就可以使用valgrind检测memory leak了。难怪这么长的时间我使用valgrind都查不出memory leak来，我靠...
+
+70.const的使用有没有必要呢?
