@@ -91,7 +91,7 @@ void fk_mem_free(void *ptr)
 	allocated -= real_size;
 	freed += real_size;
 	free_times += 1;
-	// how to get the size of the freeing memory???????
+	/* how to get the size of the freeing memory??????? */
 	free(ptr);
 }
 
