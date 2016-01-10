@@ -18,11 +18,13 @@ endif
 # the default malloc/free is original libc malloc/free
 ifeq ($(jemalloc),y)
 MALLOC_CFLAGS := -D USE_JEMALLOC -D JEMALLOC_MANGLE
+MALLOC_LDFLAGS := -ljemalloc
 endif
 
 # gprof
 ifeq ($(gprof),y)
 GPROF_CFLAGS := -g -pg -lc_p
+GPROF_LDFLAGS := -pg -lc_p
 endif
 
 CFLAGS := $(INCLUDE) $(BASIC_CFLAGS) $(EXTRA_CFLAGS) $(MALLOC_CFLAGS) $(GPROF_CFLAGS)
@@ -31,15 +33,8 @@ CFLAGS := $(INCLUDE) $(BASIC_CFLAGS) $(EXTRA_CFLAGS) $(MALLOC_CFLAGS) $(GPROF_CF
 # -ldl: needed when in linux, but not in mac
 # -lm: needed when in linux, but not in mac
 # ------------------------------------------------------------
-ifeq ($(gprof),y)
-	GPROF_LDFLAGS := -pg -lc_p
-endif
-
-ifeq ($(malloc),jemalloc)
-MALLOC_LDFLAGS := -ljemalloc
-endif
-
 LDFLAGS := $(BASIC_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
+
 
 CC = gcc
 
