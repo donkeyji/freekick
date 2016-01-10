@@ -23,10 +23,11 @@
 #include <fk_def.h>
 #include <fk_mem.h>
 
-static size_t allocated = 0;
-static size_t freed = 0;
-static size_t alloc_times = 0;
-static size_t free_times = 0;
+/* 
+ * only works in the condition of single thread 
+ * the condition of multi-thread is not considered here
+ */
+static size_t total_alloc = 0;
 
 static void fk_mem_panic()
 {
@@ -46,8 +47,7 @@ void *fk_mem_alloc(size_t size)
 		fk_mem_panic();
 	}
 	real_size = fk_mem_malloc_size(ptr);
-	allocated += real_size;
-	alloc_times += 1;
+	total_alloc += real_size;
 	return ptr;
 }
 
@@ -61,8 +61,7 @@ void *fk_mem_calloc(size_t count, size_t size)
 		fk_mem_panic();
 	}
 	real_size = fk_mem_malloc_size(ptr);
-	allocated += real_size;
-	alloc_times += 1;
+	total_alloc += real_size;
 	return ptr;
 }
 
@@ -79,7 +78,7 @@ void *fk_mem_realloc(void *ptr, size_t size)
 	}
 
 	new_size = fk_mem_malloc_size(ptr);
-	allocated = allocated - old_size + new_size;
+	total_alloc = total_alloc - old_size + new_size;
 
 	return new_ptr;
 }
@@ -88,24 +87,12 @@ void fk_mem_free(void *ptr)
 {
 	size_t real_size;
 	real_size = fk_mem_malloc_size(ptr);
-	allocated -= real_size;
-	freed += real_size;
-	free_times += 1;
+	total_alloc -= real_size;
 	/* how to get the size of the freeing memory??????? */
 	free(ptr);
 }
 
-size_t fk_mem_allocated()
+size_t fk_mem_get_alloc()
 {
-	return allocated;
-}
-
-size_t fk_mem_alloc_times()
-{
-	return alloc_times;
-}
-
-size_t fk_mem_free_times()
-{
-	return free_times;
+	return total_alloc;
 }
