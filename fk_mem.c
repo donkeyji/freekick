@@ -4,8 +4,8 @@
 #include <unistd.h>
 
 /*
- * 1. use jemalloc
- * 2. use the original malloc from libc
+ * 1. use the better malloc/free from jemalloc
+ * 2. use the original malloc/free from libc
  */
 #if defined(USE_JEMALLOC)
 	#include <jemalloc/jemalloc.h>
