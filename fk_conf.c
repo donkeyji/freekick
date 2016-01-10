@@ -269,6 +269,9 @@ void fk_conf_reset_line(fk_cfline *line)
 
 	line->no = 0;
 	line->cnt = 0;
+	if (line->buf != NULL) {
+		free(line->buf);/* do not use fk_mem_free() here */
+	}
 	line->buf = NULL;
 	line->len = 0;
 	for (i = 0; i < FK_CONF_MAX_FIELDS; i++) {
@@ -316,18 +319,21 @@ int fk_conf_parse_dump(fk_cfline *line)
 
 int fk_conf_parse_pidpath(fk_cfline *line)
 {
+	fk_str_destroy(setting.pid_path);
 	setting.pid_path = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
 int fk_conf_parse_logpath(fk_cfline *line)
 {
+	fk_str_destroy(setting.log_path);
 	setting.log_path = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
 int fk_conf_parse_dbfile(fk_cfline *line)
 {
+	fk_str_destroy(setting.db_file);
 	setting.db_file = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
@@ -362,6 +368,7 @@ int fk_conf_parse_dbcnt(fk_cfline *line)
 
 int fk_conf_parse_addr(fk_cfline *line)
 {
+	fk_str_destroy(setting.addr);
 	setting.addr = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
@@ -403,6 +410,7 @@ int fk_conf_parse_timeout(fk_cfline *line)
 
 int fk_conf_parse_dir(fk_cfline *line)
 {
+	fk_str_destroy(setting.dir);/* release the default value */
 	setting.dir = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
