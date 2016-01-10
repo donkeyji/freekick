@@ -3,20 +3,24 @@
 
 #include <unistd.h>
 
-#include <jemalloc/jemalloc.h>
+/*
+ * 1. use jemalloc
+ * 2. use the original malloc from libc
+ */
+#if defined(USE_JEMALLOC)
+	#include <jemalloc/jemalloc.h>
+	#define fk_mem_malloc_size	malloc_usable_size
+#else
+	#if defined(__APPLE__)
+		#include <malloc/malloc.h>
+		#define fk_mem_malloc_size	malloc_size
+	#else
+		#include <malloc.h>
+		#define fk_mem_malloc_size	malloc_usable_size
+	#endif
+#endif
 
 #include <fk_def.h>
-
-/*
-#ifdef __APPLE__
-#include <malloc/malloc.h>
-#else
-#ifdef __linux__
-#include <malloc.h>
-#endif
-#endif
-*/
-
 #include <fk_mem.h>
 
 static size_t allocated = 0;
@@ -41,12 +45,8 @@ void *fk_mem_alloc(size_t size)
 	if (ptr == NULL) {
 		fk_mem_panic();
 	}
-//#ifdef __APPLE__
-		//real_size = malloc_size(ptr);
-//#else
-		real_size = malloc_usable_size(ptr);
-//#endif
-		allocated += real_size;
+	real_size = fk_mem_malloc_size(ptr);
+	allocated += real_size;
 	alloc_times += 1;
 	return ptr;
 }
@@ -60,12 +60,8 @@ void *fk_mem_calloc(size_t count, size_t size)
 	if (ptr == NULL) {
 		fk_mem_panic();
 	}
-//#ifdef __APPLE__
-		//real_size = malloc_size(ptr);
-//#else
-		real_size = malloc_usable_size(ptr);
-//#endif
-		allocated += real_size;
+	real_size = fk_mem_malloc_size(ptr);
+	allocated += real_size;
 	alloc_times += 1;
 	return ptr;
 }
@@ -75,22 +71,14 @@ void *fk_mem_realloc(void *ptr, size_t size)
 	void *new_ptr;
 	size_t old_size, new_size;
 
-//#ifdef __APPLE__
-	//old_size = malloc_size(ptr);
-//#else
-	old_size = malloc_usable_size(ptr);
-//#endif
+	old_size = fk_mem_malloc_size(ptr);
 
 	new_ptr = realloc(ptr, size);
 	if (new_ptr == NULL) {
 		fk_mem_panic();
 	}
 
-//#ifdef __APPLE__
-	//new_size = malloc_size(ptr);
-//#else
-	new_size = malloc_usable_size(ptr);
-//#endif
+	new_size = fk_mem_malloc_size(ptr);
 	allocated = allocated - old_size + new_size;
 
 	return new_ptr;
@@ -99,11 +87,7 @@ void *fk_mem_realloc(void *ptr, size_t size)
 void fk_mem_free(void *ptr)
 {
 	size_t real_size;
-//#ifdef __APPLE__
-	//real_size = malloc_size(ptr);
-//#else
-	real_size = malloc_usable_size(ptr);
-//#endif
+	real_size = fk_mem_malloc_size(ptr);
 	allocated -= real_size;
 	freed += real_size;
 	free_times += 1;

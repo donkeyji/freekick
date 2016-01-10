@@ -4,26 +4,42 @@ SRCDIRS := .
 
 SRCEXTS := .c
 
-INC := -I .
-BASICOPT := -std=gnu99 -Wall -D JEMALLOC_MANGLE
+INCLUDE := -I .
+BASIC_CFLAGS := -std=gnu99 -Wall
+BASIC_LDFLAGS := -llua -ldl -lm
+
+# debug mode is the default
 ifeq ($(release),y)
-CFLAGS := $(BASICOPT) $(INC) -O2
+EXTRA_CFLAGS := -O2
 else
-CFLAGS := $(BASICOPT) $(INC) -D FK_DEBUG
+EXTRA_CFLAGS := -D FK_DEBUG -g
 endif
 
-ifeq ($(gp),y)
-CFLAGS += -g -pg -lc_p
+# the default malloc/free is original libc malloc/free
+ifeq ($(jemalloc),y)
+MALLOC_CFLAGS := -D USE_JEMALLOC -D JEMALLOC_MANGLE
 endif
+
+# gprof
+ifeq ($(gprof),y)
+GPROF_CFLAGS := -g -pg -lc_p
+endif
+
+CFLAGS := $(INCLUDE) $(BASIC_CFLAGS) $(EXTRA_CFLAGS) $(MALLOC_CFLAGS) $(GPROF_CFLAGS)
 
 # ------------------------------------------------------------
 # -ldl: needed when in linux, but not in mac
 # -lm: needed when in linux, but not in mac
 # ------------------------------------------------------------
-LDFLAGS := -ljemalloc -llua -ldl -lm
-ifeq ($(gp),y)
-LDFLAGS += -pg
+ifeq ($(gprof),y)
+	GPROF_LDFLAGS := -pg -lc_p
 endif
+
+ifeq ($(malloc),jemalloc)
+MALLOC_LDFLAGS := -ljemalloc
+endif
+
+LDFLAGS := $(BASIC_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
 
 CC = gcc
 
