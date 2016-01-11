@@ -1,39 +1,39 @@
+#---------------------------------------------------
+# CFLAGS && LCFLAGS
+#---------------------------------------------------
 CC = gcc
-BASIC_CFLAGS := -I . -std=gnu99 -Wall
+BASIC_CFLAGS := -I . -std=gnu99 -Wall -O2
 BASIC_LDFLAGS := -llua -ldl -lm
 # -ldl: needed when in linux, but not in mac
 # -lm: needed when in linux, but not in mac
 
 # debug mode is the default
-ifeq ($(release),y)
-EXTRA_CFLAGS := -O2
-else
-EXTRA_CFLAGS := -D FK_DEBUG -g
+ifeq ($(debug),yes)
+DEBUG_CFLAGS := -D FK_DEBUG -g
 endif
 
 # the default malloc/free is original libc malloc/free
-ifeq ($(jemalloc),y)
+ifeq ($(jemalloc),yes)
 MALLOC_CFLAGS := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
 MALLOC_LDFLAGS := -ljemalloc
 endif
 
 # gprof
-ifeq ($(gprof),y)
+ifeq ($(gprof),yes)
 GPROF_CFLAGS := -g -pg -lc_p
 GPROF_LDFLAGS := -pg -lc_p
 endif
 
-CFLAGS := $(BASIC_CFLAGS) $(EXTRA_CFLAGS) $(MALLOC_CFLAGS) $(GPROF_CFLAGS)
+CFLAGS := $(BASIC_CFLAGS) $(DEBUG_CFLAGS) $(MALLOC_CFLAGS) $(GPROF_CFLAGS)
 LDFLAGS := $(BASIC_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
 
-
+#---------------------------------------------------
+# sources && objects && Makefile.dep
+#---------------------------------------------------
 SVRBIN := freekick
-
-#SRCDIRS := .
 
 SRCEXTS := .c
 
-#SVRSRCS = $(foreach d,$(SRCDIRS),$(wildcard $(addprefix $(d)/*,$(SRCEXTS)))) 
 SVRSRCS = fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_str.c fk_util.c fk_heap.c fk_pool.c fk_item.c fk_dict.c fk_vtr.c fk_cache.c fk_skiplist.c fk_svr.c fk_svr_conn.c fk_svr_proto.c fk_svr_lua.c fk_svr_str.c fk_svr_hash.c fk_svr_list.c fk_svr_zset.c fk_svr_fkdb.c fk_svr_db.c freekick.c
 
 SVROBJS = $(foreach x,$(SRCEXTS), $(patsubst %$(x),%.o,$(filter %$(x),$(SVRSRCS)))) 
