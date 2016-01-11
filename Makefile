@@ -51,6 +51,7 @@ $(SVRBIN) : $(SVROBJS)
 #-include $(SVRDEPS) $(CLTDEPS)
 -include $(DEPS)
 
+# if Makefile.dep does not exist, this target will be executed
 $(DEPS):
 	@$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
 
