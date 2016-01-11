@@ -1,6 +1,5 @@
 CC = gcc
-INCLUDE := -I .
-BASIC_CFLAGS := -std=gnu99 -Wall
+BASIC_CFLAGS := -I . -std=gnu99 -Wall
 BASIC_LDFLAGS := -llua -ldl -lm
 # -ldl: needed when in linux, but not in mac
 # -lm: needed when in linux, but not in mac
@@ -24,7 +23,7 @@ GPROF_CFLAGS := -g -pg -lc_p
 GPROF_LDFLAGS := -pg -lc_p
 endif
 
-CFLAGS := $(INCLUDE) $(BASIC_CFLAGS) $(EXTRA_CFLAGS) $(MALLOC_CFLAGS) $(GPROF_CFLAGS)
+CFLAGS := $(BASIC_CFLAGS) $(EXTRA_CFLAGS) $(MALLOC_CFLAGS) $(GPROF_CFLAGS)
 LDFLAGS := $(BASIC_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
 
 
