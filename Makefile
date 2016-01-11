@@ -14,7 +14,7 @@ endif
 
 # the default malloc/free is original libc malloc/free
 ifeq ($(jemalloc),y)
-MALLOC_CFLAGS := -D USE_JEMALLOC -D JEMALLOC_MANGLE
+MALLOC_CFLAGS := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
 MALLOC_LDFLAGS := -ljemalloc
 endif
 
