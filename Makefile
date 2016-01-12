@@ -47,6 +47,7 @@ DEPS = Makefile.dep
 all : $(SVRBIN)
 
 $(SVRBIN) : $(SVROBJS) 
+	@echo "[Linking...]"
 	$(LD) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS)
 
 #-include $(SVRDEPS)
@@ -54,25 +55,26 @@ $(SVRBIN) : $(SVROBJS)
 
 # if Makefile.dep does not exist, this target will be executed
 $(DEPS):
-	@$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
+	@echo "[Generating Makefile.dep...]"
+	$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
 
 #$(SVRDEPS): %.d : %.c 
-	#@$(CC) -MM $(CFLAGS) $< -o $@
+#	@$(CC) -MM $(CFLAGS) $< -o $@
 #----------------------------------------------
 # $(CFLAGS) is used automatically, no it can be omitted
 # the line below work well as the line above
 #----------------------------------------------
-	#@$(CC) -MM $< -o $@
+#	@$(CC) -MM $< -o $@
 #----------------------------------------------
 #-MD is not right here, -MM is enough
 #----------------------------------------------
-	#@$(CC) -MM -MD $(CFLAGS) $< -o $@
+#	@$(CC) -MM -MD $(CFLAGS) $< -o $@
 
 #----------------------------------------------
 # the line below is unnecessary
 #----------------------------------------------
 #%.o : %.c 
-	#$(CC) -c $(CFLAGS) $< -o $@
+#	$(CC) -c $(CFLAGS) $< -o $@
 
 #----------------------------------------------
 # include all the *.d file
@@ -86,4 +88,5 @@ $(DEPS):
 rebuild: clean all
 
 clean:
-	@$(RM) $(SVROBJS) $(SVRBIN) $(DEPS)
+	@echo "[Removing all the objects...]"
+	$(RM) $(SVROBJS) $(SVRBIN) $(DEPS)
