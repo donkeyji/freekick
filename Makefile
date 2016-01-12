@@ -2,6 +2,7 @@
 # CFLAGS && LCFLAGS
 #---------------------------------------------------
 CC = gcc
+LD = gcc
 BASIC_CFLAGS := -I . -std=gnu99 -Wall -O2
 BASIC_LDFLAGS := -llua -ldl -lm
 # -ldl: needed when in linux, but not in mac
@@ -46,7 +47,7 @@ DEPS = Makefile.dep
 all : $(SVRBIN)
 
 $(SVRBIN) : $(SVROBJS) 
-	$(CC) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS)
+	$(LD) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS)
 
 #-include $(SVRDEPS)
 -include $(DEPS)
