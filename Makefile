@@ -1,32 +1,38 @@
 #---------------------------------------------------
-# CFLAGS && LCFLAGS
+# CC && CFLAGS && LDFLAGS && LDLIBS
 #---------------------------------------------------
 CC = gcc
-LD = gcc
+
 BASIC_CFLAGS := -I . -std=gnu99 -Wall -O2
-BASIC_LDFLAGS := -llua -ldl -lm
+BASIC_LDFLAGS :=
+BASIC_LDLIBS := -llua -ldl -lm
 # -ldl: needed when in linux, but not in mac
 # -lm: needed when in linux, but not in mac
 
 # debug mode is the default
 ifeq ($(debug),yes)
 DEBUG_CFLAGS := -D FK_DEBUG -g
+DEBUG_LDFLAGS :=
+DEBUG_LDLIBS :=
 endif
 
 # the default malloc/free is original libc malloc/free
 ifeq ($(jemalloc),yes)
 MALLOC_CFLAGS := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
-MALLOC_LDFLAGS := -ljemalloc
+MALLOC_LDFLAGS :=
+MALLOC_LDLIBS := -ljemalloc
 endif
 
 # gprof
 ifeq ($(gprof),yes)
 GPROF_CFLAGS := -g -pg -lc_p
-GPROF_LDFLAGS := -pg -lc_p
+GPROF_LDFLAGS := -pg
+GPROF_LDLIBS := -lc_p
 endif
 
-CFLAGS := $(BASIC_CFLAGS) $(DEBUG_CFLAGS) $(MALLOC_CFLAGS) $(GPROF_CFLAGS)
-LDFLAGS := $(BASIC_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
+CFLAGS 	:= $(BASIC_CFLAGS) 	$(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS)
+LDFLAGS := $(BASIC_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
+LDLIBS 	:= $(BASIC_LDLIBS) 	$(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS)
 
 #---------------------------------------------------
 # sources && objects && Makefile.dep
@@ -48,7 +54,7 @@ all : $(SVRBIN)
 
 $(SVRBIN) : $(SVROBJS) 
 	@echo "[Linking...]"
-	$(LD) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS)
+	$(CC) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS) $(LDLIBS)
 
 #-include $(SVRDEPS)
 -include $(DEPS)
