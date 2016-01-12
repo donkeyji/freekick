@@ -10,21 +10,21 @@ BASIC_LDLIBS := -llua -ldl -lm
 # -lm: needed when in linux, but not in mac
 
 # debug mode is the default
-ifeq ($(debug),yes)
+ifeq ($(debug), yes)
 DEBUG_CFLAGS := -D FK_DEBUG -g
 DEBUG_LDFLAGS :=
 DEBUG_LDLIBS :=
 endif
 
 # the default malloc/free is original libc malloc/free
-ifeq ($(jemalloc),yes)
+ifeq ($(jemalloc), yes)
 MALLOC_CFLAGS := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
 MALLOC_LDFLAGS :=
 MALLOC_LDLIBS := -ljemalloc
 endif
 
 # gprof
-ifeq ($(gprof),yes)
+ifeq ($(gprof), yes)
 GPROF_CFLAGS := -g -pg -lc_p
 GPROF_LDFLAGS := -pg
 GPROF_LDLIBS := -lc_p
