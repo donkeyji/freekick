@@ -48,15 +48,12 @@ all : $(SVRBIN)
 $(SVRBIN) : $(SVROBJS) 
 	$(CC) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS)
 
-#-include $(SVRDEPS) $(CLTDEPS)
+#-include $(SVRDEPS)
 -include $(DEPS)
 
 # if Makefile.dep does not exist, this target will be executed
 $(DEPS):
 	@$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
-
-#$(CLTDEPS): %.d : %.c 
-	#@$(CC) -MM $(CFLAGS) $< -o $@
 
 #$(SVRDEPS): %.d : %.c 
 	#@$(CC) -MM $(CFLAGS) $< -o $@
