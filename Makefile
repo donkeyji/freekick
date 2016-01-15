@@ -45,7 +45,6 @@ SVRSRCS = fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_st
 
 SVROBJS = $(foreach x, $(SRCEXTS), $(patsubst %$(x), %.o, $(filter %$(x), $(SVRSRCS)))) 
 
-#SVRDEPS = $(patsubst %.o,%.d,$(SVROBJS)) 
 DEPS = Makefile.dep
 
 .PHONY : all clean rebuild
@@ -56,40 +55,12 @@ $(SVRBIN) : $(SVROBJS)
 	@echo "[Linking...]"
 	$(CC) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS) $(LDLIBS)
 
-#-include $(SVRDEPS)
 -include $(DEPS)
 
 # if Makefile.dep does not exist, this target will be executed
 $(DEPS):
 	@echo "[Generating Makefile.dep...]"
 	$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
-
-#$(SVRDEPS): %.d : %.c 
-#	@$(CC) -MM $(CFLAGS) $< -o $@
-#----------------------------------------------
-# $(CFLAGS) is used automatically, no it can be omitted
-# the line below work well as the line above
-#----------------------------------------------
-#	@$(CC) -MM $< -o $@
-#----------------------------------------------
-#-MD is not right here, -MM is enough
-#----------------------------------------------
-#	@$(CC) -MM -MD $(CFLAGS) $< -o $@
-
-#----------------------------------------------
-# the line below is unnecessary
-#----------------------------------------------
-#%.o : %.c 
-#	$(CC) -c $(CFLAGS) $< -o $@
-
-#----------------------------------------------
-# include all the *.d file
-# let make know how to compile each *.c to *.o
-# $(CFLAGS) is used here automatically
-# e.g.
-# a.o : a.c a.h b.h
-# 	$(CC) $(CFLAGS) -c $< -o $@
-#----------------------------------------------
 
 rebuild: clean all
 

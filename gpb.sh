@@ -19,7 +19,7 @@ all_branches=$(git branch)
 #master
 #'
 
-if [ -z $1]; then
+if [ -z $1 ]; then
 	branches='master'
 elif [ $1 = 'all' ]; then
 	branches=$all_branches
