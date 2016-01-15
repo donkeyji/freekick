@@ -2,6 +2,5 @@
 *.pyc
 freekick
 clt_test
-tmod
 Makefile.dep
 gmon.out
