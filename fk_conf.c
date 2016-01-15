@@ -3,6 +3,7 @@
 #include <string.h>
 #include <errno.h>
 #include <limits.h>
+#include <strings.h>
 
 #include <sys/types.h>
 
