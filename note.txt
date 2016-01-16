@@ -177,4 +177,5 @@ FK_CLASS_XXX/FK_MOD_XXX
 
 70.const的使用有没有必要呢?
 
-71.在stdint.h中使用到了__WORDSIZE这个宏，用以确定该平台上字长。在Mac 10.9(64 bit)中，通过__LP64__宏来控制__WORDSIZE的长度；在debian 7(64 bit)中通过__x86_64宏来确定__WORDSIZE的长度；在centos 5(32 bit)中，直接定义了__WORDSIZE的长度。
+71.在stdint.h中使用到了__WORDSIZE这个宏，用以确定该平台上字长。在Mac 10.9(64 bit)中，通过__LP64__宏来控制__WORDSIZE的长度；在debian 7(64 bit)中通过__x86_64宏来确定__WORDSIZE的长度；在centos 5(32 bit)中，直接定义了__WORDSIZE的长度。用cpp -dM t.c来查看所有预定义的宏，不是gcc -dM t.c。
+
