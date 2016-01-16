@@ -1,5 +1,5 @@
-#ifndef _FK_BUF_H
-#define _FK_BUF_H
+#ifndef _FK_BUF_H_
+#define _FK_BUF_H_
 
 #include <string.h>
 

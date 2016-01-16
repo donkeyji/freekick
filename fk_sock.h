@@ -1,5 +1,5 @@
-#ifndef _FK_SOCK_H
-#define _FK_SOCK_H
+#ifndef _FK_SOCK_H_
+#define _FK_SOCK_H_
 
 #include <stdint.h>
 

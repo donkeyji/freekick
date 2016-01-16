@@ -1,5 +1,5 @@
-#ifndef _FK_LOG_H
-#define _FK_LOG_H
+#ifndef _FK_LOG_H_
+#define _FK_LOG_H_
 
 #include <stdio.h>
 
