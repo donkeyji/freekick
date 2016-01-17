@@ -399,7 +399,7 @@ int fk_conn_proc_cmd(fk_conn *conn)
 	if (pto->arg_cnt >= 0 && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_free_args(conn);
-		fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
+		rt = fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
 		}
