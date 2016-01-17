@@ -20,6 +20,7 @@
 #define FK_DEFAULT_DB_CNT 			8
 #define FK_DEFAULT_CONN_TIMEOUT 	300 /* timeout of conn, unit: second */
 #define FK_DEFAULT_DIR				"/tmp/"
+#define FK_DEFAULT_MAX_WBUF			4096
 
 /* high water */
 #define FK_BUF_HIGHWAT		512

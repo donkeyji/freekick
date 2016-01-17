@@ -52,6 +52,7 @@ static int fk_conf_parse_loglevel(fk_cfline *line);
 static int fk_conf_parse_dbfile(fk_cfline *line);
 static int fk_conf_parse_timeout(fk_cfline *line);
 static int fk_conf_parse_dir(fk_cfline *line);
+static int fk_conf_parse_maxwbuf(fk_cfline *line);
 
 static fk_dtv dtv_map[] = {
 	{"port", 2, fk_conf_parse_port},
@@ -66,6 +67,7 @@ static fk_dtv dtv_map[] = {
 	{"dbcnt", 2, fk_conf_parse_dbcnt},
 	{"timeout", 2, fk_conf_parse_timeout},
 	{"addr", 2, fk_conf_parse_addr},
+	{"maxwbuf", 2, fk_conf_parse_maxwbuf},
 	{NULL, 0, NULL}
 };
 
@@ -115,6 +117,7 @@ void fk_conf_init(char *conf_path)
 	setting.addr = fk_str_create(FK_DEFAULT_SVR_ADDR, sizeof(FK_DEFAULT_SVR_ADDR) - 1);
 	setting.timeout = FK_DEFAULT_CONN_TIMEOUT;
 	setting.dir = fk_str_create(FK_DEFAULT_DIR, sizeof(FK_DEFAULT_DIR) - 1);
+	setting.max_wbuf = FK_DEFAULT_MAX_WBUF;
 
 	/* setp 2: parse config file */
 	if (conf_path != NULL) {
@@ -413,5 +416,19 @@ int fk_conf_parse_dir(fk_cfline *line)
 {
 	fk_str_destroy(setting.dir);/* release the default value */
 	setting.dir = fk_str_clone(line->fields[1]);
+	return FK_CONF_OK;
+}
+
+int fk_conf_parse_maxwbuf(fk_cfline *line)
+{
+	int rt, maxwbuf;
+
+	rt = fk_str_is_positive(line->fields[1]);
+	if (rt == 0) {/* not a positive integer */
+		sprintf(line->err, "maxwbuf is not a valid number. line: %d\n", line->no);
+		return FK_CONF_ERR;
+	}
+	maxwbuf = atoi(fk_str_raw(line->fields[1]));
+	setting.max_wbuf = (size_t)maxwbuf;
 	return FK_CONF_OK;
 }

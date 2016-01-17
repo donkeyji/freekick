@@ -40,7 +40,7 @@ fk_conn *fk_conn_create(int fd)
 
 	conn->fd = fd;
 	conn->rbuf = fk_buf_create(FK_BUF_HIGHWAT);
-	conn->wbuf = fk_buf_create(FK_BUF_HIGHWAT);
+	conn->wbuf = fk_buf_create(setting.max_wbuf);
 
 	/* every fields should be initialized */
 	conn->read_ev = NULL;
