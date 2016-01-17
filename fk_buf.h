@@ -9,13 +9,14 @@
 #define FK_BUF_INIT_LEN 	16
 
 typedef struct _fk_buf {
+	size_t high_wat;
 	size_t len;
 	size_t low;/* valid begin, init: 0, range: [0-->len], <= high */
 	size_t high;/* free begin, init: 0, range: [0-->len], <= len */
 	char buffer[];
 } fk_buf;
 
-fk_buf *fk_buf_create();
+fk_buf *fk_buf_create(size_t high_wat);
 void fk_buf_destroy(fk_buf *buf);
 #ifdef FK_DEBUG
 void fk_buf_print(const fk_buf *buf);
@@ -26,6 +27,8 @@ void fk_buf_print(const fk_buf *buf);
 #define fk_buf_low(buf)				((buf)->low)
 
 #define fk_buf_high(buf)			((buf)->high)
+
+#define fk_buf_high_wat(buf)		((buf)->high_wat)
 
 #define fk_buf_free_len(buf) 		((buf)->len - (buf)->high)
 
@@ -50,7 +53,7 @@ void fk_buf_print(const fk_buf *buf);
 }
 
 #define fk_buf_stretch(buf)		{				\
-	if ((buf)->len < FK_BUF_HIGHWAT) {			\
+	if ((buf)->len < (buf)->high_wat) {			\
 		(buf)->len <<= 1;						\
 		(buf) = (fk_buf *)fk_mem_realloc((buf),	\
 				sizeof(fk_buf) + (buf)->len);	\
@@ -85,7 +88,7 @@ void fk_buf_print(const fk_buf *buf);
 		fk_buf_shift((buf));							\
 	}													\
 	if (fk_buf_free_len((buf)) < (length) &&			\
-		(buf)->len < FK_BUF_HIGHWAT)					\
+		(buf)->len < (buf)->high_wat)					\
 	{													\
 		(buf)->len = fk_util_min_power((buf)->len 		\
 			+ (length) - fk_buf_free_len((buf)));		\

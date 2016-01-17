@@ -26,11 +26,11 @@ static int fk_conn_send_rsp(fk_conn *conn);
 
 /* response format */
 static const char *rsp_status 	= "+%s\r\n";
-static const char *rsp_error 		= "-%s\r\n";
+static const char *rsp_error 	= "-%s\r\n";
 static const char *rsp_content	= "%s\r\n" ;
 static const char *rsp_int 		= ":%d\r\n";
 static const char *rsp_bulk		= "$%d\r\n";
-static const char *rsp_mbulk		= "*%d\r\n";
+static const char *rsp_mbulk	= "*%d\r\n";
 
 fk_conn *fk_conn_create(int fd)
 {
@@ -39,8 +39,8 @@ fk_conn *fk_conn_create(int fd)
 	conn = (fk_conn *)fk_mem_alloc(sizeof(fk_conn));
 
 	conn->fd = fd;
-	conn->rbuf = fk_buf_create();
-	conn->wbuf = fk_buf_create();
+	conn->rbuf = fk_buf_create(FK_BUF_HIGHWAT);
+	conn->wbuf = fk_buf_create(FK_BUF_HIGHWAT);
 
 	/* every fields should be initialized */
 	conn->read_ev = NULL;
@@ -137,7 +137,7 @@ int fk_conn_recv_data(fk_conn *conn)
 	 * a complete line was not received, but the read buffer has reached
 	 * its upper limit, so just close this connection 
 	 */
-	if (fk_buf_len(conn->rbuf) == FK_BUF_HIGHWAT &&
+	if (fk_buf_len(conn->rbuf) == fk_buf_high_wat(conn->rbuf) &&
 		fk_buf_free_len(conn->rbuf) == 0) 
 	{
 		fk_log_info("beyond max buffer length\n");

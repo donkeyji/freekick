@@ -3,11 +3,12 @@
 #include <fk_buf.h>
 #include <fk_mem.h>
 
-fk_buf *fk_buf_create()
+fk_buf *fk_buf_create(size_t high_wat)
 {
 	fk_buf *buf;
 
 	buf = (fk_buf *)fk_mem_alloc(sizeof(fk_buf) + FK_BUF_INIT_LEN);
+	buf->high_wat = high_wat;
 	buf->len = FK_BUF_INIT_LEN;
 	buf->low = 0;
 	buf->high = 0;
