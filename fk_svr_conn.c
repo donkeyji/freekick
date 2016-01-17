@@ -137,7 +137,7 @@ int fk_conn_recv_data(fk_conn *conn)
 	 * a complete line was not received, but the read buffer has reached
 	 * its upper limit, so just close this connection 
 	 */
-	if (fk_buf_len(conn->rbuf) == fk_buf_high_wat(conn->rbuf) &&
+	if (fk_buf_reach_highwat(conn->rbuf) &&
 		fk_buf_free_len(conn->rbuf) == 0) 
 	{
 		fk_log_info("beyond max buffer length\n");

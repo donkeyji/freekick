@@ -38,6 +38,8 @@ void fk_buf_print(const fk_buf *buf);
 
 #define fk_buf_payload_start(buf) 	((buf)->buffer + (buf)->low)
 
+#define fk_buf_reach_highwat(buf)	((buf)->len == (buf)->high_wat)
+
 #define fk_buf_high_inc(buf, offset)	{	\
 	(buf)->high += (offset);				\
 	if ((buf)->high > (buf)->len) {			\
