@@ -53,12 +53,12 @@ $(SVRBIN) : $(SVROBJS)
 -include $(DEPS)
 
 # if Makefile.dep does not exist, this target will be executed
-$(DEPS):
+$(DEPS) :
 	@echo "[Generating Makefile.dep...]"
 	$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
 
-rebuild: clean all
+rebuild : clean all
 
-clean:
+clean :
 	@echo "[Removing all the objects...]"
 	$(RM) $(SVROBJS) $(SVRBIN) $(DEPS)
