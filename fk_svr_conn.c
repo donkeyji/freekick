@@ -459,7 +459,7 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 	}
 
 	/* 
-	 * maybe more than one complete protocol were received
+	 * maybe more than one completed protocol were received
 	 * parse all the complete protocol received yet 
 	 */
 	while (fk_buf_payload_len(conn->rbuf) > 0) {
@@ -485,7 +485,6 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 			return;
 		}
 	}
-
 
 	/* maybe at this time, there is no reply data in conn->wbuf */
 	rt = fk_conn_send_rsp(conn);
