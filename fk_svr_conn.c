@@ -148,7 +148,7 @@ int fk_conn_recv_data(fk_conn *conn)
 	 * also detect this kind of exception and close this connection, too.
 	 */
 	if (fk_buf_reach_highwat(conn->rbuf) &&
-		fk_buf_free_len(conn->rbuf) == 0) 
+		fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
 	{
 		fk_log_info("beyond max buffer length\n");
 		return FK_SVR_ERR;/* need to close this connection */
