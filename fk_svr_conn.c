@@ -466,6 +466,7 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 
 	rt = fk_conn_recv_data(conn);
 	if (rt == FK_SVR_ERR) {/* conn closed */
+		fk_log_error("fatal error occured when receiving data\n");
 		fk_svr_remove_conn(conn);
 		return;
 	}
