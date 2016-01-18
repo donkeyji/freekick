@@ -546,10 +546,15 @@ void fk_conn_write_cb(int fd, char type, void *ext)
 	return;
 }
 
+/*
+ * do misc things that should be done after fk_conn_recv_data/fk_conn_parse_req/
+ * fk_conn_proc_cmd
+ */
 int fk_conn_send_rsp(fk_conn *conn)
 {
 	fk_buf *wbuf;
 
+	/* step 1 */
 	/* 
 	 * a completed line was not received, but the read buffer has reached
 	 * its upper limit, so just close this connection
@@ -567,15 +572,16 @@ int fk_conn_send_rsp(fk_conn *conn)
 	if (fk_buf_reach_highwat(conn->rbuf) &&
 		fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
 	{
-		fk_log_info("beyond max buffer length\n");
+		fk_log_info("a too long line, beyond the max length of read buffer\n");
 		return FK_SVR_ERR;
 	}
 
-	/* maybe it's not so good to shrink vtr/buf here */
+	/* step 2 */
 	fk_buf_shrink(conn->rbuf);
 	fk_vtr_shrink(conn->arg_vtr);
 	fk_vtr_shrink(conn->len_vtr);
 
+	/* step 3 */
 	wbuf = conn->wbuf;
 	/* if any data in write buf and never add write ioev yet */
 	if (fk_buf_payload_len(wbuf) > 0 && conn->write_added == 0) {
