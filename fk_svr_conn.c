@@ -237,6 +237,11 @@ int fk_conn_parse_req(fk_conn *conn)
 			conn->arg_cnt = atoi(start + 1);
 			if (conn->arg_cnt <= 0 || conn->arg_cnt > FK_ARG_CNT_HIGHWAT) {
 				fk_log_debug("invalid argument count\n");
+				/* 
+				 * reset to the default value, or may cause error 
+				 * in fk_conn_free_args()
+				 */
+				conn->arg_cnt = 0;
 				return FK_SVR_ERR;
 			}
 #ifdef FK_DEBUG
