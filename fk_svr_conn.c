@@ -133,27 +133,6 @@ int fk_conn_recv_data(fk_conn *conn)
 	size_t free_len;
 	ssize_t recv_len;
 
-	/* 
-	 * a completed line was not received, but the read buffer has reached
-	 * its upper limit, so just close this connection
-	 * maybe:
-	 * (1)the argument count line is too long
-	 * (2)the argument length line is too long
-	 * (3)the argument content line is too long
-	 * in fact, (3) will never happen, because:
-	 * if a too long argument length is sent, in the fk_conn_parse_req() willl 
-	 * detect this kind of exception and close the exceptional connection
-	 * if a valid argument length is sent, but the real length of the following
-	 * argument content if longer than the length sent before, the fk_conn_parse_req() will
-	 * also detect this kind of exception and close this connection, too.
-	 */
-	if (fk_buf_reach_highwat(conn->rbuf) &&
-		fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
-	{
-		fk_log_info("beyond max buffer length\n");
-		return FK_SVR_ERR;/* need to close this connection */
-	}
-
 	while (1) {
 #ifdef FK_DEBUG
 		fk_log_debug("[before rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
@@ -164,6 +143,7 @@ int fk_conn_recv_data(fk_conn *conn)
 		if (fk_buf_free_len(conn->rbuf) == 0) {
 			fk_buf_stretch(conn->rbuf);
 		}
+		/* reach the high water of read buffer */
 		if (fk_buf_free_len(conn->rbuf) == 0) {/* could not receive data this time */
 			return FK_SVR_OK;/* go to the next step: parse request */
 		}
@@ -467,7 +447,8 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 
 	rt = fk_conn_recv_data(conn);
 	if (rt == FK_SVR_ERR) {/* conn closed */
-		fk_log_error("fatal error occured when receiving data\n");
+		/* donot print log here, print detailed log in fk_conn_recv_data */
+		//fk_log_error("fatal error occured when receiving data\n");
 		fk_svr_remove_conn(conn);
 		return;
 	}
@@ -479,7 +460,8 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 	while (fk_buf_payload_len(conn->rbuf) > 0) {
 		rt = fk_conn_parse_req(conn);
 		if (rt == FK_SVR_ERR) {/* error when parsing */
-			fk_log_error("fatal error occured when parsing protocol\n");
+			/* donot print log here, print detailed log in fk_conn_parse_req */
+			//fk_log_error("fatal error occured when parsing protocol\n");
 			fk_svr_remove_conn(conn);
 			return;
 		} else if (rt == FK_SVR_AGAIN) {/* parsing not completed */
@@ -492,16 +474,19 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 
 		rt = fk_conn_proc_cmd(conn);
 		if (rt == FK_SVR_ERR) {
-			fk_log_error("fatal error occured when processing cmd\n");
+			/* donot print log here, print detailed log in fk_conn_proc_cmd */
+			//fk_log_error("fatal error occured when processing cmd\n");
 			fk_svr_remove_conn(conn);
 			return;
 		}
 	}
 
+
 	/* maybe at this time, there is no reply data in conn->wbuf */
 	rt = fk_conn_send_rsp(conn);
 	if (rt == FK_SVR_ERR) {
-		fk_log_error("fatal error occurs when sending response\n");
+		/* donot print log here, print detailed log in fk_conn_send_rsp */
+		//fk_log_error("fatal error occurs when sending response\n");
 		fk_svr_remove_conn(conn);
 		return;
 	}
@@ -564,6 +549,27 @@ void fk_conn_write_cb(int fd, char type, void *ext)
 int fk_conn_send_rsp(fk_conn *conn)
 {
 	fk_buf *wbuf;
+
+	/* 
+	 * a completed line was not received, but the read buffer has reached
+	 * its upper limit, so just close this connection
+	 * maybe:
+	 * (1)the argument count line is too long
+	 * (2)the argument length line is too long
+	 * (3)the argument content line is too long
+	 * in fact, (3) will never happen, because:
+	 * if a too long argument length is sent, in the fk_conn_parse_req() willl 
+	 * detect this kind of exception and close the exceptional connection
+	 * if a valid argument length is sent, but the real length of the following
+	 * argument content if longer than the length sent before, the fk_conn_parse_req() will
+	 * also detect this kind of exception and close this connection, too.
+	 */
+	if (fk_buf_reach_highwat(conn->rbuf) &&
+		fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
+	{
+		fk_log_info("beyond max buffer length\n");
+		return FK_SVR_ERR;
+	}
 
 	/* maybe it's not so good to shrink vtr/buf here */
 	fk_buf_shrink(conn->rbuf);
