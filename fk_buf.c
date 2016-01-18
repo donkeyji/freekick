@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 
 #include <fk_buf.h>
@@ -7,6 +8,7 @@ fk_buf *fk_buf_create(size_t highwat)
 {
 	fk_buf *buf;
 
+	assert(highwat >= FK_BUF_INIT_LEN);
 	buf = (fk_buf *)fk_mem_alloc(sizeof(fk_buf) + FK_BUF_INIT_LEN);
 	buf->highwat = highwat;
 	buf->len = FK_BUF_INIT_LEN;
