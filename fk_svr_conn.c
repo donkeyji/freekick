@@ -206,9 +206,10 @@ int fk_conn_recv_data(fk_conn *conn)
 }
 
 /*
+ * even if only a single completed line is received, this line will be parsed
  * (1)if a completed protocol is parsed, FK_SVR_OK is returned
  * (2)if not all data of a completed protocol is received, FK_SVR_AGAIN is returned
- * (3)if any illegal data is found, FK_SVR_ERR is returned
+ * (3)if any illegal data is found in conn->rbuf, FK_SVR_ERR is returned
  */
 int fk_conn_parse_req(fk_conn *conn)
 {
