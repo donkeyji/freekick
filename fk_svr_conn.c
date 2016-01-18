@@ -193,11 +193,11 @@ int fk_conn_recv_data(fk_conn *conn)
  */
 int fk_conn_parse_req(fk_conn *conn)
 {
-	int rt, argl;
 	fk_buf *rbuf;
 	fk_item *itm;
 	size_t arg_len;
 	char *start, *end;
+	int rt, argl, argc;
 
 	rbuf = conn->rbuf;
 
@@ -234,16 +234,13 @@ int fk_conn_parse_req(fk_conn *conn)
 			 * count, because the FK_ARG_CNT_HIGHWAT == 128, 
 			 * and INT_MAX > FK_ARG_CNT_HIGHWAT 
 			 */
-			conn->arg_cnt = atoi(start + 1);
-			if (conn->arg_cnt <= 0 || conn->arg_cnt > FK_ARG_CNT_HIGHWAT) {
+			argc = atoi(start + 1);
+			if (argc <= 0 || argc > FK_ARG_CNT_HIGHWAT) {
 				fk_log_debug("invalid argument count\n");
-				/* 
-				 * reset to the default value, or may cause error 
-				 * in fk_conn_free_args()
-				 */
-				conn->arg_cnt = 0;
 				return FK_SVR_ERR;
 			}
+			/* first check the argc, only when argc is legal set the conn->arg_cnt */
+			conn->arg_cnt = argc;
 #ifdef FK_DEBUG
 			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
 			fk_log_debug("before arg_vtr stretch: len: %lu\n", fk_vtr_len(conn->arg_vtr));
@@ -343,7 +340,10 @@ void fk_conn_free_args(fk_conn *conn)
 
 	for (i = 0; i < conn->arg_cnt; i++) {
 		arg_itm = fk_conn_get_arg(conn, i);
-		/* maybe arg_itm == NULL at this time */
+		/* 
+		 * when arg_cnt was parsed correctly, but not all the arguments 
+		 * were parsed correctly, so maybe arg_itm == NULL at this time
+		 */
 		if (arg_itm != NULL) {
 			fk_item_dec_ref(arg_itm);/* just decrease the ref */
 			fk_conn_set_arg(conn, i, NULL);/* do not ref to this item */
