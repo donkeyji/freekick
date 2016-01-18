@@ -27,5 +27,4 @@
 #define FK_ARG_HIGHWAT 		(1024 * 1024)
 #define FK_ARG_CNT_HIGHWAT 	128
 
-
 #endif
