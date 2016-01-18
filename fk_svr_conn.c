@@ -136,7 +136,12 @@ int fk_conn_recv_data(fk_conn *conn)
 	/* 
 	 * a complete line was not received, but the read buffer has reached
 	 * its upper limit, so just close this connection 
-	 * in fact, this will never happend, because (buf->highwat) > (FK_ARG_HIGHWAT)
+	 * in fact, this will never happend, because: (buf->highwat) > (FK_ARG_HIGHWAT)
+	 * if a too long argument length is sent, in the fk_conn_parse_req() willl 
+	 * detect this kind of exception and close the exceptional connection
+	 * if a valid argument length is sent, but the real length of the following
+	 * argument if longer than the length sent before, the fk_conn_parse_req() will
+	 * also detect this kind of exception and close this connection, too.
 	 */
 	if (fk_buf_reach_highwat(conn->rbuf) &&
 		fk_buf_free_len(conn->rbuf) == 0) 
@@ -149,14 +154,14 @@ int fk_conn_recv_data(fk_conn *conn)
 #ifdef FK_DEBUG
 		fk_log_debug("[before rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
 #endif
-		if (fk_buf_free_len(conn->rbuf) < fk_buf_len(conn->rbuf) / 4) {
+		if (fk_buf_free_len(conn->rbuf) < (fk_buf_len(conn->rbuf) >> 2)) {
 			fk_buf_shift(conn->rbuf);
 		}
 		if (fk_buf_free_len(conn->rbuf) == 0) {
 			fk_buf_stretch(conn->rbuf);
 		}
 		if (fk_buf_free_len(conn->rbuf) == 0) {/* could not receive data this time */
-			break;
+			return FK_SVR_OK;/* go to the next step: parse request */
 		}
 #ifdef FK_DEBUG
 		fk_log_debug("[after rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
@@ -174,7 +179,7 @@ int fk_conn_recv_data(fk_conn *conn)
 				fk_log_error("[recv error] %s\n", strerror(errno));
 				return FK_SVR_ERR;
 			} else {/* no data left in the read buffer of the socket */
-				break;
+				return FK_SVR_OK;
 			}
 		} else {/* succeed */
 #ifdef FK_DEBUG
@@ -186,7 +191,7 @@ int fk_conn_recv_data(fk_conn *conn)
 			fk_log_debug("[after recv]rbuf->low: %lu, rbuf->high: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf));
 #endif
 			if (recv_len < free_len) {/* no extra data left */
-				break;
+				return FK_SVR_OK;
 			} else {/* maybe there is still data in socket buffer */
 				continue;/* rbuf is full now */
 			}
