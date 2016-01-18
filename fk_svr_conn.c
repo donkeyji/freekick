@@ -496,6 +496,7 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 		}
 	}
 
+	/* maybe at this time, there is no reply data in conn->wbuf */
 	rt = fk_conn_send_rsp(conn);
 	if (rt == FK_SVR_ERR) {
 		fk_log_error("fatal error occurs when sending response\n");
