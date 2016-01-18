@@ -134,13 +134,17 @@ int fk_conn_recv_data(fk_conn *conn)
 	ssize_t recv_len;
 
 	/* 
-	 * a complete line was not received, but the read buffer has reached
-	 * its upper limit, so just close this connection 
-	 * in fact, this will never happend, because: (buf->highwat) > (FK_ARG_HIGHWAT)
+	 * a completed line was not received, but the read buffer has reached
+	 * its upper limit, so just close this connection
+	 * maybe:
+	 * (1)the argument count line is too long
+	 * (2)the argument length line is too long
+	 * (3)the argument content line is too long
+	 * in fact, (3) will never happen, because:
 	 * if a too long argument length is sent, in the fk_conn_parse_req() willl 
 	 * detect this kind of exception and close the exceptional connection
 	 * if a valid argument length is sent, but the real length of the following
-	 * argument if longer than the length sent before, the fk_conn_parse_req() will
+	 * argument content if longer than the length sent before, the fk_conn_parse_req() will
 	 * also detect this kind of exception and close this connection, too.
 	 */
 	if (fk_buf_reach_highwat(conn->rbuf) &&
