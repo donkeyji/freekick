@@ -14,7 +14,7 @@
 #include <fk_util.h>
 #include <fk_conf.h>
 #include <fk_item.h>
-#include <fk_svr.h>/* it's OK to do so */
+#include <fk_svr.h>
 
 static void fk_conn_read_cb(int fd, char type, void *ext);
 static void fk_conn_write_cb(int fd, char type, void *ext);
