@@ -205,6 +205,11 @@ int fk_conn_recv_data(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
+/*
+ * (1)if a completed protocol is parsed, FK_SVR_OK is returned
+ * (2)if not all data of a completed protocol is received, FK_SVR_AGAIN is returned
+ * (3)if any illegal data is found, FK_SVR_ERR is returned
+ */
 int fk_conn_parse_req(fk_conn *conn)
 {
 	int rt, argl;
@@ -478,6 +483,10 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 		} else if (rt == FK_SVR_AGAIN) {/* parsing not completed */
 			break;
 		}
+		/* 
+		 * only when rt == FK_SVR_OK, the following fk_conn_proc_cmd() 
+		 * is called
+		 */
 
 		rt = fk_conn_proc_cmd(conn);
 		if (rt == FK_SVR_ERR) {
