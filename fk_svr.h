@@ -16,6 +16,13 @@
 #include <fk_buf.h>
 #include <fk_vtr.h>
 
+/* reply sent to the clients */
+#define FK_RSP_OK				"OK"
+#define FK_RSP_ERR				"ERROR"
+#define FK_RSP_TYPE_ERR			"Type Error"
+#define FK_RSP_ARGC_ERR			"Argument Number Error"
+#define FK_RSP_NIL				(-1)
+
 /* status code definition copied from nginx */
 #define FK_SVR_OK			 0
 #define FK_SVR_ERR			-1
