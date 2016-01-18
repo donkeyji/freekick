@@ -137,7 +137,7 @@ int fk_conn_recv_data(fk_conn *conn)
 #ifdef FK_DEBUG
 		fk_log_debug("[before rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
 #endif
-		if (fk_buf_free_len(conn->rbuf) < (fk_buf_len(conn->rbuf) >> 2)) {
+		if (fk_buf_payload_len(conn->rbuf) > (3 * (fk_buf_len(conn->rbuf) >> 2))) {
 			fk_buf_shift(conn->rbuf);
 		}
 		if (fk_buf_free_len(conn->rbuf) == 0) {

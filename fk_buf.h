@@ -28,7 +28,7 @@ void fk_buf_print(const fk_buf *buf);
 
 #define fk_buf_high(buf)			((buf)->high)
 
-#define fk_buf_highwat(buf)		((buf)->highwat)
+#define fk_buf_highwat(buf)			((buf)->highwat)
 
 #define fk_buf_free_len(buf) 		((buf)->len - (buf)->high)
 
