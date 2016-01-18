@@ -455,7 +455,7 @@ int fk_fkdb_restore_str_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (rz == 0) {
 		return FK_SVR_ERR;
 	}
-	if (klen > FK_STR_HIGHWAT) {
+	if (klen > FK_ARG_HIGHWAT) {
 		return FK_SVR_ERR;
 	}
 
@@ -471,7 +471,7 @@ int fk_fkdb_restore_str_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (rz == 0) {
 		return FK_SVR_ERR;
 	}
-	if (vlen > FK_STR_HIGHWAT) {
+	if (vlen > FK_ARG_HIGHWAT) {
 		return FK_SVR_ERR;
 	}
 	fk_zline_adjust(buf, vlen);
@@ -504,7 +504,7 @@ int fk_fkdb_restore_list_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (rz == 0) {
 		return FK_SVR_ERR;
 	}
-	if (klen > FK_STR_HIGHWAT) {
+	if (klen > FK_ARG_HIGHWAT) {
 		return FK_SVR_ERR;
 	}
 	fk_zline_adjust(buf, klen);
@@ -526,7 +526,7 @@ int fk_fkdb_restore_list_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 		if (rz == 0) {
 			return FK_SVR_ERR;
 		}
-		if (nlen > FK_STR_HIGHWAT) {
+		if (nlen > FK_ARG_HIGHWAT) {
 			return FK_SVR_ERR;
 		}
 		fk_zline_adjust(buf, nlen);
@@ -560,7 +560,7 @@ int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (rz == 0) {
 		return FK_SVR_ERR;
 	}
-	if (klen > FK_STR_HIGHWAT) {
+	if (klen > FK_ARG_HIGHWAT) {
 		return FK_SVR_ERR;
 	}
 	fk_zline_adjust(buf, klen);
@@ -582,7 +582,7 @@ int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 		if (rz == 0) {
 			return FK_SVR_ERR;
 		}
-		if (sklen > FK_STR_HIGHWAT) {
+		if (sklen > FK_ARG_HIGHWAT) {
 			return FK_SVR_ERR;
 		}
 		fk_zline_adjust(buf, sklen);
@@ -597,7 +597,7 @@ int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 		if (rz == 0) {
 			return FK_SVR_ERR;
 		}
-		if (svlen > FK_STR_HIGHWAT) {
+		if (svlen > FK_ARG_HIGHWAT) {
 			return FK_SVR_ERR;
 		}
 		fk_zline_adjust(buf, svlen);

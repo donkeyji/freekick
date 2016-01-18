@@ -23,9 +23,8 @@
 #define FK_DEFAULT_MAX_WBUF			4096
 
 /* high water */
-#define FK_BUF_HIGHWAT		512
-#define FK_ARG_HIGHWAT 		(FK_BUF_HIGHWAT - 2)
-#define FK_STR_HIGHWAT 		(FK_ARG_HIGHWAT)
+#define FK_BUF_HIGHWAT		(4 * 1024 * 1024)
+#define FK_ARG_HIGHWAT 		(1024 * 1024)
 #define FK_ARG_CNT_HIGHWAT 	128
 
 /* reply sent to the clients */
