@@ -62,7 +62,7 @@ fk_conn *fk_conn_create(int fd)
 	conn->arg_vtr = fk_vtr_create();
 	conn->len_vtr = fk_vtr_create();
 	conn->arg_parsed = 0;
-	conn->arg_idx = 0;
+	conn->arg_cnt = 0;
 	conn->idx_flag = 0;
 	conn->parse_done = 0;
 
@@ -317,14 +317,14 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			fk_conn_set_arglen(conn, conn->arg_idx, (void *)((size_t)argl));
+			fk_conn_set_arglen(conn, conn->arg_cnt, (void *)((size_t)argl));
 			conn->idx_flag = 1;/* need to parse arg */
 			fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
 		}
 
 		if (conn->idx_flag == 1) {
 			start = fk_buf_payload_start(rbuf);
-			arg_len = (size_t)fk_conn_get_arglen(conn, conn->arg_idx);
+			arg_len = (size_t)fk_conn_get_arglen(conn, conn->arg_cnt);
 #ifdef FK_DEBUG
 			fk_log_debug("saved arg_len: %lu\n", arg_len);
 #endif
@@ -338,16 +338,16 @@ int fk_conn_parse_req(fk_conn *conn)
 					return FK_SVR_ERR;
 				}
 				itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
-				fk_conn_set_arg(conn, conn->arg_idx, itm);
+				fk_conn_set_arg(conn, conn->arg_cnt, itm);
 				fk_item_inc_ref(itm);/* ref: from 0 to 1 */
-				conn->arg_idx += 1;
+				conn->arg_cnt += 1;
 				conn->idx_flag = 0;
 				fk_buf_low_inc(rbuf, arg_len + 2);
 			} else {/* not received yet */
 				return FK_SVR_AGAIN;
 			}
 
-			if (conn->arg_parsed == conn->arg_idx) {/* a total protocol has been parsed */
+			if (conn->arg_parsed == conn->arg_cnt) {/* a total protocol has been parsed */
 				conn->parse_done = 1;
 				return FK_SVR_OK;
 			}
@@ -366,9 +366,9 @@ void fk_conn_free_args(fk_conn *conn)
 	int i;
 	fk_item *arg_itm;
 
-	/* arg_idx: the real number of parsed arguments */
+	/* arg_cnt: the real number of parsed arguments */
 	//for (i = 0; i < conn->arg_parsed; i++) {
-	for (i = 0; i < conn->arg_idx; i++) {
+	for (i = 0; i < conn->arg_cnt; i++) {
 		arg_itm = fk_conn_get_arg(conn, i);
 		/* 
 		 * when arg_parsed was parsed correctly, but not all the arguments 
@@ -382,7 +382,7 @@ void fk_conn_free_args(fk_conn *conn)
 	}
 	conn->arg_parsed = 0;
 	conn->parse_done = 0;
-	conn->arg_idx = 0;
+	conn->arg_cnt = 0;
 	conn->idx_flag = 0;
 }
 
@@ -415,7 +415,7 @@ int fk_conn_proc_cmd(fk_conn *conn)
 
 	/* when the argument number is variable */
 	if (pto->arg_cnt < 0) {
-		if (conn->arg_idx < -pto->arg_cnt) {
+		if (conn->arg_cnt < -pto->arg_cnt) {
 			fk_log_error("wrong argument number\n");
 			fk_conn_free_args(conn);
 			rt = fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
@@ -427,7 +427,7 @@ int fk_conn_proc_cmd(fk_conn *conn)
 	}
 
 	/* when the argument nuber is statle */
-	if (pto->arg_cnt >= 0 && pto->arg_cnt != conn->arg_idx) {
+	if (pto->arg_cnt >= 0 && pto->arg_cnt != conn->arg_cnt) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_free_args(conn);
 		rt = fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));

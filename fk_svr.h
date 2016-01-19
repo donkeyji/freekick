@@ -63,7 +63,7 @@ typedef struct _fk_conn {
 	fk_vtr *arg_vtr;
 	fk_vtr *len_vtr;
 	int arg_parsed;/* the number of arg_vtr of the current protocol, original 0; */
-	int arg_idx;/* the number of the arguments which have been parsed, original 0 */
+	int arg_cnt;/* the number of the arguments which have been parsed, original 0 */
 	int idx_flag;/* arg_len or arg */
 	int parse_done;/* original 0 */
 

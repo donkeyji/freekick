@@ -77,10 +77,10 @@ int fk_lua_pcall(lua_State *L)
 		}
 		arg = lua_tolstring(L, i + 1, &len);
 		itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
-		fk_conn_set_arg(lua_conn, lua_conn->arg_idx, itm);
-		fk_conn_set_arglen(lua_conn, lua_conn->arg_idx, (void *)((size_t)len));
+		fk_conn_set_arg(lua_conn, lua_conn->arg_cnt, itm);
+		fk_conn_set_arglen(lua_conn, lua_conn->arg_cnt, (void *)((size_t)len));
 		fk_item_inc_ref(itm);
-		lua_conn->arg_idx += 1;
+		lua_conn->arg_cnt += 1;
 	}
 	lua_conn->parse_done = 1;
 
@@ -133,14 +133,14 @@ int fk_lua_conn_proc_cmd(fk_conn *conn)
 		return 0;
 	}
 	if (pto->arg_cnt < 0) {
-		if (conn->arg_idx < -pto->arg_cnt) {
+		if (conn->arg_cnt < -pto->arg_cnt) {
 			fk_log_error("wrong argument number\n");
 			fk_conn_free_args(conn);
 			fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
 			return FK_SVR_OK;
 		}
 	}
-	if (pto->arg_cnt > 0 && pto->arg_cnt != conn->arg_idx) {
+	if (pto->arg_cnt > 0 && pto->arg_cnt != conn->arg_cnt) {
 		fk_conn_free_args(conn);
 		fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
 		return 0;
@@ -388,7 +388,7 @@ int fk_cmd_eval(fk_conn *conn)
 	nkey = atoi(fk_str_raw(str_nkey));
 
 	/* check the number of the arguments */
-	if (3 + nkey > conn->arg_idx) {
+	if (3 + nkey > conn->arg_cnt) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_ARGC_ERR, sizeof(FK_RSP_ARGC_ERR) - 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
@@ -403,7 +403,7 @@ int fk_cmd_eval(fk_conn *conn)
 	}
 	fk_lua_push_paras(keys, nkey, FK_LUA_PARA_KEYS);
 
-	nargv = conn->arg_idx - 1 - 2 - nkey;
+	nargv = conn->arg_cnt - 1 - 2 - nkey;
 	argv = (char **)fk_mem_calloc(nargv, sizeof(char *));
 	for (i = 0; i < nargv; i++) {
 		itm_arg = fk_conn_get_arg(conn, 3 + nkey + i);

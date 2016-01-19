@@ -18,7 +18,7 @@ int fk_cmd_zadd(fk_conn *conn)
 	}
 	sl = (fk_skiplist *)fk_item_raw(itm_sl);
 
-	if ((conn->arg_idx - 2) % 2 != 0) {
+	if ((conn->arg_cnt - 2) % 2 != 0) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_ARGC_ERR, sizeof(FK_RSP_ARGC_ERR) - 1);
 		if (rt == FK_SVR_ERR) {
 			return FK_SVR_ERR;
@@ -26,7 +26,7 @@ int fk_cmd_zadd(fk_conn *conn)
 		return FK_SVR_OK;
 	}
 
-	for (i = 2; i < conn->arg_idx; i += 2) {
+	for (i = 2; i < conn->arg_cnt; i += 2) {
 		itm_score = fk_conn_get_arg(conn, i);
 		itm_str = fk_conn_get_arg(conn, i + 1);
 
@@ -34,7 +34,7 @@ int fk_cmd_zadd(fk_conn *conn)
 		//printf("score: %d\n", score);
 		fk_skiplist_insert(sl, score, itm_str);
 	}
-	rt = fk_conn_add_int_rsp(conn, (int)((conn->arg_idx - 2) / 2));
+	rt = fk_conn_add_int_rsp(conn, (int)((conn->arg_cnt - 2) / 2));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;
 	}
