@@ -24,6 +24,11 @@
 #define FK_RSP_NIL				(-1)
 
 /* high water */
+/* 
+ * 1. FK_BUF_HIGHWAT & FK_ARG_HIGHWAT & FK_BUF_INIT_LEN should be a power of 2 
+ * 2. FK_BUF_HIGHWAT should be bigger than FK_ARG_HIGHWAT
+ * 3. FK_BUF_INIT_LEN should not be bigger than FK_BUF_HIGHWAT
+ */
 #define FK_BUF_HIGHWAT		(4 * 1024 * 1024)
 #define FK_BUF_INIT_LEN		16
 #define FK_ARG_HIGHWAT 		(1024 * 1024)
