@@ -60,13 +60,13 @@ int fk_lua_pcall(lua_State *L)
 	const char *arg;
 
 	/* 1. similar to the function: fk_conn_req_parse() */
-	lua_conn->arg_cnt = lua_gettop(L); /* get the argument count */
+	lua_conn->arg_parsed = lua_gettop(L); /* get the argument count */
 
 	/* allocate memory for arguments */
-	fk_vtr_stretch(lua_conn->arg_vtr, (size_t)(lua_conn->arg_cnt));
-	fk_vtr_stretch(lua_conn->len_vtr, (size_t)(lua_conn->arg_cnt));
+	fk_vtr_stretch(lua_conn->arg_vtr, (size_t)(lua_conn->arg_parsed));
+	fk_vtr_stretch(lua_conn->len_vtr, (size_t)(lua_conn->arg_parsed));
 
-	for (i = 0; i < lua_conn->arg_cnt; i++) {
+	for (i = 0; i < lua_conn->arg_parsed; i++) {
 		/* do not use luaL_checklstring() here, because if luaL_checklstring()
 		 * fails, this function will return to lua directly, so that error 
 		 * couldn't be handled inside this function

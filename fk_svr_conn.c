@@ -61,7 +61,7 @@ fk_conn *fk_conn_create(int fd)
 
 	conn->arg_vtr = fk_vtr_create();
 	conn->len_vtr = fk_vtr_create();
-	conn->arg_cnt = 0;
+	conn->arg_parsed = 0;
 	conn->arg_idx = 0;
 	conn->idx_flag = 0;
 	conn->parse_done = 0;
@@ -205,7 +205,7 @@ int fk_conn_parse_req(fk_conn *conn)
 	fk_log_debug("[before parsing] low: %lu, high: %lu\n", fk_buf_low(rbuf), fk_buf_high(rbuf));
 #endif
 
-	if (conn->arg_cnt == 0) {
+	if (conn->arg_parsed == 0) {
 		if (fk_buf_payload_len(rbuf) > 0) {
 			start = fk_buf_payload_start(rbuf);
 			if (*start != '*') {
@@ -252,15 +252,15 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			/* first check the argc, only when argc is legal set the conn->arg_cnt */
-			conn->arg_cnt = argc;
+			/* first check the argc, only when argc is legal set the conn->arg_parsed */
+			conn->arg_parsed = argc;
 #ifdef FK_DEBUG
-			fk_log_debug("[arg_cnt parsed]: %d\n", conn->arg_cnt);
+			fk_log_debug("[arg_parsed parsed]: %d\n", conn->arg_parsed);
 			fk_log_debug("before arg_vtr stretch: len: %lu\n", fk_vtr_len(conn->arg_vtr));
 			fk_log_debug("before len_vtr stretch: len: %lu\n", fk_vtr_len(conn->len_vtr));
 #endif
-			fk_vtr_stretch(conn->arg_vtr, (size_t)(conn->arg_cnt));
-			fk_vtr_stretch(conn->len_vtr, (size_t)(conn->arg_cnt));
+			fk_vtr_stretch(conn->arg_vtr, (size_t)(conn->arg_parsed));
+			fk_vtr_stretch(conn->len_vtr, (size_t)(conn->arg_parsed));
 #ifdef FK_DEBUG
 			fk_log_debug("after arg_vtr stretch: len: %lu\n", fk_vtr_len(conn->arg_vtr));
 			fk_log_debug("after len_vtr stretch: len: %lu\n", fk_vtr_len(conn->len_vtr));
@@ -347,7 +347,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				return FK_SVR_AGAIN;
 			}
 
-			if (conn->arg_cnt == conn->arg_idx) {/* a total protocol has been parsed */
+			if (conn->arg_parsed == conn->arg_idx) {/* a total protocol has been parsed */
 				conn->parse_done = 1;
 				return FK_SVR_OK;
 			}
@@ -367,11 +367,11 @@ void fk_conn_free_args(fk_conn *conn)
 	fk_item *arg_itm;
 
 	/* arg_idx: the real number of parsed arguments */
-	//for (i = 0; i < conn->arg_cnt; i++) {
+	//for (i = 0; i < conn->arg_parsed; i++) {
 	for (i = 0; i < conn->arg_idx; i++) {
 		arg_itm = fk_conn_get_arg(conn, i);
 		/* 
-		 * when arg_cnt was parsed correctly, but not all the arguments 
+		 * when arg_parsed was parsed correctly, but not all the arguments 
 		 * were parsed correctly, so maybe arg_itm == NULL at this time
 		 */
 		if (arg_itm != NULL) {
@@ -380,7 +380,7 @@ void fk_conn_free_args(fk_conn *conn)
 		}
 		fk_conn_set_arglen(conn, i, (void *)0);
 	}
-	conn->arg_cnt = 0;
+	conn->arg_parsed = 0;
 	conn->parse_done = 0;
 	conn->arg_idx = 0;
 	conn->idx_flag = 0;
