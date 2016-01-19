@@ -42,7 +42,7 @@ SVRSRCS := fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c fk_mem.c fk_sock.c fk_s
 SVROBJS := $(patsubst %.c, %.o, $(SVRSRCS))
 DEPS 	:= Makefile.dep
 
-.PHONY : all clean rebuild
+.PHONY : all clean
 
 all : $(SVRBIN)
 
@@ -56,8 +56,6 @@ $(SVRBIN) : $(SVROBJS)
 $(DEPS) :
 	@echo "[Generating Makefile.dep...]"
 	$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
-
-rebuild : clean all
 
 clean :
 	@echo "[Removing all the objects...]"
