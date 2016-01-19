@@ -25,6 +25,7 @@
 
 /* high water */
 #define FK_BUF_HIGHWAT		(4 * 1024 * 1024)
+#define FK_BUF_INIT_LEN		16
 #define FK_ARG_HIGHWAT 		(1024 * 1024)
 #define FK_ARG_CNT_HIGHWAT 	128
 

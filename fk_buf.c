@@ -4,14 +4,15 @@
 #include <fk_buf.h>
 #include <fk_mem.h>
 
-fk_buf *fk_buf_create(size_t highwat)
+fk_buf *fk_buf_create(size_t init_len, size_t highwat)
 {
 	fk_buf *buf;
 
-	assert(highwat >= FK_BUF_INIT_LEN);
-	buf = (fk_buf *)fk_mem_alloc(sizeof(fk_buf) + FK_BUF_INIT_LEN);
+	assert(highwat >= init_len);
+	buf = (fk_buf *)fk_mem_alloc(sizeof(fk_buf) + init_len);
 	buf->highwat = highwat;
-	buf->len = FK_BUF_INIT_LEN;
+	buf->init_len = init_len;
+	buf->len = init_len;
 	buf->low = 0;
 	buf->high = 0;
 	return buf;

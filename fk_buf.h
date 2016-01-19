@@ -6,17 +6,16 @@
 #include <fk_macro.h>
 #include <fk_util.h>
 
-#define FK_BUF_INIT_LEN 	16
-
 typedef struct _fk_buf {
-	size_t highwat;
-	size_t len;
+	size_t highwat;/* a constant */
+	size_t init_len;/* a constant */
+	size_t len;/* a variable */
 	size_t low;/* valid begin, init: 0, range: [0-->len], <= high */
 	size_t high;/* free begin, init: 0, range: [0-->len], <= len */
 	char buffer[];
 } fk_buf;
 
-fk_buf *fk_buf_create(size_t highwat);
+fk_buf *fk_buf_create(size_t init_len, size_t highwat);
 void fk_buf_destroy(fk_buf *buf);
 #ifdef FK_DEBUG
 void fk_buf_print(const fk_buf *buf);
@@ -74,14 +73,14 @@ void fk_buf_print(const fk_buf *buf);
 }
 
 #define fk_buf_shrink(buf)	{							\
-	if ((buf)->len >= FK_BUF_INIT_LEN &&				\
-		fk_buf_payload_len((buf)) < FK_BUF_INIT_LEN)	\
+	if ((buf)->len >= (buf)->init_len &&				\
+		fk_buf_payload_len((buf)) < (buf)->init_len)	\
 	{													\
 		fk_buf_shift((buf));							\
 		(buf) = (fk_buf *)fk_mem_realloc((buf), 		\
-				sizeof(fk_buf) + FK_BUF_INIT_LEN		\
+				sizeof(fk_buf) + (buf)->init_len		\
 		);												\
-		(buf)->len = FK_BUF_INIT_LEN;					\
+		(buf)->len = (buf)->init_len;					\
 	}													\
 }
 

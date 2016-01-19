@@ -39,8 +39,8 @@ fk_conn *fk_conn_create(int fd)
 	conn = (fk_conn *)fk_mem_alloc(sizeof(fk_conn));
 
 	conn->fd = fd;
-	conn->rbuf = fk_buf_create(FK_BUF_HIGHWAT);
-	conn->wbuf = fk_buf_create(setting.max_wbuf);
+	conn->rbuf = fk_buf_create(FK_BUF_INIT_LEN, FK_BUF_HIGHWAT);
+	conn->wbuf = fk_buf_create(FK_BUF_INIT_LEN, setting.max_wbuf);
 
 	/* every fields should be initialized */
 	conn->read_ev = NULL;
