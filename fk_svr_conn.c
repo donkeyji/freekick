@@ -415,7 +415,7 @@ int fk_conn_proc_cmd(fk_conn *conn)
 
 	/* when the argument number is variable */
 	if (pto->arg_cnt < 0) {
-		if (conn->arg_cnt < -pto->arg_cnt) {
+		if (conn->arg_idx < -pto->arg_cnt) {
 			fk_log_error("wrong argument number\n");
 			fk_conn_free_args(conn);
 			rt = fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
@@ -427,7 +427,7 @@ int fk_conn_proc_cmd(fk_conn *conn)
 	}
 
 	/* when the argument nuber is statle */
-	if (pto->arg_cnt >= 0 && pto->arg_cnt != conn->arg_cnt) {
+	if (pto->arg_cnt >= 0 && pto->arg_cnt != conn->arg_idx) {
 		fk_log_error("wrong argument number\n");
 		fk_conn_free_args(conn);
 		rt = fk_conn_add_error_rsp(conn, "Wrong Argument Number", strlen("Wrong Argument Number"));
