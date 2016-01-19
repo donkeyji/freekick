@@ -366,7 +366,9 @@ void fk_conn_free_args(fk_conn *conn)
 	int i;
 	fk_item *arg_itm;
 
-	for (i = 0; i < conn->arg_cnt; i++) {
+	/* arg_idx: the real number of parsed arguments */
+	//for (i = 0; i < conn->arg_cnt; i++) {
+	for (i = 0; i < conn->arg_idx; i++) {
 		arg_itm = fk_conn_get_arg(conn, i);
 		/* 
 		 * when arg_cnt was parsed correctly, but not all the arguments 
