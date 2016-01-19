@@ -308,7 +308,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				if (*(start + arg_len) != '\r' ||
 					*(start + arg_len + 1) != '\n') 
 				{
-					fk_log_debug("illegal argument line\n");
+					fk_log_debug("the real length of argument line does not equal the length parsed before\n");
 					return FK_SVR_ERR;
 				}
 				itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
@@ -578,7 +578,7 @@ int fk_conn_send_rsp(fk_conn *conn)
 	if (fk_buf_reach_highwat(conn->rbuf) &&
 		fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
 	{
-		fk_log_info("a too long line, beyond the max length of read buffer\n");
+		fk_log_debug("a incompleted line is too long, even longer than the max length of read buffer\n");
 		return FK_SVR_ERR;
 	}
 
