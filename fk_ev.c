@@ -26,7 +26,7 @@
 #define FK_TMEV_INIT		0/* never added to the evmgr */
 #define FK_TMEV_PENDING		1/* in the min heap, not in the expired list */
 #define FK_TMEV_EXPIRED		2/* in the expired list, not in the min heap */
-#define FK_TMEV_OLD			3/* added to the evmgr, but not in the min heap, neither the expired list*/
+#define FK_TMEV_OLD			3/* added to the evmgr, but not in the min heap, neither the expired list */
 
 #define	fk_ioev_set_stat(ioev, stat)		(ioev)->activated = (stat)
 #define fk_ioev_get_stat(ioev)				((ioev)->activated)
@@ -345,7 +345,7 @@ void fk_ev_proc_expired_tmev()
 		fk_rawlist_insert_head(evmgr.old_tmev, tmev);/* move to the old list */
 		fk_tmev_set_stat(tmev, FK_TMEV_OLD);/* not init, not in the min heap, neither the expired list */
 		/* step 2: call the callback of the expired tmev */
-		rt = tmcb(interval, type, arg);/* maybe fk_ev_remove_tmev() is called in tmcb*/
+		rt = tmcb(interval, type, arg);/* maybe fk_ev_remove_tmev() is called in tmcb */
 		/* 
 		 * step 3:
 		 * fk_ev_remove_tmev() should not be called here, even if the return value

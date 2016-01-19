@@ -274,7 +274,7 @@ void fk_main_exit()
 {
 	/* maybe some other fk_xxx_exit() to call here */
 	fk_svr_exit();
-	/* no need to call exit(), because this is the last function called*/
+	/* no need to call exit(), because this is the last function called */
 	//exit(EXIT_SUCCESS);
 }
 
