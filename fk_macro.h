@@ -17,7 +17,7 @@
 #define FK_DEFAULT_PORT 			6379
 #define FK_DEFAULT_DAEMON 			0
 #define FK_DEFAULT_SVR_ADDR	 		"0.0.0.0"
-#define FK_DEFAULT_DB_CNT 			8
+#define FK_DEFAULT_DB_CNT 			1
 #define FK_DEFAULT_CONN_TIMEOUT 	300 /* timeout of conn, unit: second */
 #define FK_DEFAULT_DIR				"/tmp/"
 #define FK_DEFAULT_MAX_WBUF			4096

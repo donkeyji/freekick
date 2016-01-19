@@ -209,7 +209,7 @@ int fk_conn_parse_req(fk_conn *conn)
 		if (fk_buf_payload_len(rbuf) > 0) {
 			start = fk_buf_payload_start(rbuf);
 			if (*start != '*') {
-				fk_log_debug("wrong client data\n");
+				fk_log_debug("illegal beginning of a protocol\n");
 				return FK_SVR_ERR;
 			}
 			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
@@ -217,7 +217,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				return FK_SVR_AGAIN;
 			}
 			if (*(end - 1) != '\r') {
-				fk_log_debug("wrong client data\n");
+				fk_log_debug("illegal end of a protocol\n");
 				return FK_SVR_ERR;
 			}
 			if (end - 2 < start + 1) {
@@ -225,8 +225,8 @@ int fk_conn_parse_req(fk_conn *conn)
 				return FK_SVR_ERR;
 			}
 			rt = fk_util_is_positive_seq(start + 1, (size_t)(end - 2 - start));
-			if (rt < 0) {
-				fk_log_debug("wrong client data\n");
+			if (rt != 1) {
+				fk_log_debug("illegal argument count format\n");
 				return FK_SVR_ERR;
 			}
 			/* 
@@ -236,7 +236,7 @@ int fk_conn_parse_req(fk_conn *conn)
 			 */
 			argc = atoi(start + 1);
 			if (argc <= 0 || argc > FK_ARG_CNT_HIGHWAT) {
-				fk_log_debug("invalid argument count\n");
+				fk_log_debug("illegal argument count\n");
 				return FK_SVR_ERR;
 			}
 			/* first check the argc, only when argc is legal set the conn->arg_cnt */
@@ -261,7 +261,7 @@ int fk_conn_parse_req(fk_conn *conn)
 		if (conn->idx_flag == 0) {
 			start = fk_buf_payload_start(rbuf);
 			if (*start != '$') {
-				fk_log_debug("wrong client data\n");
+				fk_log_debug("illegal beginning of a argument length\n");
 				return FK_SVR_ERR;
 			}
 			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
@@ -269,7 +269,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				return FK_SVR_AGAIN;
 			}
 			if (*(end - 1) != '\r') {
-				fk_log_debug("wrong client data\n");
+				fk_log_debug("illegal end of a argument length\n");
 				return FK_SVR_ERR;
 			}
 			if (end - 2 < start + 1) {
@@ -277,8 +277,8 @@ int fk_conn_parse_req(fk_conn *conn)
 				return FK_SVR_ERR;
 			}
 			rt = fk_util_is_nonminus_seq(start + 1, (size_t)(end - 2 - start));
-			if (rt < 0) {
-				fk_log_debug("wrong client data\n");
+			if (rt != 1) {
+				fk_log_debug("illegal argument length format\n");
 				return FK_SVR_ERR;
 			}
 			/* 
@@ -288,7 +288,7 @@ int fk_conn_parse_req(fk_conn *conn)
 			 */
 			argl = atoi(start + 1);/* argument length */
 			if (argl < 0 || argl > FK_ARG_HIGHWAT) {
-				fk_log_debug("invalid argument length\n");
+				fk_log_debug("illegal argument length\n");
 				return FK_SVR_ERR;
 			}
 			fk_conn_set_arglen(conn, conn->arg_idx, (void *)((size_t)argl));
