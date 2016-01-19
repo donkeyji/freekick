@@ -185,3 +185,5 @@ FK_CLASS_XXX/FK_MOD_XXX
 #endif
 
 73.一般情况下，函数并不检查参数的有效性，参数的有效性由调用者控制，如果调用者传入的参数不正确，那就是程序逻辑有错误。
+
+74.用fk_conn.arg_idx去代替fk_conn.arg_cnt更合理。
