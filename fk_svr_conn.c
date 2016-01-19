@@ -214,6 +214,7 @@ int fk_conn_parse_req(fk_conn *conn)
 			}
 			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
 			if (end == NULL) {
+				fk_log_debug("a completed argument count line was not received\n");
 				return FK_SVR_AGAIN;
 			}
 			if (*(end - 1) != '\r') {
@@ -221,7 +222,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				return FK_SVR_ERR;
 			}
 			if (end - 2 < start + 1) {
-				fk_log_debug("wrong client data\n");
+				fk_log_debug("wrong length of argument count seq\n");
 				return FK_SVR_ERR;
 			}
 			rt = fk_util_is_positive_seq(start + 1, (size_t)(end - 2 - start));
@@ -266,6 +267,7 @@ int fk_conn_parse_req(fk_conn *conn)
 			}
 			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
 			if (end == NULL) {
+				fk_log_debug("a completed argument length line was not received\n");
 				return FK_SVR_AGAIN;
 			}
 			if (*(end - 1) != '\r') {
@@ -273,7 +275,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				return FK_SVR_ERR;
 			}
 			if (end - 2 < start + 1) {
-				fk_log_debug("wrong client data\n");
+				fk_log_debug("wrong length of argument length seq\n");
 				return FK_SVR_ERR;
 			}
 			rt = fk_util_is_nonminus_seq(start + 1, (size_t)(end - 2 - start));
@@ -306,7 +308,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				if (*(start + arg_len) != '\r' ||
 					*(start + arg_len + 1) != '\n') 
 				{
-					fk_log_debug("wrong client data\n");
+					fk_log_debug("illegal argument line\n");
 					return FK_SVR_ERR;
 				}
 				itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
