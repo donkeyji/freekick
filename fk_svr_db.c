@@ -13,7 +13,7 @@ int fk_cmd_del(fk_conn *conn)
 
 	deleted = 0;
 
-	for (i = 1; i < conn->arg_cnt; i++) {
+	for (i = 1; i < conn->arg_idx; i++) {
 		key = fk_conn_get_arg(conn, i);
 		rt = fk_dict_remove(server.db[conn->db_idx], key);
 		if (rt == FK_DICT_OK) {
