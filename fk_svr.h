@@ -34,8 +34,15 @@
 #define FK_ARG_HIGHWAT 				(1024 * 1024)
 #define FK_ARG_CNT_HIGHWAT 			128
 
-#define FK_ARG_LEN_LINE_HIGHWAT		9
+/* the max length of a argument count line, the max line: *128\r\n */
 #define FK_ARG_CNT_LINE_HIGHWAT 	5
+
+/* 
+ * the max length of a argument length line, the max line: $1048576\r\n 
+ * 1024 * 1024 = 1048576
+ */
+#define FK_ARG_LEN_LINE_HIGHWAT		9
+
 
 /* status code definition copied from nginx */
 #define FK_SVR_OK			 0
