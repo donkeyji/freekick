@@ -63,7 +63,6 @@ fk_conn *fk_conn_create(int fd)
 	conn->cur_arglen = -1;
 	conn->arg_parsed = 0;
 	conn->arg_cnt = 0;
-	conn->idx_flag = 0;
 	conn->parse_done = 0;
 
 	conn->db_idx = 0;
@@ -278,7 +277,7 @@ int fk_conn_parse_req(fk_conn *conn)
 	}
 
 	while (fk_buf_payload_len(rbuf) > 0) {
-		if (conn->idx_flag == 0) {
+		if (conn->cur_arglen == -1) {
 			start = fk_buf_payload_start(rbuf);
 			if (*start != '$') {
 #ifdef FK_DEBUG
@@ -336,11 +335,10 @@ int fk_conn_parse_req(fk_conn *conn)
 				return FK_SVR_ERR;
 			}
 			conn->cur_arglen = argl;
-			conn->idx_flag = 1;/* need to parse arg */
 			fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
 		}
 
-		if (conn->idx_flag == 1) {
+		if (conn->cur_arglen != -1) {
 			start = fk_buf_payload_start(rbuf);
 			arg_len = (size_t)conn->cur_arglen;
 #ifdef FK_DEBUG
@@ -360,7 +358,6 @@ int fk_conn_parse_req(fk_conn *conn)
 				fk_item_inc_ref(itm);/* ref: from 0 to 1 */
 				conn->arg_cnt += 1;
 				conn->cur_arglen = -1;
-				conn->idx_flag = 0;
 				fk_buf_low_inc(rbuf, arg_len + 2);
 			} else {/* not received yet */
 				return FK_SVR_AGAIN;
@@ -402,7 +399,6 @@ void fk_conn_free_args(fk_conn *conn)
 	conn->arg_parsed = 0;
 	conn->parse_done = 0;
 	conn->arg_cnt = 0;
-	conn->idx_flag = 0;
 }
 
 int fk_conn_proc_cmd(fk_conn *conn)
