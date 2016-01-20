@@ -214,6 +214,9 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
+#ifdef FK_DEBUG
+			fk_log_debug("payload left: %zu, max argcnt line: %zu\n", fk_buf_payload_len(rbuf)-1, (size_t)FK_ARG_CNT_LINE_HIGHWAT);
+#endif
 			search_len = fk_util_smaller(fk_buf_payload_len(rbuf) - 1, FK_ARG_CNT_LINE_HIGHWAT);
 			end = memchr(start + 1, '\n', search_len);
 			if (end == NULL) {
@@ -287,6 +290,9 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
+#ifdef FK_DEBUG
+			fk_log_debug("payload left: %zu, max arglen line: %zu\n", fk_buf_payload_len(rbuf)-1, (size_t)FK_ARG_LEN_LINE_HIGHWAT);
+#endif
 			search_len = fk_util_smaller(fk_buf_payload_len(rbuf) - 1, FK_ARG_LEN_LINE_HIGHWAT);
 			end = memchr(start + 1, '\n', search_len);
 			if (end == NULL) {
