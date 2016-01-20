@@ -192,3 +192,5 @@ FK_CLASS_XXX/FK_MOD_XXX
 在mac下gcc警告，会将立即数当做int类型，debian下gcc无警告，可以将立即数当做char/short/int/long/size_t来print。
 size_t a = 5;
 这样的赋值操作二者均不会有警告。
+
+76.类似fk_buf.len，到底是采用size_t/int/long/uint32_t/uint64_t中的那一个种，取决于程序对于数据量的规划，只要能满足所用到的数据库，就无所谓int/long/size_t。不能依赖数据的变量类型来控制变量值的边界，而应该事先人为的进行规划控制。
