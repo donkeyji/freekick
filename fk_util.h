@@ -65,7 +65,7 @@ size_t fk_util_decimal_digit(int num);
 /* unused var */
 #define fk_util_unuse(var)		(void)(var)
 
-#define fk_util_min(a, b)		((a) <= (b) ? (a) : (b))
-#define fk_util_max(a, b)		((a) >= (b) ? (a) : (b))
+#define fk_util_smaller(a, b)		((a) <= (b) ? (a) : (b))
+#define fk_util_bigger(a, b)		((a) >= (b) ? (a) : (b))
 
 #endif

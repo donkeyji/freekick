@@ -214,7 +214,7 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			search_len = fk_util_min(fk_buf_payload_len(rbuf) - 1, FK_ARG_CNT_LINE_HIGHWAT);
+			search_len = fk_util_smaller(fk_buf_payload_len(rbuf) - 1, FK_ARG_CNT_LINE_HIGHWAT);
 			end = memchr(start + 1, '\n', search_len);
 			if (end == NULL) {
 				if (search_len == FK_ARG_CNT_LINE_HIGHWAT) {
@@ -287,7 +287,7 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			search_len = fk_util_min(fk_buf_payload_len(rbuf) - 1, FK_ARG_LEN_LINE_HIGHWAT);
+			search_len = fk_util_smaller(fk_buf_payload_len(rbuf) - 1, FK_ARG_LEN_LINE_HIGHWAT);
 			end = memchr(start + 1, '\n', search_len);
 			if (end == NULL) {
 				if (search_len == FK_ARG_LEN_LINE_HIGHWAT) {
