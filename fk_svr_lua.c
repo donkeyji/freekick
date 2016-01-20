@@ -64,7 +64,6 @@ int fk_lua_pcall(lua_State *L)
 
 	/* allocate memory for arguments */
 	fk_vtr_stretch(lua_conn->arg_vtr, (size_t)(lua_conn->arg_parsed));
-	fk_vtr_stretch(lua_conn->len_vtr, (size_t)(lua_conn->arg_parsed));
 
 	for (i = 0; i < lua_conn->arg_parsed; i++) {
 		/* do not use luaL_checklstring() here, because if luaL_checklstring()
@@ -78,7 +77,6 @@ int fk_lua_pcall(lua_State *L)
 		arg = lua_tolstring(L, i + 1, &len);
 		itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
 		fk_conn_set_arg(lua_conn, lua_conn->arg_cnt, itm);
-		fk_conn_set_arglen(lua_conn, lua_conn->arg_cnt, (void *)((size_t)len));
 		fk_item_inc_ref(itm);
 		lua_conn->arg_cnt += 1;
 	}

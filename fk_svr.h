@@ -76,7 +76,7 @@ typedef struct _fk_conn {
 	fk_tmev *timer;
 
 	fk_vtr *arg_vtr;
-	fk_vtr *len_vtr;
+	int cur_arglen;
 	int arg_parsed;/* parsed from the head of a protocol, original 0; */
 	int arg_cnt;/* the number of the arguments which have been parsed, original 0 */
 	int idx_flag;/* arg_len or arg */
@@ -128,8 +128,6 @@ int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt);
 
 #define fk_conn_set_arg(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
 #define fk_conn_get_arg(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
-#define fk_conn_set_arglen(conn, idx, l)  fk_vtr_set((conn)->len_vtr, (idx), (l))
-#define fk_conn_get_arglen(conn, idx)	fk_vtr_get((conn->len_vtr), (idx))
 
 /* interface of fk_svr */
 void fk_svr_init();

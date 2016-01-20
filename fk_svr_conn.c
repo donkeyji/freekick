@@ -60,7 +60,7 @@ fk_conn *fk_conn_create(int fd)
 	conn->last_recv = time(NULL);/* save the current time */
 
 	conn->arg_vtr = fk_vtr_create();
-	conn->len_vtr = fk_vtr_create();
+	conn->cur_arglen = -1;
 	conn->arg_parsed = 0;
 	conn->arg_cnt = 0;
 	conn->idx_flag = 0;
@@ -95,7 +95,6 @@ void fk_conn_destroy(fk_conn *conn)
 
 	fk_conn_free_args(conn);/* free arg_vtr first */
 	fk_vtr_destroy(conn->arg_vtr);/* then free vector */
-	fk_vtr_destroy(conn->len_vtr);
 
 	conn->last_recv = -1;
 
@@ -268,13 +267,10 @@ int fk_conn_parse_req(fk_conn *conn)
 #ifdef FK_DEBUG
 			fk_log_debug("[arg_parsed parsed]: %d\n", conn->arg_parsed);
 			fk_log_debug("before arg_vtr stretch: len: %lu\n", fk_vtr_len(conn->arg_vtr));
-			fk_log_debug("before len_vtr stretch: len: %lu\n", fk_vtr_len(conn->len_vtr));
 #endif
 			fk_vtr_stretch(conn->arg_vtr, (size_t)(conn->arg_parsed));
-			fk_vtr_stretch(conn->len_vtr, (size_t)(conn->arg_parsed));
 #ifdef FK_DEBUG
 			fk_log_debug("after arg_vtr stretch: len: %lu\n", fk_vtr_len(conn->arg_vtr));
-			fk_log_debug("after len_vtr stretch: len: %lu\n", fk_vtr_len(conn->len_vtr));
 #endif
 
 			fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
@@ -339,14 +335,14 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			fk_conn_set_arglen(conn, conn->arg_cnt, (void *)((size_t)argl));
+			conn->cur_arglen = argl;
 			conn->idx_flag = 1;/* need to parse arg */
 			fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
 		}
 
 		if (conn->idx_flag == 1) {
 			start = fk_buf_payload_start(rbuf);
-			arg_len = (size_t)fk_conn_get_arglen(conn, conn->arg_cnt);
+			arg_len = (size_t)conn->cur_arglen;
 #ifdef FK_DEBUG
 			fk_log_debug("saved arg_len: %lu\n", arg_len);
 #endif
@@ -363,6 +359,7 @@ int fk_conn_parse_req(fk_conn *conn)
 				fk_conn_set_arg(conn, conn->arg_cnt, itm);
 				fk_item_inc_ref(itm);/* ref: from 0 to 1 */
 				conn->arg_cnt += 1;
+				conn->cur_arglen = -1;
 				conn->idx_flag = 0;
 				fk_buf_low_inc(rbuf, arg_len + 2);
 			} else {/* not received yet */
@@ -400,8 +397,8 @@ void fk_conn_free_args(fk_conn *conn)
 			fk_item_dec_ref(arg_itm);/* just decrease the ref */
 			fk_conn_set_arg(conn, i, NULL);/* do not ref to this item */
 		}
-		fk_conn_set_arglen(conn, i, (void *)0);
 	}
+	conn->cur_arglen = -1;
 	conn->arg_parsed = 0;
 	conn->parse_done = 0;
 	conn->arg_cnt = 0;
@@ -640,7 +637,6 @@ int fk_conn_send_rsp(fk_conn *conn)
 	/* step 2 */
 	fk_buf_shrink(conn->rbuf);
 	fk_vtr_shrink(conn->arg_vtr);
-	fk_vtr_shrink(conn->len_vtr);
 
 	/* step 3 */
 	wbuf = conn->wbuf;
