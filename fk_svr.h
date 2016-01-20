@@ -76,9 +76,9 @@ typedef struct _fk_conn {
 	fk_tmev *timer;
 
 	fk_vtr *arg_vtr;
-	int cur_arglen;
 	int arg_parsed;/* parsed from the head of a protocol, original 0; */
 	int arg_cnt;/* the number of the arguments which have been parsed, original 0 */
+	int cur_arglen;/* the argument length of the arg_cnt..TH, original -1 */
 	int parse_done;/* original 0 */
 
 	int db_idx;
