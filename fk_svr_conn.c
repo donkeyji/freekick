@@ -195,9 +195,9 @@ int fk_conn_parse_req(fk_conn *conn)
 {
 	fk_buf *rbuf;
 	fk_item *itm;
-	size_t arg_len;
 	char *start, *end;
 	int rt, argl, argc;
+	size_t arg_len, search_len;
 
 	rbuf = conn->rbuf;
 
@@ -214,8 +214,16 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
+			search_len = fk_util_min(fk_buf_payload_len(rbuf) - 1, FK_ARG_CNT_LINE_HIGHWAT);
+			end = memchr(start + 1, '\n', search_len);
 			if (end == NULL) {
+				if (search_len == FK_ARG_CNT_LINE_HIGHWAT) {
+				/* cannot locate the '\n' in the max length */
+#ifdef FK_DEBUG
+					fk_log_debug("an illegal argument count line appeares\n");
+#endif
+					return FK_SVR_ERR;
+				}
 #ifdef FK_DEBUG
 				fk_log_debug("a completed argument count line was not received\n");
 #endif
@@ -279,8 +287,16 @@ int fk_conn_parse_req(fk_conn *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			end = memchr(start + 1, '\n', fk_buf_payload_len(rbuf) - 1);
+			search_len = fk_util_min(fk_buf_payload_len(rbuf) - 1, FK_ARG_LEN_LINE_HIGHWAT);
+			end = memchr(start + 1, '\n', search_len);
 			if (end == NULL) {
+				if (search_len == FK_ARG_LEN_LINE_HIGHWAT) {
+					/* cannot locate the '\n' in the max length */
+#ifdef FK_DEBUG
+					fk_log_debug("an illegal argument length line appeares\n");
+#endif
+					return FK_SVR_ERR;
+				}
 #ifdef FK_DEBUG
 				fk_log_debug("a completed argument length line was not received\n");
 #endif
@@ -590,7 +606,8 @@ int fk_conn_send_rsp(fk_conn *conn)
 {
 	fk_buf *wbuf;
 
-	/* step 1 */
+	/* no need to keep step 1, because its function is included in fk_conn_parse_req() */
+	/* step 1 -- obsolete */
 	/* 
 	 * a completed line was not received, but the read buffer has reached
 	 * its upper limit, so just close this connection
@@ -605,14 +622,14 @@ int fk_conn_send_rsp(fk_conn *conn)
 	 * argument content if longer than the length sent before, the fk_conn_parse_req() will
 	 * also detect this kind of exception and close this connection, too.
 	 */
-	if (fk_buf_reach_highwat(conn->rbuf) &&
-		fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
-	{
-#ifdef FK_DEBUG
-		fk_log_debug("a incompleted line is too long, even longer than the max length of read buffer\n");
-#endif
-		return FK_SVR_ERR;
-	}
+	//if (fk_buf_reach_highwat(conn->rbuf) &&
+		//fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
+	//{
+//#ifdef FK_DEBUG
+		//fk_log_debug("a incompleted line is too long, even longer than the max length of read buffer\n");
+//#endif
+		//return FK_SVR_ERR;
+	//}
 
 	/* step 2 */
 	fk_buf_shrink(conn->rbuf);
