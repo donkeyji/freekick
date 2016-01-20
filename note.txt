@@ -187,3 +187,8 @@ FK_CLASS_XXX/FK_MOD_XXX
 73.一般情况下，函数并不检查参数的有效性，参数的有效性由调用者控制，如果调用者传入的参数不正确，那就是程序逻辑有错误。
 
 74.用fk_conn.arg_idx去代替fk_conn.arg_cnt更合理。
+
+75.printf("%zu\n", 5);
+在mac下gcc警告，会将立即数当做int类型，debian下gcc无警告，可以将立即数当做char/short/int/long/size_t来print。
+size_t a = 5;
+这样的赋值操作二者均不会有警告。
