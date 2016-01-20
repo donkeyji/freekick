@@ -340,7 +340,7 @@ int fk_conn_parse_req(fk_conn *conn)
 
 		if (conn->cur_arglen != -1) {
 			start = fk_buf_payload_start(rbuf);
-			arg_len = (size_t)conn->cur_arglen;
+			arg_len = (size_t)(conn->cur_arglen);
 #ifdef FK_DEBUG
 			fk_log_debug("saved arg_len: %lu\n", arg_len);
 #endif
