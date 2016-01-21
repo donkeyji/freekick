@@ -16,7 +16,7 @@ typedef struct _fk_zline {
 } fk_zline;
 
 static fk_zline *fk_zline_create(size_t len);
-static void fk_zline_adjust(fk_zline *buf, size_t len);
+static void fk_zline_alloc(fk_zline *buf, size_t len);
 static void fk_zline_destroy(fk_zline *buf);
 
 /* related to dump */
@@ -333,7 +333,7 @@ fk_zline *fk_zline_create(size_t len)
 	return buf;
 }
 
-void fk_zline_adjust(fk_zline *buf, size_t len)
+void fk_zline_alloc(fk_zline *buf, size_t len)
 {
 	if (buf->len < len) {
 		buf->len = fk_util_min_power(len);
@@ -459,7 +459,7 @@ int fk_fkdb_restore_str_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 		return FK_SVR_ERR;
 	}
 
-	fk_zline_adjust(buf, klen);
+	fk_zline_alloc(buf, klen);
 	rz = fread(buf->line, klen, 1, fp);
 	if (rz == 0) {
 		return FK_SVR_ERR;
@@ -474,7 +474,7 @@ int fk_fkdb_restore_str_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (vlen > FK_ARG_HIGHWAT) {
 		return FK_SVR_ERR;
 	}
-	fk_zline_adjust(buf, vlen);
+	fk_zline_alloc(buf, vlen);
 	rz = fread(buf->line, vlen, 1, fp);
 	if (vlen > 0 && rz == 0) {
 		return FK_SVR_ERR;
@@ -507,7 +507,7 @@ int fk_fkdb_restore_list_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (klen > FK_ARG_HIGHWAT) {
 		return FK_SVR_ERR;
 	}
-	fk_zline_adjust(buf, klen);
+	fk_zline_alloc(buf, klen);
 	rz = fread(buf->line, klen, 1, fp);
 	if (rz == 0) {
 		return FK_SVR_ERR;
@@ -529,7 +529,7 @@ int fk_fkdb_restore_list_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 		if (nlen > FK_ARG_HIGHWAT) {
 			return FK_SVR_ERR;
 		}
-		fk_zline_adjust(buf, nlen);
+		fk_zline_alloc(buf, nlen);
 		rz = fread(buf->line, nlen, 1, fp);
 		if (nlen > 0 && rz == 0) {
 			return FK_SVR_ERR;
@@ -563,7 +563,7 @@ int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 	if (klen > FK_ARG_HIGHWAT) {
 		return FK_SVR_ERR;
 	}
-	fk_zline_adjust(buf, klen);
+	fk_zline_alloc(buf, klen);
 	rz = fread(buf->line, klen, 1, fp);
 	if (rz == 0) {
 		return FK_SVR_ERR;
@@ -585,7 +585,7 @@ int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 		if (sklen > FK_ARG_HIGHWAT) {
 			return FK_SVR_ERR;
 		}
-		fk_zline_adjust(buf, sklen);
+		fk_zline_alloc(buf, sklen);
 		rz = fread(buf->line, sklen, 1, fp);
 		if (rz == 0) {
 			return FK_SVR_ERR;
@@ -600,7 +600,7 @@ int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 		if (svlen > FK_ARG_HIGHWAT) {
 			return FK_SVR_ERR;
 		}
-		fk_zline_adjust(buf, svlen);
+		fk_zline_alloc(buf, svlen);
 		rz = fread(buf->line, svlen, 1, fp);
 		if (svlen > 0 && rz == 0) {
 			return FK_SVR_ERR;
