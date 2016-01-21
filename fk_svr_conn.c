@@ -59,7 +59,7 @@ fk_conn *fk_conn_create(int fd)
 
 	conn->last_recv = time(NULL);/* save the current time */
 
-	conn->arg_vtr = fk_vtr_create();
+	conn->arg_vtr = fk_vtr_create(FK_VTR_INIT_LEN);
 	conn->cur_arglen = -1;
 	conn->arg_parsed = 0;
 	conn->arg_cnt = 0;

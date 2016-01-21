@@ -43,6 +43,7 @@
  */
 #define FK_ARG_LEN_LINE_HIGHWAT		9
 
+#define FK_VTR_INIT_LEN				4
 
 /* status code definition copied from nginx */
 #define FK_SVR_OK			 0

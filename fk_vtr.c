@@ -5,14 +5,15 @@
 #include <fk_vtr.h>
 
 
-fk_vtr *fk_vtr_create()
+fk_vtr *fk_vtr_create(size_t init_len)
 {
 	fk_vtr *vtr;
 
 	vtr = (fk_vtr *)fk_mem_alloc(sizeof(fk_vtr)); 
-	vtr->len = FK_VTR_INIT_LEN;
-	vtr->array = fk_mem_alloc(sizeof(void *) * vtr->len);
-	bzero(vtr->array, sizeof(void *) * vtr->len);
+	vtr->init_len = init_len;
+	vtr->len = init_len;
+	vtr->array = fk_mem_alloc(sizeof(void *) * vtr->init_len);
+	bzero(vtr->array, sizeof(void *) * vtr->init_len);
 	return vtr;
 }
 

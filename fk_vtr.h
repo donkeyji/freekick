@@ -1,14 +1,13 @@
 #ifndef _FK_VTR_H_
 #define _FK_VTR_H_
 
-#define FK_VTR_INIT_LEN	4
-
 typedef struct _fk_vtr {
+	size_t init_len;
 	size_t len;
 	void **array;
 } fk_vtr;
 
-fk_vtr *fk_vtr_create();
+fk_vtr *fk_vtr_create(size_t init_len);
 void fk_vtr_destroy(fk_vtr *vtr);
 
 #define fk_vtr_len(vtr)		((vtr)->len)
@@ -29,10 +28,10 @@ void fk_vtr_destroy(fk_vtr *vtr);
 } while (0);
 
 #define fk_vtr_shrink(vtr)		do {								\
-	if ((vtr)->len > FK_VTR_INIT_LEN) {								\
+	if ((vtr)->len > (vtr)->init_len) {								\
 		(vtr)->array = (void **)fk_mem_realloc((vtr)->array, 		\
-			sizeof(void *) * FK_VTR_INIT_LEN);						\
-		(vtr)->len = FK_VTR_INIT_LEN;								\
+			sizeof(void *) * (vtr)->init_len);						\
+		(vtr)->len = (vtr)->init_len;								\
 	}																\
 } while (0)
 
