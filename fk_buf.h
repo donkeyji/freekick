@@ -84,7 +84,7 @@ void fk_buf_print(const fk_buf *buf);
 	}													\
 }
 
-#define fk_buf_adjust(buf, length)	{					\
+#define fk_buf_alloc(buf, length)	{					\
 	if (fk_buf_free_len((buf)) < (length)) {			\
 		fk_buf_shift((buf));							\
 	}													\

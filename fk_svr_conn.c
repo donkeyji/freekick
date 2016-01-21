@@ -650,7 +650,7 @@ int fk_conn_add_status_rsp(fk_conn *conn, char *stat, size_t stat_len)
 
 	len = stat_len + 3;
 
-	fk_buf_adjust(conn->wbuf, len);
+	fk_buf_alloc(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
 		return FK_SVR_ERR;
 	}
@@ -667,7 +667,7 @@ int fk_conn_add_error_rsp(fk_conn *conn, char *error, size_t error_len)
 
 	len = error_len + 3;
 
-	fk_buf_adjust(conn->wbuf, len);
+	fk_buf_alloc(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
 		return FK_SVR_ERR;
 	}
@@ -684,7 +684,7 @@ int fk_conn_add_content_rsp(fk_conn *conn, char *content, size_t content_len)
 
 	len = content_len + 2;
 
-	fk_buf_adjust(conn->wbuf, len);
+	fk_buf_alloc(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
 		return FK_SVR_ERR;
 	}
@@ -702,7 +702,7 @@ int fk_conn_add_int_rsp(fk_conn *conn, int num)
 	len = fk_util_decimal_digit(num);
 	len += 3;
 
-	fk_buf_adjust(conn->wbuf, len);
+	fk_buf_alloc(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
 		return FK_SVR_ERR;
 	}
@@ -720,7 +720,7 @@ int fk_conn_add_bulk_rsp(fk_conn *conn, int bulk_len)
 	len = fk_util_decimal_digit(bulk_len);
 	len += 3;
 
-	fk_buf_adjust(conn->wbuf, len);
+	fk_buf_alloc(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
 		return FK_SVR_ERR;
 	}
@@ -738,7 +738,7 @@ int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt)
 	len = fk_util_decimal_digit(bulk_cnt);
 	len += 3;
 
-	fk_buf_adjust(conn->wbuf, len);
+	fk_buf_alloc(conn->wbuf, len);
 	if (fk_buf_free_len(conn->wbuf) < len) {
 		return FK_SVR_ERR;
 	}
