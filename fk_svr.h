@@ -86,10 +86,8 @@ typedef struct _fk_conn {
 } fk_conn;
 
 typedef struct _fk_svr {
-	uint16_t port;
-	fk_str *addr;
+	/* configure */
 	int listen_fd;
-	unsigned max_conn;/* max connections */
 	unsigned conn_cnt;/* connection count */
 	time_t start_time;
 	time_t last_save;
@@ -98,7 +96,6 @@ typedef struct _fk_svr {
 	fk_tmev *svr_timer;
 	fk_tmev *svr_timer2;
 	fk_conn **conns_tab;
-	fk_str *pid_path;
 	unsigned dbcnt;
 	fk_dict **db;
 	pid_t save_pid;/* -1: the save child process ended */
