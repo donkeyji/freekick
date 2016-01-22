@@ -254,8 +254,10 @@ void fk_svr_init()
 	 * copy setting from conf to server 
 	 * but is it necessary???
 	 */
+	server.port = setting.port;
 	server.max_conn = setting.max_conn;
 	server.dbcnt = setting.dbcnt;
+	server.addr = fk_str_clone(setting.addr);
 
 	/* create global environment */
 	server.save_pid = -1;/* -1 is a invalid pid */
@@ -264,7 +266,7 @@ void fk_svr_init()
 	server.conn_cnt = 0;
 	server.timer_cnt = 0;
 	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_util_conns_to_files(server.max_conn));
-	server.listen_fd = fk_sock_create_listen(fk_str_raw(setting.addr), setting.port);
+	server.listen_fd = fk_sock_create_listen(fk_str_raw(server.addr), server.port);
 	if (server.listen_fd == FK_SOCK_ERR) {
 		fk_log_error("server listen socket creating failed: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);

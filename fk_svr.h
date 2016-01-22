@@ -86,6 +86,8 @@ typedef struct _fk_conn {
 } fk_conn;
 
 typedef struct _fk_svr {
+	uint16_t port;
+	fk_str *addr;
 	int listen_fd;
 	unsigned max_conn;/* max connections */
 	unsigned conn_cnt;/* connection count */
