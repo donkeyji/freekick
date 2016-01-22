@@ -53,7 +53,8 @@ static int fk_conf_parse_dbfile(fk_cfline *line);
 static int fk_conf_parse_timeout(fk_cfline *line);
 static int fk_conf_parse_dir(fk_cfline *line);
 static int fk_conf_parse_maxwbuf(fk_cfline *line);
-static int fk_conf_parse_blogfile(fk_cfline *line);
+static int fk_conf_parse_blogpath(fk_cfline *line);
+static int fk_conf_parse_blogon(fk_cfline *line);
 
 static fk_dtv dtv_map[] = {
 	{"port", 2, fk_conf_parse_port},
@@ -69,7 +70,8 @@ static fk_dtv dtv_map[] = {
 	{"timeout", 2, fk_conf_parse_timeout},
 	{"addr", 2, fk_conf_parse_addr},
 	{"maxwbuf", 2, fk_conf_parse_maxwbuf},
-	{"blogfile", 2, fk_conf_parse_blogfile},
+	{"blogpath", 2, fk_conf_parse_blogpath},
+	{"blogon", 1, fk_conf_parse_blogon},
 	{NULL, 0, NULL}
 };
 
@@ -120,6 +122,8 @@ void fk_conf_init(char *conf_path)
 	setting.timeout = FK_DEFAULT_CONN_TIMEOUT;
 	setting.dir = fk_str_create(FK_DEFAULT_DIR, sizeof(FK_DEFAULT_DIR) - 1);
 	setting.max_wbuf = FK_DEFAULT_MAX_WBUF;
+	setting.blog_path = fk_str_create(FK_DEFAULT_BLOG_PATH, sizeof(FK_DEFAULT_DB_PATH) - 1);
+	setting.blog_on = FK_DEFAULT_BLOG_ON;
 
 	/* setp 2: parse config file */
 	if (conf_path != NULL) {
@@ -435,9 +439,15 @@ int fk_conf_parse_maxwbuf(fk_cfline *line)
 	return FK_CONF_OK;
 }
 
-int fk_conf_parse_blogfile(fk_cfline *line)
+int fk_conf_parse_blogpath(fk_cfline *line)
 {
-	fk_str_destroy(setting.blog_file);
-	setting.blog_file = fk_str_clone(line->fields[1]);
+	fk_str_destroy(setting.blog_path);
+	setting.blog_path = fk_str_clone(line->fields[1]);
+	return FK_CONF_OK;
+}
+
+int fk_conf_parse_blogon(fk_cfline *line)
+{
+	setting.blog_on = 1;
 	return FK_CONF_OK;
 }

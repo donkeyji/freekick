@@ -292,11 +292,12 @@ void fk_svr_init()
 	/* lua sub module */
 	fk_lua_init();
 
-	/* load db from file */
-	fk_fkdb_load(server.db_file);
-
+	/* blog file precedes db file */
 	/* load bin-log file */
 	fk_blog_init();
+
+	/* load db from file */
+	fk_fkdb_load(server.db_file);
 }
 
 void fk_svr_exit()

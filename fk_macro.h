@@ -22,5 +22,6 @@
 #define FK_DEFAULT_DIR				"/tmp/"
 #define FK_DEFAULT_MAX_WBUF			4096
 #define FK_DEFAULT_BLOG_PATH		"/tmp/freekick.blog"
+#define FK_DEFAULT_BLOG_ON		0
 
 #endif

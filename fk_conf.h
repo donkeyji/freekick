@@ -22,7 +22,8 @@ typedef struct _fk_conf {
 	fk_str *dir;
 	unsigned dbcnt;
 	size_t max_wbuf;
-	fk_str *blog_file;
+	int blog_on;
+	fk_str *blog_path;
 } fk_conf;
 
 extern fk_conf setting;
