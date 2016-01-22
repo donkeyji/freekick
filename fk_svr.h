@@ -101,7 +101,6 @@ typedef struct _fk_svr {
 	fk_str *pid_path;
 	unsigned dbcnt;
 	fk_dict **db;
-	fk_str *db_file;
 	pid_t save_pid;/* -1: the save child process ended */
 
 	int last_dbidx;
@@ -142,7 +141,8 @@ void fk_svr_signal_exit_handler(int sig);
 void fk_svr_signal_child_handler(int sig);
 
 /* related to dump/restore */
-void fk_fkdb_load(fk_str *db_file);
+void fk_fkdb_init();
+void fk_fkdb_load(fk_str *db_path);
 void fk_fkdb_bgsave();
 int fk_fkdb_save();
 
@@ -154,6 +154,7 @@ void fk_lua_init();
 
 /* related to binary log */
 void fk_blog_init();
+void fk_blog_load(fk_str *blog_path);
 void fk_blog_append(int argc, fk_vtr *arg_vtr, fk_proto *pto);
 
 /* related to protocol */

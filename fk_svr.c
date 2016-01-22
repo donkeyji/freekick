@@ -245,6 +245,7 @@ int fk_svr_timer_cb2(unsigned interval, char type, void *arg)
 void fk_svr_init()
 {
 	unsigned i;
+	int blog_loaded;
 
 	/* protocol sub module */
 	fk_proto_init();
@@ -256,7 +257,6 @@ void fk_svr_init()
 	server.port = setting.port;
 	server.max_conn = setting.max_conn;
 	server.dbcnt = setting.dbcnt;
-	server.db_file = fk_str_clone(setting.db_file);
 	server.addr = fk_str_clone(setting.addr);
 
 	/* create global environment */
@@ -292,12 +292,22 @@ void fk_svr_init()
 	/* lua sub module */
 	fk_lua_init();
 
+	blog_loaded = 0;
 	/* blog file precedes db file */
-	/* load bin-log file */
-	fk_blog_init();
+	if (setting.blog_on == 1) {
+		fk_blog_init();
+		if (access(fk_str_raw(setting.blog_path), F_OK) == 0) {
+			fk_blog_load(setting.blog_path);
+			blog_loaded = 1;
+		}
+	}
 
-	/* load db from file */
-	fk_fkdb_load(server.db_file);
+	if (setting.dump == 1) {
+		fk_fkdb_init();
+		if (blog_loaded == 0) {
+			fk_fkdb_load(setting.db_path);
+		}
+	}
 }
 
 void fk_svr_exit()

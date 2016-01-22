@@ -117,7 +117,7 @@ void fk_conf_init(char *conf_path)
 	setting.log_path = fk_str_create(FK_DEFAULT_LOG_PATH, sizeof(FK_DEFAULT_LOG_PATH) - 1);
 	setting.pid_path = fk_str_create(FK_DEFAULT_PID_PATH, sizeof(FK_DEFAULT_PID_PATH) - 1);
 	setting.dump = FK_DEFAULT_DUMP;
-	setting.db_file = fk_str_create(FK_DEFAULT_DB_PATH, sizeof(FK_DEFAULT_DB_PATH) - 1);
+	setting.db_path = fk_str_create(FK_DEFAULT_DB_PATH, sizeof(FK_DEFAULT_DB_PATH) - 1);
 	setting.addr = fk_str_create(FK_DEFAULT_SVR_ADDR, sizeof(FK_DEFAULT_SVR_ADDR) - 1);
 	setting.timeout = FK_DEFAULT_CONN_TIMEOUT;
 	setting.dir = fk_str_create(FK_DEFAULT_DIR, sizeof(FK_DEFAULT_DIR) - 1);
@@ -343,8 +343,8 @@ int fk_conf_parse_logpath(fk_cfline *line)
 
 int fk_conf_parse_dbfile(fk_cfline *line)
 {
-	fk_str_destroy(setting.db_file);
-	setting.db_file = fk_str_clone(line->fields[1]);
+	fk_str_destroy(setting.db_path);
+	setting.db_path = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
 
