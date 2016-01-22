@@ -103,6 +103,9 @@ typedef struct _fk_svr {
 	fk_dict **db;
 	fk_str *db_file;
 	pid_t save_pid;/* -1: the save child process ended */
+
+	int last_dbidx;
+	int blog_fd;
 } fk_svr;
 
 typedef struct _fk_proto {
@@ -148,6 +151,10 @@ int fk_svr_sync_with_master();
 
 /* related to lua scripting */
 void fk_lua_init();
+
+/* related to binary log */
+void fk_blog_init();
+void fk_blog_append(int argc, fk_vtr *arg_vtr, fk_proto *pto);
 
 /* related to protocol */
 void fk_proto_init();
