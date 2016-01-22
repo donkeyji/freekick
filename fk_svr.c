@@ -296,8 +296,8 @@ void fk_svr_init()
 	/* blog file precedes db file */
 	if (setting.blog_on == 1) {
 		fk_blog_init();
-		if (access(fk_str_raw(setting.blog_path), F_OK) == 0) {
-			fk_blog_load(setting.blog_path);
+		if (access(fk_str_raw(setting.blog_file), F_OK) == 0) {
+			fk_blog_load(setting.blog_file);
 			blog_loaded = 1;
 		}
 	}
