@@ -21,5 +21,6 @@
 #define FK_DEFAULT_CONN_TIMEOUT 	300 /* timeout of conn, unit: second */
 #define FK_DEFAULT_DIR				"/tmp/"
 #define FK_DEFAULT_MAX_WBUF			4096
+#define FK_DEFAULT_BLOG_PATH		"/tmp/freekick.blog"
 
 #endif

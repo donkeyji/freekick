@@ -53,6 +53,7 @@ static int fk_conf_parse_dbfile(fk_cfline *line);
 static int fk_conf_parse_timeout(fk_cfline *line);
 static int fk_conf_parse_dir(fk_cfline *line);
 static int fk_conf_parse_maxwbuf(fk_cfline *line);
+static int fk_conf_parse_blogfile(fk_cfline *line);
 
 static fk_dtv dtv_map[] = {
 	{"port", 2, fk_conf_parse_port},
@@ -68,6 +69,7 @@ static fk_dtv dtv_map[] = {
 	{"timeout", 2, fk_conf_parse_timeout},
 	{"addr", 2, fk_conf_parse_addr},
 	{"maxwbuf", 2, fk_conf_parse_maxwbuf},
+	{"blogfile", 2, fk_conf_parse_blogfile},
 	{NULL, 0, NULL}
 };
 
@@ -430,5 +432,12 @@ int fk_conf_parse_maxwbuf(fk_cfline *line)
 	}
 	maxwbuf = atoi(fk_str_raw(line->fields[1]));
 	setting.max_wbuf = (size_t)maxwbuf;
+	return FK_CONF_OK;
+}
+
+int fk_conf_parse_blogfile(fk_cfline *line)
+{
+	fk_str_destroy(setting.blog_file);
+	setting.blog_file = fk_str_clone(line->fields[1]);
 	return FK_CONF_OK;
 }
