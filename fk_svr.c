@@ -294,6 +294,9 @@ void fk_svr_init()
 
 	/* load db from file */
 	fk_fkdb_load(server.db_file);
+
+	/* load bin-log file */
+	fk_blog_init();
 }
 
 void fk_svr_exit()
