@@ -18,7 +18,7 @@ typedef struct _fk_conf {
 	fk_str *log_path;
 	fk_str *pid_path;
 	int dump;
-	fk_str *db_path;
+	fk_str *db_file;
 	fk_str *dir;
 	unsigned dbcnt;
 	size_t max_wbuf;

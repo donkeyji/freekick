@@ -90,8 +90,8 @@ int fk_fkdb_save()
 	}
 	fclose(fp);/* close before rename */
 
-	/* step 2: rename temporary file to server.db_path */
-	rt = rename(temp_db, fk_str_raw(setting.db_path));
+	/* step 2: rename temporary file to server.db_file */
+	rt = rename(temp_db, fk_str_raw(setting.db_file));
 	if (rt < 0) {
 		remove(temp_db);/* remove this temporary db file */
 		return FK_SVR_ERR;
@@ -351,7 +351,7 @@ void fk_zline_destroy(fk_zline *buf)
 	fk_mem_free(buf);
 }
 
-void fk_fkdb_load(fk_str *db_path)
+void fk_fkdb_load(fk_str *db_file)
 {
 	int rt;
 	FILE *fp; 
@@ -363,7 +363,7 @@ void fk_fkdb_load(fk_str *db_path)
 	}
 
 	buf = fk_zline_create(4096);
-	fp = fopen(fk_str_raw(db_path), "r");
+	fp = fopen(fk_str_raw(db_file), "r");
 	if (fp == NULL) {/* db not exist */
 		return;
 	}
