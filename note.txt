@@ -196,4 +196,4 @@ size_t a = 5;
 76.类似fk_buf.len，到底是采用size_t/int/long/uint32_t/uint64_t中的那一个种，取决于程序对于数据量的规划，只要能满足所用到的数据库，就无所谓int/long/size_t。不能依赖数据的变量类型来控制变量值的边界，而应该事先人为的进行规划控制。
 几个容器的表示大小的成员都用size_t类型，而fk_conn的arg_cnt/arg_parsed等等都是int，注意二者之间的转换。
 
-77.所有可配置的属性不在出现在struct fk_svr中，比如port/addr/max_conn等等，只从struct fk_conf中读取，避免重复出现两次，没有必要。
+77.所有可配置的属性不在出现在struct fk_svr中，比如port/addr/max_conn等等，只从struct fk_conf中读取，避免重复出现两次，没有必要。struct fk_svr中只记录服务器的那些会变化的状态，而不记录那些属于静态的配置数据。
