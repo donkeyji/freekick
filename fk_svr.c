@@ -305,7 +305,9 @@ void fk_svr_init()
 	if (setting.dump == 1) {
 		fk_fkdb_init();
 		if (blog_loaded == 0) {
-			fk_fkdb_load(setting.db_file);
+			if (access(fk_str_raw(setting.db_file), F_OK) == 0) {
+				fk_fkdb_load(setting.db_file);
+			}
 		}
 	}
 }
