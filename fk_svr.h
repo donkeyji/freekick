@@ -86,7 +86,6 @@ typedef struct _fk_conn {
 } fk_conn;
 
 typedef struct _fk_svr {
-	/* configure */
 	int listen_fd;
 	unsigned conn_cnt;/* connection count */
 	time_t start_time;
