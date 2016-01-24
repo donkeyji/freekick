@@ -199,3 +199,17 @@ size_t a = 5;
 77.所有可配置的属性不在出现在struct fk_svr中，比如port/addr/max_conn等等，只从struct fk_conf中读取，避免重复出现两次，没有必要。struct fk_svr中只记录服务器的那些会变化的状态，而不记录那些属于静态的配置数据。
 
 78.fk_log/fk_ev是2个独立于服务器业务逻辑的模块，层次比业务逻辑模块低。fk_conf模块是业务逻辑模块，且属于层次最低的业务逻辑模块。所以fk_conf模块依赖fk_log模块是合理的，从fk_log.h中读取FK_LOG_INFO等定义。
+
+79.通过git rebase可以将之前的hopex与现在的freekick两个断开的commit链重新连接起来。
+mkdir apple
+cd apple
+git init
+git add remote hopex URL/hopex.git
+git add remote freekick URL/freekikc.git
+git checkout -b v0 hopex/master
+git checkout -b h0 hopex/master
+git checkout -b f1 freekick/v1
+git rebase h0
+git checkout h0
+git merge f1
+#此时从v0到f1建立了一条完整的commit链
