@@ -3,7 +3,6 @@
 
 #include <string.h>
 
-#include <fk_macro.h>
 #include <fk_util.h>
 
 typedef struct _fk_buf {

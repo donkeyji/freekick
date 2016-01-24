@@ -8,7 +8,6 @@
 #include <sys/types.h>
 
 #include <fk_conf.h>
-#include <fk_macro.h>
 #include <fk_mem.h>
 #include <fk_str.h>
 #include <fk_log.h>/* FK_LOG_INFO & FK_LOG_ERR & FK_LOG_DEBUG & FK_LOG_WARN */

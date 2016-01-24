@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <sys/socket.h>
 
-#include <fk_macro.h>
 #include <fk_log.h>
 #include <fk_mem.h>
 #include <fk_sock.h>

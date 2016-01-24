@@ -8,7 +8,6 @@
 #include <sys/types.h>/* for time_t */
 
 /* local headers */
-#include <fk_macro.h>
 #include <fk_str.h>
 #include <fk_dict.h>
 #include <fk_skiplist.h>

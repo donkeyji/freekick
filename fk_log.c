@@ -3,7 +3,6 @@
 #include <stdarg.h>
 #include <time.h>
 
-#include <fk_macro.h>
 #include <fk_log.h>
 #include <fk_mem.h>
 

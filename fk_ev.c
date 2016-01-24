@@ -11,7 +11,6 @@
 #include <fk_list.h>
 #include <fk_mem.h>
 #include <fk_util.h>
-#include <fk_macro.h>
 #include <fk_log.h>
 
 /* finite state is useful when add/remove ioev or tmev */

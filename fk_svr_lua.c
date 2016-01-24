@@ -4,7 +4,6 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
-#include <fk_macro.h>
 #include <fk_log.h>
 #include <fk_mem.h>
 #include <fk_buf.h>
