@@ -6,8 +6,8 @@ all_branches=$(git branch --no-color | sed '/*/s/*//g')
 
 if [ -z $1 ]; then
 	branches='master'
-elif [ $1 = 'all' ]; then
-	branches=$all_branches
+#elif [ $1 = 'all' ]; then
+#	branches=$all_branches
 else
 	branches=$1
 fi
