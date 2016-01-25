@@ -213,3 +213,9 @@ git rebase h0
 git checkout h0
 git merge f1
 #此时从v0到f1建立了一条完整的commit链
+
+80.在一个空的目录下不能用git branch来创建分支，只能用git checkout -b dev创建分支。
+mkdir one
+git init #此时.git/HEAD默认指向.git/refs/heads/master，但是此时.git/refs/heads目录为空
+git branch dev #fatal: Not a valid object name: 'master'.
+git checkout -b dev
