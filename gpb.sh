@@ -14,6 +14,11 @@ else
 fi
 
 echo -e "Target Branch:\n$branches"
+read -p "Continue? [y/n]" choice
+if [ $choice != 'y' ]; then
+	echo "Cancle Pushing"
+	exit 1
+fi
 
 echo "Trying to push all branches to the remote repository..."
 for rt in $all_remotes; do
