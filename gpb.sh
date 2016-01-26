@@ -3,7 +3,7 @@
 all_remotes=$(git remote)
 # the option --no-color is necessary
 all_branches=$(git branch --no-color | sed -e '/^  /s/^  //' -e '/^* /s/^* //g')
-echo -e "All Branches:\n$all_branches"
+echo -e "All Branches Available:\n$all_branches"
 
 if [ -z $1 ]; then
 	branches=$(git branch --no-color|grep '*'|sed '/^* /s/^* //')
@@ -13,8 +13,8 @@ else
 	branches=$1
 fi
 
-echo -e "Target Branch:\n$branches"
-read -p "Continue? [y/n]" choice
+echo -e "Target Branch: $branches"
+read -p "Wanna Continue? [y/n]" choice
 if [ $choice != 'y' ]; then
 	echo "Cancle Pushing"
 	exit 1
