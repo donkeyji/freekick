@@ -14,7 +14,7 @@
 #include <unistd.h>
 
 /* local headers */
-#include <fk_def.h>
+#include <fk_env.h>
 #include <fk_conf.h>
 #include <fk_log.h>
 #include <fk_cache.h>

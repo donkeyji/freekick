@@ -20,7 +20,7 @@
 	#endif
 #endif
 
-#include <fk_def.h>
+#include <fk_env.h>
 #include <fk_mem.h>
 
 /* 
