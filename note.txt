@@ -219,3 +219,9 @@ mkdir one
 git init #此时.git/HEAD默认指向.git/refs/heads/master，但是此时.git/refs/heads目录为空
 git branch dev #fatal: Not a valid object name: 'master'.
 git checkout -b dev
+
+81.到底该用int还是int32_t呢？glibc中哪些地方用int32_t，哪些地方用int？
+
+82.何时server应该主动close connection？
+a. 解析协议时有错误格式，直接close。
+b. 解析出一条协议之后，但是此协议不符合预定义，此时不close client，只把此前解析出来的协议抛弃掉。
