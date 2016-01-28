@@ -1,5 +1,5 @@
-#ifndef _FK_DEF_H_
-#define _FK_DEF_H_
+#ifndef _FK_ENV_H_
+#define _FK_ENV_H_
 
 /* mac features definitions */
 #if defined(__APPLE__)
