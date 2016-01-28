@@ -220,7 +220,7 @@ git init #此时.git/HEAD默认指向.git/refs/heads/master，但是此时.git/r
 git branch dev #fatal: Not a valid object name: 'master'.
 git checkout -b dev
 
-81.到底该用int还是int32_t呢？glibc中哪些地方用int32_t，哪些地方用int？
+81.glibc应该与gcc保持一致，编译器提供了__WORDSIZE宏来定义int的长度是32/64位。编译glibc与编译自己的c源码用同样的gcc版本，才能保证int/long/long long这些数据类型长度的统一。使用int8_t/int16_t/int32_t/int64_t/uint_8/uint16_t/uint32_t/uint64_t是为了保证不同的编译器编译时都保持不变的长度。glibc中用到int的地方，一般都是些函数返回值之类的表示状态的，如果涉及到表示一定范围的值则用到int32_t这些typedef过的数据类型。
 
 82.何时server应该主动close connection？
 a. 解析协议时有错误格式，直接close。
