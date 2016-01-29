@@ -227,3 +227,5 @@ a. 解析协议时有错误格式，直接close。
 b. 解析出一条协议之后，但是此协议不符合预定义，此时不close client，只把此前解析出来的协议抛弃掉。
 
 83.stddef.h中定义了利用编译器预定义宏__SIZE_TYPE__来typedef出size_t。在wheezy/rhel6中，实际是在glob.h中定义的。stddef.h中定义了NULL。stddef.h中提供fundamental types定义。
+
+84.依靠sizeof(long) == 4 ? 8可以判断当前的os是32/64bit。
