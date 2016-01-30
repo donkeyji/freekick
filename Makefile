@@ -3,7 +3,7 @@
 #---------------------------------------------------
 CC := gcc
 
-BASIC_CFLAGS	:= -I . -std=c99 -pedantic -Wall -O2
+BASIC_CFLAGS	:= -std=c99 -pedantic -Wall -O2 -I .
 BASIC_LDFLAGS 	:=
 BASIC_LDLIBS 	:= -llua -ldl -lm
 # -ldl: needed when in linux, but not in mac
