@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <errno.h>
 #include <time.h>
+#include <stdint.h>
+#include <inttypes.h>
 
 /* system headers */
 #include <sys/types.h>
@@ -137,7 +139,7 @@ void fk_setrlimit()
 	/* the type "rlim_t" has different size in linux from mac,
 	 * so just convert "rlim_t" to "unsigned long long"
 	 */
-	fk_log_info("original file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
+	fk_log_info("original file number limit: rlim_cur = %"PRIu64", rlim_max = %"PRIu64"\n", (uint64_t)(lmt.rlim_cur), (uint64_t)(lmt.rlim_max));
 
 	if (max_files > lmt.rlim_max) {
 		euid = geteuid();
@@ -227,9 +229,11 @@ void fk_signal_register()
 	sa.sa_flags = 0;
 	rt = sigemptyset(&sa.sa_mask);
 	if (rt < 0) {
+		exit(EXIT_FAILURE);
 	}
 	rt = sigaction(SIGCHLD, &sa, 0);
 	if (rt < 0) {
+		exit(EXIT_FAILURE);
 	}
 }
 
