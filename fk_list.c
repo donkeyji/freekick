@@ -204,7 +204,7 @@ fk_node *fk_list_search(fk_list *lst, void *key)
 		if (lst->nop->data_cmp != NULL) {
 			cmp = lst->nop->data_cmp(nd->data, key);
 		} else {
-			cmp = nd->data - key;/* compare the address */
+			cmp = (uintptr_t)nd->data - (uintptr_t)key;/* compare the address */
 		}
 		if (cmp == 0) {
 			return nd;
