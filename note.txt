@@ -228,4 +228,10 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 
 83.stddef.h中定义了利用编译器预定义宏__SIZE_TYPE__来typedef出size_t。在wheezy/rhel6中，实际是在glob.h中定义的。stddef.h中定义了NULL。stddef.h中提供fundamental types定义。
 
-84.依靠sizeof(long) == 4 ? 8可以判断当前的os是32/64bit。
+84.依靠sizeof(long) == 4 ? 8可以判断当前的os是32/64bit。感觉用sizeof(uintptr_t)来判断更好。
+
+85.所有的无参数的函数用void来申明和定义，但是调用的地方不能用void做参数。
+
+86.extern与static都是用来申明变量/函数的，二者意义相反，不能同时实施与同一个对象。static申明的作用：不生成global属性的符号，查看汇编可看到。用static申明的变量/函数，其定义只能出现在该static申明出现的.c文件中。所以static不能出现在.h文件中。
+
+87.fk_modA.c中应该#include <fk_modA.h>的原因：为了避免申明与定义不一致。加入不这样做，如果在fk_modB.c中#include <fk_modA.h>，但是fk_modA.c中的实现与fk_modA.h的申明不一致，链接时就会找不到reference。
