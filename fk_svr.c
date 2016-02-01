@@ -242,7 +242,7 @@ int fk_svr_timer_cb2(unsigned interval, char type, void *arg)
 }
 #endif
 
-void fk_svr_init()
+void fk_svr_init(void)
 {
 	unsigned i;
 	int blog_loaded;
@@ -309,7 +309,7 @@ void fk_svr_init()
 	}
 }
 
-void fk_svr_exit()
+void fk_svr_exit(void)
 {
 	int rt;
 

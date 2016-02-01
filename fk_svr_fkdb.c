@@ -31,11 +31,11 @@ static int fk_fkdb_restore_str_elt(FILE *fp, fk_dict *db, fk_zline *buf);
 static int fk_fkdb_restore_list_elt(FILE *fp, fk_dict *db, fk_zline *buf);
 static int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict *db, fk_zline *buf);
 
-void fk_fkdb_init()
+void fk_fkdb_init(void)
 {
 }
 
-void fk_fkdb_bgsave()
+void fk_fkdb_bgsave(void)
 {
 	int rt;
 
@@ -65,7 +65,7 @@ void fk_fkdb_bgsave()
 	}
 }
 
-int fk_fkdb_save()
+int fk_fkdb_save(void)
 {
 	int rt;
 	FILE *fp;

@@ -6,7 +6,7 @@
 static void fk_blog_write_argcnt();
 static void fk_blog_write_arg();
 
-void fk_blog_init()
+void fk_blog_init(void)
 {
 }
 

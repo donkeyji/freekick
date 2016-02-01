@@ -42,7 +42,7 @@ static fk_elt_op proto_dict_eop = {
 	NULL
 };
 
-void fk_proto_init()
+void fk_proto_init(void)
 {
 	int i;
 	char *name;

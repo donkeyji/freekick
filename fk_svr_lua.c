@@ -35,7 +35,7 @@ static const struct luaL_Reg fklib[] = {
 	{NULL, NULL}
 };
 
-void fk_lua_init()
+void fk_lua_init(void)
 {
 	gL = luaL_newstate();
 

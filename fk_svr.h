@@ -127,8 +127,8 @@ int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt);
 #define fk_conn_get_arg(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
 
 /* interface of fk_svr */
-void fk_svr_init();
-void fk_svr_exit();
+void fk_svr_init(void);
+void fk_svr_exit(void);
 void fk_svr_add_conn(int fd);
 void fk_svr_remove_conn(fk_conn *conn);
 
@@ -136,24 +136,24 @@ void fk_svr_signal_exit_handler(int sig);
 void fk_svr_signal_child_handler(int sig);
 
 /* related to dump/restore */
-void fk_fkdb_init();
+void fk_fkdb_init(void);
 void fk_fkdb_load(fk_str *db_path);
-void fk_fkdb_bgsave();
-int fk_fkdb_save();
+void fk_fkdb_bgsave(void);
+int fk_fkdb_save(void);
 
 /* related to replication */
-int fk_svr_sync_with_master();
+int fk_svr_sync_with_master(void);
 
 /* related to lua scripting */
-void fk_lua_init();
+void fk_lua_init(void);
 
 /* related to binary log */
-void fk_blog_init();
+void fk_blog_init(void);
 void fk_blog_load(fk_str *blog_path);
 void fk_blog_append(int argc, fk_vtr *arg_vtr, fk_proto *pto);
 
 /* related to protocol */
-void fk_proto_init();
+void fk_proto_init(void);
 fk_proto *fk_proto_search(fk_str *name);
 
 /* 
