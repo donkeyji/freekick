@@ -33,10 +33,10 @@
 #define fk_tmev_get_stat(tmev)				((tmev)->expired)
 
 static void fk_ev_activate_ioev(int fd, char type);
-static fk_tmev *fk_ev_get_nearest_tmev();
-static void fk_ev_update_pending_tmev();
-static void fk_ev_proc_activated_ioev();
-static void fk_ev_proc_expired_tmev();
+static fk_tmev *fk_ev_get_nearest_tmev(void);
+static void fk_ev_update_pending_tmev(void);
+static void fk_ev_proc_activated_ioev(void);
+static void fk_ev_proc_expired_tmev(void);
 static int fk_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
 #if defined(FK_HAVE_EPOLL)
@@ -83,7 +83,7 @@ void fk_ev_init(unsigned max_files)
 	}
 }
 
-int fk_ev_dispatch()
+int fk_ev_dispatch(void)
 {
 	int rt;
 	fk_tmev *tmev;
@@ -91,7 +91,7 @@ int fk_ev_dispatch()
 
 	pto = NULL;/* indefinitely wait */
 
-	tmev = fk_ev_get_nearest_tmev(evmgr);
+	tmev = fk_ev_get_nearest_tmev();
 	if (tmev != NULL) {
 		gettimeofday(&now, NULL);
 		fk_util_tmval_sub(&(tmev->when), &now, &timeout);
@@ -127,14 +127,14 @@ int fk_ev_dispatch()
 	return FK_EV_OK;
 }
 
-void fk_ev_cycle(int *stop)
+void fk_ev_cycle()
 {
 	while (evmgr.stop != 1) {
 		fk_ev_dispatch();/* we donot care the retrun value of fk_ev_dispatch() */
 	}
 }
 
-void fk_ev_stop()
+void fk_ev_stop(void)
 {
 	evmgr.stop = 1;
 }
@@ -204,7 +204,7 @@ int fk_ev_remove_ioev(fk_ioev *ioev)
 	return FK_EV_OK;
 }
 
-char *fk_ev_iompx_name()
+char *fk_ev_iompx_name(void)
 {
 	return mpxop->iompx_name;
 }
@@ -299,7 +299,7 @@ int fk_ev_remove_tmev(fk_tmev *tmev)
 	return FK_EV_OK;
 }
 
-void fk_ev_update_pending_tmev()
+void fk_ev_update_pending_tmev(void)
 {
 	int cmp;
 	fk_leaf *root;
@@ -323,7 +323,7 @@ void fk_ev_update_pending_tmev()
 	}
 }
 
-void fk_ev_proc_expired_tmev()
+void fk_ev_proc_expired_tmev(void)
 {
 	int rt;
 	char type;
@@ -364,7 +364,7 @@ void fk_ev_proc_expired_tmev()
 	}
 }
 
-void fk_ev_proc_activated_ioev()
+void fk_ev_proc_activated_ioev(void)
 {
 	int fd;
 	void *arg;
@@ -394,7 +394,7 @@ void fk_ev_proc_activated_ioev()
 	}
 }
 
-fk_tmev *fk_ev_get_nearest_tmev()
+fk_tmev *fk_ev_get_nearest_tmev(void)
 {
 	void *root;
 	fk_tmev *tmev;
@@ -443,7 +443,7 @@ int fk_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
 }
 
 #ifdef FK_DEBUG
-void fk_ev_stat()
+void fk_ev_stat(void)
 {
 	fprintf(stdout, "ioev_cnt: %llu, tmev_cnt: %llu\n", evmgr.ioev_cnt, evmgr.tmev_cnt);
 }

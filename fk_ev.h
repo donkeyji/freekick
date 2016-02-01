@@ -79,17 +79,17 @@ typedef struct _fk_evmgr {
 } fk_evmgr;
 
 void fk_ev_init(unsigned max_files);
-int fk_ev_dispatch();
-void fk_ev_cycle();
-void fk_ev_stop();
+int fk_ev_dispatch(void);
+void fk_ev_cycle(void);
+void fk_ev_stop(void);
 int fk_ev_add_ioev(fk_ioev *ioev);
 int fk_ev_remove_ioev(fk_ioev *ioev);
 int fk_ev_add_tmev(fk_tmev *tmev);
 int fk_ev_remove_tmev(fk_tmev *tmev);
 #ifdef FK_DEBUG
-void fk_ev_stat();
+void fk_ev_stat(void);
 #endif
-char *fk_ev_iompx_name();
+char *fk_ev_iompx_name(void);
 
 fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
 void fk_ioev_destroy(fk_ioev *ioev);
