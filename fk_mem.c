@@ -92,7 +92,7 @@ void fk_mem_free(void *ptr)
 	free(ptr);
 }
 
-size_t fk_mem_get_alloc()
+size_t fk_mem_get_alloc(void)
 {
 	return total_alloc;
 }
