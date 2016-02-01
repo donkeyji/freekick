@@ -19,8 +19,8 @@ typedef struct _fk_pool {
 	uint32_t empty_blks;
 } fk_pool;
 
-void fk_pool_init();
-void fk_pool_exit();
+void fk_pool_init(void);
+void fk_pool_exit(void);
 fk_pool *fk_pool_create(uint16_t unit_size, uint16_t init_cnt);
 void fk_pool_destroy(fk_pool *pool);
 void *fk_pool_malloc(fk_pool *pool);

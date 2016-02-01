@@ -13,7 +13,7 @@ typedef struct _fk_item {
 	void *entity;/* point to the real data of the itm */
 } fk_item;
 
-void fk_item_init();
+void fk_item_init(void);
 fk_item *fk_item_create(int type, void *entity);
 void fk_item_dec_ref(fk_item *itm);
 void fk_item_inc_ref(fk_item *itm);

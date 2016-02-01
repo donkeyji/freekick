@@ -37,14 +37,14 @@ static fk_pool *node_pool = NULL;
 static fk_pool *obj_pool = NULL;
 static fk_pool *str_pool = NULL;
 
-void fk_pool_init()
+void fk_pool_init(void)
 {
 	node_pool = fk_pool_create(sizeof(fk_node), 1024);
 	obj_pool = fk_pool_create(sizeof(fk_item), 1024);
 	str_pool = fk_pool_create(sizeof(fk_str), 1024);
 }
 
-void fk_pool_exit()
+void fk_pool_exit(void)
 {
 	fk_pool_destroy(node_pool);
 	fk_pool_destroy(obj_pool);
