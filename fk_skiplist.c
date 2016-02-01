@@ -29,7 +29,7 @@ static fk_skipnode_op default_skop = {
 	NULL
 };
 
-static int fk_skipnode_rand_level();
+static int fk_skipnode_rand_level(void);
 
 fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
 {
@@ -204,7 +204,7 @@ fk_skipnode *fk_skiplist_search(fk_skiplist *sl, int score)
 	return q;
 }
 
-int fk_skipnode_rand_level()
+int fk_skipnode_rand_level(void)
 {
 	int level;
 

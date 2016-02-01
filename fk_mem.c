@@ -29,7 +29,7 @@
  */
 static size_t total_alloc = 0;
 
-static void fk_mem_panic()
+static void fk_mem_panic(void)
 {
 	fprintf(stderr, "out of memory");
 	fflush(stderr);

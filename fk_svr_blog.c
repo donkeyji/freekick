@@ -3,8 +3,8 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-static void fk_blog_write_argcnt();
-static void fk_blog_write_arg();
+static void fk_blog_write_argcnt(void);
+static void fk_blog_write_arg(void);
 
 void fk_blog_init(void)
 {
@@ -24,18 +24,18 @@ void fk_blog_append(int argc, fk_vtr *arg_vtr, fk_proto *pto)
 	}
 
 	arg = fk_vtr_get(arg_vtr, 0);
-	fk_blog_write_argcnt(arg);
+	fk_blog_write_argcnt();
 
 	for (i = 1; i < argc; i++) {
 		arg = fk_vtr_get(arg_vtr, i);
-		fk_blog_write_arg(arg);
+		fk_blog_write_arg();
 	}
 }
 
-void fk_blog_write_argcnt()
+void fk_blog_write_argcnt(void)
 {
 }
 
-void fk_blog_write_arg()
+void fk_blog_write_arg(void)
 {
 }

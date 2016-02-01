@@ -47,7 +47,7 @@ typedef struct _fk_dtv {/* directive */
 	int (*handler) (fk_cfline *line);
 } fk_dtv;
 
-static fk_cfline *fk_cfline_create();
+static fk_cfline *fk_cfline_create(void);
 static void fk_cfline_destroy(fk_cfline *line);
 
 static int fk_conf_parse_file(char *conf_path);
@@ -95,7 +95,7 @@ static fk_dtv dtv_map[] = {
 /* global variable, referencd by other modules */
 fk_conf setting;
 
-fk_cfline *fk_cfline_create()
+fk_cfline *fk_cfline_create(void)
 {
 	fk_cfline *line = (fk_cfline *)fk_mem_alloc(sizeof(fk_cfline));
 	line->no = 0;/* line number */

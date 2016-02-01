@@ -24,20 +24,20 @@
 #include <fk_svr.h>
 #include <freekick.h>
 
-static void fk_daemonize();
-static void fk_set_pwd();
-static void fk_signal_register();
-static void fk_setrlimit();
-static void fk_set_seed();
-static void fk_create_pidfile();
+static void fk_daemonize(void);
+static void fk_set_pwd(void);
+static void fk_signal_register(void);
+static void fk_setrlimit(void);
+static void fk_set_seed(void);
+static void fk_create_pidfile(void);
 
 /* signal handlers */
 static void fk_signal_exit_handler(int sig);
 static void fk_signal_child_handler(int sig);
 
 static void fk_main_init(char *conf_path);
-static void fk_main_cycle();
-static void fk_main_exit();
+static void fk_main_cycle(void);
+static void fk_main_exit(void);
 
 /*
 static void fk_daemon_run_old()
@@ -50,7 +50,7 @@ static void fk_daemon_run_old()
 }
 */
 
-void fk_daemonize()
+void fk_daemonize(void)
 {
 	int  fd;
 
@@ -105,7 +105,7 @@ void fk_daemonize()
 	}
 }
 
-void fk_create_pidfile()
+void fk_create_pidfile(void)
 {
 	pid_t pid;
 	FILE *pid_file;
@@ -123,7 +123,7 @@ void fk_create_pidfile()
 	fclose(pid_file);
 }
 
-void fk_setrlimit()
+void fk_setrlimit(void)
 {
 	int rt;
 	pid_t euid;
@@ -173,12 +173,12 @@ void fk_setrlimit()
 	}
 }
 
-void fk_set_seed()
+void fk_set_seed(void)
 {
 	srand(time(NULL));
 }
 
-void fk_set_pwd()
+void fk_set_pwd(void)
 {
 	int rt;
 
@@ -210,7 +210,7 @@ void fk_signal_child_handler(int sig)
 	fk_svr_signal_child_handler(sig);
 }
 
-void fk_signal_register()
+void fk_signal_register(void)
 {
 	int rt;
 	struct sigaction sa;
@@ -269,12 +269,12 @@ void fk_main_init(char *conf_path)
 	fk_svr_init();
 }
 
-void fk_main_cycle()
+void fk_main_cycle(void)
 {
 	fk_ev_cycle();
 }
 
-void fk_main_exit()
+void fk_main_exit(void)
 {
 	/* maybe some other fk_xxx_exit() to call here */
 	fk_svr_exit();
