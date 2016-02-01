@@ -42,7 +42,7 @@ typedef struct _fk_dict_iter {
 	long long idx;/* should be long than size_t type */
 } fk_dict_iter;
 
-fk_dict *fk_dict_create();
+fk_dict *fk_dict_create(fk_elt_op *eop);
 void fk_dict_destroy(fk_dict *dct);
 int fk_dict_add(fk_dict *dct, void *key, void *value);
 int fk_dict_replace(fk_dict *dct, void *key, void *value);
