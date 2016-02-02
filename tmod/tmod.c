@@ -19,7 +19,7 @@ typedef struct {
 
 #define LEN 1024*1024*5
 
-void t_pool()
+void t_pool(void)
 {
     int i;
     void **a;
@@ -57,7 +57,7 @@ void t_pool()
     printf("time used for free: %lu\n", t2 - t1);
 }
 
-void t_dict()
+void t_dict(void)
 {
 	fk_elt *elt;
 	fk_dict *dd = fk_dict_create();
@@ -93,7 +93,7 @@ fk_node_op oopp = {
 	int_cmp
 };
 
-void t_list()
+void t_list(void)
 {
 	int i;
 	fk_node *nd;
@@ -112,7 +112,7 @@ void t_list()
 	fk_list_iter_end(iter);
 }
 
-void t_skiplist()
+void t_skiplist(void)
 {
 	int i, level;
 	fk_skiplist *sl;
@@ -160,7 +160,7 @@ void t_skiplist()
 	fk_skiplist_destroy(sl);
 }
 
-int main()
+int main(void)
 {
 	//t_dict();	
 	//t_list();
