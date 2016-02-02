@@ -40,7 +40,7 @@ static void fk_main_cycle(void);
 static void fk_main_exit(void);
 
 /*
-static void fk_daemon_run_old()
+static void fk_daemon_run_old(void)
 {
     if (setting.daemon == 1) {
         if (daemon(1, 0) < 0) {

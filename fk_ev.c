@@ -127,7 +127,7 @@ int fk_ev_dispatch(void)
 	return FK_EV_OK;
 }
 
-void fk_ev_cycle()
+void fk_ev_cycle(void)
 {
 	while (evmgr.stop != 1) {
 		fk_ev_dispatch();/* we donot care the retrun value of fk_ev_dispatch() */

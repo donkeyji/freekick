@@ -11,7 +11,7 @@
 fk_list *free_objs = NULL;
 
 /*
-static fk_item *fk_item_free_obj_get();
+static fk_item *fk_item_free_obj_get(void);
 static void fk_item_free_obj_put(fk_item *itm);
 */
 
@@ -22,7 +22,7 @@ void fk_item_init(void)
 }
 
 /*
-fk_item *fk_item_free_obj_get()
+fk_item *fk_item_free_obj_get(void)
 {
     fk_item *itm;
     fk_node *nd;

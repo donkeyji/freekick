@@ -371,7 +371,7 @@ void fk_svr_signal_child_handler(int sig)
 	fk_log_debug("save db done\n");
 }
 
-int fk_svr_sync_with_master()
+int fk_svr_sync_with_master(void)
 {
 	return FK_SVR_OK;
 }

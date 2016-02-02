@@ -29,13 +29,7 @@
  */
 static size_t total_alloc = 0;
 
-static void fk_mem_panic(void)
-{
-	fprintf(stderr, "out of memory");
-	fflush(stderr);
-	sleep(1);
-	abort();
-}
+static void fk_mem_panic(void);
 
 void *fk_mem_alloc(size_t size)
 {
@@ -95,4 +89,12 @@ void fk_mem_free(void *ptr)
 size_t fk_mem_get_alloc(void)
 {
 	return total_alloc;
+}
+
+void fk_mem_panic(void)
+{
+	fprintf(stderr, "out of memory");
+	fflush(stderr);
+	sleep(1);
+	abort();
 }
