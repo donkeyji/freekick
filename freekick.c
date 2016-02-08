@@ -136,7 +136,8 @@ void fk_setrlimit(void)
 		fk_log_error("getrlimit: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	/* the type "rlim_t" has different size in linux from mac,
+	/* 
+	 * the type "rlim_t" has different size in linux from mac,
 	 * so just convert "rlim_t" to "unsigned long long"
 	 */
 	fk_log_info("original file number limit: rlim_cur = %"PRIu64", rlim_max = %"PRIu64"\n", (uint64_t)(lmt.rlim_cur), (uint64_t)(lmt.rlim_max));
