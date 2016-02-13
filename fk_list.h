@@ -7,7 +7,7 @@
 #define FK_LIST_ITER_T2H 0
 
 #define fk_rawlist_def(type, name)	\
-typedef struct {					\
+typedef struct _##name {			\
 	type *head;						\
 	type *tail;						\
 	size_t len;						\
