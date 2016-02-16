@@ -247,3 +247,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 92.为何现在的gcc对于没有static修饰的inline函数，不要求必须在同一个.c文件中定义，gcc会把这个inline函数当成普通的函数?感觉好confused...
 
 93. To Do:尽量的使用int32_t/int64_t/uint32_t/uint64_t/int8_t/uint8_t来替换掉int/long/char，用来承载一些需要表示一定数值范围的变量。int仅仅用来表示一些状态值，比如0/1/-1等。
+
+94. To Do:fk_svr_listen_cb里循环调用accept直到出错，因为有可能有多个新连接到来。
