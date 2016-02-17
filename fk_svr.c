@@ -193,18 +193,19 @@ void fk_svr_listen_cb(int listen_fd, char type, void *arg)
 			if (errno == EAGAIN || errno == EWOULDBLOCK) {
 				break;
 			}
+			/* any other errno to handle??? */
+		}
+		/* anything wrong by closing the fd directly? */
+		if (server.conn_cnt == setting.max_conn) {
+			fk_log_warn("beyond max connections\n");
+			close(fd);
+			continue;
 		}
 
 		/* no need to check the return code???? */
 		fk_sock_set_nonblock(fd);
 		fk_sock_keep_alive(fd);
 
-		/* anything wrong by closing the fd directly? */
-		if (server.conn_cnt == setting.max_conn) {
-			fk_log_warn("beyond max connections\n");
-			close(fd);
-			return;
-		}
 		fk_svr_add_conn(fd);
 #ifdef FK_DEBUG
 		fk_log_debug("conn_cnt: %u, max_conn: %u\n", server.conn_cnt, setting.max_conn);
