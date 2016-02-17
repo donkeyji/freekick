@@ -13,7 +13,7 @@
 #include <fk_sock.h>
 
 
-int fk_sock_create_listen(char *addr, uint16_t port)
+int fk_sock_create_tcp_listen(char *addr, uint16_t port)
 {
 	int rt, listen_sock;
 	/* struct sockaddr_in has the same size as struct sockaddr */
@@ -52,6 +52,7 @@ int fk_sock_create_listen(char *addr, uint16_t port)
 	return listen_sock;
 }
 
+/*
 int fk_sock_accept(int listen_fd)
 {
 	int fd, rt;
@@ -72,6 +73,7 @@ int fk_sock_accept(int listen_fd)
 
 	return fd;
 }
+*/
 
 int fk_sock_set_nonblock(int fd)
 {
