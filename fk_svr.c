@@ -177,20 +177,17 @@ void fk_svr_listen_cb(int listen_fd, char type, void *arg)
 {
 	int fd;
 
-	//fd = fk_sock_accept(listen_fd);
-	//if (fd == FK_SOCK_ERR) {
-		//fk_log_error("accept fd failed\n");
-		//return;
-	//}
 	while (1) {
 		fd = accept(listen_fd, NULL, NULL);
 		if (fd < 0) {
 			/* interrupt by a signal */
 			if (errno == EINTR) {
+				fk_log_debug("accept interrupted by a signal\n");
 				continue;
 			}
 			/* no more connection */
 			if (errno == EAGAIN || errno == EWOULDBLOCK) {
+				fk_log_debug("no more connection available now\n");
 				break;
 			}
 			/* any other errno to handle??? */

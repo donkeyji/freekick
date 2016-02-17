@@ -52,29 +52,6 @@ int fk_sock_create_tcp_listen(char *addr, uint16_t port)
 	return listen_sock;
 }
 
-/*
-int fk_sock_accept(int listen_fd)
-{
-	int fd, rt;
-
-	fd = accept(listen_fd, NULL, NULL);
-	if (fd < 0) {
-		return FK_SOCK_ERR;
-	}
-
-	rt = fk_sock_set_nonblock(fd);
-	if (rt == FK_SOCK_ERR) {
-		return FK_SOCK_ERR;
-	}
-	rt = fk_sock_keep_alive(fd);
-	if (rt == FK_SOCK_ERR) {
-		return FK_SOCK_ERR;
-	}
-
-	return fd;
-}
-*/
-
 int fk_sock_set_nonblock(int fd)
 {
 	int rt;
