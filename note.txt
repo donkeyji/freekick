@@ -258,3 +258,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 98. fk_leaf/fk_node不提供成员函数的理由：(1)结构简单，只有set/get的简单操作逻辑；(2)只被对于的fk_heap/fk_list读写其成员变量。
 
 99. 从hopex的倒数第二个commit版本export出来成为freekick，看看怎么把二者连接起来???
+
+100. 改名fk_xxx_exit() ===> fk_xxx_deinit()，与fk_xxx_init()相对应。
