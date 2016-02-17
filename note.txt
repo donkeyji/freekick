@@ -1,4 +1,3 @@
-/*To Do*/
 1. to implement a better pool algrithm.现有的算法有问题，当分配的次数增大到一定程度时，还不如直接malloc/free来的快。
 
 2.container默认都不负责其中存放对象的生命周期。fk_list/fk_dict通过指定copy/free函数来定制是否管理对象的生命周期。
@@ -257,3 +256,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 97. only handle runtime exceptions，而不处理程序的逻辑错误，逻辑错误必须在开发期处理掉。
 
 98. fk_leaf/fk_node不提供成员函数的理由：(1)结构简单，只有set/get的简单操作逻辑；(2)只被对于的fk_heap/fk_list读写其成员变量。
+
+99. 从hopex的倒数第二个commit版本export出来成为freekick，看看怎么把二者连接起来???
