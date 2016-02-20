@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <sys/types.h>
+
 #include <fk_str.h>
 
 #define FK_CONF_OK		0

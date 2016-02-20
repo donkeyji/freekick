@@ -1,6 +1,8 @@
 #ifndef _FK_VTR_H_
 #define _FK_VTR_H_
 
+#include  <strings.h>
+
 typedef struct _fk_vtr {
 	size_t init_len;
 	size_t len;
