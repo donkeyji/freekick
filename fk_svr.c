@@ -201,7 +201,7 @@ void fk_svr_listen_cb(int listen_fd, char type, void *arg)
 
 		/* no need to check the return code???? */
 		fk_sock_set_nonblocking(fd);
-		fk_sock_keep_alive(fd);
+		fk_sock_set_keepalive(fd);
 
 		fk_svr_add_conn(fd);
 #ifdef FK_DEBUG

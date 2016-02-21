@@ -63,7 +63,7 @@ int fk_sock_set_nonblocking(int fd)
 	return FK_SOCK_OK;
 }
 
-int fk_sock_keep_alive(int fd)
+int fk_sock_set_keepalive(int fd)
 {
 	int opt, rt;
 	
