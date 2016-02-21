@@ -220,6 +220,7 @@ git branch dev #fatal: Not a valid object name: 'master'.
 git checkout -b dev
 
 81.libc应该与gcc配套，编译器提供了__WORDSIZE宏来定义int的长度是32/64位，stdint.h利用这个__WORDSIZE宏来定义int64_t/uint64这些类型。在自己的源码中使用int8_t/int16_t/int32_t/int64_t/uint_8/uint16_t/uint32_t/uint64_t，在不同的编译器和libc环境下编译都能保证变量长度是固定的。libc中用到int的地方，一般都是些表示状态flag的,或者文件描述符fd;如果涉及到表示一定范围的值则用到int32_t/size_t这些typedef过的数据类型。
+__WORDSIZE不是编译器预定义，在rhel中是在bits/wordsize.h中根据预定义宏_x86_64来定义__WORDSIZE，在mac上是在stdint.h中根据预定义宏__LP64__来定义__WORDSIZE。
 
 82.何时server应该主动close connection？
 a. 解析协议时有错误格式，直接close。
@@ -262,3 +263,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 100. 改名fk_xxx_exit() ===> fk_xxx_deinit()，与fk_xxx_init()相对应。
 
 101. 更改: fk_list->len(uint64_t), fk_dict->size(uint64_t), fk_str->len(uint32_t), fk_heap->len(uint64_t), fk_str->seq(uint8_t), fk_vtr->len(uint64_t)
+
+102. c语言标准并未规定char/shor/int/long的具体字节数，只规定到了这些类型至少能覆盖到的取值范围(limits.h中有定义)，且sizoe(char) <= sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)。所以利用int8_t/int16_t/int32_t/int64_t这些类型可以保证在不同的编译器环境下具有相同的长度，代码可移植性好。
