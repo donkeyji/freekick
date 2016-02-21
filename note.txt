@@ -260,3 +260,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 99. 从hopex的倒数第二个commit版本export出来成为freekick，看看怎么把二者连接起来???
 
 100. 改名fk_xxx_exit() ===> fk_xxx_deinit()，与fk_xxx_init()相对应。
+
+101. 更改: fk_list->len(uint64_t), fk_dict->size(uint64_t), fk_str->len(uint32_t), fk_heap->len(uint64_t), fk_vtr->len(uint64_t)
