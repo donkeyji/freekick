@@ -26,9 +26,9 @@ typedef struct {
 	size_t max_wbuf;
 	int blog_on;
 	fk_str *blog_file;
-} fk_conf;
+} fk_conf_t;
 
-extern fk_conf setting;
+extern fk_conf_t setting;
 
 void fk_conf_init(char *conf_path);
 

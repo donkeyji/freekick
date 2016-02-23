@@ -93,7 +93,7 @@ static fk_dtv dtv_map[] = {
 };
 
 /* global variable, referencd by other modules */
-fk_conf setting;
+fk_conf_t setting;
 
 fk_cfline *fk_cfline_create(void)
 {
