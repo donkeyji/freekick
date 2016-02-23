@@ -29,13 +29,13 @@
 
 #define FK_POOL_MAX_EMPTY_BLOCKS 1
 
-static fk_block *fk_block_create(uint16_t unit_size, uint16_t unit_cnt);
-static void fk_block_destroy(fk_block *blk);
+static fk_block_t *fk_block_create(uint16_t unit_size, uint16_t unit_cnt);
+static void fk_block_destroy(fk_block_t *blk);
 
 static uint16_t fk_pool_align = 2;
-static fk_pool *node_pool = NULL;
-static fk_pool *obj_pool = NULL;
-static fk_pool *str_pool = NULL;
+static fk_pool_t *node_pool = NULL;
+static fk_pool_t *obj_pool = NULL;
+static fk_pool_t *str_pool = NULL;
 
 void fk_pool_init(void)
 {
@@ -51,11 +51,11 @@ void fk_pool_exit(void)
 	fk_pool_destroy(str_pool);
 }
 
-fk_pool *fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
+fk_pool_t *fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
 {
-	fk_pool *pool;
+	fk_pool_t *pool;
 
-	pool = (fk_pool *)fk_mem_alloc(sizeof(fk_pool));
+	pool = (fk_pool_t *)fk_mem_alloc(sizeof(fk_pool_t));
 
 	if (unit_size > 4) {
 		pool->unit_size = fk_pool_align_cal(unit_size);
@@ -71,10 +71,10 @@ fk_pool *fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
 	return pool;
 }
 
-void *fk_pool_malloc(fk_pool *pool)
+void *fk_pool_malloc(fk_pool_t *pool)
 {
 	void *ptr;
-	fk_block *blk;
+	fk_block_t *blk;
 
 	blk = pool->head;
 
@@ -85,7 +85,7 @@ void *fk_pool_malloc(fk_pool *pool)
 
 	/* to create a new block */
 	if (blk == NULL) {
-		blk = (fk_block *)fk_block_create(pool->unit_size, pool->init_cnt);
+		blk = (fk_block_t *)fk_block_create(pool->unit_size, pool->init_cnt);
 		if (blk == NULL) {
 			return NULL;
 		}
@@ -98,9 +98,9 @@ void *fk_pool_malloc(fk_pool *pool)
 	return ptr;
 }
 
-void fk_pool_free(fk_pool *pool, void *ptr)
+void fk_pool_free(fk_pool_t *pool, void *ptr)
 {
-	fk_block *cur_blk, *prev_blk;
+	fk_block_t *cur_blk, *prev_blk;
 
 	cur_blk = pool->head;
 	prev_blk = cur_blk;/* could not be 'NULL' */
@@ -137,17 +137,17 @@ void fk_pool_free(fk_pool *pool, void *ptr)
 	}
 }
 
-void fk_pool_destroy(fk_pool *pool)
+void fk_pool_destroy(fk_pool_t *pool)
 {
 }
 
-fk_block *fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
+fk_block_t *fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
 	char *ptr;
 	uint16_t i;
-	fk_block *blk;
+	fk_block_t *blk;
 
-	blk = (fk_block *)fk_mem_alloc(sizeof(fk_block) + (size_t)(unit_size * unit_cnt));
+	blk = (fk_block_t *)fk_mem_alloc(sizeof(fk_block_t) + (size_t)(unit_size * unit_cnt));
 	blk->free_cnt = unit_cnt;
 	blk->unit_cnt = unit_cnt;
 	blk->unit_size = unit_size;
@@ -163,7 +163,7 @@ fk_block *fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
 	return blk;
 }
 
-void fk_block_destroy(fk_block *blk)
+void fk_block_destroy(fk_block_t *blk)
 {
 	blk->next = NULL;
 	fk_mem_free(blk);
