@@ -6,7 +6,7 @@
 /*
  * some protocol related to db operation
  */
-int fk_cmd_del(fk_conn *conn)
+int fk_cmd_del(fk_conn_t *conn)
 {
 	fk_item_t *key;
 	int deleted, rt, i;
@@ -29,7 +29,7 @@ int fk_cmd_del(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
-int fk_cmd_flushdb(fk_conn *conn)
+int fk_cmd_flushdb(fk_conn_t *conn)
 {
 	int rt;
 
@@ -41,7 +41,7 @@ int fk_cmd_flushdb(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
-int fk_cmd_flushall(fk_conn *conn)
+int fk_cmd_flushall(fk_conn_t *conn)
 {
 	int rt;
 	unsigned i;
@@ -57,7 +57,7 @@ int fk_cmd_flushall(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
-int fk_cmd_exists(fk_conn *conn)
+int fk_cmd_exists(fk_conn_t *conn)
 {
 	int rt, n;
 	fk_item_t *key, *value;
@@ -76,7 +76,7 @@ int fk_cmd_exists(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
-int fk_cmd_save(fk_conn *conn)
+int fk_cmd_save(fk_conn_t *conn)
 {
 	int rt, err;
 
@@ -102,7 +102,7 @@ int fk_cmd_save(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
-int fk_cmd_select(fk_conn *conn)
+int fk_cmd_select(fk_conn_t *conn)
 {
 	fk_str_t *s;
 	fk_item_t *itm;

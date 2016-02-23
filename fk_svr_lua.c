@@ -16,10 +16,10 @@
 
 static int fk_lua_pcall(lua_State *L);
 
-static int fk_lua_conn_proc_cmd(fk_conn *conn);
+static int fk_lua_conn_proc_cmd(fk_conn_t *conn);
 
 static int fk_lua_push_paras(char **paras, int npara, int type);
-static int fk_lua_run_script(fk_conn *conn, char *code);
+static int fk_lua_run_script(fk_conn_t *conn, char *code);
 
 static int fk_lua_parse_status(lua_State *L, fk_buf_t *buf);
 static int fk_lua_parse_error(lua_State *L, fk_buf_t *buf);
@@ -28,7 +28,7 @@ static int fk_lua_parse_mbulk(lua_State *L, fk_buf_t *buf);
 static int fk_lua_parse_bulk(lua_State *L, fk_buf_t *buf);
 
 static lua_State *gL = NULL;
-static fk_conn *lua_conn = NULL;
+static fk_conn_t *lua_conn = NULL;
 
 static const struct luaL_Reg fklib[] = {
 	{"pcall", fk_lua_pcall},
@@ -113,7 +113,7 @@ int fk_lua_pcall(lua_State *L)
 	return rt;/* number of return value */
 }
 
-int fk_lua_conn_proc_cmd(fk_conn *conn)
+int fk_lua_conn_proc_cmd(fk_conn_t *conn)
 {
 	int rt;
 	fk_str_t *cmd;
@@ -280,7 +280,7 @@ int fk_lua_push_paras(char **paras, int npara, int type)
 	return 0;
 }
 
-int fk_lua_run_script(fk_conn *conn, char *code)
+int fk_lua_run_script(fk_conn_t *conn, char *code)
 {
 	size_t len, slen, olen;
 	const char *p, *sp, *err;
@@ -363,7 +363,7 @@ int fk_lua_run_script(fk_conn *conn, char *code)
 }
 
 /* relate to lua protocol */
-int fk_cmd_eval(fk_conn *conn)
+int fk_cmd_eval(fk_conn_t *conn)
 {
 	int nkey, nargv, rt, i;
 	char *code, **keys, **argv;

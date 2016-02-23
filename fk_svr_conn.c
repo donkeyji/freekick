@@ -18,10 +18,10 @@
 static void fk_conn_read_cb(int fd, char type, void *ext);
 static void fk_conn_write_cb(int fd, char type, void *ext);
 static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
-static int fk_conn_parse_req(fk_conn *conn);
-static int fk_conn_recv_data(fk_conn *conn);
-static int fk_conn_proc_cmd(fk_conn *conn);
-static int fk_conn_send_rsp(fk_conn *conn);
+static int fk_conn_parse_req(fk_conn_t *conn);
+static int fk_conn_recv_data(fk_conn_t *conn);
+static int fk_conn_proc_cmd(fk_conn_t *conn);
+static int fk_conn_send_rsp(fk_conn_t *conn);
 
 /* response format */
 static const char *rsp_status 	= "+%s\r\n";
@@ -31,11 +31,11 @@ static const char *rsp_int 		= ":%d\r\n";
 static const char *rsp_bulk		= "$%d\r\n";
 static const char *rsp_mbulk	= "*%d\r\n";
 
-fk_conn *fk_conn_create(int fd)
+fk_conn_t *fk_conn_create(int fd)
 {
-	fk_conn *conn;
+	fk_conn_t *conn;
 
-	conn = (fk_conn *)fk_mem_alloc(sizeof(fk_conn));
+	conn = (fk_conn_t *)fk_mem_alloc(sizeof(fk_conn_t));
 
 	conn->fd = fd;
 	conn->rbuf = fk_buf_create(FK_BUF_INIT_LEN, FK_BUF_HIGHWAT);
@@ -68,7 +68,7 @@ fk_conn *fk_conn_create(int fd)
 	return conn;
 }
 
-void fk_conn_destroy(fk_conn *conn)
+void fk_conn_destroy(fk_conn_t *conn)
 {
 	/* remove from freekick and unregister event from event manager */
 	if (conn->fd != FK_CONN_FAKE_FD) {
@@ -105,7 +105,7 @@ void fk_conn_destroy(fk_conn *conn)
 
 void fk_svr_add_conn(int fd)
 {
-	fk_conn *conn;
+	fk_conn_t *conn;
 
 	conn = fk_conn_create(fd);
 	fk_conn_set_type(conn, FK_CONN_REAL);
@@ -115,7 +115,7 @@ void fk_svr_add_conn(int fd)
 	server.conn_cnt += 1;
 }
 
-void fk_svr_remove_conn(fk_conn *conn)
+void fk_svr_remove_conn(fk_conn_t *conn)
 {
 	/* removed from the map */
 	server.conns_tab[conn->fd] = NULL;
@@ -124,7 +124,7 @@ void fk_svr_remove_conn(fk_conn *conn)
 	fk_conn_destroy(conn);
 }
 
-int fk_conn_recv_data(fk_conn *conn)
+int fk_conn_recv_data(fk_conn_t *conn)
 {
 	char *free_buf;
 	size_t free_len;
@@ -188,7 +188,7 @@ int fk_conn_recv_data(fk_conn *conn)
  * (2)if not all data of a completed protocol is received, FK_SVR_AGAIN is returned
  * (3)if any illegal data is found in conn->rbuf, FK_SVR_ERR is returned
  */
-int fk_conn_parse_req(fk_conn *conn)
+int fk_conn_parse_req(fk_conn_t *conn)
 {
 	fk_buf_t *rbuf;
 	fk_item_t *itm;
@@ -376,7 +376,7 @@ int fk_conn_parse_req(fk_conn *conn)
 	return FK_SVR_AGAIN;
 }
 
-void fk_conn_free_args(fk_conn *conn)
+void fk_conn_free_args(fk_conn_t *conn)
 {
 	int i;
 	fk_item_t *arg_itm;
@@ -400,7 +400,7 @@ void fk_conn_free_args(fk_conn *conn)
 	conn->arg_cnt = 0;
 }
 
-int fk_conn_proc_cmd(fk_conn *conn)
+int fk_conn_proc_cmd(fk_conn_t *conn)
 {
 	int rt;
 	fk_str_t *cmd;
@@ -466,12 +466,12 @@ int fk_conn_proc_cmd(fk_conn *conn)
 int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 {
 	time_t now;
-	fk_conn *conn;
+	fk_conn_t *conn;
 
 	fk_util_unuse(type);
 	fk_util_unuse(interval);
 
-	conn = (fk_conn *)ext;
+	conn = (fk_conn_t *)ext;
 
 	now = time(NULL);
 
@@ -493,12 +493,12 @@ int fk_conn_timer_cb(unsigned interval, char type, void *ext)
 void fk_conn_read_cb(int fd, char type, void *ext)
 {
 	int rt;
-	fk_conn *conn;
+	fk_conn_t *conn;
 
 	fk_util_unuse(fd);
 	fk_util_unuse(type);
 
-	conn = (fk_conn *)ext;
+	conn = (fk_conn_t *)ext;
 
 	rt = fk_conn_recv_data(conn);
 	if (rt == FK_SVR_ERR) {/* conn closed */
@@ -552,12 +552,12 @@ void fk_conn_write_cb(int fd, char type, void *ext)
 {
 	char *pbuf;
 	size_t plen;
-	fk_conn *conn;
+	fk_conn_t *conn;
 	ssize_t sent_len;
 
 	fk_util_unuse(type);
 
-	conn = (fk_conn *)ext;
+	conn = (fk_conn_t *)ext;
 
 #ifdef FK_DEBUG
 	fk_log_debug("data to sent: paylen: %d, data: %s\n", fk_buf_payload_len(conn->wbuf), fk_buf_payload_start(conn->wbuf));
@@ -604,7 +604,7 @@ void fk_conn_write_cb(int fd, char type, void *ext)
  * do misc things that should be done after fk_conn_recv_data/fk_conn_parse_req/
  * fk_conn_proc_cmd
  */
-int fk_conn_send_rsp(fk_conn *conn)
+int fk_conn_send_rsp(fk_conn_t *conn)
 {
 	fk_buf_t *wbuf;
 
@@ -647,7 +647,7 @@ int fk_conn_send_rsp(fk_conn *conn)
 	return FK_SVR_OK;
 }
 
-int fk_conn_add_status_rsp(fk_conn *conn, char *stat, size_t stat_len)
+int fk_conn_add_status_rsp(fk_conn_t *conn, char *stat, size_t stat_len)
 {
 	size_t len;
 
@@ -664,7 +664,7 @@ int fk_conn_add_status_rsp(fk_conn *conn, char *stat, size_t stat_len)
 	return FK_SVR_OK;
 }
 
-int fk_conn_add_error_rsp(fk_conn *conn, char *error, size_t error_len)
+int fk_conn_add_error_rsp(fk_conn_t *conn, char *error, size_t error_len)
 {
 	size_t len;
 
@@ -681,7 +681,7 @@ int fk_conn_add_error_rsp(fk_conn *conn, char *error, size_t error_len)
 	return FK_SVR_OK;
 }
 
-int fk_conn_add_content_rsp(fk_conn *conn, char *content, size_t content_len)
+int fk_conn_add_content_rsp(fk_conn_t *conn, char *content, size_t content_len)
 {
 	size_t len;
 
@@ -698,7 +698,7 @@ int fk_conn_add_content_rsp(fk_conn *conn, char *content, size_t content_len)
 	return FK_SVR_OK;
 }
 
-int fk_conn_add_int_rsp(fk_conn *conn, int num)
+int fk_conn_add_int_rsp(fk_conn_t *conn, int num)
 {
 	size_t len;
 
@@ -716,7 +716,7 @@ int fk_conn_add_int_rsp(fk_conn *conn, int num)
 	return FK_SVR_OK;
 }
 
-int fk_conn_add_bulk_rsp(fk_conn *conn, int bulk_len)
+int fk_conn_add_bulk_rsp(fk_conn_t *conn, int bulk_len)
 {
 	size_t len;
 
@@ -734,7 +734,7 @@ int fk_conn_add_bulk_rsp(fk_conn *conn, int bulk_len)
 	return FK_SVR_OK;
 }
 
-int fk_conn_add_mbulk_rsp(fk_conn *conn, int bulk_cnt)
+int fk_conn_add_mbulk_rsp(fk_conn_t *conn, int bulk_cnt)
 {
 	size_t len;
 

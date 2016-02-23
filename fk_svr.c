@@ -45,7 +45,7 @@ static void *fk_db_skiplist_val_copy(void *ptr);
 static void fk_db_skiplist_val_free(void *ptr);
 
 /* global variable */
-fk_svr server;
+fk_svr_t server;
 
 fk_elt_op_t db_dict_eop = {
 	fk_db_dict_key_hash,
@@ -278,7 +278,7 @@ void fk_svr_init(void)
 	server.last_save = time(NULL);
 	server.conn_cnt = 0;
 	server.timer_cnt = 0;
-	server.conns_tab = (fk_conn **)fk_mem_alloc(sizeof(fk_conn *) * fk_util_conns_to_files(setting.max_conn));
+	server.conns_tab = (fk_conn_t **)fk_mem_alloc(sizeof(fk_conn_t *) * fk_util_conns_to_files(setting.max_conn));
 	server.listen_fd = fk_sock_create_tcp_listen(fk_str_raw(setting.addr), setting.port);
 	if (server.listen_fd == FK_SOCK_ERR) {
 		fk_log_error("server listen socket creating failed: %s\n", strerror(errno));
