@@ -37,7 +37,7 @@ static fk_tmev_t *fk_ev_get_nearest_tmev(void);
 static void fk_ev_update_pending_tmev(void);
 static void fk_ev_proc_activated_ioev(void);
 static void fk_ev_proc_expired_tmev(void);
-static int fk_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
+static int fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2);
 
 #if defined(FK_HAVE_EPOLL)
 	#include <fk_ev_epoll.c>
@@ -52,7 +52,7 @@ static int fk_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2);
 
 static fk_evmgr_t evmgr;
 
-static fk_leaf_op tmev_op = {
+static fk_leaf_op_t tmev_op = {
 	fk_tmev_cmp
 };
 
@@ -256,14 +256,14 @@ void fk_tmev_destroy(fk_tmev_t *tmev)
 
 int fk_ev_add_tmev(fk_tmev_t *tmev)
 {
-	fk_heap *tmhp;
+	fk_heap_t *tmhp;
 
 	/* only when the tmev->expired == FK_TMEV_INIT is legal */
 	if (fk_tmev_get_stat(tmev) != FK_TMEV_INIT) {
 		return FK_EV_ERR;
 	}
 	tmhp = evmgr.timer_heap;
-	fk_heap_push(tmhp, (fk_leaf *)tmev);
+	fk_heap_push(tmhp, (fk_leaf_t *)tmev);
 	fk_tmev_set_stat(tmev, FK_TMEV_PENDING);/* in the min_heap, not in the expired list */
 	evmgr.tmev_cnt++;
 
@@ -282,7 +282,7 @@ int fk_ev_remove_tmev(fk_tmev_t *tmev)
 
 	/* in the min heap */
 	if (fk_tmev_get_stat(tmev) == FK_TMEV_PENDING) {
-		fk_heap_remove(evmgr.timer_heap, (fk_leaf *)tmev);
+		fk_heap_remove(evmgr.timer_heap, (fk_leaf_t *)tmev);
 	}
 
 	/* maybe this tmev in expired list */
@@ -302,7 +302,7 @@ int fk_ev_remove_tmev(fk_tmev_t *tmev)
 void fk_ev_update_pending_tmev(void)
 {
 	int cmp;
-	fk_leaf *root;
+	fk_leaf_t *root;
 	fk_tmev_t *tmev;
 	struct timeval now;
 
@@ -356,7 +356,7 @@ void fk_ev_proc_expired_tmev(void)
 			if (type == FK_TMEV_CYCLE) {
 				fk_rawlist_remove_anyone(evmgr.old_tmev, tmev);
 				fk_util_cal_expire(&(tmev->when), interval);
-				fk_heap_push(evmgr.timer_heap, (fk_leaf *)tmev);
+				fk_heap_push(evmgr.timer_heap, (fk_leaf_t *)tmev);
 				fk_tmev_set_stat(tmev, FK_TMEV_PENDING);/* add to min heap again */
 			}
 		}
@@ -433,7 +433,7 @@ void fk_ev_activate_ioev(int fd, char type)
 	}
 }
 
-int fk_tmev_cmp(fk_leaf *tmev1, fk_leaf *tmev2)
+int fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2)
 {
 	fk_tmev_t *t1, *t2;
 

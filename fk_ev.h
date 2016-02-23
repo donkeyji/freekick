@@ -64,7 +64,7 @@ typedef struct {
 	unsigned long long ioev_cnt;
 	unsigned long long tmev_cnt;
 	/* use min_heap to save timer ev */
-	fk_heap *timer_heap;
+	fk_heap_t *timer_heap;
 
 	/* actived file ev */
 	fk_ioev_list_t *act_ioev;

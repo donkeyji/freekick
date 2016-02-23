@@ -10,17 +10,17 @@
 
 #define FK_HEAP_INIT_SIZE 64
 
-static void fk_heap_stretch(fk_heap *hp);
-static void fk_heap_init(fk_heap *hp);
-static void fk_heap_clear(fk_heap *hp);
+static void fk_heap_stretch(fk_heap_t *hp);
+static void fk_heap_init(fk_heap_t *hp);
+static void fk_heap_clear(fk_heap_t *hp);
 
-fk_heap *fk_heap_create(fk_leaf_op *lop)
+fk_heap_t *fk_heap_create(fk_leaf_op_t *lop)
 {
-	fk_heap *hp;
+	fk_heap_t *hp;
 
 	assert(lop != NULL);
 
-   	hp = (fk_heap *)fk_mem_alloc(sizeof(fk_heap));
+   	hp = (fk_heap_t *)fk_mem_alloc(sizeof(fk_heap_t));
 	hp->lop = lop;
 
 	fk_heap_init(hp);
@@ -28,15 +28,15 @@ fk_heap *fk_heap_create(fk_leaf_op *lop)
 	return hp;
 }
 
-void fk_heap_init(fk_heap *hp)
+void fk_heap_init(fk_heap_t *hp)
 {
 	hp->size = FK_HEAP_INIT_SIZE;
-	hp->tree = (fk_leaf **)fk_mem_alloc(sizeof(fk_leaf *) * hp->size);
-	bzero(hp->tree, sizeof(fk_leaf *) * hp->size);
+	hp->tree = (fk_leaf_t **)fk_mem_alloc(sizeof(fk_leaf_t *) * hp->size);
+	bzero(hp->tree, sizeof(fk_leaf_t *) * hp->size);
 	hp->last = 0;
 }
 
-void fk_heap_empty(fk_heap *hp)
+void fk_heap_empty(fk_heap_t *hp)
 {
 	fk_heap_clear(hp);
 
@@ -44,7 +44,7 @@ void fk_heap_empty(fk_heap *hp)
 }
 
 /* only remove all the existing leaves */
-void fk_heap_clear(fk_heap *hp)
+void fk_heap_clear(fk_heap_t *hp)
 {
 	size_t i;
 
@@ -54,17 +54,17 @@ void fk_heap_clear(fk_heap *hp)
 	fk_mem_free(hp->tree);
 }
 
-void fk_heap_destroy(fk_heap *hp)
+void fk_heap_destroy(fk_heap_t *hp)
 {
 	fk_heap_clear(hp);
 	fk_mem_free(hp);
 }
 
-void fk_heap_remove(fk_heap *hp, fk_leaf *leaf)
+void fk_heap_remove(fk_heap_t *hp, fk_leaf_t *leaf)
 {
 	int cmp;
 	size_t i, j, idx;
-	fk_leaf *parent, *tmp, *min, *left, *right;
+	fk_leaf_t *parent, *tmp, *min, *left, *right;
 
 	idx = leaf->idx;
 	/* index 0 is not used */
@@ -113,9 +113,9 @@ void fk_heap_remove(fk_heap *hp, fk_leaf *leaf)
 	}
 }
 
-fk_leaf *fk_heap_pop(fk_heap *hp)
+fk_leaf_t *fk_heap_pop(fk_heap_t *hp)
 {
-	fk_leaf *root;
+	fk_leaf_t *root;
 
 	if (hp->last < 1) {/* null heap */
 		return NULL;
@@ -127,11 +127,11 @@ fk_leaf *fk_heap_pop(fk_heap *hp)
 	return root;
 }
 
-void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
+void fk_heap_push(fk_heap_t *hp, fk_leaf_t *leaf)
 {
 	int cmp;
 	size_t i;
-	fk_leaf *tmp;
+	fk_leaf_t *tmp;
 
 	if (hp->last == (hp->size - 1)) {/* heap is full */
 		fk_heap_stretch(hp);
@@ -156,7 +156,7 @@ void fk_heap_push(fk_heap *hp, fk_leaf *leaf)
 	}
 }
 
-fk_leaf *fk_heap_root(fk_heap *hp)
+fk_leaf_t *fk_heap_root(fk_heap_t *hp)
 {
 	if (hp->last == 0) {
 		return NULL;
@@ -164,13 +164,13 @@ fk_leaf *fk_heap_root(fk_heap *hp)
 	return hp->tree[1];/* the first item as the root */
 }
 
-void fk_heap_stretch(fk_heap *hp)
+void fk_heap_stretch(fk_heap_t *hp)
 {
 	size_t new_size;
 
 	new_size = hp->size << 1;/* double size */
-	hp->tree = (fk_leaf **)fk_mem_realloc(hp->tree, sizeof(fk_leaf *) * new_size);
+	hp->tree = (fk_leaf_t **)fk_mem_realloc(hp->tree, sizeof(fk_leaf_t *) * new_size);
 	/* initialize the new allocated memory */
-	bzero(hp->tree + hp->size, sizeof(fk_leaf *) * hp->size);
+	bzero(hp->tree + hp->size, sizeof(fk_leaf_t *) * hp->size);
 	hp->size = new_size;
 }
