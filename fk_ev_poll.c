@@ -1,6 +1,6 @@
 #include <poll.h>
 
-typedef struct _fk_poll {
+typedef struct {
 	struct pollfd *evlist;
 	int last;
 	int *fd2idx;

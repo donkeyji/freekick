@@ -32,7 +32,7 @@
 #define FK_CONF_MAX_FIELDS 	5
 #define FK_CONF_MAX_LEN 	1024
 
-typedef struct _fk_cfline {
+typedef struct {
 	unsigned no;/* line number */
 	unsigned cnt;/* the cnt field to parse */
 	size_t len;
@@ -41,7 +41,7 @@ typedef struct _fk_cfline {
 	fk_str *fields[FK_CONF_MAX_FIELDS];
 } fk_cfline;
 
-typedef struct _fk_dtv {/* directive */
+typedef struct {/* directive */
 	char *name;
 	unsigned field_cnt;
 	int (*handler) (fk_cfline *line);

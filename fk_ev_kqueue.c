@@ -6,7 +6,7 @@
  * ev is added/removed, just return FK_EV_ERR to the caller 
  */
 
-typedef struct _fk_kqueue {
+typedef struct {
 	int kfd;
 	unsigned max_evs;
 	struct kevent kev;

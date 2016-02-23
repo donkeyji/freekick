@@ -3,16 +3,17 @@
 
 #include <stdint.h>
 
-typedef struct _fk_block {
+typedef struct fk_block_s fk_block;
+struct fk_block_s {
 	uint16_t first;/* the index of the first free unit */
 	uint16_t free_cnt;
 	uint16_t unit_cnt;
 	uint16_t unit_size;
-	struct _fk_block *next;
+	fk_block *next;
 	char data[];
-} fk_block;
+};
 
-typedef struct _fk_pool {
+typedef struct {
 	fk_block *head;
 	uint16_t unit_size;
 	uint16_t init_cnt;

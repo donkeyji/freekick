@@ -9,7 +9,7 @@
 #define FK_DICT_OK		0
 #define FK_DICT_ERR		-1
 
-typedef struct _fk_elt_op {
+typedef struct {
 	uint32_t (*key_hash)(void *key);/* gen hash */
 	int (*key_cmp)(void *k1, void *k2);/* key compare */
 	void *(*key_copy)(void *key);
@@ -18,16 +18,17 @@ typedef struct _fk_elt_op {
 	void (*val_free)(void *val);
 } fk_elt_op;
 
-typedef struct _fk_elt {
+typedef struct fk_elt_s fk_elt;
+struct fk_elt_s {
 	void *key;
 	void *value;
-	struct _fk_elt *next;
-	struct _fk_elt *prev;
-} fk_elt;
+	fk_elt *next;
+	fk_elt *prev;
+};
 
 fk_rawlist_def(fk_elt, fk_elt_list);
 
-typedef struct _fk_dict {
+typedef struct {
 	size_t size;
 	size_t size_mask;
 	size_t used;
@@ -36,7 +37,7 @@ typedef struct _fk_dict {
 	fk_elt_op *eop;
 } fk_dict;
 
-typedef struct _fk_dict_iter {
+typedef struct {
 	fk_dict *dct;
 	fk_elt *cur, *next;
 	long long idx;/* should be long than size_t type */

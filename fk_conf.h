@@ -10,7 +10,7 @@
 #define FK_CONF_OK		0
 #define FK_CONF_ERR		-1
 
-typedef struct _fk_conf {
+typedef struct {
 	uint16_t port;
 	fk_str *addr;
 	int daemon;

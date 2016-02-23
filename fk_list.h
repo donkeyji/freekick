@@ -7,7 +7,7 @@
 #define FK_LIST_ITER_T2H 0
 
 #define fk_rawlist_def(type, name)	\
-typedef struct _##name {			\
+typedef struct {					\
 	type *head;						\
 	type *tail;						\
 	size_t len;						\
@@ -76,27 +76,28 @@ typedef struct _##name {			\
 	(lst)->len--;							\
 }
 
-typedef struct _fk_node {
-	struct _fk_node *prev;
-	struct _fk_node *next;
+typedef struct fk_node_s fk_node;
+struct fk_node_s {
+	fk_node *prev;
+	fk_node *next;
 	void *data;
-} fk_node;
+};
 
-typedef struct _fk_node_op {
+typedef struct {
 	/* method specified */
 	void *(*data_copy)(void *);
 	void (*data_free)(void *);
 	int (*data_cmp)(void *, void *);
 } fk_node_op;
 
-typedef struct _fk_list {
+typedef struct {
 	fk_node *head;
 	fk_node *tail;
 	size_t len;
 	fk_node_op *nop;
 } fk_list;
 
-typedef struct _fk_list_iter {
+typedef struct {
 	fk_list *lst;
 	fk_node *cur;/* return this */
 	fk_node *next;/* record the next */

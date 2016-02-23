@@ -7,7 +7,7 @@
 #define FK_ITEM_DICT 	3
 #define FK_ITEM_SKLIST	4
 
-typedef struct _fk_item {
+typedef struct {
 	int type;
 	unsigned ref;/* reference count */
 	void *entity;/* point to the real data of the itm */

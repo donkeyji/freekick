@@ -5,19 +5,20 @@
 
 #define FK_SKLIST_MAX_LEVEL		16
 
-typedef struct _fk_skipnode {
+typedef struct fk_skipnode_s fk_skipnode;
+struct fk_skipnode_s {
 	int score;/* the value to sort */
 	void *data;/* hold the fk_item */
-	struct _fk_skipnode *next[1];/* at least 1 element */
-} fk_skipnode;
+	fk_skipnode *next[1];/* at least 1 element */
+};
 
-typedef struct _fk_skipnode_op {
+typedef struct {
 	void *(*data_copy)(void *);
 	void (*data_free)(void *);
 	void (*data_cmp)(void *, void *);
 } fk_skipnode_op;
 
-typedef struct _fk_skiplist {
+typedef struct {
 	fk_skipnode *head;
 	int level;/* the max level of the nodes */
 	size_t len;

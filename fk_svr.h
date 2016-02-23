@@ -63,7 +63,7 @@
 
 #define FK_CONN_REAL	0
 #define FK_CONN_FAKE	1
-typedef struct _fk_conn {
+typedef struct {
 	int fd;
 	int type;/* FK_CONN_REAL | FK_CONN_FAKE */
 	fk_ioev *read_ev;
@@ -84,7 +84,7 @@ typedef struct _fk_conn {
 	int db_idx;
 } fk_conn;
 
-typedef struct _fk_svr {
+typedef struct {
 	int listen_fd;
 	unsigned conn_cnt;/* connection count */
 	time_t start_time;
@@ -102,7 +102,7 @@ typedef struct _fk_svr {
 	int blog_fd;
 } fk_svr;
 
-typedef struct _fk_proto {
+typedef struct {
 	char *name;
 	int type;
 	int arg_cnt;

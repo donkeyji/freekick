@@ -3,7 +3,7 @@
 
 #include  <strings.h>
 
-typedef struct _fk_vtr {
+typedef struct {
 	size_t init_len;
 	size_t len;
 	void **array;

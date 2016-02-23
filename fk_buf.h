@@ -5,7 +5,7 @@
 
 #include <fk_util.h>
 
-typedef struct _fk_buf {
+typedef struct {
 	size_t highwat;/* a constant */
 	size_t init_len;/* a constant */
 	size_t len;/* a variable */

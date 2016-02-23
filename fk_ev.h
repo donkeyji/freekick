@@ -20,18 +20,20 @@
 typedef void (*fk_ioev_cb) (int, char, void *);
 typedef int (*fk_tmev_cb) (unsigned, char, void *);
 
-typedef struct _fk_ioev {
+typedef struct fk_ioev_s fk_ioev;
+struct fk_ioev_s {
 	int fd;
 	char type;/* FK_IOEV_READ|FK_IOEV_WRITE */
 	int activated;/* whether in activated list */
 	void *arg;
 	fk_ioev_cb iocb;
 
-	struct _fk_ioev *prev;
-	struct _fk_ioev *next;
-} fk_ioev;
+	fk_ioev *prev;
+	fk_ioev *next;
+};
 
-typedef struct _fk_tmev {
+typedef struct fk_tmev_s fk_tmev;
+struct fk_tmev_s {
 	FK_HEAP_LEAF_HEADER;/* for heap */
 
 	int expired;/* whether in the expired list */
@@ -41,14 +43,14 @@ typedef struct _fk_tmev {
 	void *arg;/* ext arg */
 	fk_tmev_cb tmcb;
 
-	struct _fk_tmev *prev;
-	struct _fk_tmev *next;
-} fk_tmev;
+	fk_tmev *prev;
+	fk_tmev *next;
+};
 
 fk_rawlist_def(fk_ioev, fk_ioev_list);
 fk_rawlist_def(fk_tmev, fk_tmev_list);
 
-typedef struct _fk_mpxop {
+typedef struct {
 	char *iompx_name;/* fk_str is not used here, because it's easier to use char* here */
 	void *(*iompx_create)(unsigned max_files);
 	int (*iompx_add)(void *iompx, int fd, char type);
@@ -56,7 +58,7 @@ typedef struct _fk_mpxop {
 	int (*iompx_dispatch)(void *iompx, struct timeval *timeout);
 } fk_mpxop;
 
-typedef struct _fk_evmgr {
+typedef struct {
 	int stop;
 	unsigned max_files;
 	unsigned long long ioev_cnt;

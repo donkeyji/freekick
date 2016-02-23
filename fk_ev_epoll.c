@@ -6,7 +6,7 @@
  * than using 2 array of fk_tmev pointer which used in libevent^_^
  */
 
-typedef struct _fk_epoll {
+typedef struct {
 	int efd;
 	unsigned max_evs;
 	struct epoll_event ev;/* temporary variable */

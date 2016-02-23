@@ -11,7 +11,7 @@
 #define FK_LOG_INFO 	2
 #define FK_LOG_DEBUG 	3
 
-typedef struct _fk_log {
+typedef struct {
 	int log_level;
 	FILE *log_file;
 } fk_log;

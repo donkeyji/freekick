@@ -10,7 +10,7 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-typedef struct _fk_zline {
+typedef struct {
 	char *line;
 	size_t len;
 } fk_zline;

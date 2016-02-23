@@ -3,16 +3,16 @@
 
 #define FK_HEAP_LEAF_HEADER		size_t idx
 
-typedef struct _fk_leaf {
+typedef struct {
 	FK_HEAP_LEAF_HEADER;
 } fk_leaf;
 
-typedef struct _fk_leaf_op {
+typedef struct {
 	int (*leaf_cmp)(fk_leaf *, fk_leaf *);
 } fk_leaf_op;
 
 /* do not copy memory from outside, just save a pointer to the field of tree */
-typedef struct _fk_heap {
+typedef struct {
 	size_t size;/* the total length of the tree */
 	size_t last;/* current the last item index */
 	fk_leaf **tree;/* can save any type of obj */

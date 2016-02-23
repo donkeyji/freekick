@@ -7,7 +7,7 @@
  * no unified status code definiton for this string module
  */
 
-typedef struct _fk_str {
+typedef struct {
 	size_t len;/* valid length, excluding '\0' */
 	char seq[];
 } fk_str;
