@@ -242,7 +242,7 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 #ifdef FK_DEBUG
 int fk_svr_timer_cb2(unsigned interval, char type, void *arg)
 {
-	fk_tmev *tmev;
+	fk_tmev_t *tmev;
 
 	tmev = server.svr_timer2;
 

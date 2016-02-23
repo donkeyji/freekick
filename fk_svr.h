@@ -66,14 +66,14 @@
 typedef struct {
 	int fd;
 	int type;/* FK_CONN_REAL | FK_CONN_FAKE */
-	fk_ioev *read_ev;
-	fk_ioev *write_ev;
+	fk_ioev_t *read_ev;
+	fk_ioev_t *write_ev;
 	int write_added;
 
 	fk_buf_t *rbuf;
 	fk_buf_t *wbuf;
 	time_t last_recv;/* time of last data receiving */
-	fk_tmev *timer;
+	fk_tmev_t *timer;
 
 	fk_vtr_t *arg_vtr;
 	int arg_parsed;/* parsed from the head of a protocol, original 0; */
@@ -90,9 +90,9 @@ typedef struct {
 	time_t start_time;
 	time_t last_save;
 	unsigned long long timer_cnt;
-	fk_ioev *listen_ev;
-	fk_tmev *svr_timer;
-	fk_tmev *svr_timer2;
+	fk_ioev_t *listen_ev;
+	fk_tmev_t *svr_timer;
+	fk_tmev_t *svr_timer2;
 	fk_conn_t **conns_tab;
 	unsigned dbcnt;
 	fk_dict_t **db;

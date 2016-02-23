@@ -20,7 +20,7 @@
 typedef void (*fk_ioev_cb) (int, char, void *);
 typedef int (*fk_tmev_cb) (unsigned, char, void *);
 
-typedef struct fk_ioev_s fk_ioev;
+typedef struct fk_ioev_s fk_ioev_t;
 struct fk_ioev_s {
 	int fd;
 	char type;/* FK_IOEV_READ|FK_IOEV_WRITE */
@@ -28,11 +28,11 @@ struct fk_ioev_s {
 	void *arg;
 	fk_ioev_cb iocb;
 
-	fk_ioev *prev;
-	fk_ioev *next;
+	fk_ioev_t *prev;
+	fk_ioev_t *next;
 };
 
-typedef struct fk_tmev_s fk_tmev;
+typedef struct fk_tmev_s fk_tmev_t;
 struct fk_tmev_s {
 	FK_HEAP_LEAF_HEADER;/* for heap */
 
@@ -43,12 +43,12 @@ struct fk_tmev_s {
 	void *arg;/* ext arg */
 	fk_tmev_cb tmcb;
 
-	fk_tmev *prev;
-	fk_tmev *next;
+	fk_tmev_t *prev;
+	fk_tmev_t *next;
 };
 
-fk_rawlist_def(fk_ioev, fk_ioev_list);
-fk_rawlist_def(fk_tmev, fk_tmev_list);
+fk_rawlist_def(fk_ioev_t, fk_ioev_list_t);
+fk_rawlist_def(fk_tmev_t, fk_tmev_list_t);
 
 typedef struct {
 	char *iompx_name;/* fk_str_t is not used here, because it's easier to use char* here */
@@ -56,7 +56,7 @@ typedef struct {
 	int (*iompx_add)(void *iompx, int fd, char type);
 	int (*iompx_remove)(void *iompx, int fd, char type);
 	int (*iompx_dispatch)(void *iompx, struct timeval *timeout);
-} fk_mpxop;
+} fk_mpxop_t;
 
 typedef struct {
 	int stop;
@@ -67,35 +67,35 @@ typedef struct {
 	fk_heap *timer_heap;
 
 	/* actived file ev */
-	fk_ioev_list *act_ioev;
-	fk_tmev_list *exp_tmev;/* when SINGLE expire, fk_mem_free() */
-	fk_tmev_list *old_tmev;
+	fk_ioev_list_t *act_ioev;
+	fk_tmev_list_t *exp_tmev;/* when SINGLE expire, fk_mem_free() */
+	fk_tmev_list_t *old_tmev;
 
 	/* use array to save file ev */
 	/* conn + listen */
-	fk_ioev **read_ev;/* max_files */
-	fk_ioev **write_ev;/* max_files */
+	fk_ioev_t **read_ev;/* max_files */
+	fk_ioev_t **write_ev;/* max_files */
 
 	/* implemention of epoll/kqueue/poll */
 	void *iompx;
-} fk_evmgr;
+} fk_evmgr_t;
 
 void fk_ev_init(unsigned max_files);
 int fk_ev_dispatch(void);
 void fk_ev_cycle(void);
 void fk_ev_stop(void);
-int fk_ev_add_ioev(fk_ioev *ioev);
-int fk_ev_remove_ioev(fk_ioev *ioev);
-int fk_ev_add_tmev(fk_tmev *tmev);
-int fk_ev_remove_tmev(fk_tmev *tmev);
+int fk_ev_add_ioev(fk_ioev_t *ioev);
+int fk_ev_remove_ioev(fk_ioev_t *ioev);
+int fk_ev_add_tmev(fk_tmev_t *tmev);
+int fk_ev_remove_tmev(fk_tmev_t *tmev);
 #ifdef FK_DEBUG
 void fk_ev_stat(void);
 #endif
 char *fk_ev_iompx_name(void);
 
-fk_ioev *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
-void fk_ioev_destroy(fk_ioev *ioev);
-fk_tmev *fk_tmev_create(unsigned timeout, char type, void *arg, fk_tmev_cb tmcb);
-void fk_tmev_destroy(fk_tmev *tmev);
+fk_ioev_t *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
+void fk_ioev_destroy(fk_ioev_t *ioev);
+fk_tmev_t *fk_tmev_create(unsigned timeout, char type, void *arg, fk_tmev_cb tmcb);
+void fk_tmev_destroy(fk_tmev_t *tmev);
 
 #endif

@@ -19,7 +19,7 @@ static int fk_kqueue_add(void *ev_iompx, int fd, char type);
 static int fk_kqueue_remove(void *ev_iompx, int fd, char type);
 static int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout);
 
-fk_mpxop kqueue_op = {
+fk_mpxop_t kqueue_op = {
 	"kqueue",
 	fk_kqueue_create,
 	fk_kqueue_add,
