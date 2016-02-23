@@ -28,7 +28,7 @@ int fk_cmd_llen(fk_conn *conn)
 {
 	int rt, len;
 	fk_list *lst;
-	fk_item *key, *value;
+	fk_item_t *key, *value;
 
 	key = fk_conn_get_arg(conn, 1);
 	value = fk_dict_get(server.db[conn->db_idx], key);
@@ -60,7 +60,7 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 {
 	int rt, i;
 	fk_list *lst;
-	fk_item *key, *lst_itm, *str_itm;
+	fk_item_t *key, *lst_itm, *str_itm;
 
 	key = fk_conn_get_arg(conn, 1);
 	lst_itm = fk_dict_get(server.db[conn->db_idx], key);
@@ -114,7 +114,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	fk_str *ss;
 	fk_list *lst;
 	fk_node *nd_itm;
-	fk_item *key, *lst_itm, *itm;
+	fk_item_t *key, *lst_itm, *itm;
 
 	key = fk_conn_get_arg(conn, 1);
 	lst_itm = fk_dict_get(server.db[conn->db_idx], key);
@@ -148,7 +148,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 	} else {
 		nd_itm = fk_list_tail(lst);
 	}
-	itm = (fk_item *)fk_node_raw(nd_itm);
+	itm = (fk_item_t *)fk_node_raw(nd_itm);
 	ss = (fk_str *)fk_item_raw(itm);
 	rt = fk_conn_add_bulk_rsp(conn, (int)(fk_str_len(ss)));
 	if (rt == FK_SVR_ERR) {

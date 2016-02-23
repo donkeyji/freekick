@@ -8,7 +8,7 @@
 typedef struct fk_skipnode_s fk_skipnode;
 struct fk_skipnode_s {
 	int score;/* the value to sort */
-	void *data;/* hold the fk_item */
+	void *data;/* hold the fk_item_t */
 	fk_skipnode *next[1];/* at least 1 element */
 };
 

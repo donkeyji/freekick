@@ -8,7 +8,7 @@
  */
 int fk_cmd_del(fk_conn *conn)
 {
-	fk_item *key;
+	fk_item_t *key;
 	int deleted, rt, i;
 
 	deleted = 0;
@@ -60,7 +60,7 @@ int fk_cmd_flushall(fk_conn *conn)
 int fk_cmd_exists(fk_conn *conn)
 {
 	int rt, n;
-	fk_item *key, *value;
+	fk_item_t *key, *value;
 
 	key = fk_conn_get_arg(conn, 1);
 	value = fk_dict_get(server.db[conn->db_idx], key);
@@ -105,7 +105,7 @@ int fk_cmd_save(fk_conn *conn)
 int fk_cmd_select(fk_conn *conn)
 {
 	fk_str *s;
-	fk_item *itm;
+	fk_item_t *itm;
 	int db_idx, rt;
 
 	itm = fk_conn_get_arg(conn, 1);

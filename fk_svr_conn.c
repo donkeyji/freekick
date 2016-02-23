@@ -190,8 +190,8 @@ int fk_conn_recv_data(fk_conn *conn)
  */
 int fk_conn_parse_req(fk_conn *conn)
 {
-	fk_buf_t*rbuf;
-	fk_item *itm;
+	fk_buf_t *rbuf;
+	fk_item_t *itm;
 	char *start, *end;
 	int rt, argl, argc;
 	size_t arg_len, search_len;
@@ -379,7 +379,7 @@ int fk_conn_parse_req(fk_conn *conn)
 void fk_conn_free_args(fk_conn *conn)
 {
 	int i;
-	fk_item *arg_itm;
+	fk_item_t *arg_itm;
 
 	/* arg_cnt: the real number of parsed arguments */
 	//for (i = 0; i < conn->arg_parsed; i++) {
@@ -404,7 +404,7 @@ int fk_conn_proc_cmd(fk_conn *conn)
 {
 	int rt;
 	fk_str *cmd;
-	fk_item *itm;
+	fk_item_t *itm;
 	fk_proto *pto;
 
 	if (conn->parse_done == 0) {
@@ -413,7 +413,7 @@ int fk_conn_proc_cmd(fk_conn *conn)
 #endif
 		return FK_SVR_OK;
 	}
-	itm = (fk_item *)fk_conn_get_arg(conn, 0);
+	itm = (fk_item_t *)fk_conn_get_arg(conn, 0);
 	cmd = (fk_str *)fk_item_raw(itm);
 	fk_str_2upper(cmd);
 	pto = fk_proto_search(cmd);
@@ -606,7 +606,7 @@ void fk_conn_write_cb(int fd, char type, void *ext)
  */
 int fk_conn_send_rsp(fk_conn *conn)
 {
-	fk_buf_t*wbuf;
+	fk_buf_t *wbuf;
 
 	/* no need to keep step 1, because its function is included in fk_conn_parse_req() */
 	/* step 1 -- obsolete */

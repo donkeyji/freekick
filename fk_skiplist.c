@@ -83,7 +83,7 @@ void fk_skiplist_destroy(fk_skiplist *sl)
 	fk_mem_free(sl);
 }
 
-/* data: hold the fk_item object */
+/* data: hold the fk_item_t object */
 void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 {
 	int i, nlv;

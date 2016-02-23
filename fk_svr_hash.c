@@ -5,8 +5,8 @@ int fk_cmd_hset(fk_conn *conn)
 {
 	int rt;
 	fk_dict *dct;
-	fk_item *hkey, *key;
-	fk_item *hitm, *itm;
+	fk_item_t *hkey, *key;
+	fk_item_t *hitm, *itm;
 
 	hkey = fk_conn_get_arg(conn, 1);
 	key = fk_conn_get_arg(conn, 2);
@@ -46,7 +46,7 @@ int fk_cmd_hget(fk_conn *conn)
 {
 	int rt;
 	fk_dict *dct;
-	fk_item *hitm, *itm;
+	fk_item_t *hitm, *itm;
 	fk_str *hkey, *key, *value;
 
 	hkey = fk_conn_get_arg(conn, 1);

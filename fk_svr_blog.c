@@ -17,7 +17,7 @@ void fk_blog_load(fk_str *blog_path)
 void fk_blog_append(int argc, fk_vtr *arg_vtr, fk_proto *pto)
 {
 	int i;
-	fk_item *arg;
+	fk_item_t *arg;
 
 	if (pto->type == FK_PROTO_READ) {
 		return;

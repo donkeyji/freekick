@@ -133,7 +133,7 @@ int fk_fkdb_dump(FILE *fp, unsigned db_idx)
 	/* dict body */
 	iter = fk_dict_iter_begin(dct);
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
-		type = fk_item_type(((fk_item *)fk_elt_value(elt)));
+		type = fk_item_type(((fk_item_t *)fk_elt_value(elt)));
 		wz = fwrite(&type, sizeof(type), 1, fp);
 		if (wz == 0) {
 			fk_dict_iter_end(iter);/* need to release iterator */
@@ -164,10 +164,10 @@ int fk_fkdb_dump_str_elt(FILE *fp, fk_elt *elt)
 {
 	size_t len, wz;
 	fk_str *key, *value;
-	fk_item *kitm, *vitm;
+	fk_item_t *kitm, *vitm;
 
-	kitm = (fk_item *)fk_elt_key(elt);
-	vitm = (fk_item *)fk_elt_value(elt);
+	kitm = (fk_item_t *)fk_elt_key(elt);
+	vitm = (fk_item_t *)fk_elt_value(elt);
 
 	key = (fk_str *)(fk_item_raw(kitm));
 	value = (fk_str *)(fk_item_raw(vitm));
@@ -208,10 +208,10 @@ int fk_fkdb_dump_list_elt(FILE *fp, fk_elt *elt)
 	size_t len, wz;
 	fk_str *key, *vs;
 	fk_list_iter *iter;
-	fk_item *kitm, *vitm, *nitm;
+	fk_item_t *kitm, *vitm, *nitm;
 
-	kitm = (fk_item *)fk_elt_key(elt);
-	vitm = (fk_item *)fk_elt_value(elt);
+	kitm = (fk_item_t *)fk_elt_key(elt);
+	vitm = (fk_item_t *)fk_elt_value(elt);
 
 	key = (fk_str *)(fk_item_raw(kitm));
 	lst = (fk_list *)(fk_item_raw(vitm));
@@ -237,7 +237,7 @@ int fk_fkdb_dump_list_elt(FILE *fp, fk_elt *elt)
 	/* value dump */
 	iter = fk_list_iter_begin(lst, FK_LIST_ITER_H2T);
 	while ((nd = fk_list_iter_next(iter)) != NULL) {
-		nitm = (fk_item *)(fk_node_raw(nd));
+		nitm = (fk_item_t *)(fk_node_raw(nd));
 		vs = (fk_str *)(fk_item_raw(nitm));
 		len = fk_str_len(vs);
 		wz = fwrite(&len, sizeof(len), 1, fp);
@@ -264,10 +264,10 @@ int fk_fkdb_dump_dict_elt(FILE *fp, fk_elt *elt)
 	size_t len, wz;
 	fk_dict_iter *iter;
 	fk_str *key, *skey, *svs;
-	fk_item *kitm, *vitm, *skitm, *svitm;
+	fk_item_t *kitm, *vitm, *skitm, *svitm;
 
-	kitm = (fk_item *)fk_elt_key(elt);
-	vitm = (fk_item *)fk_elt_value(elt);
+	kitm = (fk_item_t *)fk_elt_key(elt);
+	vitm = (fk_item_t *)fk_elt_value(elt);
 
 	key = (fk_str *)(fk_item_raw(kitm));
 	dct = (fk_dict *)(fk_item_raw(vitm));
@@ -292,8 +292,8 @@ int fk_fkdb_dump_dict_elt(FILE *fp, fk_elt *elt)
 
 	iter = fk_dict_iter_begin(dct);
 	while ((selt = fk_dict_iter_next(iter)) != NULL) {
-		skitm = (fk_item *)fk_elt_key(selt);
-		svitm = (fk_item *)fk_elt_value(selt);
+		skitm = (fk_item_t *)fk_elt_key(selt);
+		svitm = (fk_item_t *)fk_elt_value(selt);
 
 		skey = (fk_str *)(fk_item_raw(skitm));
 		svs = (fk_str *)(fk_item_raw(svitm));
@@ -452,7 +452,7 @@ int fk_fkdb_restore(FILE *fp, fk_zline *buf)
 int fk_fkdb_restore_str_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 {
 	fk_str *key, *value;
-	fk_item *kitm, *vitm;
+	fk_item_t *kitm, *vitm;
 	size_t klen, vlen, rz;
 
 	rz = fread(&klen, sizeof(klen), 1, fp);
@@ -501,7 +501,7 @@ int fk_fkdb_restore_list_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 {
 	fk_list *lst;
 	fk_str *key, *nds;
-	fk_item *kitm, *vitm, *nitm;
+	fk_item_t *kitm, *vitm, *nitm;
 	size_t klen, llen, i, nlen, rz;
 
 	rz = fread(&klen, sizeof(klen), 1, fp);
@@ -557,7 +557,7 @@ int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict *db, fk_zline *buf)
 {
 	fk_dict *sdct;
 	fk_str *key, *skey, *svalue;
-	fk_item *kitm, *skitm, *vitm, *svitm;
+	fk_item_t *kitm, *skitm, *vitm, *svitm;
 	size_t klen, sklen, svlen, dlen, i, rz;
 
 	rz = fread(&klen, sizeof(klen), 1, fp);

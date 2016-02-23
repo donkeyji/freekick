@@ -73,9 +73,9 @@ fk_skipnode_op db_skiplist_op = {
 uint32_t fk_db_dict_key_hash(void *key)
 {
 	fk_str *s;
-	fk_item *itm;
+	fk_item_t *itm;
 
-	itm = (fk_item *)key;
+	itm = (fk_item_t *)key;
 	s = (fk_str *)fk_item_raw(itm);
 	return fk_str_hash(s);
 }
@@ -83,10 +83,10 @@ uint32_t fk_db_dict_key_hash(void *key)
 int fk_db_dict_key_cmp(void *k1, void *k2)
 {
 	fk_str *s1, *s2;
-	fk_item *itm1, *itm2;
+	fk_item_t *itm1, *itm2;
 
-	itm1 = (fk_item *)k1;
-	itm2 = (fk_item *)k2;
+	itm1 = (fk_item_t *)k1;
+	itm2 = (fk_item_t *)k2;
 	s1 = (fk_str *)fk_item_raw(itm1);
 	s2 = (fk_str *)fk_item_raw(itm2);
 
@@ -95,9 +95,9 @@ int fk_db_dict_key_cmp(void *k1, void *k2)
 
 void *fk_db_dict_key_copy(void *key)
 {
-	fk_item *itm;
+	fk_item_t *itm;
 
-	itm = (fk_item *)key;
+	itm = (fk_item_t *)key;
 
 	fk_item_inc_ref(itm);/* increase the ref here */
 
@@ -106,18 +106,18 @@ void *fk_db_dict_key_copy(void *key)
 
 void fk_db_dict_key_free(void *key)
 {
-	fk_item *itm;
+	fk_item_t *itm;
 
-	itm = (fk_item *)key;
+	itm = (fk_item_t *)key;
 
 	fk_item_dec_ref(itm);/* decrease the ref here */
 }
 
 void *fk_db_dict_val_copy(void *val)
 {
-	fk_item *itm;
+	fk_item_t *itm;
 
-	itm = (fk_item *)val;
+	itm = (fk_item_t *)val;
 
 	fk_item_inc_ref(itm);
 
@@ -126,17 +126,17 @@ void *fk_db_dict_val_copy(void *val)
 
 void fk_db_dict_val_free(void *val)
 {
-	fk_item *itm;
-	itm = (fk_item *)val;
+	fk_item_t *itm;
+	itm = (fk_item_t *)val;
 
 	fk_item_dec_ref(itm);
 }
 
 void *fk_db_list_val_copy(void *ptr)
 {
-	fk_item *itm;
+	fk_item_t *itm;
 
-	itm = (fk_item *)ptr;
+	itm = (fk_item_t *)ptr;
 
 	fk_item_inc_ref(itm);
 
@@ -146,18 +146,18 @@ void *fk_db_list_val_copy(void *ptr)
 /* for lpush/lpop */
 void fk_db_list_val_free(void *ptr)
 {
-	fk_item *itm;
+	fk_item_t *itm;
 
-	itm = (fk_item *)ptr;
+	itm = (fk_item_t *)ptr;
 
 	fk_item_dec_ref(itm);
 }
 
 void *fk_db_skiplist_val_copy(void *ptr)
 {
-	fk_item *itm;
+	fk_item_t *itm;
 
-	itm = (fk_item *)ptr;
+	itm = (fk_item_t *)ptr;
 
 	fk_item_inc_ref(itm);
 
@@ -166,9 +166,9 @@ void *fk_db_skiplist_val_copy(void *ptr)
 
 void fk_db_skiplist_val_free(void *ptr)
 {
-	fk_item *itm;
+	fk_item_t *itm;
 
-	itm = (fk_item *)ptr;
+	itm = (fk_item_t *)ptr;
 
 	fk_item_dec_ref(itm);
 }

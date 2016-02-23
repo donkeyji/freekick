@@ -9,7 +9,7 @@
 int fk_cmd_set(fk_conn *conn)
 {
 	int rt;
-	fk_item *key, *value;
+	fk_item_t *key, *value;
 
 	key = fk_conn_get_arg(conn, 1);
 	value = fk_conn_get_arg(conn, 2);
@@ -27,7 +27,7 @@ int fk_cmd_set(fk_conn *conn)
 int fk_cmd_setnx(fk_conn *conn)
 {
 	int rt;
-	fk_item *key, *value;
+	fk_item_t *key, *value;
 
 	key = fk_conn_get_arg(conn, 1);
 	value = fk_dict_get(server.db[conn->db_idx], key);
@@ -52,7 +52,7 @@ int fk_cmd_setnx(fk_conn *conn)
 int fk_cmd_mset(fk_conn *conn)
 {
 	int rt, i;
-	fk_item *key, *value;
+	fk_item_t *key, *value;
 
 	if ((conn->arg_cnt - 1) % 2 != 0) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_ARGC_ERR, sizeof(FK_RSP_ARGC_ERR) - 1);
@@ -78,7 +78,7 @@ int fk_cmd_mget(fk_conn *conn)
 {
 	int rt, i;
 	fk_str *ss;
-	fk_item *value, *key;
+	fk_item_t *value, *key;
 
 	rt = fk_conn_add_mbulk_rsp(conn, conn->arg_cnt - 1);
 	if (rt == FK_SVR_ERR) {
@@ -118,7 +118,7 @@ int fk_cmd_get(fk_conn *conn)
 {
 	int rt;
 	fk_str *ss;
-	fk_item *value, *key;
+	fk_item_t *value, *key;
 
 	key = fk_conn_get_arg(conn, 1);
 	value = fk_dict_get(server.db[conn->db_idx], key);

@@ -64,7 +64,7 @@ void t_dict(void)
 	printf("11111111\n");
 	fk_str *ss = fk_str_create("huge", 4);
 	fk_str *gg = fk_str_create("ooxx", 4);
-	fk_item *oo = fk_item_create(FK_ITEM_STR, gg);
+	fk_item_t *oo = fk_item_create(FK_ITEM_STR, gg);
 
 	fk_dict_add(dd, ss, oo);
 
@@ -72,7 +72,7 @@ void t_dict(void)
 	printf("22222222\n");
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
 		ss = (fk_str*)(elt->key);
-		oo = (fk_item*)(elt->value);
+		oo = (fk_item_t *)(elt->value);
 		gg = (fk_str *)fk_item_raw(oo);
 		printf("%s\n", fk_str_raw(ss));
 		printf("%s\n", fk_str_raw(gg));
