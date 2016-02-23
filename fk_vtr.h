@@ -7,10 +7,10 @@ typedef struct {
 	size_t init_len;
 	size_t len;
 	void **array;
-} fk_vtr;
+} fk_vtr_t;
 
-fk_vtr *fk_vtr_create(size_t init_len);
-void fk_vtr_destroy(fk_vtr *vtr);
+fk_vtr_t *fk_vtr_create(size_t init_len);
+void fk_vtr_destroy(fk_vtr_t *vtr);
 
 #define fk_vtr_len(vtr)		((vtr)->len)
 

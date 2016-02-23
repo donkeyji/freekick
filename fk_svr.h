@@ -75,7 +75,7 @@ typedef struct {
 	time_t last_recv;/* time of last data receiving */
 	fk_tmev *timer;
 
-	fk_vtr *arg_vtr;
+	fk_vtr_t *arg_vtr;
 	int arg_parsed;/* parsed from the head of a protocol, original 0; */
 	int arg_cnt;/* the number of the arguments which have been parsed, original 0 */
 	int cur_arglen;/* the argument length of the arg_cnt..TH, original -1 */
@@ -150,7 +150,7 @@ void fk_lua_init(void);
 /* related to binary log */
 void fk_blog_init(void);
 void fk_blog_load(fk_str_t *blog_path);
-void fk_blog_append(int argc, fk_vtr *arg_vtr, fk_proto *pto);
+void fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto *pto);
 
 /* related to protocol */
 void fk_proto_init(void);
