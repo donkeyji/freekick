@@ -50,7 +50,7 @@ static void fk_dict_init(fk_dict_t *dct);
 static void fk_dict_clear(fk_dict_t *dct);
 /*
 #ifdef FK_DEBUG
-static void fk_dict_buckets_print(size_t idx, fk_elt_list *lst);
+static void fk_dict_buckets_print(size_t idx, fk_elt_list_t *lst);
 #endif
 */
 
@@ -71,8 +71,8 @@ void fk_dict_init(fk_dict_t *dct)
 	dct->size_mask = dct->size - 1;
 	dct->limit = dct->size >> 1;/* when up to 50%, it should extend space */
 	dct->used = 0;
-	dct->buckets = (fk_elt_list **)fk_mem_alloc(sizeof(fk_elt_list) * FK_DICT_INIT_SIZE);
-	bzero(dct->buckets, sizeof(fk_elt_list *) * FK_DICT_INIT_SIZE);
+	dct->buckets = (fk_elt_list_t **)fk_mem_alloc(sizeof(fk_elt_list_t) * FK_DICT_INIT_SIZE);
+	bzero(dct->buckets, sizeof(fk_elt_list_t *) * FK_DICT_INIT_SIZE);
 }
 
 /*
@@ -83,7 +83,7 @@ void fk_dict_clear(fk_dict_t *dct)
 {
 	size_t i;
 	fk_elt_t *nd;
-	fk_elt_list *lst;
+	fk_elt_list_t *lst;
 
 	for (i = 0; i < dct->size; i++) {
 		lst = dct->buckets[i];
@@ -126,7 +126,7 @@ fk_elt_t *fk_dict_search(fk_dict_t *dct, void *key, size_t *bidx)
 	size_t idx;
 	fk_elt_t *nd;
 	uint32_t hash;
-	fk_elt_list *lst;
+	fk_elt_list_t *lst;
 
 	hash = dct->eop->key_hash(key);
 	idx = (size_t)hash & (dct->size_mask);
@@ -167,7 +167,7 @@ int fk_dict_add(fk_dict_t *dct, void *key, void *value)
 {
 	size_t idx;
 	fk_elt_t *elt;
-	fk_elt_list *lst;
+	fk_elt_list_t *lst;
 
 	/*
 	 * should be called before fk_dict_search
@@ -185,7 +185,7 @@ int fk_dict_add(fk_dict_t *dct, void *key, void *value)
 
 	lst = dct->buckets[idx];
 	if (lst == NULL) {
-		lst = fk_rawlist_create(fk_elt_list);
+		lst = fk_rawlist_create(fk_elt_list_t);
 		fk_rawlist_init(lst);
 		dct->buckets[idx] = lst;
 	}
@@ -229,7 +229,7 @@ int fk_dict_remove(fk_dict_t *dct, void *key)
 {
 	size_t idx;
 	fk_elt_t *elt;
-	fk_elt_list *lst;
+	fk_elt_list_t *lst;
 
 	elt = fk_dict_search(dct, key, &idx);
 	if (elt == NULL) {
@@ -253,14 +253,14 @@ int fk_dict_stretch(fk_dict_t *dct)
 	void *key;
 	uint32_t hash;
 	size_t new_size, i, idx;
-	fk_elt_list **bks, *lst;
+	fk_elt_list_t **bks, *lst;
 
 	if (dct->used < dct->limit) {
 		return FK_DICT_OK;
 	}
 	new_size = dct->size << 1;
-	bks = (fk_elt_list **)fk_mem_alloc(new_size * sizeof(fk_elt_list *));
-	bzero(bks, sizeof(fk_elt_list *) * new_size);
+	bks = (fk_elt_list_t **)fk_mem_alloc(new_size * sizeof(fk_elt_list_t *));
+	bzero(bks, sizeof(fk_elt_list_t *) * new_size);
 
 	/* rehash to the new buckets */
 	for (i = 0; i < dct->size; i++) {
@@ -275,7 +275,7 @@ int fk_dict_stretch(fk_dict_t *dct)
 			hash = dct->eop->key_hash(key);
 			idx = (size_t)hash & (new_size - 1);
 			if (bks[idx] == NULL) {
-				bks[idx] = fk_rawlist_create(fk_elt_list);
+				bks[idx] = fk_rawlist_create(fk_elt_list_t);
 				fk_rawlist_init(bks[idx]);
 			}
 			fk_rawlist_insert_head(bks[idx], nd);
@@ -301,7 +301,7 @@ int fk_dict_stretch(fk_dict_t *dct)
 
 /*
 #ifdef FK_DEBUG
-void fk_dict_buckets_print(size_t idx, fk_elt_list *lst)
+void fk_dict_buckets_print(size_t idx, fk_elt_list_t *lst)
 {
 	fk_elt_t *elt;
 
@@ -317,7 +317,7 @@ void fk_dict_buckets_print(size_t idx, fk_elt_list *lst)
 void fk_dict_print(fk_dict_t *dct)
 {
 	size_t i;
-	fk_elt_list *lst;
+	fk_elt_list_t *lst;
 
 	printf("size: %lu, size_mask: %lu, limit: %lu, used: %lu\n", 
 			dct->size, 
@@ -352,7 +352,7 @@ fk_dict_iter_t *fk_dict_iter_begin(fk_dict_t *dct)
 
 fk_elt_t *fk_dict_iter_next(fk_dict_iter_t *iter)
 {
-	fk_elt_list *elst;
+	fk_elt_list_t *elst;
 
 	while (1) {
 		if (iter->cur == NULL) {/* the first time to call this function */

@@ -76,10 +76,10 @@ typedef struct {					\
 	(lst)->len--;							\
 }
 
-typedef struct fk_node_s fk_node;
+typedef struct fk_node_s fk_node_t;
 struct fk_node_s {
-	fk_node *prev;
-	fk_node *next;
+	fk_node_t *prev;
+	fk_node_t *next;
 	void *data;
 };
 
@@ -88,41 +88,41 @@ typedef struct {
 	void *(*data_copy)(void *);
 	void (*data_free)(void *);
 	int (*data_cmp)(void *, void *);
-} fk_node_op;
+} fk_node_op_t;
 
 typedef struct {
-	fk_node *head;
-	fk_node *tail;
+	fk_node_t *head;
+	fk_node_t *tail;
 	size_t len;
-	fk_node_op *nop;
-} fk_list;
+	fk_node_op_t *nop;
+} fk_list_t;
 
 typedef struct {
-	fk_list *lst;
-	fk_node *cur;/* return this */
-	fk_node *next;/* record the next */
+	fk_list_t *lst;
+	fk_node_t *cur;/* return this */
+	fk_node_t *next;/* record the next */
 	int dir;/* 0, 1 */
-} fk_list_iter;
+} fk_list_iter_t;
 
-fk_list *fk_list_create(fk_node_op *nop);
-void fk_list_empty(fk_list *lst);
-void fk_list_destroy(fk_list *lst);
+fk_list_t *fk_list_create(fk_node_op_t *nop);
+void fk_list_empty(fk_list_t *lst);
+void fk_list_destroy(fk_list_t *lst);
 
-void fk_list_insert_head(fk_list *lst, void *val);
-void fk_list_insert_tail(fk_list *lst, void *val);
-void fk_list_sorted_insert(fk_list *lst, void *val);
-void fk_list_remove_anyone(fk_list *lst, fk_node *nd);
+void fk_list_insert_head(fk_list_t *lst, void *val);
+void fk_list_insert_tail(fk_list_t *lst, void *val);
+void fk_list_sorted_insert(fk_list_t *lst, void *val);
+void fk_list_remove_anyone(fk_list_t *lst, fk_node_t *nd);
 
 #define fk_list_insert_head_only	fk_rawlist_insert_head
 #define fk_list_insert_tail_only	fk_rawlist_insert_tail
 #define fk_list_remove_anyone_only		fk_rawlist_remove_anyone
-void fk_list_insert_sorted_only(fk_list *lst, fk_node *nd);
+void fk_list_insert_sorted_only(fk_list_t *lst, fk_node_t *nd);
 
-fk_node *fk_list_search(fk_list *lst, void *key);
+fk_node_t *fk_list_search(fk_list_t *lst, void *key);
 
-fk_list_iter *fk_list_iter_begin(fk_list *lst, int dir);
-fk_node *fk_list_iter_next(fk_list_iter *iter);
-void fk_list_iter_end(fk_list_iter *iter);
+fk_list_iter_t *fk_list_iter_begin(fk_list_t *lst, int dir);
+fk_node_t *fk_list_iter_next(fk_list_iter_t *iter);
+void fk_list_iter_end(fk_list_iter_t *iter);
 
 #define fk_list_head fk_rawlist_head
 #define fk_list_tail fk_rawlist_tail

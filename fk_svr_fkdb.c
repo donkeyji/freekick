@@ -203,18 +203,18 @@ int fk_fkdb_dump_str_elt(FILE *fp, fk_elt_t *elt)
 
 int fk_fkdb_dump_list_elt(FILE *fp, fk_elt_t *elt)
 {
-	fk_node *nd;
-	fk_list *lst;
+	fk_node_t *nd;
+	fk_list_t *lst;
 	size_t len, wz;
 	fk_str *key, *vs;
-	fk_list_iter *iter;
+	fk_list_iter_t *iter;
 	fk_item_t *kitm, *vitm, *nitm;
 
 	kitm = (fk_item_t *)fk_elt_key(elt);
 	vitm = (fk_item_t *)fk_elt_value(elt);
 
 	key = (fk_str *)(fk_item_raw(kitm));
-	lst = (fk_list *)(fk_item_raw(vitm));
+	lst = (fk_list_t *)(fk_item_raw(vitm));
 
 	/* key dump */
 	len = fk_str_len(key);
@@ -252,7 +252,7 @@ int fk_fkdb_dump_list_elt(FILE *fp, fk_elt_t *elt)
 			return FK_SVR_ERR;
 		}
 	}
-	fk_list_iter_end(iter);/* must release this iterator of fk_list */
+	fk_list_iter_end(iter);/* must release this iterator of fk_list_t */
 
 	return FK_SVR_OK;
 }
@@ -499,7 +499,7 @@ int fk_fkdb_restore_str_elt(FILE *fp, fk_dict_t *db, fk_zline *buf)
  */
 int fk_fkdb_restore_list_elt(FILE *fp, fk_dict_t *db, fk_zline *buf)
 {
-	fk_list *lst;
+	fk_list_t *lst;
 	fk_str *key, *nds;
 	fk_item_t *kitm, *vitm, *nitm;
 	size_t klen, llen, i, nlen, rz;

@@ -27,7 +27,7 @@ int fk_cmd_rpop(fk_conn *conn)
 int fk_cmd_llen(fk_conn *conn)
 {
 	int rt, len;
-	fk_list *lst;
+	fk_list_t *lst;
 	fk_item_t *key, *value;
 
 	key = fk_conn_get_arg(conn, 1);
@@ -47,7 +47,7 @@ int fk_cmd_llen(fk_conn *conn)
 		return FK_SVR_OK;
 	}
 
-	lst = (fk_list *)fk_item_raw(value);
+	lst = (fk_list_t *)fk_item_raw(value);
 	len = fk_list_len(lst);
 	rt = fk_conn_add_int_rsp(conn, len);
 	if (rt == FK_SVR_ERR) {
@@ -59,7 +59,7 @@ int fk_cmd_llen(fk_conn *conn)
 int fk_cmd_generic_push(fk_conn *conn, int pos)
 {
 	int rt, i;
-	fk_list *lst;
+	fk_list_t *lst;
 	fk_item_t *key, *lst_itm, *str_itm;
 
 	key = fk_conn_get_arg(conn, 1);
@@ -112,8 +112,8 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 {
 	int rt;
 	fk_str *ss;
-	fk_list *lst;
-	fk_node *nd_itm;
+	fk_list_t *lst;
+	fk_node_t *nd_itm;
 	fk_item_t *key, *lst_itm, *itm;
 
 	key = fk_conn_get_arg(conn, 1);

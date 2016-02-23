@@ -57,7 +57,7 @@ fk_elt_op_t db_dict_eop = {
 };
 
 /* for lpush/lpop */
-fk_node_op db_list_op = {
+fk_node_op_t db_list_op = {
 	fk_db_list_val_copy,
 	fk_db_list_val_free,
 	NULL

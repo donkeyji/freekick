@@ -5,7 +5,7 @@
 #include <fk_list.h>
 #include <fk_mem.h>
 
-#define fk_node_create()		(fk_node *)fk_mem_alloc(sizeof(fk_node))
+#define fk_node_create()		(fk_node_t *)fk_mem_alloc(sizeof(fk_node_t))
 
 #define fk_node_destroy(nd)	fk_mem_free((nd))
 
@@ -25,19 +25,19 @@
 }
 
 #define fk_list_init	fk_rawlist_init
-static void fk_list_clear(fk_list *lst);
+static void fk_list_clear(fk_list_t *lst);
 
-static fk_node_op default_nop = {
+static fk_node_op_t default_nop = {
 	NULL,
 	NULL,
 	NULL
 };
 
-fk_list *fk_list_create(fk_node_op *nop)
+fk_list_t *fk_list_create(fk_node_op_t *nop)
 {
-	fk_list *lst;
+	fk_list_t *lst;
 
-	lst = (fk_list *)fk_mem_alloc(sizeof(fk_list));
+	lst = (fk_list_t *)fk_mem_alloc(sizeof(fk_list_t));
 	lst->nop = &default_nop;
 	if (nop != NULL) {
 		lst->nop = nop;
@@ -48,10 +48,10 @@ fk_list *fk_list_create(fk_node_op *nop)
 }
 
 
-void fk_list_insert_sorted_only(fk_list *lst, fk_node *nd)
+void fk_list_insert_sorted_only(fk_list_t *lst, fk_node_t *nd)
 {
 	int pos;
-	fk_node *low, *high;
+	fk_node_t *low, *high;
 
 	low = lst->head;
 	high = lst->tail;
@@ -107,11 +107,11 @@ void fk_list_insert_sorted_only(fk_list *lst, fk_node *nd)
 	return;
 }
 
-fk_list_iter *fk_list_iter_begin(fk_list *lst, int dir)
+fk_list_iter_t *fk_list_iter_begin(fk_list_t *lst, int dir)
 {
-	fk_list_iter *iter;
+	fk_list_iter_t *iter;
 
-   	iter = (fk_list_iter *)fk_mem_alloc(sizeof(fk_list_iter));
+   	iter = (fk_list_iter_t *)fk_mem_alloc(sizeof(fk_list_iter_t));
 	iter->lst = lst;
 	iter->dir = dir;
 	iter->cur = NULL;
@@ -120,7 +120,7 @@ fk_list_iter *fk_list_iter_begin(fk_list *lst, int dir)
 	return iter;
 }
 
-fk_node *fk_list_iter_next(fk_list_iter *iter)
+fk_node_t *fk_list_iter_next(fk_list_iter_t *iter)
 {
 	if (iter->cur == NULL) {/* the first time to call this function */
 		/* from head to tail */
@@ -149,14 +149,14 @@ fk_node *fk_list_iter_next(fk_list_iter *iter)
 	return iter->cur;
 }
 
-void fk_list_iter_end(fk_list_iter *iter)
+void fk_list_iter_end(fk_list_iter_t *iter)
 {
 	fk_mem_free(iter);/* just release the memory */
 }
 
-void fk_list_insert_head(fk_list *lst, void *val)
+void fk_list_insert_head(fk_list_t *lst, void *val)
 {
-	fk_node *nd;
+	fk_node_t *nd;
 
 	nd = fk_node_create();
 
@@ -165,9 +165,9 @@ void fk_list_insert_head(fk_list *lst, void *val)
 	fk_list_insert_head_only(lst, nd);
 }
 
-void fk_list_insert_tail(fk_list *lst, void *val)
+void fk_list_insert_tail(fk_list_t *lst, void *val)
 {
-	fk_node *nd;
+	fk_node_t *nd;
 
 	nd = fk_node_create();
 
@@ -176,9 +176,9 @@ void fk_list_insert_tail(fk_list *lst, void *val)
 	fk_list_insert_tail_only(lst, nd);
 }
 
-void fk_list_sorted_insert(fk_list *lst, void *val)
+void fk_list_sorted_insert(fk_list_t *lst, void *val)
 {
-	fk_node *nd;
+	fk_node_t *nd;
 
 	nd = fk_node_create();
 
@@ -187,7 +187,7 @@ void fk_list_sorted_insert(fk_list *lst, void *val)
 	fk_list_insert_sorted_only(lst, nd);
 }
 
-void fk_list_remove_anyone(fk_list *lst, fk_node *nd)
+void fk_list_remove_anyone(fk_list_t *lst, fk_node_t *nd)
 {
 	fk_list_remove_anyone_only(lst, nd);
 
@@ -195,10 +195,10 @@ void fk_list_remove_anyone(fk_list *lst, fk_node *nd)
 	fk_node_destroy(nd);
 }
 
-fk_node *fk_list_search(fk_list *lst, void *key)
+fk_node_t *fk_list_search(fk_list_t *lst, void *key)
 {
 	int cmp;
-	fk_node *nd;
+	fk_node_t *nd;
 
 	nd = lst->head;
 	while (nd != NULL) {
@@ -215,7 +215,7 @@ fk_node *fk_list_search(fk_list *lst, void *key)
 	return NULL;
 }
 
-void fk_list_empty(fk_list *lst)
+void fk_list_empty(fk_list_t *lst)
 {
 	fk_list_clear(lst);
 
@@ -223,9 +223,9 @@ void fk_list_empty(fk_list *lst)
 }
 
 /* remove all nodes */
-void fk_list_clear(fk_list *lst)
+void fk_list_clear(fk_list_t *lst)
 {
-	fk_node *nd;
+	fk_node_t *nd;
 
 	nd = fk_list_head(lst);
 	while (nd != NULL) {
@@ -234,7 +234,7 @@ void fk_list_clear(fk_list *lst)
 	}
 }
 
-void fk_list_destroy(fk_list *lst)
+void fk_list_destroy(fk_list_t *lst)
 {
 	fk_list_clear(lst);
 

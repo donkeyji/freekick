@@ -8,7 +8,7 @@
 
 #define FK_FREE_OBJS_MAX 1024
 
-fk_list *free_objs = NULL;
+fk_list_t *free_objs = NULL;
 
 /*
 static fk_item_t *fk_item_free_obj_get(void);
@@ -25,7 +25,7 @@ void fk_item_init(void)
 fk_item_t *fk_item_free_obj_get(void)
 {
     fk_item_t *itm;
-    fk_node *nd;
+    fk_node_t *nd;
 
     nd = fk_list_head_pop(free_objs);
     itm = nd->entity;

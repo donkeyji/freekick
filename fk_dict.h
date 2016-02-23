@@ -26,14 +26,14 @@ struct fk_elt_s {
 	fk_elt_t *prev;
 };
 
-fk_rawlist_def(fk_elt_t, fk_elt_list);
+fk_rawlist_def(fk_elt_t, fk_elt_list_t);
 
 typedef struct {
 	size_t size;
 	size_t size_mask;
 	size_t used;
 	size_t limit;
-	fk_elt_list **buckets;
+	fk_elt_list_t **buckets;
 	fk_elt_op_t *eop;
 } fk_dict_t;
 
