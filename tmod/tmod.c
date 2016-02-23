@@ -59,7 +59,7 @@ void t_pool(void)
 
 void t_dict(void)
 {
-	fk_elt *elt;
+	fk_elt_t *elt;
 	fk_dict *dd = fk_dict_create();
 	printf("11111111\n");
 	fk_str *ss = fk_str_create("huge", 4);

@@ -16,17 +16,17 @@ typedef struct {
 	void (*key_free)(void *key);
 	void *(*val_copy)(void *val);
 	void (*val_free)(void *val);
-} fk_elt_op;
+} fk_elt_op_t;
 
-typedef struct fk_elt_s fk_elt;
+typedef struct fk_elt_s fk_elt_t;
 struct fk_elt_s {
 	void *key;
 	void *value;
-	fk_elt *next;
-	fk_elt *prev;
+	fk_elt_t *next;
+	fk_elt_t *prev;
 };
 
-fk_rawlist_def(fk_elt, fk_elt_list);
+fk_rawlist_def(fk_elt_t, fk_elt_list);
 
 typedef struct {
 	size_t size;
@@ -34,33 +34,33 @@ typedef struct {
 	size_t used;
 	size_t limit;
 	fk_elt_list **buckets;
-	fk_elt_op *eop;
-} fk_dict;
+	fk_elt_op_t *eop;
+} fk_dict_t;
 
 typedef struct {
-	fk_dict *dct;
-	fk_elt *cur, *next;
+	fk_dict_t *dct;
+	fk_elt_t *cur, *next;
 	long long idx;/* should be long than size_t type */
-} fk_dict_iter;
+} fk_dict_iter_t;
 
-fk_dict *fk_dict_create(fk_elt_op *eop);
-void fk_dict_destroy(fk_dict *dct);
-int fk_dict_add(fk_dict *dct, void *key, void *value);
-int fk_dict_replace(fk_dict *dct, void *key, void *value);
-int fk_dict_remove(fk_dict *dct, void *key);
-void *fk_dict_get(fk_dict *dct, void *key);
-void fk_dict_empty(fk_dict *dct);
+fk_dict_t *fk_dict_create(fk_elt_op_t *eop);
+void fk_dict_destroy(fk_dict_t *dct);
+int fk_dict_add(fk_dict_t *dct, void *key, void *value);
+int fk_dict_replace(fk_dict_t *dct, void *key, void *value);
+int fk_dict_remove(fk_dict_t *dct, void *key);
+void *fk_dict_get(fk_dict_t *dct, void *key);
+void fk_dict_empty(fk_dict_t *dct);
 
 #ifdef FK_DEBUG
-void fk_dict_print(fk_dict *dct);
+void fk_dict_print(fk_dict_t *dct);
 #endif
 
 #define fk_dict_len(dct)	((dct)->used)
 #define fk_elt_key(elt)		((elt)->key)
 #define fk_elt_value(elt)	((elt)->value)
 
-fk_dict_iter *fk_dict_iter_begin(fk_dict *dct);
-fk_elt *fk_dict_iter_next(fk_dict_iter *iter);
-void fk_dict_iter_end(fk_dict_iter *iter);
+fk_dict_iter_t *fk_dict_iter_begin(fk_dict_t *dct);
+fk_elt_t *fk_dict_iter_next(fk_dict_iter_t *iter);
+void fk_dict_iter_end(fk_dict_iter_t *iter);
 
 #endif

@@ -31,9 +31,9 @@ static fk_proto protos[] = {
 	{NULL, 		FK_PROTO_INVALID, 	0, 					NULL			}
 };
 
-static fk_dict *pmap = NULL;
+static fk_dict_t *pmap = NULL;
 
-static fk_elt_op proto_dict_eop = {
+static fk_elt_op_t proto_dict_eop = {
 	fk_proto_dict_key_hash,
 	fk_proto_dict_key_cmp,
 	NULL,
@@ -61,7 +61,7 @@ void fk_proto_init(void)
 		fk_dict_add(pmap, key, value);
 	}
 #ifdef FK_DEBUG
-	fk_elt *elt;
+	fk_elt_t *elt;
 	fk_dict_iter *iter = fk_dict_iter_begin(pmap);
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
 		key = (fk_str *)fk_elt_key(elt);

@@ -95,7 +95,7 @@ typedef struct {
 	fk_tmev *svr_timer2;
 	fk_conn **conns_tab;
 	unsigned dbcnt;
-	fk_dict **db;
+	fk_dict_t **db;
 	pid_t save_pid;/* -1: the save child process ended */
 
 	int last_dbidx;
@@ -184,7 +184,7 @@ int fk_cmd_zadd(fk_conn *conn);
 /* extern declerations of global variables */
 
 extern fk_svr server;/* this "server" is visited in different .c files */
-extern fk_elt_op db_dict_eop;
+extern fk_elt_op_t db_dict_eop;
 extern fk_node_op db_list_op;
 extern fk_skipnode_op db_skiplist_op;
 

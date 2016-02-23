@@ -47,7 +47,7 @@ static void fk_db_skiplist_val_free(void *ptr);
 /* global variable */
 fk_svr server;
 
-fk_elt_op db_dict_eop = {
+fk_elt_op_t db_dict_eop = {
 	fk_db_dict_key_hash,
 	fk_db_dict_key_cmp,
 	fk_db_dict_key_copy,
@@ -297,7 +297,7 @@ void fk_svr_init(void)
 	fk_ev_add_tmev(server.svr_timer2);
 #endif
 
-	server.db = (fk_dict **)fk_mem_alloc(sizeof(fk_dict *) * server.dbcnt);
+	server.db = (fk_dict_t **)fk_mem_alloc(sizeof(fk_dict_t *) * server.dbcnt);
 	for (i = 0; i < server.dbcnt; i++) {
 		server.db[i] = fk_dict_create(&db_dict_eop);
 	}

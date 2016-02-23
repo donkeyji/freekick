@@ -4,7 +4,7 @@
 int fk_cmd_hset(fk_conn *conn)
 {
 	int rt;
-	fk_dict *dct;
+	fk_dict_t *dct;
 	fk_item_t *hkey, *key;
 	fk_item_t *hitm, *itm;
 
@@ -25,7 +25,7 @@ int fk_cmd_hset(fk_conn *conn)
 	}
 
 	if (fk_item_type(hitm) == FK_ITEM_DICT) {
-		dct = (fk_dict *)fk_item_raw(hitm);
+		dct = (fk_dict_t *)fk_item_raw(hitm);
 		itm = fk_conn_get_arg(conn, 3);
 		fk_dict_add(dct, key, itm);
 		rt = fk_conn_add_int_rsp(conn, 1);
@@ -45,7 +45,7 @@ int fk_cmd_hset(fk_conn *conn)
 int fk_cmd_hget(fk_conn *conn)
 {
 	int rt;
-	fk_dict *dct;
+	fk_dict_t *dct;
 	fk_item_t *hitm, *itm;
 	fk_str *hkey, *key, *value;
 
@@ -68,7 +68,7 @@ int fk_cmd_hget(fk_conn *conn)
 		return FK_SVR_OK;
 	} 
 
-	dct = (fk_dict *)fk_item_raw(hitm);
+	dct = (fk_dict_t *)fk_item_raw(hitm);
 	itm = fk_dict_get(dct, key);
 	if (itm == NULL) {
 		rt = fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);
