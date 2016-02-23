@@ -22,7 +22,7 @@
 
 static void fk_log_fprint_str(int level, char *data);
 
-static fk_log logger = {
+static fk_log_t logger = {
 	FK_LOG_DEBUG,
 	NULL/* could not be "stdout" here, because "stdout" is not a compile-time constant */
 };

@@ -14,7 +14,7 @@
 typedef struct {
 	int log_level;
 	FILE *log_file;
-} fk_log;
+} fk_log_t;
 
 void fk_log_init(char *log_path, int log_level);
 void fk_log_error(char *fmt, ...);
