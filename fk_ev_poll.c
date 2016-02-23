@@ -4,7 +4,7 @@ typedef struct {
 	struct pollfd *evlist;
 	int last;
 	int *fd2idx;
-} fk_poll;
+} fk_poll_t;
 
 static void *fk_poll_create(unsigned max_files);
 static int fk_poll_add(void *ev_iompx, int fd, char type);
@@ -22,9 +22,9 @@ fk_mpxop poll_op = {
 void *fk_poll_create(unsigned max_files)
 {
 	int i;
-	fk_poll *iompx;
+	fk_poll_t *iompx;
 
-	iompx = (fk_poll *)fk_mem_alloc(sizeof(fk_poll));
+	iompx = (fk_poll_t *)fk_mem_alloc(sizeof(fk_poll));
 	iompx->evlist = (struct pollfd *)fk_mem_alloc(sizeof(struct pollfd) * max_files);
 	bzero(iompx->evlist, sizeof(struct pollfd) * max_files);
 	iompx->last = 0;
@@ -41,10 +41,10 @@ int fk_poll_add(void *ev_iompx, int fd, char type)
 {
 	int idx;
 	short nev, oev;
-	fk_poll *iompx;
+	fk_poll_t *iompx;
 	struct pollfd *pfd;
 
-	iompx = (fk_poll *)ev_iompx;
+	iompx = (fk_poll_t *)ev_iompx;
 
 	idx = iompx->fd2idx[fd];
 	if (idx == -1) {/* never add this fd */
@@ -82,10 +82,10 @@ int fk_poll_remove(void *ev_iompx, int fd, char type)
 {
 	int idx;
 	short nev, oev;
-	fk_poll *iompx;
+	fk_poll_t *iompx;
 	struct pollfd *pfd, *tail;
 
-	iompx = (fk_poll *)ev_iompx;
+	iompx = (fk_poll_t *)ev_iompx;
 
 	idx = iompx->fd2idx[fd];
 	pfd = iompx->evlist + idx;
@@ -121,7 +121,7 @@ int fk_poll_remove(void *ev_iompx, int fd, char type)
 int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 {
 	char type;
-	fk_poll *iompx;
+	fk_poll_t *iompx;
 	struct pollfd *pfd;
 	int i, nfds, ms_timeout, fd, cnt;
 
@@ -130,7 +130,7 @@ int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 		ms_timeout = fk_util_tv2millis(timeout);
 	}
 
-	iompx = (fk_poll *)ev_iompx;
+	iompx = (fk_poll_t *)ev_iompx;
 
 	nfds = poll(iompx->evlist, iompx->last, ms_timeout);
 	if (nfds < 0) {
