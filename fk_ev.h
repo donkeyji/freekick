@@ -51,7 +51,7 @@ fk_rawlist_def(fk_ioev, fk_ioev_list);
 fk_rawlist_def(fk_tmev, fk_tmev_list);
 
 typedef struct {
-	char *iompx_name;/* fk_str is not used here, because it's easier to use char* here */
+	char *iompx_name;/* fk_str_t is not used here, because it's easier to use char* here */
 	void *(*iompx_create)(unsigned max_files);
 	int (*iompx_add)(void *iompx, int fd, char type);
 	int (*iompx_remove)(void *iompx, int fd, char type);

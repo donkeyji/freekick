@@ -10,7 +10,7 @@ void fk_blog_init(void)
 {
 }
 
-void fk_blog_load(fk_str *blog_path)
+void fk_blog_load(fk_str_t *blog_path)
 {
 }
 

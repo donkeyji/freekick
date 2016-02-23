@@ -47,7 +47,7 @@ int fk_cmd_hget(fk_conn *conn)
 	int rt;
 	fk_dict_t *dct;
 	fk_item_t *hitm, *itm;
-	fk_str *hkey, *key, *value;
+	fk_str_t *hkey, *key, *value;
 
 	hkey = fk_conn_get_arg(conn, 1);
 	key = fk_conn_get_arg(conn, 2);
@@ -86,7 +86,7 @@ int fk_cmd_hget(fk_conn *conn)
 		return FK_SVR_OK;
 	}
 
-	value = (fk_str *)fk_item_raw(itm);
+	value = (fk_str_t *)fk_item_raw(itm);
 	rt = fk_conn_add_bulk_rsp(conn, (int)(fk_str_len(value)));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;

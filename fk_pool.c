@@ -41,7 +41,7 @@ void fk_pool_init(void)
 {
 	node_pool = fk_pool_create(sizeof(fk_node_t), 1024);
 	obj_pool = fk_pool_create(sizeof(fk_item_t), 1024);
-	str_pool = fk_pool_create(sizeof(fk_str), 1024);
+	str_pool = fk_pool_create(sizeof(fk_str_t), 1024);
 }
 
 void fk_pool_exit(void)

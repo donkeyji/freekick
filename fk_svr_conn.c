@@ -403,7 +403,7 @@ void fk_conn_free_args(fk_conn *conn)
 int fk_conn_proc_cmd(fk_conn *conn)
 {
 	int rt;
-	fk_str *cmd;
+	fk_str_t *cmd;
 	fk_item_t *itm;
 	fk_proto *pto;
 
@@ -414,11 +414,11 @@ int fk_conn_proc_cmd(fk_conn *conn)
 		return FK_SVR_OK;
 	}
 	itm = (fk_item_t *)fk_conn_get_arg(conn, 0);
-	cmd = (fk_str *)fk_item_raw(itm);
+	cmd = (fk_str_t *)fk_item_raw(itm);
 	fk_str_2upper(cmd);
 	pto = fk_proto_search(cmd);
 	if (pto == NULL) {
-		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str *)fk_conn_get_arg(conn, 0)));
+		fk_log_error("invalid protocol: %s\n", fk_str_raw((fk_str_t *)fk_conn_get_arg(conn, 0)));
 		fk_conn_free_args(conn);
 		rt = fk_conn_add_error_rsp(conn, "Invalid Protocol", strlen("Invalid Protocol"));
 		if (rt == FK_SVR_ERR) {

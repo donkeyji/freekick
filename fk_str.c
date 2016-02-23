@@ -10,34 +10,34 @@
  * copy memory from src 
  * len: not including '\0'
  */
-fk_str *fk_str_create(const char *src, size_t len)
+fk_str_t *fk_str_create(const char *src, size_t len)
 {
-	fk_str *new_one;
+	fk_str_t *new_one;
 
-	new_one = (fk_str *)fk_mem_alloc(sizeof(fk_str) + len + 1);
+	new_one = (fk_str_t *)fk_mem_alloc(sizeof(fk_str_t) + len + 1);
 	memcpy((void *)new_one->seq, (void *)src, len);
 	new_one->seq[len] = '\0';/* append '\0' to the tail */
 	new_one->len = len;
 	return new_one;
 }
 
-void fk_str_destroy(fk_str *src)
+void fk_str_destroy(fk_str_t *src)
 {
 	fk_mem_free(src);
 }
 
-fk_str *fk_str_clone(const fk_str *old_one)
+fk_str_t *fk_str_clone(const fk_str_t *old_one)
 {
-	fk_str *new_one;
+	fk_str_t *new_one;
 
-	new_one = (fk_str *)fk_mem_alloc(sizeof(fk_str) + old_one->len + 1);
+	new_one = (fk_str_t *)fk_mem_alloc(sizeof(fk_str_t) + old_one->len + 1);
 	new_one->len = old_one->len;
 	memcpy(new_one->seq, old_one->seq, new_one->len + 1);
 	//new_one->seq[new_one->len] = '\0';
 	return new_one;
 }
 
-int fk_str_cmp(const fk_str *s1, const fk_str *s2)
+int fk_str_cmp(const fk_str_t *s1, const fk_str_t *s2)
 {
 	int cmp;
 	if (s1->len != s2->len) {
@@ -48,7 +48,7 @@ int fk_str_cmp(const fk_str *s1, const fk_str *s2)
 	return cmp;
 }
 
-int fk_str_is_positive(const fk_str *str)
+int fk_str_is_positive(const fk_str_t *str)
 {
 	int rt;
 
@@ -64,7 +64,7 @@ int fk_str_is_positive(const fk_str *str)
 	}
 }
 
-int fk_str_is_nonminus(const fk_str *str)
+int fk_str_is_nonminus(const fk_str_t *str)
 {
 	int rt;
 
@@ -80,7 +80,7 @@ int fk_str_is_nonminus(const fk_str *str)
 	}
 }
 
-int fk_str_is_digit(const fk_str *str)
+int fk_str_is_digit(const fk_str_t *str)
 {
 	int rt;
 
@@ -96,7 +96,7 @@ int fk_str_is_digit(const fk_str *str)
 	}
 }
 
-void fk_str_2upper(fk_str *str)
+void fk_str_2upper(fk_str_t *str)
 {
 	char c;
 	size_t i;
@@ -109,7 +109,7 @@ void fk_str_2upper(fk_str *str)
 	}
 }
 
-void fk_str_2lower(fk_str *str)
+void fk_str_2lower(fk_str_t *str)
 {
 	char c;
 	size_t i;
@@ -122,7 +122,7 @@ void fk_str_2lower(fk_str *str)
 	}
 }
 
-uint32_t fk_str_hash(const fk_str *str)
+uint32_t fk_str_hash(const fk_str_t *str)
 {
 	const char *buf;
 	size_t len;

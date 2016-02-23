@@ -38,7 +38,7 @@ typedef struct {
 	size_t len;
 	char *buf;
 	char err[FK_CONF_MAX_LEN];
-	fk_str *fields[FK_CONF_MAX_FIELDS];
+	fk_str_t *fields[FK_CONF_MAX_FIELDS];
 } fk_cfline;
 
 typedef struct {/* directive */
@@ -55,7 +55,7 @@ static int fk_conf_read_line(fk_cfline *line, FILE *fp);
 static int fk_conf_parse_line(fk_cfline *line);
 static int fk_conf_proc_line(fk_cfline *line);
 static void fk_conf_reset_line(fk_cfline *line);
-static fk_dtv *fk_conf_search(fk_str *name);
+static fk_dtv *fk_conf_search(fk_str_t *name);
 
 static int fk_conf_parse_port(fk_cfline *line);
 static int fk_conf_parse_daemon(fk_cfline *line);
@@ -103,7 +103,7 @@ fk_cfline *fk_cfline_create(void)
 	line->buf = NULL;
 	line->len = 0;
 	bzero(line->err, FK_CONF_MAX_LEN);
-	bzero(line->fields, sizeof(fk_str *) * FK_CONF_MAX_FIELDS);
+	bzero(line->fields, sizeof(fk_str_t *) * FK_CONF_MAX_FIELDS);
 	return line;
 }
 
@@ -249,7 +249,7 @@ int fk_conf_parse_line(fk_cfline *line)
 	return FK_CONF_OK;
 }
 
-fk_dtv *fk_conf_search(fk_str *name)
+fk_dtv *fk_conf_search(fk_str_t *name)
 {
 	unsigned i;
 
@@ -265,7 +265,7 @@ fk_dtv *fk_conf_search(fk_str *name)
 int fk_conf_proc_line(fk_cfline *line)
 {
 	int rt;
-	fk_str *cmd;
+	fk_str_t *cmd;
 	fk_dtv *dtv;
 
 	if (line->cnt == 0) {/* the current line is a comment or empty line */

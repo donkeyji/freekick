@@ -72,23 +72,23 @@ fk_skipnode_op db_skiplist_op = {
 /* -------------------------------------------- */
 uint32_t fk_db_dict_key_hash(void *key)
 {
-	fk_str *s;
+	fk_str_t *s;
 	fk_item_t *itm;
 
 	itm = (fk_item_t *)key;
-	s = (fk_str *)fk_item_raw(itm);
+	s = (fk_str_t *)fk_item_raw(itm);
 	return fk_str_hash(s);
 }
 
 int fk_db_dict_key_cmp(void *k1, void *k2)
 {
-	fk_str *s1, *s2;
+	fk_str_t *s1, *s2;
 	fk_item_t *itm1, *itm2;
 
 	itm1 = (fk_item_t *)k1;
 	itm2 = (fk_item_t *)k2;
-	s1 = (fk_str *)fk_item_raw(itm1);
-	s2 = (fk_str *)fk_item_raw(itm2);
+	s1 = (fk_str_t *)fk_item_raw(itm1);
+	s2 = (fk_str_t *)fk_item_raw(itm2);
 
 	return fk_str_cmp(s1, s2);
 }

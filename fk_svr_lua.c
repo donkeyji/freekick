@@ -116,12 +116,12 @@ int fk_lua_pcall(lua_State *L)
 int fk_lua_conn_proc_cmd(fk_conn *conn)
 {
 	int rt;
-	fk_str *cmd;
+	fk_str_t *cmd;
 	fk_item_t *itm;
 	fk_proto *pto;
 
 	itm = (fk_item_t *)fk_conn_get_arg(conn, 0);
-	cmd = (fk_str *)fk_item_raw(itm);
+	cmd = (fk_str_t *)fk_item_raw(itm);
 	fk_str_2upper(cmd);
 	pto = fk_proto_search(cmd);
 	if (pto == NULL) {
@@ -367,13 +367,13 @@ int fk_cmd_eval(fk_conn *conn)
 {
 	int nkey, nargv, rt, i;
 	char *code, **keys, **argv;
-	fk_str *str_nkey, *str_code;
+	fk_str_t *str_nkey, *str_code;
 	fk_item_t *itm_code, *itm_nkey, *itm_arg;
 
 	itm_code = fk_conn_get_arg(conn, 1);
 	itm_nkey = fk_conn_get_arg(conn, 2);
 
-	str_nkey = (fk_str *)fk_item_raw(itm_nkey);
+	str_nkey = (fk_str_t *)fk_item_raw(itm_nkey);
 	if (fk_str_is_nonminus(str_nkey) == 0) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
 		if (rt == FK_SVR_ERR) {
@@ -396,7 +396,7 @@ int fk_cmd_eval(fk_conn *conn)
 	keys = (char **)fk_mem_calloc(nkey, sizeof(char *));
 	for (i = 0; i < nkey; i++) {
 		itm_arg = fk_conn_get_arg(conn, 3 + i);
-		keys[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
+		keys[i] = fk_str_raw((fk_str_t *)fk_item_raw(itm_arg));
 	}
 	fk_lua_push_paras(keys, nkey, FK_LUA_PARA_KEYS);
 
@@ -404,7 +404,7 @@ int fk_cmd_eval(fk_conn *conn)
 	argv = (char **)fk_mem_calloc(nargv, sizeof(char *));
 	for (i = 0; i < nargv; i++) {
 		itm_arg = fk_conn_get_arg(conn, 3 + nkey + i);
-		argv[i] = fk_str_raw((fk_str *)fk_item_raw(itm_arg));
+		argv[i] = fk_str_raw((fk_str_t *)fk_item_raw(itm_arg));
 	}
 	fk_lua_push_paras(argv, nargv, FK_LUA_PARA_ARGV);
 
@@ -412,7 +412,7 @@ int fk_cmd_eval(fk_conn *conn)
 	fk_mem_free(keys);
 	fk_mem_free(argv);
 
-	str_code = (fk_str *)fk_item_raw(itm_code);
+	str_code = (fk_str_t *)fk_item_raw(itm_code);
 	code = fk_str_raw(str_code);
 	fk_lua_run_script(conn, code);
 

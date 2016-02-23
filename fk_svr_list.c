@@ -111,7 +111,7 @@ int fk_cmd_generic_push(fk_conn *conn, int pos)
 int fk_cmd_generic_pop(fk_conn *conn, int pos)
 {
 	int rt;
-	fk_str *ss;
+	fk_str_t *ss;
 	fk_list_t *lst;
 	fk_node_t *nd_itm;
 	fk_item_t *key, *lst_itm, *itm;
@@ -149,7 +149,7 @@ int fk_cmd_generic_pop(fk_conn *conn, int pos)
 		nd_itm = fk_list_tail(lst);
 	}
 	itm = (fk_item_t *)fk_node_raw(nd_itm);
-	ss = (fk_str *)fk_item_raw(itm);
+	ss = (fk_str_t *)fk_item_raw(itm);
 	rt = fk_conn_add_bulk_rsp(conn, (int)(fk_str_len(ss)));
 	if (rt == FK_SVR_ERR) {
 		return FK_SVR_ERR;

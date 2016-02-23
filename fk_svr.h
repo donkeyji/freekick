@@ -137,7 +137,7 @@ void fk_svr_signal_child_handler(int sig);
 
 /* related to dump/restore */
 void fk_fkdb_init(void);
-void fk_fkdb_load(fk_str *db_path);
+void fk_fkdb_load(fk_str_t *db_path);
 void fk_fkdb_bgsave(void);
 int fk_fkdb_save(void);
 
@@ -149,12 +149,12 @@ void fk_lua_init(void);
 
 /* related to binary log */
 void fk_blog_init(void);
-void fk_blog_load(fk_str *blog_path);
+void fk_blog_load(fk_str_t *blog_path);
 void fk_blog_append(int argc, fk_vtr *arg_vtr, fk_proto *pto);
 
 /* related to protocol */
 void fk_proto_init(void);
-fk_proto *fk_proto_search(fk_str *name);
+fk_proto *fk_proto_search(fk_str_t *name);
 
 /* 
  * all the protocol handlers which are splited 

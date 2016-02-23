@@ -46,7 +46,7 @@ void fk_proto_init(void)
 {
 	int i;
 	char *name;
-	fk_str *key;
+	fk_str_t *key;
 	void *value;
 
 	pmap = fk_dict_create(&proto_dict_eop);
@@ -64,7 +64,7 @@ void fk_proto_init(void)
 	fk_elt_t *elt;
 	fk_dict_iter *iter = fk_dict_iter_begin(pmap);
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
-		key = (fk_str *)fk_elt_key(elt);
+		key = (fk_str_t *)fk_elt_key(elt);
 		value = fk_elt_value(elt);
 		fk_log_debug("proto key: %s\n", fk_str_raw(key));
 	}
@@ -72,7 +72,7 @@ void fk_proto_init(void)
 #endif
 }
 
-fk_proto *fk_proto_search(fk_str *name)
+fk_proto *fk_proto_search(fk_str_t *name)
 {
 	fk_proto *pto;
 
@@ -83,18 +83,18 @@ fk_proto *fk_proto_search(fk_str *name)
 
 uint32_t fk_proto_dict_key_hash(void *key)
 {
-	fk_str *s;
+	fk_str_t *s;
 
-	s = (fk_str *)key;
+	s = (fk_str_t *)key;
 	return fk_str_hash(s);
 }
 
 int fk_proto_dict_key_cmp(void *k1, void *k2)
 {
-	fk_str *s1, *s2;
+	fk_str_t *s1, *s2;
 
-	s1 = (fk_str *)k1;
-	s2 = (fk_str *)k2;
+	s1 = (fk_str_t *)k1;
+	s2 = (fk_str_t *)k2;
 
 	return fk_str_cmp(s1, s2);
 }

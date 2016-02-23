@@ -12,20 +12,20 @@
 
 typedef struct {
 	uint16_t port;
-	fk_str *addr;
+	fk_str_t *addr;
 	int daemon;
 	unsigned max_conn;
 	time_t timeout;
 	int log_level;
-	fk_str *log_path;
-	fk_str *pid_path;
+	fk_str_t *log_path;
+	fk_str_t *pid_path;
 	int dump;
-	fk_str *db_file;
-	fk_str *dir;
+	fk_str_t *db_file;
+	fk_str_t *dir;
 	unsigned dbcnt;
 	size_t max_wbuf;
 	int blog_on;
-	fk_str *blog_file;
+	fk_str_t *blog_file;
 } fk_conf_t;
 
 extern fk_conf_t setting;

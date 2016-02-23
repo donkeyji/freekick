@@ -104,12 +104,12 @@ int fk_cmd_save(fk_conn *conn)
 
 int fk_cmd_select(fk_conn *conn)
 {
-	fk_str *s;
+	fk_str_t *s;
 	fk_item_t *itm;
 	int db_idx, rt;
 
 	itm = fk_conn_get_arg(conn, 1);
-	s = (fk_str *)fk_item_raw(itm);
+	s = (fk_str_t *)fk_item_raw(itm);
 	db_idx = atoi(fk_str_raw(s));
 	if (db_idx < 0 || db_idx >= server.dbcnt) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_ERR, sizeof(FK_RSP_ERR) - 1);

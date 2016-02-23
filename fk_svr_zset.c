@@ -30,7 +30,7 @@ int fk_cmd_zadd(fk_conn *conn)
 		itm_score = fk_conn_get_arg(conn, i);
 		itm_str = fk_conn_get_arg(conn, i + 1);
 
-		score = atoi(fk_str_raw((fk_str *)fk_item_raw(itm_score)));
+		score = atoi(fk_str_raw((fk_str_t *)fk_item_raw(itm_score)));
 		//printf("score: %d\n", score);
 		fk_skiplist_insert(sl, score, itm_str);
 	}
