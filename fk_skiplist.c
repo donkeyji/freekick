@@ -3,7 +3,7 @@
 #include <fk_mem.h>
 #include <fk_skiplist.h>
 
-#define fk_skipnode_create(level)		fk_mem_alloc(sizeof(fk_skipnode) + ((level) - 1) * sizeof(fk_skipnode *))
+#define fk_skipnode_create(level)		fk_mem_alloc(sizeof(fk_skipnode_t) + ((level) - 1) * sizeof(fk_skipnode_t *))
 
 #define fk_skipnode_destroy(nd)	fk_mem_free(nd)
 
@@ -34,7 +34,7 @@ static int fk_skipnode_rand_level(void);
 fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
 {
 	int i;
-	fk_skipnode *nd;
+	fk_skipnode_t *nd;
 	fk_skiplist *sl;
 
 	sl = fk_mem_alloc(sizeof(fk_skiplist));
@@ -63,7 +63,7 @@ fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
 
 void fk_skiplist_destroy(fk_skiplist *sl)
 {
-	fk_skipnode *p, *q;
+	fk_skipnode_t *p, *q;
 
 	p = sl->head;
 
@@ -87,7 +87,7 @@ void fk_skiplist_destroy(fk_skiplist *sl)
 void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 {
 	int i, nlv;
-	fk_skipnode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
+	fk_skipnode_t *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
 
 	p = sl->head;
 	q = NULL;
@@ -137,7 +137,7 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 void fk_skiplist_remove(fk_skiplist *sl, int score)
 {
 	int i;
-	fk_skipnode *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
+	fk_skipnode_t *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
 
 	p = sl->head;
 	q = NULL;
@@ -181,10 +181,10 @@ void fk_skiplist_remove(fk_skiplist *sl, int score)
 	sl->len--;
 }
 
-fk_skipnode *fk_skiplist_search(fk_skiplist *sl, int score)
+fk_skipnode_t *fk_skiplist_search(fk_skiplist *sl, int score)
 {
 	int i;
-	fk_skipnode *p, *q;
+	fk_skipnode_t *p, *q;
 
 	p = sl->head;
 	q = NULL;

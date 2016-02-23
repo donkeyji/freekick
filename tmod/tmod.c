@@ -116,7 +116,7 @@ void t_skiplist(void)
 {
 	int i, level;
 	fk_skiplist *sl;
-	fk_skipnode *p, *q;
+	fk_skipnode_t *p, *q;
 
 	sl = fk_skiplist_create(NULL);
 
