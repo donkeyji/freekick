@@ -12,12 +12,12 @@ typedef struct {
 	size_t low;/* valid begin, init: 0, range: [0-->len], <= high */
 	size_t high;/* free begin, init: 0, range: [0-->len], <= len */
 	char buffer[];
-} fk_buf;
+} fk_buf_t;
 
-fk_buf *fk_buf_create(size_t init_len, size_t highwat);
-void fk_buf_destroy(fk_buf *buf);
+fk_buf_t*fk_buf_create(size_t init_len, size_t highwat);
+void fk_buf_destroy(fk_buf_t*buf);
 #ifdef FK_DEBUG
-void fk_buf_print(const fk_buf *buf);
+void fk_buf_print(const fk_buf_t*buf);
 #endif
 
 #define fk_buf_len(buf)				((buf)->len)
@@ -55,8 +55,8 @@ void fk_buf_print(const fk_buf *buf);
 #define fk_buf_stretch(buf)		{				\
 	if ((buf)->len < (buf)->highwat) {			\
 		(buf)->len <<= 1;						\
-		(buf) = (fk_buf *)fk_mem_realloc((buf),	\
-				sizeof(fk_buf) + (buf)->len);	\
+		(buf) = (fk_buf_t*)fk_mem_realloc((buf),	\
+				sizeof(fk_buf_t) + (buf)->len);	\
 	}											\
 }
 
@@ -76,8 +76,8 @@ void fk_buf_print(const fk_buf *buf);
 		fk_buf_payload_len((buf)) < (buf)->init_len)	\
 	{													\
 		fk_buf_shift((buf));							\
-		(buf) = (fk_buf *)fk_mem_realloc((buf), 		\
-				sizeof(fk_buf) + (buf)->init_len		\
+		(buf) = (fk_buf_t*)fk_mem_realloc((buf), 		\
+				sizeof(fk_buf_t) + (buf)->init_len		\
 		);												\
 		(buf)->len = (buf)->init_len;					\
 	}													\
@@ -92,8 +92,8 @@ void fk_buf_print(const fk_buf *buf);
 	{													\
 		(buf)->len = fk_util_min_power((buf)->len 		\
 			+ (length) - fk_buf_free_len((buf)));		\
-		(buf) = (fk_buf *)fk_mem_realloc((buf), 		\
-				sizeof(fk_buf) + (buf)->len);			\
+		(buf) = (fk_buf_t*)fk_mem_realloc((buf), 		\
+				sizeof(fk_buf_t) + (buf)->len);			\
 	}													\
 }
 

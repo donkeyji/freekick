@@ -190,7 +190,7 @@ int fk_conn_recv_data(fk_conn *conn)
  */
 int fk_conn_parse_req(fk_conn *conn)
 {
-	fk_buf *rbuf;
+	fk_buf_t*rbuf;
 	fk_item *itm;
 	char *start, *end;
 	int rt, argl, argc;
@@ -606,7 +606,7 @@ void fk_conn_write_cb(int fd, char type, void *ext)
  */
 int fk_conn_send_rsp(fk_conn *conn)
 {
-	fk_buf *wbuf;
+	fk_buf_t*wbuf;
 
 	/* no need to keep step 1, because its function is included in fk_conn_parse_req() */
 	/* step 1 -- obsolete */

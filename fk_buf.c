@@ -4,12 +4,12 @@
 #include <fk_buf.h>
 #include <fk_mem.h>
 
-fk_buf *fk_buf_create(size_t init_len, size_t highwat)
+fk_buf_t*fk_buf_create(size_t init_len, size_t highwat)
 {
-	fk_buf *buf;
+	fk_buf_t*buf;
 
 	assert(highwat >= init_len);
-	buf = (fk_buf *)fk_mem_alloc(sizeof(fk_buf) + init_len);
+	buf = (fk_buf_t*)fk_mem_alloc(sizeof(fk_buf_t) + init_len);
 	buf->highwat = highwat;
 	buf->init_len = init_len;
 	buf->len = init_len;
@@ -18,13 +18,13 @@ fk_buf *fk_buf_create(size_t init_len, size_t highwat)
 	return buf;
 }
 
-void fk_buf_destroy(fk_buf *buf)
+void fk_buf_destroy(fk_buf_t*buf)
 {
 	fk_mem_free(buf);
 }
 
 #ifdef FK_DEBUG
-void fk_buf_print(const fk_buf *buf)
+void fk_buf_print(const fk_buf_t*buf)
 {
 	size_t len;
 	char ps[4096];

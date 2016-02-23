@@ -70,8 +70,8 @@ typedef struct {
 	fk_ioev *write_ev;
 	int write_added;
 
-	fk_buf *rbuf;
-	fk_buf *wbuf;
+	fk_buf_t*rbuf;
+	fk_buf_t*wbuf;
 	time_t last_recv;/* time of last data receiving */
 	fk_tmev *timer;
 

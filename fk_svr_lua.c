@@ -21,11 +21,11 @@ static int fk_lua_conn_proc_cmd(fk_conn *conn);
 static int fk_lua_push_paras(char **paras, int npara, int type);
 static int fk_lua_run_script(fk_conn *conn, char *code);
 
-static int fk_lua_parse_status(lua_State *L, fk_buf *buf);
-static int fk_lua_parse_error(lua_State *L, fk_buf *buf);
-static int fk_lua_parse_integer(lua_State *L, fk_buf *buf);
-static int fk_lua_parse_mbulk(lua_State *L, fk_buf *buf);
-static int fk_lua_parse_bulk(lua_State *L, fk_buf *buf);
+static int fk_lua_parse_status(lua_State *L, fk_buf_t*buf);
+static int fk_lua_parse_error(lua_State *L, fk_buf_t*buf);
+static int fk_lua_parse_integer(lua_State *L, fk_buf_t*buf);
+static int fk_lua_parse_mbulk(lua_State *L, fk_buf_t*buf);
+static int fk_lua_parse_bulk(lua_State *L, fk_buf_t*buf);
 
 static lua_State *gL = NULL;
 static fk_conn *lua_conn = NULL;
@@ -54,7 +54,7 @@ int fk_lua_pcall(lua_State *L)
 	int i, rt;
 	size_t len;
 	char *start;
-	fk_buf *buf;
+	fk_buf_t*buf;
 	fk_item *itm;
 	const char *arg;
 
@@ -153,7 +153,7 @@ int fk_lua_conn_proc_cmd(fk_conn *conn)
 	return 0;
 }
 
-int fk_lua_parse_status(lua_State *L, fk_buf *buf)
+int fk_lua_parse_status(lua_State *L, fk_buf_t*buf)
 {
 	char *s;
 
@@ -170,7 +170,7 @@ int fk_lua_parse_status(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_parse_error(lua_State *L, fk_buf *buf)
+int fk_lua_parse_error(lua_State *L, fk_buf_t*buf)
 {
 	char *s;
 
@@ -186,7 +186,7 @@ int fk_lua_parse_error(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_parse_integer(lua_State *L, fk_buf *buf)
+int fk_lua_parse_integer(lua_State *L, fk_buf_t*buf)
 {
 	int n;
 	char *s;
@@ -199,7 +199,7 @@ int fk_lua_parse_integer(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_parse_bulk(lua_State *L, fk_buf *buf)
+int fk_lua_parse_bulk(lua_State *L, fk_buf_t*buf)
 {
 	int blen;
 	char *s, *e;
@@ -218,7 +218,7 @@ int fk_lua_parse_bulk(lua_State *L, fk_buf *buf)
 	return 1;
 }
 
-int fk_lua_parse_mbulk(lua_State *L, fk_buf *buf)
+int fk_lua_parse_mbulk(lua_State *L, fk_buf_t*buf)
 {
 	int mbulk, i, blen, n;
 	char *s, *e;
