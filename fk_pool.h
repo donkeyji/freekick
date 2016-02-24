@@ -10,7 +10,7 @@ struct fk_block_s {
 	uint16_t unit_cnt;
 	uint16_t unit_size;
 	fk_block_t *next;
-	char data[];
+	uint8_t data[];
 };
 
 typedef struct {

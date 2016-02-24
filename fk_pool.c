@@ -16,13 +16,13 @@
 #define fk_pool_block_alloc(blk, ptr)	{					\
 	(blk)->free_cnt--;										\
 	(ptr) = (blk)->data + (blk)->unit_size * (blk)->first;	\
-	(blk)->first = *((uint16_t *)(ptr));				\
+	(blk)->first = *((uint16_t *)(ptr));					\
 }
 
-#define fk_pool_block_free(blk, ptr) {											\
-	(blk)->free_cnt++;															\
-	*((uint16_t *)(ptr)) = (blk)->first;									\
-	(blk)->first = ((char*)(ptr) - (char*)(blk)->data) / (blk)->unit_size;		\
+#define fk_pool_block_free(blk, ptr) {												\
+	(blk)->free_cnt++;																\
+	*((uint16_t *)(ptr)) = (blk)->first;											\
+	(blk)->first = ((uint8_t *)(ptr) - (uint8_t *)(blk)->data) / (blk)->unit_size;	\
 }
 
 #define fk_pool_align_cal(unit_size)	((unit_size) + fk_pool_align - 1) & ~(fk_pool_align - 1)
@@ -143,8 +143,8 @@ void fk_pool_destroy(fk_pool_t *pool)
 
 fk_block_t *fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
-	char *ptr;
 	uint16_t i;
+	uint8_t *ptr;
 	fk_block_t *blk;
 
 	blk = (fk_block_t *)fk_mem_alloc(sizeof(fk_block_t) + (size_t)(unit_size * unit_cnt));
