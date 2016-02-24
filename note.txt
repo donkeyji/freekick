@@ -267,3 +267,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 102. c语言标准并未规定char/shor/int/long的具体字节数，只规定到了这些类型至少能覆盖到的取值范围(limits.h中有定义)，且sizoe(char) <= sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)。所以利用int8_t/int16_t/int32_t/int64_t这些类型可以保证在不同的编译器环境下具有相同的长度，代码可移植性好。
 
 103. fk_str中用char*或者unsigned char*来作为字符串的存储都可以，仅仅是为了表示一个字节序列，而不是当做一个整数，无需关心符号问题。
+
+104. epoll_wait()中的maxevents, timeout都为int，怎么处理类型转换???
