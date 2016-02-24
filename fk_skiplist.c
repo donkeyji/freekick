@@ -34,8 +34,8 @@ static int fk_skipnode_rand_level(void);
 fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
 {
 	int i;
-	fk_skipnode_t *nd;
 	fk_skiplist *sl;
+	fk_skipnode_t *nd;
 
 	sl = fk_mem_alloc(sizeof(fk_skiplist));
 	sl->level = 0;

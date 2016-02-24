@@ -21,7 +21,7 @@ typedef struct {
 typedef struct {
 	fk_skipnode_t *head;
 	int level;/* the max level of the nodes */
-	size_t len;
+	uint64_t len;
 	fk_skipnode_op *skop;
 } fk_skiplist;
 
