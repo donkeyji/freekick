@@ -240,7 +240,7 @@ int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 }
 
 #ifdef FK_DEBUG
-int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg);
+int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
 {
 	fk_tmev_t *tmev;
 
