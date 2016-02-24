@@ -136,7 +136,7 @@ void fk_setrlimit(void)
 		fk_log_error("getrlimit: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	/* 
+	/*
 	 * the type "rlim_t" has different size in linux from mac,
 	 * so just convert "rlim_t" to "unsigned long long"
 	 */
@@ -193,7 +193,7 @@ void fk_set_pwd(void)
 
 void fk_signal_exit_handler(int sig)
 {
-	/* 
+	/*
 	 * maybe some other process in other modules, like:
 	 * fk_a_signal_exit_handler(sig);
 	 * fk_b_signal_exit_handler(sig);
@@ -203,7 +203,7 @@ void fk_signal_exit_handler(int sig)
 
 void fk_signal_child_handler(int sig)
 {
-	/* 
+	/*
 	 * maybe some other process in other modules, like:
 	 * fk_a_signal_child_handler(sig);
 	 * fk_b_signal_child_handler(sig);
@@ -253,9 +253,9 @@ void fk_main_init(char *conf_path)
 	/* where is the best place to call fk_set_seed()?? */
 	fk_set_seed();
 
-	/* 
-	 * the second to init, so that all the 
-	 * ther module can call fk_log_xxx() 
+	/*
+	 * the second to init, so that all the
+	 * ther module can call fk_log_xxx()
 	 */
 	fk_log_init(fk_str_raw(setting.log_path), setting.log_level);
 

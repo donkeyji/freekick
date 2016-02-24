@@ -101,7 +101,7 @@ int fk_fkdb_save(void)
 }
 
 /*
- * to do: 
+ * to do:
  * error handling
  */
 int fk_fkdb_dump(FILE *fp, unsigned db_idx)
@@ -186,7 +186,7 @@ int fk_fkdb_dump_str_elt(FILE *fp, fk_elt_t *elt)
 	/* value dump */
 	len = fk_str_len(value);
 	wz = fwrite(&len, sizeof(len), 1, fp);
-	/* 
+	/*
 	 * when len == 0 ==> wz == 0
 	 * when len > 0  ==> wz > 0
 	 */
@@ -329,7 +329,7 @@ int fk_fkdb_dump_dict_elt(FILE *fp, fk_elt_t *elt)
 
 fk_zline_t *fk_zline_create(size_t len)
 {
-	fk_zline_t *buf; 
+	fk_zline_t *buf;
 	buf = fk_mem_alloc(sizeof(fk_zline_t));
 	buf->len = len;
 	buf->line = (char *)fk_mem_alloc(buf->len);
@@ -354,7 +354,7 @@ void fk_zline_destroy(fk_zline_t *buf)
 void fk_fkdb_load(fk_str_t *db_file)
 {
 	int rt;
-	FILE *fp; 
+	FILE *fp;
 	long tail;
 	fk_zline_t *buf;
 
@@ -384,10 +384,10 @@ void fk_fkdb_load(fk_str_t *db_file)
 	return;
 }
 
-/* 
+/*
  * return value: -1
- * 1. error occurs when reading 
- * 2. reaching to the end of file 
+ * 1. error occurs when reading
+ * 2. reaching to the end of file
  */
 int fk_fkdb_restore(FILE *fp, fk_zline_t *buf)
 {
@@ -396,7 +396,7 @@ int fk_fkdb_restore(FILE *fp, fk_zline_t *buf)
 	size_t cnt, i, rz;
 	unsigned type, idx;
 
-	/* 
+	/*
 	 * to do:
 	 * check the range of "idx"
 	 */
@@ -444,10 +444,10 @@ int fk_fkdb_restore(FILE *fp, fk_zline_t *buf)
 	return FK_SVR_OK;
 }
 
-/* 
+/*
  * return value: -1
- * 1. error occurs when reading 
- * 2. reaching to the end of file 
+ * 1. error occurs when reading
+ * 2. reaching to the end of file
  */
 int fk_fkdb_restore_str_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 {
@@ -492,10 +492,10 @@ int fk_fkdb_restore_str_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 	return FK_SVR_OK;
 }
 
-/* 
+/*
  * return value: -1
- * 1. error occurs when reading 
- * 2. reaching to the end of file 
+ * 1. error occurs when reading
+ * 2. reaching to the end of file
  */
 int fk_fkdb_restore_list_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 {
@@ -548,10 +548,10 @@ int fk_fkdb_restore_list_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 	return FK_SVR_OK;
 }
 
-/* 
+/*
  * return value: -1
- * 1. error occurs when reading 
- * 2. reaching to the end of file 
+ * 1. error occurs when reading
+ * 2. reaching to the end of file
  */
 int fk_fkdb_restore_dict_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 {

@@ -8,23 +8,23 @@
  * 2. use the original malloc/free from libc
  */
 #if defined(FK_USE_JEMALLOC)
-	#include <jemalloc/jemalloc.h>
-	#define fk_mem_malloc_size	malloc_usable_size
+#include <jemalloc/jemalloc.h>
+#define fk_mem_malloc_size	malloc_usable_size
 #else
-	#if defined(__APPLE__)
-		#include <malloc/malloc.h>
-		#define fk_mem_malloc_size	malloc_size
-	#else
-		#include <malloc.h>
-		#define fk_mem_malloc_size	malloc_usable_size
-	#endif
+#if defined(__APPLE__)
+#include <malloc/malloc.h>
+#define fk_mem_malloc_size	malloc_size
+#else
+#include <malloc.h>
+#define fk_mem_malloc_size	malloc_usable_size
+#endif
 #endif
 
 #include <fk_env.h>
 #include <fk_mem.h>
 
-/* 
- * only works in the condition of single thread 
+/*
+ * only works in the condition of single thread
  * the condition of multi-thread is not considered here
  */
 static size_t total_alloc = 0;

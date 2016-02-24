@@ -12,49 +12,49 @@
 
 
 typedef struct {
-    int id;
-    char b;
-    int a;
+	int id;
+	char b;
+	int a;
 } foo;
 
 #define LEN 1024*1024*5
 
 void t_pool(void)
 {
-    int i;
-    void **a;
-    clock_t t1, t2;
+	int i;
+	void **a;
+	clock_t t1, t2;
 
-    a = malloc(sizeof(void *) * LEN);
+	a = malloc(sizeof(void *) * LEN);
 
-    fk_pool *pool = fk_pool_create(sizeof(foo), 1024);
-    t1 = clock();
-    for (i=0; i<LEN; i++) {
-        a[i] = fk_pool_malloc(pool);
-    }
-    t2 = clock();
-    printf("time used for malloc: %lu\n", t2 - t1);
+	fk_pool *pool = fk_pool_create(sizeof(foo), 1024);
+	t1 = clock();
+	for (i = 0; i < LEN; i++) {
+		a[i] = fk_pool_malloc(pool);
+	}
+	t2 = clock();
+	printf("time used for malloc: %lu\n", t2 - t1);
 
-    t1 = clock();
-    for (i=0; i<LEN; i++) {
-        fk_pool_free(pool, a[i]);
-    }
-    t2 = clock();
-    printf("time used for free: %lu\n", t2 - t1);
+	t1 = clock();
+	for (i = 0; i < LEN; i++) {
+		fk_pool_free(pool, a[i]);
+	}
+	t2 = clock();
+	printf("time used for free: %lu\n", t2 - t1);
 
-    t1 = clock();
-    for (i=0; i<LEN; i++) {
-        a[i] = malloc(sizeof(foo));
-    }
-    t2 = clock();
-    printf("time used for malloc: %lu\n", t2 - t1);
+	t1 = clock();
+	for (i = 0; i < LEN; i++) {
+		a[i] = malloc(sizeof(foo));
+	}
+	t2 = clock();
+	printf("time used for malloc: %lu\n", t2 - t1);
 
-    t1 = clock();
-    for (i=0; i<LEN; i++) {
-        free(a[i]);
-    }
-    t2 = clock();
-    printf("time used for free: %lu\n", t2 - t1);
+	t1 = clock();
+	for (i = 0; i < LEN; i++) {
+		free(a[i]);
+	}
+	t2 = clock();
+	printf("time used for free: %lu\n", t2 - t1);
 }
 
 void t_dict(void)
@@ -71,7 +71,7 @@ void t_dict(void)
 	fk_dict_iter *iter = fk_dict_iter_begin(dd);
 	printf("22222222\n");
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
-		ss = (fk_str*)(elt->key);
+		ss = (fk_str *)(elt->key);
 		oo = (fk_item_t *)(elt->value);
 		gg = (fk_str *)fk_item_raw(oo);
 		printf("%s\n", fk_str_raw(ss));
@@ -82,8 +82,8 @@ void t_dict(void)
 
 int int_cmp(void *a, void *b)
 {
-	int x = *((int*)a);
-	int y = *((int*)b);
+	int x = *((int *)a);
+	int y = *((int *)b);
 	return x - y;
 }
 
@@ -100,13 +100,13 @@ void t_list(void)
 	int x[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	fk_list *ll = fk_list_create(&oopp);
 	for (i = 0; i < 10; i++) {
-		fk_list_insert_head(ll, x+i);
+		fk_list_insert_head(ll, x + i);
 	}
 	printf("list len: %zu\n", ll->len);
 	fk_list_iter *iter = fk_list_iter_begin(ll, FK_LIST_ITER_H2T);
 	nd = fk_list_iter_next(iter);
 	while (nd != NULL) {
-		printf("%d\n", *(int*)(nd->data));
+		printf("%d\n", *(int *)(nd->data));
 		nd = fk_list_iter_next(iter);
 	}
 	fk_list_iter_end(iter);
@@ -162,8 +162,8 @@ void t_skiplist(void)
 
 int main(void)
 {
-	//t_dict();	
+	//t_dict();
 	//t_list();
 	t_skiplist();
-    return 0;
+	return 0;
 }

@@ -23,8 +23,8 @@
 #define FK_RSP_NIL				(-1)
 
 /* high water */
-/* 
- * 1. FK_BUF_HIGHWAT & FK_ARG_HIGHWAT & FK_BUF_INIT_LEN should be a power of 2 
+/*
+ * 1. FK_BUF_HIGHWAT & FK_ARG_HIGHWAT & FK_BUF_INIT_LEN should be a power of 2
  * 2. FK_BUF_HIGHWAT should be bigger than FK_ARG_HIGHWAT
  * 3. FK_BUF_INIT_LEN should not be bigger than FK_BUF_HIGHWAT
  */
@@ -36,8 +36,8 @@
 /* the max length of a argument count line, the max line: *128\r\n */
 #define FK_ARG_CNT_LINE_HIGHWAT 	5
 
-/* 
- * the max length of a argument length line, the max line: $1048576\r\n 
+/*
+ * the max length of a argument length line, the max line: $1048576\r\n
  * 1024 * 1024 = 1048576
  */
 #define FK_ARG_LEN_LINE_HIGHWAT		9
@@ -156,8 +156,8 @@ void fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto *pto);
 void fk_proto_init(void);
 fk_proto *fk_proto_search(fk_str_t *name);
 
-/* 
- * all the protocol handlers which are splited 
+/*
+ * all the protocol handlers which are splited
  * into different fk_svr_xxx.c files
  */
 int fk_cmd_set(fk_conn_t *conn);

@@ -46,9 +46,9 @@ fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
 	}
 
 	nd = fk_skipnode_create(FK_SKLIST_MAX_LEVEL);
-	/* 
+	/*
 	 * head is a empty node which donot hold a score nor a fk_item
-	 * the head node should be processed specially 
+	 * the head node should be processed specially
 	 * could not use fk_skipnode_set_data(sl, nd, 0, NULL);
 	 */
 	nd->score = 0;
@@ -99,9 +99,9 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 			p = q;
 			q = p->next[i];
 		}
-		/* 
+		/*
 		 * at this time, these condition below are satisfied:
-		 * (1) q == NULL || q->score >= score 
+		 * (1) q == NULL || q->score >= score
 		 * (2) q == p->next[i]
 		 */
 		update[i] = p;
@@ -110,9 +110,9 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 	/* generate a random level for this new node */
 	nlv = fk_skipnode_rand_level();
 
-	/* 
+	/*
 	 * maybe nlv is greater than sl->level
-	 * so we need to generate more lists 
+	 * so we need to generate more lists
 	 */
 	if (nlv > sl->level) {
 		for (i = sl->level; i < nlv; i++) {
@@ -148,9 +148,9 @@ void fk_skiplist_remove(fk_skiplist *sl, int score)
 			p = q;
 			q = p->next[i];
 		}
-		/* 
+		/*
 		 * at this time, these condition below are satisfied:
-		 * (1) q == NULL || q->score >= score 
+		 * (1) q == NULL || q->score >= score
 		 * (2) q == p->next[i]
 		 */
 		update[i] = p;
@@ -165,8 +165,8 @@ void fk_skiplist_remove(fk_skiplist *sl, int score)
 	for (i = sl->level - 1; i >= 0; i--) {
 		if (update[i]->next[i] == nd) {/* need to remove */
 			update[i]->next[i] = nd->next[i];
-			/* 
-			 * if the node removed is the current toppest, 
+			/*
+			 * if the node removed is the current toppest,
 			 * just decrease the level of the skiplist
 			 */
 			if (sl->head->next[i] == NULL) {
@@ -189,7 +189,7 @@ fk_skipnode_t *fk_skiplist_search(fk_skiplist *sl, int score)
 	p = sl->head;
 	q = NULL;
 
-	for (i = sl->level - 1; i >=0; i--) {
+	for (i = sl->level - 1; i >= 0; i--) {
 		q = p->next[i];
 		while (q != NULL && q->score < score) {
 			p = q;

@@ -66,7 +66,7 @@ int fk_lua_pcall(lua_State *L)
 
 	for (i = 0; i < lua_conn->arg_parsed; i++) {
 		/* do not use luaL_checklstring() here, because if luaL_checklstring()
-		 * fails, this function will return to lua directly, so that error 
+		 * fails, this function will return to lua directly, so that error
 		 * couldn't be handled inside this function
 		 */
 		if (!lua_isstring(L, i + 1)) {
@@ -85,7 +85,7 @@ int fk_lua_pcall(lua_State *L)
 	fk_lua_conn_proc_cmd(lua_conn);
 
 	/* 3. parse the reply in lua_conn->wbuf */
-	/* 
+	/*
 	 * parse data in lua_conn->wbuf, which is the reply to the client.
 	 * push them to lua level
 	 * to do: consume the lua_conn->wbuf ????
@@ -300,7 +300,7 @@ int fk_lua_run_script(fk_conn_t *conn, char *code)
 
 	lua_conn->db_idx = conn->db_idx;/* keep the same db_idx */
 
-   	rt = lua_pcall(gL, 0, LUA_MULTRET, 0);
+	rt = lua_pcall(gL, 0, LUA_MULTRET, 0);
 	if (rt != 0) {/* error occurs when run script */
 		fk_log_info("run string failed\n");
 		err = lua_tolstring(gL, -1, &slen);

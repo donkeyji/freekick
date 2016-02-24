@@ -212,13 +212,13 @@ int fk_conn_parse_req(fk_conn_t *conn)
 				return FK_SVR_ERR;
 			}
 #ifdef FK_DEBUG
-			fk_log_debug("payload left: %zu, max argcnt line: %zu\n", fk_buf_payload_len(rbuf)-1, (size_t)FK_ARG_CNT_LINE_HIGHWAT);
+			fk_log_debug("payload left: %zu, max argcnt line: %zu\n", fk_buf_payload_len(rbuf) - 1, (size_t)FK_ARG_CNT_LINE_HIGHWAT);
 #endif
 			search_len = fk_util_smaller(fk_buf_payload_len(rbuf) - 1, FK_ARG_CNT_LINE_HIGHWAT);
 			end = memchr(start + 1, '\n', search_len);
 			if (end == NULL) {
 				if (search_len == FK_ARG_CNT_LINE_HIGHWAT) {
-				/* cannot locate the '\n' in the max length */
+					/* cannot locate the '\n' in the max length */
 #ifdef FK_DEBUG
 					fk_log_debug("an illegal argument count line appeares\n");
 #endif
@@ -248,10 +248,10 @@ int fk_conn_parse_req(fk_conn_t *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			/* 
-			 * a variable of integer type can hold the argument 
-			 * count, because the FK_ARG_CNT_HIGHWAT == 128, 
-			 * and INT_MAX > FK_ARG_CNT_HIGHWAT 
+			/*
+			 * a variable of integer type can hold the argument
+			 * count, because the FK_ARG_CNT_HIGHWAT == 128,
+			 * and INT_MAX > FK_ARG_CNT_HIGHWAT
 			 */
 			argc = atoi(start + 1);
 			if (argc <= 0 || argc > FK_ARG_CNT_HIGHWAT) {
@@ -285,7 +285,7 @@ int fk_conn_parse_req(fk_conn_t *conn)
 				return FK_SVR_ERR;
 			}
 #ifdef FK_DEBUG
-			fk_log_debug("payload left: %zu, max arglen line: %zu\n", fk_buf_payload_len(rbuf)-1, (size_t)FK_ARG_LEN_LINE_HIGHWAT);
+			fk_log_debug("payload left: %zu, max arglen line: %zu\n", fk_buf_payload_len(rbuf) - 1, (size_t)FK_ARG_LEN_LINE_HIGHWAT);
 #endif
 			search_len = fk_util_smaller(fk_buf_payload_len(rbuf) - 1, FK_ARG_LEN_LINE_HIGHWAT);
 			end = memchr(start + 1, '\n', search_len);
@@ -321,10 +321,10 @@ int fk_conn_parse_req(fk_conn_t *conn)
 #endif
 				return FK_SVR_ERR;
 			}
-			/* 
+			/*
 			 * argl of integer type can hold the argument length,
 			 * because the FK_ARG_HIGHWAT == (64 * 1024 - 2), and
-			 * INT_MAX > FK_ARG_HIGHWAT 
+			 * INT_MAX > FK_ARG_HIGHWAT
 			 */
 			argl = atoi(start + 1);/* argument length */
 			if (argl < 0 || argl > FK_ARG_HIGHWAT) {
@@ -345,8 +345,7 @@ int fk_conn_parse_req(fk_conn_t *conn)
 #endif
 			if (fk_buf_payload_len(rbuf) >= arg_len + 2) {
 				if (*(start + arg_len) != '\r' ||
-					*(start + arg_len + 1) != '\n') 
-				{
+				    *(start + arg_len + 1) != '\n') {
 #ifdef FK_DEBUG
 					fk_log_debug("the real length of argument line does not equal the length parsed before\n");
 #endif
@@ -385,8 +384,8 @@ void fk_conn_free_args(fk_conn_t *conn)
 	//for (i = 0; i < conn->arg_parsed; i++) {
 	for (i = 0; i < conn->arg_cnt; i++) {
 		arg_itm = fk_conn_get_arg(conn, i);
-		/* 
-		 * when arg_parsed was parsed correctly, but not all the arguments 
+		/*
+		 * when arg_parsed was parsed correctly, but not all the arguments
 		 * were parsed correctly, so maybe arg_itm == NULL at this time
 		 */
 		if (arg_itm != NULL) {
@@ -485,10 +484,10 @@ int fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext)
 	return 0;
 }
 
-/* 
+/*
  * callback for conn read event
  * evmgr do not care the return value of this callback
- * so this callback itself should handle all error occurs 
+ * so this callback itself should handle all error occurs
  */
 void fk_conn_read_cb(int fd, uint8_t type, void *ext)
 {
@@ -508,9 +507,9 @@ void fk_conn_read_cb(int fd, uint8_t type, void *ext)
 		return;
 	}
 
-	/* 
+	/*
 	 * maybe more than one completed protocol were received
-	 * parse all the complete protocol received yet 
+	 * parse all the complete protocol received yet
 	 */
 	while (fk_buf_payload_len(conn->rbuf) > 0) {
 		rt = fk_conn_parse_req(conn);
@@ -522,8 +521,8 @@ void fk_conn_read_cb(int fd, uint8_t type, void *ext)
 		} else if (rt == FK_SVR_AGAIN) {/* parsing not completed */
 			break;
 		}
-		/* 
-		 * only when rt == FK_SVR_OK, the following fk_conn_proc_cmd() 
+		/*
+		 * only when rt == FK_SVR_OK, the following fk_conn_proc_cmd()
 		 * is called
 		 */
 
@@ -588,9 +587,9 @@ void fk_conn_write_cb(int fd, uint8_t type, void *ext)
 
 	fk_buf_shrink(conn->wbuf);
 
-	/* 
+	/*
 	 * if all the data in wbuf is sent, remove the write ioev
-	 * but donot destroy the write ioev 
+	 * but donot destroy the write ioev
 	 */
 	if (fk_buf_payload_len(conn->wbuf) == 0) {
 		fk_ev_remove_ioev(conn->write_ev);
@@ -610,7 +609,7 @@ int fk_conn_send_rsp(fk_conn_t *conn)
 
 	/* no need to keep step 1, because its function is included in fk_conn_parse_req() */
 	/* step 1 -- obsolete */
-	/* 
+	/*
 	 * a completed line was not received, but the read buffer has reached
 	 * its upper limit, so just close this connection
 	 * maybe:
@@ -618,19 +617,19 @@ int fk_conn_send_rsp(fk_conn_t *conn)
 	 * (2)the argument length line is too long
 	 * (3)the argument content line is too long
 	 * in fact, (3) will never happen, because:
-	 * if a too long argument length is sent, in the fk_conn_parse_req() willl 
+	 * if a too long argument length is sent, in the fk_conn_parse_req() willl
 	 * detect this kind of exception and close the exceptional connection
 	 * if a valid argument length is sent, but the real length of the following
 	 * argument content if longer than the length sent before, the fk_conn_parse_req() will
 	 * also detect this kind of exception and close this connection, too.
 	 */
 	//if (fk_buf_reach_highwat(conn->rbuf) &&
-		//fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
+	//fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
 	//{
-//#ifdef FK_DEBUG
-		//fk_log_debug("a incompleted line is too long, even longer than the max length of read buffer\n");
-//#endif
-		//return FK_SVR_ERR;
+	//#ifdef FK_DEBUG
+	//fk_log_debug("a incompleted line is too long, even longer than the max length of read buffer\n");
+	//#endif
+	//return FK_SVR_ERR;
 	//}
 
 	/* step 2 */

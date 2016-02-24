@@ -58,7 +58,7 @@ int fk_cmd_hget(fk_conn_t *conn)
 			return FK_SVR_ERR;
 		}
 		return FK_SVR_OK;
-	} 
+	}
 
 	if (fk_item_type(hitm) != FK_ITEM_DICT) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
@@ -66,7 +66,7 @@ int fk_cmd_hget(fk_conn_t *conn)
 			return FK_SVR_ERR;
 		}
 		return FK_SVR_OK;
-	} 
+	}
 
 	dct = (fk_dict_t *)fk_item_raw(hitm);
 	itm = fk_dict_get(dct, key);
@@ -76,7 +76,7 @@ int fk_cmd_hget(fk_conn_t *conn)
 			return FK_SVR_ERR;
 		}
 		return FK_SVR_OK;
-	} 
+	}
 
 	if (itm->type != FK_ITEM_STR) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);

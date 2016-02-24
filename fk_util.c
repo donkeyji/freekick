@@ -24,7 +24,7 @@ int fk_util_is_positive_seq(const char *start, size_t len)
 	if (len <= 0) {
 		return 0;
 	}
-	for (p = start; p <= start + len -1; p++) {
+	for (p = start; p <= start + len - 1; p++) {
 		if (p == start) {
 			if (*p <= '0' || *p > '9') {
 				return 0;
@@ -77,7 +77,7 @@ int fk_util_is_digit_seq(const char *start, size_t len)
 	}
 
 	for (i = 0; i < len; i++) {
-		c = *(start + i); 
+		c = *(start + i);
 		if (i == 0) {
 			if (c != '-' && c != '+' && (c <= '0' || c > '9')) {
 				return 0;
@@ -122,7 +122,7 @@ size_t fk_util_decimal_digit(int num)
 	do {
 		len++;
 		num /= 10;
-	} while(num != 0);
+	} while (num != 0);
 
 	return len;
 }

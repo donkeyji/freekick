@@ -4,7 +4,7 @@
 #include <sys/time.h>
 
 /*
- * no unified status code for this module 
+ * no unified status code for this module
  */
 
 void fk_util_cal_expire(struct timeval *tv, unsigned interval);
@@ -27,8 +27,8 @@ size_t fk_util_decimal_digit(int num);
 #define fk_util_ts2tv(tv, ts)	TIMESPEC_TO_TIMEVAL((tv), (ts))
 
 /*
- * >0: t1>t2 
- * <0: t1<t2 
+ * >0: t1>t2
+ * <0: t1<t2
  * =0: t1=t2
  */
 #define fk_util_tmval_cmp(t1, t2)	(	\

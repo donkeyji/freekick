@@ -20,7 +20,7 @@ fk_heap_t *fk_heap_create(fk_leaf_op_t *lop)
 
 	assert(lop != NULL);
 
-   	hp = (fk_heap_t *)fk_mem_alloc(sizeof(fk_heap_t));
+	hp = (fk_heap_t *)fk_mem_alloc(sizeof(fk_heap_t));
 	hp->lop = lop;
 
 	fk_heap_init(hp);

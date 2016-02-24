@@ -107,7 +107,7 @@ int fk_poll_remove(void *ev_iompx, int fd, uint8_t type)
 	pfd->events = oev & (~nev);
 
 	if (pfd->events == 0x0000) {/* need to delete */
-		tail = iompx->evlist + iompx->last -1;
+		tail = iompx->evlist + iompx->last - 1;
 		memcpy(pfd, tail, sizeof(struct pollfd));
 		tail->fd = -1;
 		tail->events = 0x0000;

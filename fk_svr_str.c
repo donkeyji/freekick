@@ -1,9 +1,9 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-/* 
+/*
  * this fk_svr_str.c is just a part of the original freekick.c
- * I just split the freekick.c into defferent .c files, 
+ * I just split the freekick.c into defferent .c files,
  * so just #include <fk_svr.h>
  */
 int fk_cmd_set(fk_conn_t *conn)
@@ -128,7 +128,7 @@ int fk_cmd_get(fk_conn_t *conn)
 			return FK_SVR_ERR;
 		}
 		return FK_SVR_OK;
-	} 
+	}
 
 	if (fk_item_type(value) != FK_ITEM_STR) {
 		rt = fk_conn_add_error_rsp(conn, FK_RSP_TYPE_ERR, sizeof(FK_RSP_TYPE_ERR) - 1);
@@ -136,7 +136,7 @@ int fk_cmd_get(fk_conn_t *conn)
 			return FK_SVR_ERR;
 		}
 		return FK_SVR_OK;
-	} 
+	}
 
 	ss = (fk_str_t *)fk_item_raw(value);
 	rt = fk_conn_add_bulk_rsp(conn, (int)(fk_str_len(ss)));

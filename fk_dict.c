@@ -11,7 +11,7 @@
 #define FK_DICT_INIT_SIZE 4
 
 #define fk_elt_create()	(fk_elt_t *)fk_mem_alloc(sizeof(fk_elt_t))
- 
+
 #define fk_elt_destroy(elt)	fk_mem_free(elt)
 
 #define fk_elt_set_key(dct, elt, k)	{				\
@@ -153,7 +153,7 @@ void *fk_dict_get(fk_dict_t *dct, void *key)
 	fk_elt_t *elt;
 
 	elt = fk_dict_search(dct, key, NULL);
-	if (elt == NULL){
+	if (elt == NULL) {
 		return NULL;
 	}
 
@@ -171,7 +171,7 @@ int fk_dict_add(fk_dict_t *dct, void *key, void *value)
 
 	/*
 	 * should be called before fk_dict_search
-	 * if fk_dict_search called first, the idx 
+	 * if fk_dict_search called first, the idx
 	 * maybe need to be calculated once more
 	 */
 	if (dct->used == dct->limit) {
@@ -319,8 +319,8 @@ void fk_dict_print(fk_dict_t *dct)
 	size_t i;
 	fk_elt_list_t *lst;
 
-	printf("size: %lu, size_mask: %lu, limit: %lu, used: %lu\n", 
-			dct->size, 
+	printf("size: %lu, size_mask: %lu, limit: %lu, used: %lu\n",
+			dct->size,
 			dct->size_mask,
 			dct->limit,
 			dct->used
@@ -340,7 +340,7 @@ void fk_dict_print(fk_dict_t *dct)
 fk_dict_iter_t *fk_dict_iter_begin(fk_dict_t *dct)
 {
 	fk_dict_iter_t *iter;
-	
+
 	iter = (fk_dict_iter_t *)fk_mem_alloc(sizeof(fk_dict_iter_t));
 	iter->idx = -1;
 	iter->dct = dct;

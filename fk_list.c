@@ -111,7 +111,7 @@ fk_list_iter_t *fk_list_iter_begin(fk_list_t *lst, int dir)
 {
 	fk_list_iter_t *iter;
 
-   	iter = (fk_list_iter_t *)fk_mem_alloc(sizeof(fk_list_iter_t));
+	iter = (fk_list_iter_t *)fk_mem_alloc(sizeof(fk_list_iter_t));
 	iter->lst = lst;
 	iter->dir = dir;
 	iter->cur = NULL;

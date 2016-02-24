@@ -27,9 +27,9 @@ static fk_log_t logger = {
 	NULL/* could not be "stdout" here, because "stdout" is not a compile-time constant */
 };
 
-/* 
- * if fk_log_init() is not invoked, fk_log_info/error/debug/warn can also be called, 
- * when the log is redirected to stdout 
+/*
+ * if fk_log_init() is not invoked, fk_log_info/error/debug/warn can also be called,
+ * when the log is redirected to stdout
  */
 void fk_log_init(char *log_path, int log_level)
 {
@@ -90,15 +90,15 @@ void fk_log_fprint_str(int level, char *data)
 		return;
 	}
 
-	fprintf(logger.log_file == NULL ? stdout : logger.log_file, 
-		"[%d-%.2d-%.2d %.2d:%.2d:%.2d]<%s>%s", 
-		tm_now->tm_year + 1900, 
-		tm_now->tm_mon + 1,
-		tm_now->tm_mday, 
-		tm_now->tm_hour,
-		tm_now->tm_min, 
-		tm_now->tm_sec,
-		level_name, 
-		data
-	);
+	fprintf(logger.log_file == NULL ? stdout : logger.log_file,
+	        "[%d-%.2d-%.2d %.2d:%.2d:%.2d]<%s>%s",
+	        tm_now->tm_year + 1900,
+	        tm_now->tm_mon + 1,
+	        tm_now->tm_mday,
+	        tm_now->tm_hour,
+	        tm_now->tm_min,
+	        tm_now->tm_sec,
+	        level_name,
+	        data
+	       );
 }

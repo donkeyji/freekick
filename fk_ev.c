@@ -41,14 +41,14 @@ static void fk_ev_proc_expired_tmev(void);
 static int fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2);
 
 #if defined(FK_HAVE_EPOLL)
-	#include <fk_ev_epoll.c>
-	static fk_mpxop_t *mpxop = &epoll_op;
+#include <fk_ev_epoll.c>
+static fk_mpxop_t *mpxop = &epoll_op;
 #elif defined(FK_HAVE_KQUEUE)
-	#include <fk_ev_kqueue.c>
-	static fk_mpxop_t *mpxop = &kqueue_op;
+#include <fk_ev_kqueue.c>
+static fk_mpxop_t *mpxop = &kqueue_op;
 #else
-	#include <fk_ev_poll.c>
-	static fk_mpxop_t *mpxop = &poll_op;
+#include <fk_ev_poll.c>
+static fk_mpxop_t *mpxop = &poll_op;
 #endif
 
 static fk_evmgr_t evmgr;
@@ -60,7 +60,7 @@ static fk_leaf_op_t tmev_op = {
 void fk_ev_init(unsigned max_files)
 {
 	evmgr.stop = 0;/* never stop */
-	evmgr.max_files = max_files; 
+	evmgr.max_files = max_files;
 	evmgr.ioev_cnt = 0;
 	evmgr.tmev_cnt = 0;
 
@@ -103,21 +103,21 @@ int fk_ev_dispatch(void)
 		pto = &timeout;
 	}
 
-	/* 
+	/*
 	 * pto:
 	 * (1)NULL: wait indefinitely
 	 * (2){0,0}: return immediately
 	 * (3)>{0,0}: wait for a period
-	 * cannot be < {0, 0} 
+	 * cannot be < {0, 0}
 	 */
 	rt = mpxop->iompx_dispatch((&evmgr)->iompx, pto);
 	if (rt == FK_EV_ERR) {
 		return FK_EV_ERR;
 	}
 
-	/* 
-	 * remove the nearest timer from timer_heap, 
-	 * insert it to the exp_tmev 
+	/*
+	 * remove the nearest timer from timer_heap,
+	 * insert it to the exp_tmev
 	 */
 	fk_ev_update_pending_tmev();
 
@@ -346,7 +346,7 @@ void fk_ev_proc_expired_tmev(void)
 		fk_tmev_set_stat(tmev, FK_TMEV_OLD);/* not init, not in the min heap, neither the expired list */
 		/* step 2: call the callback of the expired tmev */
 		rt = tmcb(interval, type, arg);/* maybe fk_ev_remove_tmev() is called in tmcb */
-		/* 
+		/*
 		 * step 3:
 		 * fk_ev_remove_tmev() should not be called here, even if the return value
 		 * of tmcb < 0
@@ -385,7 +385,7 @@ void fk_ev_proc_activated_ioev(void)
 		fk_ioev_set_stat(ioev, FK_IOEV_PENDING);/* not in the activated list now */
 		/* step 2: call the callback of the activated ioev */
 		iocb(fd, type, arg);/* maybe fk_ev_remove_ioev() is called in iocb */
-		/* 
+		/*
 		 * we donot care about the return value of iocb, all error should be handled
 		 * by iocb itself, but not here.
 		 * we do nothing here, we donot call fk_ev_remove_ioev() here
@@ -409,10 +409,10 @@ void fk_ev_activate_ioev(int fd, uint8_t type)
 {
 	fk_ioev_t *rioev, *wioev;
 
-	/* 
+	/*
 	 * maybe rioev and wioev point to the same ioev object
-	 * use ioev->activated to avoid inerting the ioev object 
-	 * to the activated list twice 
+	 * use ioev->activated to avoid inerting the ioev object
+	 * to the activated list twice
 	 */
 	if (type & FK_IOEV_READ) {
 		rioev = evmgr.read_ev[fd];

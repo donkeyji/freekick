@@ -16,7 +16,7 @@ static fk_proto protos[] = {
 	{"DEL", 	FK_PROTO_WRITE,		-2, 				fk_cmd_del	 	},
 	{"FLUSHDB",	FK_PROTO_WRITE, 	1, 					fk_cmd_flushdb	},
 	{"EXISTS",	FK_PROTO_READ, 		2, 					fk_cmd_exists	},
-	{"FLUSHALL",FK_PROTO_WRITE, 	1, 					fk_cmd_flushall	},
+	{"FLUSHALL", FK_PROTO_WRITE, 	1, 					fk_cmd_flushall	},
 	{"HSET", 	FK_PROTO_WRITE, 	4, 					fk_cmd_hset	 	},
 	{"HGET", 	FK_PROTO_READ, 		3, 					fk_cmd_hget	 	},
 	{"LPUSH", 	FK_PROTO_WRITE,		-3, 				fk_cmd_lpush 	},

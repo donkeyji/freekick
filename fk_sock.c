@@ -66,7 +66,7 @@ int fk_sock_set_nonblocking(int fd)
 int fk_sock_set_keepalive(int fd)
 {
 	int opt, rt;
-	
+
 	opt = 1;
 	rt = setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, (void *)&opt, sizeof(opt));
 	if (rt < 0) {
@@ -78,7 +78,7 @@ int fk_sock_set_keepalive(int fd)
 int fk_sock_set_reuseaddr(int fd)
 {
 	int opt, rt;
-	
+
 	opt = 1;
 	rt = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&opt, sizeof(opt));
 	if (rt < 0) {
@@ -90,7 +90,7 @@ int fk_sock_set_reuseaddr(int fd)
 int fk_sock_set_linger(int fd)
 {
 	int rt;
-    struct linger ling = {0, 0};
+	struct linger ling = {0, 0};
 
 	rt = setsockopt(fd, SOL_SOCKET, SO_LINGER, (void *)&ling, sizeof(ling));
 	if (rt < 0) {

@@ -7,7 +7,7 @@
 #include <fk_mem.h>
 
 /*
- * copy memory from src 
+ * copy memory from src
  * len: not including '\0'
  */
 fk_str_t *fk_str_create(const char *src, size_t len)
@@ -126,14 +126,14 @@ uint32_t fk_str_hash(const fk_str_t *str)
 {
 	const char *buf;
 	size_t len;
-    uint32_t hash;
+	uint32_t hash;
 
 	hash = 5381;
 	buf = fk_str_raw(str);
 	len = fk_str_len(str);
-    while (len--) {
+	while (len--) {
 		hash = ((hash << 5) + hash) + (*buf++);
 	}
-    return hash;
+	return hash;
 }
 

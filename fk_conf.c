@@ -235,9 +235,8 @@ int fk_conf_parse_line(fk_cfline_t *line)
 		start = i;
 		end = i;
 		/* find a completed token */
-		while (buf[end] != ' ' && buf[end] != '\t' && 
-			   buf[end] != '\n' && buf[end] != '#') 
-		{
+		while (buf[end] != ' ' && buf[end] != '\t' &&
+		       buf[end] != '\n' && buf[end] != '#') {
 			end++;
 		}
 		line->fields[line->cnt] = fk_str_create(buf + start, (size_t)(end - start));
@@ -318,10 +317,10 @@ int fk_conf_parse_port(fk_cfline_t *line)
 		sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
 		return FK_CONF_ERR;
 	}
-	/* 
+	/*
 	 * port of integer type can hold the 0 ~ 65535, if the
-	 * line->fileds[1] beyond the range which an integer 
-	 * could hold atoi() will return a minus value 
+	 * line->fileds[1] beyond the range which an integer
+	 * could hold atoi() will return a minus value
 	 */
 	port = atoi(fk_str_raw(line->fields[1]));
 	if (port <= 0 || port > 65535) {

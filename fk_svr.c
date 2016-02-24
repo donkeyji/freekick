@@ -209,9 +209,9 @@ void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 #endif
 		/* why redis do like below? */
 		//if (server.conn_cnt > server.max_conn) {
-			//fk_log_info("beyond max connections\n");
-			//fk_svr_remove_conn(fk_svr_conn_get(fd));
-			//return;
+		//fk_log_info("beyond max connections\n");
+		//fk_svr_remove_conn(fk_svr_conn_get(fd));
+		//return;
 		//}
 		fk_log_info("new connection fd: %d\n", fd);
 	}
@@ -266,8 +266,8 @@ void fk_svr_init(void)
 	/* protocol sub module */
 	fk_proto_init();
 
-	/* 
-	 * copy setting from conf to server 
+	/*
+	 * copy setting from conf to server
 	 * but is it necessary???
 	 */
 	server.dbcnt = setting.dbcnt;
@@ -357,14 +357,14 @@ void fk_svr_exit(void)
 void fk_svr_signal_exit_handler(int sig)
 {
 	switch (sig) {
-		case SIGINT:
-			break;
-		case SIGTERM:
-			break;
-		case SIGKILL:
-			break;
-		case SIGQUIT:
-			break;
+	case SIGINT:
+		break;
+	case SIGTERM:
+		break;
+	case SIGKILL:
+		break;
+	case SIGQUIT:
+		break;
 	}
 	fk_log_info("to exit by signal: %d\n", sig);
 	fk_ev_stop();/* stop the event cycle */
