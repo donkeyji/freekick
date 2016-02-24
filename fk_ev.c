@@ -33,7 +33,7 @@
 #define fk_tmev_set_stat(tmev, stat)		(tmev)->expired = (stat)
 #define fk_tmev_get_stat(tmev)				((tmev)->expired)
 
-static void fk_ev_activate_ioev(int fd, char type);
+static void fk_ev_activate_ioev(int fd, uint8_t type);
 static fk_tmev_t *fk_ev_get_nearest_tmev(void);
 static void fk_ev_update_pending_tmev(void);
 static void fk_ev_proc_activated_ioev(void);
@@ -142,8 +142,8 @@ void fk_ev_stop(void)
 
 int fk_ev_add_ioev(fk_ioev_t *ioev)
 {
-	char type;
 	int fd, rt;
+	uint8_t type;
 
 	/* unnecessary to do so? */
 	if (fk_ioev_get_stat(ioev) != FK_IOEV_INIT) {
@@ -172,8 +172,8 @@ int fk_ev_add_ioev(fk_ioev_t *ioev)
 
 int fk_ev_remove_ioev(fk_ioev_t *ioev)
 {
-	char type;
 	int fd, rt;
+	uint8_t type;
 
 	/* unnecessary ? */
 	if (fk_ioev_get_stat(ioev) == FK_IOEV_INIT) {
@@ -210,7 +210,7 @@ char *fk_ev_iompx_name(void)
 	return mpxop->iompx_name;
 }
 
-fk_ioev_t *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb)
+fk_ioev_t *fk_ioev_create(int fd, uint8_t type, void *arg, fk_ioev_cb iocb)
 {
 	fk_ioev_t *ioev;
 
@@ -231,7 +231,7 @@ void fk_ioev_destroy(fk_ioev_t *ioev)
 	fk_mem_free(ioev);
 }
 
-fk_tmev_t *fk_tmev_create(uint32_t interval, char type, void *arg, fk_tmev_cb tmcb)
+fk_tmev_t *fk_tmev_create(uint32_t interval, uint8_t type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev_t *tmev;
 
@@ -327,8 +327,8 @@ void fk_ev_update_pending_tmev(void)
 void fk_ev_proc_expired_tmev(void)
 {
 	int rt;
-	char type;
 	void *arg;
+	uint8_t type;
 	fk_tmev_t *tmev;
 	fk_tmev_cb tmcb;
 	uint32_t interval;
@@ -369,7 +369,7 @@ void fk_ev_proc_activated_ioev(void)
 {
 	int fd;
 	void *arg;
-	char type;
+	uint8_t type;
 	fk_ioev_t *ioev;
 	fk_ioev_cb iocb;
 
@@ -405,7 +405,7 @@ fk_tmev_t *fk_ev_get_nearest_tmev(void)
 	return tmev;
 }
 
-void fk_ev_activate_ioev(int fd, char type)
+void fk_ev_activate_ioev(int fd, uint8_t type)
 {
 	fk_ioev_t *rioev, *wioev;
 

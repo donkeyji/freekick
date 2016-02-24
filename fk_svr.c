@@ -25,11 +25,11 @@
 #include <fk_svr.h>
 
 /* ---------------------------------------------------- */
-static int fk_svr_timer_cb(uint32_t interval, char type, void *arg);
+static int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg);
 #ifdef FK_DEBUG
-static int fk_svr_timer_cb2(uint32_t interval, char type, void *arg);
+static int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg);
 #endif
-static void fk_svr_listen_cb(int listen_fd, char type, void *arg);
+static void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg);
 
 static uint32_t fk_db_dict_key_hash(void *key);
 static int fk_db_dict_key_cmp(void *k1, void *k2);
@@ -173,7 +173,7 @@ void fk_db_skiplist_val_free(void *ptr)
 	fk_item_dec_ref(itm);
 }
 
-void fk_svr_listen_cb(int listen_fd, char type, void *arg)
+void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 {
 	int fd;
 
@@ -218,7 +218,7 @@ void fk_svr_listen_cb(int listen_fd, char type, void *arg)
 	return;
 }
 
-int fk_svr_timer_cb(uint32_t interval, char type, void *arg)
+int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 {
 	unsigned i;
 
@@ -240,7 +240,7 @@ int fk_svr_timer_cb(uint32_t interval, char type, void *arg)
 }
 
 #ifdef FK_DEBUG
-int fk_svr_timer_cb2(uint32_t interval, char type, void *arg)
+int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg);
 {
 	fk_tmev_t *tmev;
 

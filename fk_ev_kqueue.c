@@ -11,12 +11,12 @@ typedef struct {
 	unsigned max_evs;
 	struct kevent kev;
 	struct kevent *evlist;
-	//char *emask;/* no need for kqueue */
+	//uint8_t *emask;/* no need for kqueue */
 } fk_kqueue_t;
 
 static void *fk_kqueue_create(unsigned max_files);
-static int fk_kqueue_add(void *ev_iompx, int fd, char type);
-static int fk_kqueue_remove(void *ev_iompx, int fd, char type);
+static int fk_kqueue_add(void *ev_iompx, int fd, uint8_t type);
+static int fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout);
 
 fk_mpxop_t kqueue_op = {
@@ -41,17 +41,17 @@ void *fk_kqueue_create(unsigned max_files)
 	iompx->max_evs = max_files << 1;/* read config from global setting */
 	iompx->kfd = kfd;
 	iompx->evlist = (struct kevent *)fk_mem_alloc(sizeof(struct kevent) * iompx->max_evs);
-	//iompx->emask = (char *)fk_mem_alloc(sizeof(char *) * max_files);
-	//bzero(iompx->emask, sizeof(char *) * max_files);
+	//iompx->emask = (uint8_t *)fk_mem_alloc(sizeof(uint8_t *) * max_files);
+	//bzero(iompx->emask, sizeof(uint8_t *) * max_files);
 
 	return iompx;
 }
 
-int fk_kqueue_add(void *ev_iompx, int fd, char type)
+int fk_kqueue_add(void *ev_iompx, int fd, uint8_t type)
 {
 	int rt;
 	fk_kqueue_t *iompx;
-	//char otyp;
+	//uint8_t otyp;
 
 	iompx = (fk_kqueue_t *)(ev_iompx);
 
@@ -83,11 +83,11 @@ int fk_kqueue_add(void *ev_iompx, int fd, char type)
 	return FK_EV_OK;
 }
 
-int fk_kqueue_remove(void *ev_iompx, int fd, char type)
+int fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type)
 {
 	int rt;
 	fk_kqueue_t *iompx;
-	//char otyp;
+	//uint8_t otyp;
 
 	iompx = (fk_kqueue_t *)ev_iompx;
 
@@ -121,8 +121,8 @@ int fk_kqueue_remove(void *ev_iompx, int fd, char type)
 
 int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-	char type;
 	int i, nfds;
+	uint8_t type;
 	uintptr_t fd;
 	//intptr_t data;
 	//uint16_t flags;

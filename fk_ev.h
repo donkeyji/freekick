@@ -19,13 +19,13 @@
 #define FK_TMEV_CYCLE 	1
 #define FK_TMEV_ONCE	2
 
-typedef void (*fk_ioev_cb) (int, char, void *);
-typedef int (*fk_tmev_cb) (uint32_t, char, void *);
+typedef void (*fk_ioev_cb) (int, uint8_t, void *);
+typedef int (*fk_tmev_cb) (uint32_t, uint8_t, void *);
 
 typedef struct fk_ioev_s fk_ioev_t;
 struct fk_ioev_s {
 	int fd;
-	char type;/* FK_IOEV_READ|FK_IOEV_WRITE */
+	uint8_t type;/* FK_IOEV_READ|FK_IOEV_WRITE */
 	int activated;/* whether in activated list */
 	void *arg;
 	fk_ioev_cb iocb;
@@ -39,7 +39,7 @@ struct fk_tmev_s {
 	FK_HEAP_LEAF_HEADER;/* for heap */
 
 	int expired;/* whether in the expired list */
-	char type;/* FK_TMEV_CYCLE|FK_TMEV_ONCE */
+	uint8_t type;/* FK_TMEV_CYCLE|FK_TMEV_ONCE */
 	uint32_t interval;/* milliseconds */
 	struct timeval when;/* save the trigger point time: now + timeout */
 	void *arg;/* ext arg */
@@ -55,8 +55,8 @@ fk_rawlist_def(fk_tmev_t, fk_tmev_list_t);
 typedef struct {
 	char *iompx_name;/* fk_str_t is not used here, because it's easier to use char* here */
 	void *(*iompx_create)(unsigned max_files);
-	int (*iompx_add)(void *iompx, int fd, char type);
-	int (*iompx_remove)(void *iompx, int fd, char type);
+	int (*iompx_add)(void *iompx, int fd, uint8_t type);
+	int (*iompx_remove)(void *iompx, int fd, uint8_t type);
 	int (*iompx_dispatch)(void *iompx, struct timeval *timeout);
 } fk_mpxop_t;
 
@@ -95,9 +95,9 @@ void fk_ev_stat(void);
 #endif
 char *fk_ev_iompx_name(void);
 
-fk_ioev_t *fk_ioev_create(int fd, char type, void *arg, fk_ioev_cb iocb);
+fk_ioev_t *fk_ioev_create(int fd, uint8_t type, void *arg, fk_ioev_cb iocb);
 void fk_ioev_destroy(fk_ioev_t *ioev);
-fk_tmev_t *fk_tmev_create(uint32_t timeout, char type, void *arg, fk_tmev_cb tmcb);
+fk_tmev_t *fk_tmev_create(uint32_t timeout, uint8_t type, void *arg, fk_tmev_cb tmcb);
 void fk_tmev_destroy(fk_tmev_t *tmev);
 
 #endif

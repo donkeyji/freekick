@@ -15,9 +15,9 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-static void fk_conn_read_cb(int fd, char type, void *ext);
-static void fk_conn_write_cb(int fd, char type, void *ext);
-static int fk_conn_timer_cb(unsigned interval, char type, void *ext);
+static void fk_conn_read_cb(int fd, uint8_t type, void *ext);
+static void fk_conn_write_cb(int fd, uint8_t type, void *ext);
+static int fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext);
 static int fk_conn_parse_req(fk_conn_t *conn);
 static int fk_conn_recv_data(fk_conn_t *conn);
 static int fk_conn_proc_cmd(fk_conn_t *conn);
@@ -463,7 +463,7 @@ int fk_conn_proc_cmd(fk_conn_t *conn)
 	return FK_SVR_OK;
 }
 
-int fk_conn_timer_cb(unsigned interval, char type, void *ext)
+int fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext)
 {
 	time_t now;
 	fk_conn_t *conn;
@@ -490,7 +490,7 @@ int fk_conn_timer_cb(unsigned interval, char type, void *ext)
  * evmgr do not care the return value of this callback
  * so this callback itself should handle all error occurs 
  */
-void fk_conn_read_cb(int fd, char type, void *ext)
+void fk_conn_read_cb(int fd, uint8_t type, void *ext)
 {
 	int rt;
 	fk_conn_t *conn;
@@ -548,7 +548,7 @@ void fk_conn_read_cb(int fd, char type, void *ext)
 	return;
 }
 
-void fk_conn_write_cb(int fd, char type, void *ext)
+void fk_conn_write_cb(int fd, uint8_t type, void *ext)
 {
 	char *pbuf;
 	size_t plen;

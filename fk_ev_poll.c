@@ -7,8 +7,8 @@ typedef struct {
 } fk_poll_t;
 
 static void *fk_poll_create(unsigned max_files);
-static int fk_poll_add(void *ev_iompx, int fd, char type);
-static int fk_poll_remove(void *ev_iompx, int fd, char type);
+static int fk_poll_add(void *ev_iompx, int fd, uint8_t type);
+static int fk_poll_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout);
 
 fk_mpxop poll_op = {
@@ -37,7 +37,7 @@ void *fk_poll_create(unsigned max_files)
 	return iompx;
 }
 
-int fk_poll_add(void *ev_iompx, int fd, char type)
+int fk_poll_add(void *ev_iompx, int fd, uint8_t type)
 {
 	int idx;
 	short nev, oev;
@@ -78,7 +78,7 @@ int fk_poll_add(void *ev_iompx, int fd, char type)
 	return FK_EV_OK;
 }
 
-int fk_poll_remove(void *ev_iompx, int fd, char type)
+int fk_poll_remove(void *ev_iompx, int fd, uint8_t type)
 {
 	int idx;
 	short nev, oev;
@@ -120,7 +120,7 @@ int fk_poll_remove(void *ev_iompx, int fd, char type)
 
 int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-	char type;
+	uint8_t type;
 	fk_poll_t *iompx;
 	struct pollfd *pfd;
 	int i, nfds, ms_timeout, fd, cnt;
