@@ -62,7 +62,7 @@ void fk_proto_init(void)
 	}
 #ifdef FK_DEBUG
 	fk_elt_t *elt;
-	fk_dict_iter *iter = fk_dict_iter_begin(pmap);
+	fk_dict_iter_t *iter = fk_dict_iter_begin(pmap);
 	while ((elt = fk_dict_iter_next(iter)) != NULL) {
 		key = (fk_str_t *)fk_elt_key(elt);
 		value = fk_elt_value(elt);

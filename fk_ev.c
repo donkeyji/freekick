@@ -3,6 +3,7 @@
 #include <errno.h>
 #include <strings.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include <sys/time.h>
 
@@ -445,6 +446,6 @@ int fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2)
 #ifdef FK_DEBUG
 void fk_ev_stat(void)
 {
-	fprintf(stdout, "ioev_cnt: %llu, tmev_cnt: %llu\n", evmgr.ioev_cnt, evmgr.tmev_cnt);
+	fprintf(stdout, "[event statistics]ioev_cnt: %" PRIu64 ", tmev_cnt: %" PRIu64 "\n", evmgr.ioev_cnt, evmgr.tmev_cnt);
 }
 #endif

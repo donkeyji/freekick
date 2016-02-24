@@ -1,6 +1,8 @@
 #ifndef _FK_EV_H_
 #define _FK_EV_H_
 
+#include <stdint.h>
+
 #include <sys/time.h>
 
 #include <fk_list.h>
@@ -61,8 +63,8 @@ typedef struct {
 typedef struct {
 	int stop;
 	unsigned max_files;
-	unsigned long long ioev_cnt;
-	unsigned long long tmev_cnt;
+	uint64_t ioev_cnt;
+	uint64_t tmev_cnt;
 	/* use min_heap to save timer ev */
 	fk_heap_t *timer_heap;
 
