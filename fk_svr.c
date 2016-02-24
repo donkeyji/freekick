@@ -25,9 +25,9 @@
 #include <fk_svr.h>
 
 /* ---------------------------------------------------- */
-static int fk_svr_timer_cb(unsigned interval, char type, void *arg);
+static int fk_svr_timer_cb(uint32_t interval, char type, void *arg);
 #ifdef FK_DEBUG
-static int fk_svr_timer_cb2(unsigned interval, char type, void *arg);
+static int fk_svr_timer_cb2(uint32_t interval, char type, void *arg);
 #endif
 static void fk_svr_listen_cb(int listen_fd, char type, void *arg);
 
@@ -218,7 +218,7 @@ void fk_svr_listen_cb(int listen_fd, char type, void *arg)
 	return;
 }
 
-int fk_svr_timer_cb(unsigned interval, char type, void *arg)
+int fk_svr_timer_cb(uint32_t interval, char type, void *arg)
 {
 	unsigned i;
 
@@ -240,7 +240,7 @@ int fk_svr_timer_cb(unsigned interval, char type, void *arg)
 }
 
 #ifdef FK_DEBUG
-int fk_svr_timer_cb2(unsigned interval, char type, void *arg)
+int fk_svr_timer_cb2(uint32_t interval, char type, void *arg)
 {
 	fk_tmev_t *tmev;
 

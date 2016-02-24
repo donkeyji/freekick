@@ -231,7 +231,7 @@ void fk_ioev_destroy(fk_ioev_t *ioev)
 	fk_mem_free(ioev);
 }
 
-fk_tmev_t *fk_tmev_create(unsigned interval, char type, void *arg, fk_tmev_cb tmcb)
+fk_tmev_t *fk_tmev_create(uint32_t interval, char type, void *arg, fk_tmev_cb tmcb)
 {
 	fk_tmev_t *tmev;
 
@@ -331,7 +331,7 @@ void fk_ev_proc_expired_tmev(void)
 	void *arg;
 	fk_tmev_t *tmev;
 	fk_tmev_cb tmcb;
-	unsigned interval;
+	uint32_t interval;
 
 	tmev = fk_rawlist_head(evmgr.exp_tmev);
 	while (tmev != NULL) {
