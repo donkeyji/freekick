@@ -33,68 +33,68 @@ static void fk_mem_panic(void);
 
 void *fk_mem_alloc(size_t size)
 {
-	void *ptr;
-	size_t real_size;
+    void *ptr;
+    size_t real_size;
 
-	ptr = malloc(size);
-	if (ptr == NULL) {
-		fk_mem_panic();
-	}
-	real_size = fk_mem_malloc_size(ptr);
-	total_alloc += real_size;
-	return ptr;
+    ptr = malloc(size);
+    if (ptr == NULL) {
+        fk_mem_panic();
+    }
+    real_size = fk_mem_malloc_size(ptr);
+    total_alloc += real_size;
+    return ptr;
 }
 
 void *fk_mem_calloc(size_t count, size_t size)
 {
-	void *ptr;
-	size_t real_size;
+    void *ptr;
+    size_t real_size;
 
-	ptr = calloc(count, size);
-	if (ptr == NULL) {
-		fk_mem_panic();
-	}
-	real_size = fk_mem_malloc_size(ptr);
-	total_alloc += real_size;
-	return ptr;
+    ptr = calloc(count, size);
+    if (ptr == NULL) {
+        fk_mem_panic();
+    }
+    real_size = fk_mem_malloc_size(ptr);
+    total_alloc += real_size;
+    return ptr;
 }
 
 void *fk_mem_realloc(void *ptr, size_t size)
 {
-	void *new_ptr;
-	size_t old_size, new_size;
+    void *new_ptr;
+    size_t old_size, new_size;
 
-	old_size = fk_mem_malloc_size(ptr);
+    old_size = fk_mem_malloc_size(ptr);
 
-	new_ptr = realloc(ptr, size);
-	if (new_ptr == NULL) {
-		fk_mem_panic();
-	}
+    new_ptr = realloc(ptr, size);
+    if (new_ptr == NULL) {
+        fk_mem_panic();
+    }
 
-	new_size = fk_mem_malloc_size(ptr);
-	total_alloc = total_alloc - old_size + new_size;
+    new_size = fk_mem_malloc_size(ptr);
+    total_alloc = total_alloc - old_size + new_size;
 
-	return new_ptr;
+    return new_ptr;
 }
 
 void fk_mem_free(void *ptr)
 {
-	size_t real_size;
-	real_size = fk_mem_malloc_size(ptr);
-	total_alloc -= real_size;
-	/* how to get the size of the freeing memory??????? */
-	free(ptr);
+    size_t real_size;
+    real_size = fk_mem_malloc_size(ptr);
+    total_alloc -= real_size;
+    /* how to get the size of the freeing memory??????? */
+    free(ptr);
 }
 
 size_t fk_mem_get_alloc(void)
 {
-	return total_alloc;
+    return total_alloc;
 }
 
 void fk_mem_panic(void)
 {
-	fprintf(stderr, "out of memory");
-	fflush(stderr);
-	sleep(1);
-	abort();
+    fprintf(stderr, "out of memory");
+    fflush(stderr);
+    sleep(1);
+    abort();
 }

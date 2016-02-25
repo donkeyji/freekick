@@ -17,8 +17,8 @@ static void fk_item_free_obj_put(fk_item_t *itm);
 
 void fk_item_init(void)
 {
-	/* create a null list for free objs */
-	free_objs = fk_list_create(NULL);
+    /* create a null list for free objs */
+    free_objs = fk_list_create(NULL);
 }
 
 /*
@@ -62,40 +62,40 @@ void fk_item_put_free(fk_item_t *itm)
 
 fk_item_t *fk_item_create(int type, void *entity)
 {
-	fk_item_t *itm;
-	itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t));
-	itm->entity = entity;
-	itm->ref = 0;/* I think the initial value of ref should be 0, not 1 */
-	itm->type = type;
+    fk_item_t *itm;
+    itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t));
+    itm->entity = entity;
+    itm->ref = 0;/* I think the initial value of ref should be 0, not 1 */
+    itm->type = type;
 
-	return itm;
+    return itm;
 }
 
 void fk_item_dec_ref(fk_item_t *itm)
 {
-	if (itm->ref > 0) {
-		itm->ref--;
-	}
-	if (itm->ref == 0) {
-		switch (itm->type) {
-		case FK_ITEM_STR:
-			fk_str_destroy(itm->entity);
-			break;
-		case FK_ITEM_LIST:
-			fk_list_destroy(itm->entity);
-			break;
-		case FK_ITEM_DICT:
-			fk_dict_destroy(itm->entity);
-			break;
-		}
-		itm->entity = NULL;
-		itm->ref = 0;
-		itm->type = FK_ITEM_NIL;
-		fk_mem_free(itm);
-	}
+    if (itm->ref > 0) {
+        itm->ref--;
+    }
+    if (itm->ref == 0) {
+        switch (itm->type) {
+        case FK_ITEM_STR:
+            fk_str_destroy(itm->entity);
+            break;
+        case FK_ITEM_LIST:
+            fk_list_destroy(itm->entity);
+            break;
+        case FK_ITEM_DICT:
+            fk_dict_destroy(itm->entity);
+            break;
+        }
+        itm->entity = NULL;
+        itm->ref = 0;
+        itm->type = FK_ITEM_NIL;
+        fk_mem_free(itm);
+    }
 }
 
 void fk_item_inc_ref(fk_item_t *itm)
 {
-	itm->ref++;
+    itm->ref++;
 }

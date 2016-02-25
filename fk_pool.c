@@ -39,102 +39,102 @@ static fk_pool_t *str_pool = NULL;
 
 void fk_pool_init(void)
 {
-	node_pool = fk_pool_create(sizeof(fk_node_t), 1024);
-	obj_pool = fk_pool_create(sizeof(fk_item_t), 1024);
-	str_pool = fk_pool_create(sizeof(fk_str_t), 1024);
+    node_pool = fk_pool_create(sizeof(fk_node_t), 1024);
+    obj_pool = fk_pool_create(sizeof(fk_item_t), 1024);
+    str_pool = fk_pool_create(sizeof(fk_str_t), 1024);
 }
 
 void fk_pool_exit(void)
 {
-	fk_pool_destroy(node_pool);
-	fk_pool_destroy(obj_pool);
-	fk_pool_destroy(str_pool);
+    fk_pool_destroy(node_pool);
+    fk_pool_destroy(obj_pool);
+    fk_pool_destroy(str_pool);
 }
 
 fk_pool_t *fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
 {
-	fk_pool_t *pool;
+    fk_pool_t *pool;
 
-	pool = (fk_pool_t *)fk_mem_alloc(sizeof(fk_pool_t));
+    pool = (fk_pool_t *)fk_mem_alloc(sizeof(fk_pool_t));
 
-	if (unit_size > 4) {
-		pool->unit_size = fk_pool_align_cal(unit_size);
-	} else if (unit_size <= 2) {
-		pool->unit_size = 2;
-	} else {
-		pool->unit_size = 4;
-	}
+    if (unit_size > 4) {
+        pool->unit_size = fk_pool_align_cal(unit_size);
+    } else if (unit_size <= 2) {
+        pool->unit_size = 2;
+    } else {
+        pool->unit_size = 4;
+    }
 
-	pool->init_cnt = init_cnt;
-	pool->empty_blks = 0;
-	pool->head = NULL;
-	return pool;
+    pool->init_cnt = init_cnt;
+    pool->empty_blks = 0;
+    pool->head = NULL;
+    return pool;
 }
 
 void *fk_pool_malloc(fk_pool_t *pool)
 {
-	void *ptr;
-	fk_block_t *blk;
+    void *ptr;
+    fk_block_t *blk;
 
-	blk = pool->head;
+    blk = pool->head;
 
-	/* to find the first non-full block */
-	while (blk != NULL && fk_pool_block_isfull(blk)) {
-		blk = blk->next;
-	}
+    /* to find the first non-full block */
+    while (blk != NULL && fk_pool_block_isfull(blk)) {
+        blk = blk->next;
+    }
 
-	/* to create a new block */
-	if (blk == NULL) {
-		blk = (fk_block_t *)fk_block_create(pool->unit_size, pool->init_cnt);
-		if (blk == NULL) {
-			return NULL;
-		}
-		blk->next = pool->head;
-		pool->head = blk;/* inset to the list as head */
-	}
+    /* to create a new block */
+    if (blk == NULL) {
+        blk = (fk_block_t *)fk_block_create(pool->unit_size, pool->init_cnt);
+        if (blk == NULL) {
+            return NULL;
+        }
+        blk->next = pool->head;
+        pool->head = blk;/* inset to the list as head */
+    }
 
-	fk_pool_block_alloc(blk, ptr);
+    fk_pool_block_alloc(blk, ptr);
 
-	return ptr;
+    return ptr;
 }
 
 void fk_pool_free(fk_pool_t *pool, void *ptr)
 {
-	fk_block_t *cur_blk, *prev_blk;
+    fk_block_t *cur_blk, *prev_blk;
 
-	cur_blk = pool->head;
-	prev_blk = cur_blk;/* could not be 'NULL' */
+    cur_blk = pool->head;
+    prev_blk = cur_blk;/* could not be 'NULL' */
 
-	while (cur_blk != NULL && fk_pool_block_nocontain(cur_blk, ptr)) {
-		prev_blk = cur_blk;
-		cur_blk = cur_blk->next;
-	}
-	if (cur_blk == NULL) {/* there is no this block */
-		return;
-	}
-	fk_pool_block_free(cur_blk, ptr);
+    while (cur_blk != NULL && fk_pool_block_nocontain(cur_blk, ptr)) {
+        prev_blk = cur_blk;
+        cur_blk = cur_blk->next;
+    }
+    if (cur_blk == NULL) {/* there is no this block */
+        return;
+    }
+    fk_pool_block_free(cur_blk, ptr);
 
-	/* if the count of empty blocks beyond the upper limit */
-	if (fk_pool_block_isempty(cur_blk)) {
-		if (pool->empty_blks == FK_POOL_MAX_EMPTY_BLOCKS) {
-			if (cur_blk == pool->head) {
-				pool->head = cur_blk->next;
-			} else {
-				prev_blk->next = cur_blk->next;
-			}
-			fk_block_destroy(cur_blk);
-			return;
-		} else {
-			pool->empty_blks++;
-		}
-	}
+    /* if the count of empty blocks beyond the upper limit */
+    if (fk_pool_block_isempty(cur_blk)) {
+        if (pool->empty_blks == FK_POOL_MAX_EMPTY_BLOCKS) {
+            if (cur_blk == pool->head) {
+                pool->head = cur_blk->next;
+            } else {
+                prev_blk->next = cur_blk->next;
+            }
+            fk_block_destroy(cur_blk);
+            return;
+        } else {
+            pool->empty_blks++;
+        }
+    }
 
-	/* take this block as the head */
-	if (cur_blk != pool->head) {
-		prev_blk->next = cur_blk->next;
-		cur_blk->next = pool->head;
-		pool->head = cur_blk;
-	}
+    /* take this block as the head */
+    if (cur_blk != pool->head) {
+        prev_blk->next = cur_blk->next;
+        cur_blk->next = pool->head;
+        pool->head = cur_blk;
+    }
 }
 
 void fk_pool_destroy(fk_pool_t *pool)
@@ -143,28 +143,28 @@ void fk_pool_destroy(fk_pool_t *pool)
 
 fk_block_t *fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
-	uint16_t i;
-	uint8_t *ptr;
-	fk_block_t *blk;
+    uint16_t i;
+    uint8_t *ptr;
+    fk_block_t *blk;
 
-	blk = (fk_block_t *)fk_mem_alloc(sizeof(fk_block_t) + (size_t)(unit_size * unit_cnt));
-	blk->free_cnt = unit_cnt;
-	blk->unit_cnt = unit_cnt;
-	blk->unit_size = unit_size;
-	blk->first = 0;/* the 0 index unit */
+    blk = (fk_block_t *)fk_mem_alloc(sizeof(fk_block_t) + (size_t)(unit_size * unit_cnt));
+    blk->free_cnt = unit_cnt;
+    blk->unit_cnt = unit_cnt;
+    blk->unit_size = unit_size;
+    blk->first = 0;/* the 0 index unit */
 
-	ptr = blk->data;
-	for (i = 0; i < unit_cnt - 1; i++) {
-		*((uint16_t *)ptr) = i + 1; /* point to the index of the next free unit */
-		ptr += unit_size;
-	}
-	*((uint16_t *)ptr) = -1; /* the last unit */
+    ptr = blk->data;
+    for (i = 0; i < unit_cnt - 1; i++) {
+        *((uint16_t *)ptr) = i + 1; /* point to the index of the next free unit */
+        ptr += unit_size;
+    }
+    *((uint16_t *)ptr) = -1; /* the last unit */
 
-	return blk;
+    return blk;
 }
 
 void fk_block_destroy(fk_block_t *blk)
 {
-	blk->next = NULL;
-	fk_mem_free(blk);
+    blk->next = NULL;
+    fk_mem_free(blk);
 }

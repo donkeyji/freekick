@@ -78,30 +78,30 @@ typedef struct {					\
 
 typedef struct fk_node_s fk_node_t;
 struct fk_node_s {
-	fk_node_t *prev;
-	fk_node_t *next;
-	void *data;
+    fk_node_t *prev;
+    fk_node_t *next;
+    void *data;
 };
 
 typedef struct {
-	/* method specified */
-	void *(*data_copy)(void *);
-	void (*data_free)(void *);
-	int (*data_cmp)(void *, void *);
+    /* method specified */
+    void *(*data_copy)(void *);
+    void (*data_free)(void *);
+    int (*data_cmp)(void *, void *);
 } fk_node_op_t;
 
 typedef struct {
-	fk_node_t *head;
-	fk_node_t *tail;
-	size_t len;
-	fk_node_op_t *nop;
+    fk_node_t *head;
+    fk_node_t *tail;
+    size_t len;
+    fk_node_op_t *nop;
 } fk_list_t;
 
 typedef struct {
-	fk_list_t *lst;
-	fk_node_t *cur;/* return this */
-	fk_node_t *next;/* record the next */
-	int dir;/* 0, 1 */
+    fk_list_t *lst;
+    fk_node_t *cur;/* return this */
+    fk_node_t *next;/* record the next */
+    int dir;/* 0, 1 */
 } fk_list_iter_t;
 
 fk_list_t *fk_list_create(fk_node_op_t *nop);

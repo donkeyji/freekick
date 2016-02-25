@@ -10,37 +10,37 @@
 #define FK_DICT_ERR		-1
 
 typedef struct {
-	uint32_t (*key_hash)(void *key);/* gen hash */
-	int (*key_cmp)(void *k1, void *k2);/* key compare */
-	void *(*key_copy)(void *key);
-	void (*key_free)(void *key);
-	void *(*val_copy)(void *val);
-	void (*val_free)(void *val);
+    uint32_t (*key_hash)(void *key);/* gen hash */
+    int (*key_cmp)(void *k1, void *k2);/* key compare */
+    void *(*key_copy)(void *key);
+    void (*key_free)(void *key);
+    void *(*val_copy)(void *val);
+    void (*val_free)(void *val);
 } fk_elt_op_t;
 
 typedef struct fk_elt_s fk_elt_t;
 struct fk_elt_s {
-	void *key;
-	void *value;
-	fk_elt_t *next;
-	fk_elt_t *prev;
+    void *key;
+    void *value;
+    fk_elt_t *next;
+    fk_elt_t *prev;
 };
 
 fk_rawlist_def(fk_elt_t, fk_elt_list_t);
 
 typedef struct {
-	size_t size;
-	size_t size_mask;
-	size_t used;
-	size_t limit;
-	fk_elt_list_t **buckets;
-	fk_elt_op_t *eop;
+    size_t size;
+    size_t size_mask;
+    size_t used;
+    size_t limit;
+    fk_elt_list_t **buckets;
+    fk_elt_op_t *eop;
 } fk_dict_t;
 
 typedef struct {
-	fk_dict_t *dct;
-	fk_elt_t *cur, *next;
-	long long idx;/* should be long than size_t type */
+    fk_dict_t *dct;
+    fk_elt_t *cur, *next;
+    long long idx;/* should be long than size_t type */
 } fk_dict_iter_t;
 
 fk_dict_t *fk_dict_create(fk_elt_op_t *eop);

@@ -23,8 +23,8 @@
 static void fk_log_fprint_str(int level, char *data);
 
 static fk_log_t logger = {
-	FK_LOG_DEBUG,
-	NULL/* could not be "stdout" here, because "stdout" is not a compile-time constant */
+    FK_LOG_DEBUG,
+    NULL/* could not be "stdout" here, because "stdout" is not a compile-time constant */
 };
 
 /*
@@ -33,72 +33,72 @@ static fk_log_t logger = {
  */
 void fk_log_init(char *log_path, int log_level)
 {
-	FILE *fp;
+    FILE *fp;
 
-	fp = fopen(log_path, "a+");
-	if (fp == NULL) {
-		printf("null file\n");
-		exit(1);
-	}
-	logger.log_level = log_level;
-	logger.log_file = fp;
+    fp = fopen(log_path, "a+");
+    if (fp == NULL) {
+        printf("null file\n");
+        exit(1);
+    }
+    logger.log_level = log_level;
+    logger.log_file = fp;
 }
 
 void fk_log_error(char *fmt, ...)
 {
-	fk_log_write(FK_LOG_ERROR);
+    fk_log_write(FK_LOG_ERROR);
 }
 
 void fk_log_warn(char *fmt, ...)
 {
-	fk_log_write(FK_LOG_WARN);
+    fk_log_write(FK_LOG_WARN);
 }
 
 void fk_log_info(char *fmt, ...)
 {
-	fk_log_write(FK_LOG_INFO);
+    fk_log_write(FK_LOG_INFO);
 }
 
 void fk_log_debug(char *fmt, ...)
 {
-	fk_log_write(FK_LOG_DEBUG);
+    fk_log_write(FK_LOG_DEBUG);
 }
 
 void fk_log_fprint_str(int level, char *data)
 {
-	time_t now;
-	char *level_name;
-	struct tm *tm_now;
+    time_t now;
+    char *level_name;
+    struct tm *tm_now;
 
-	switch (level) {
-	case FK_LOG_ERROR:
-		level_name = "ERROR";
-		break;
-	case FK_LOG_WARN:
-		level_name = "WARN";
-		break;
-	case FK_LOG_INFO:
-		level_name = "INFO";
-		break;
-	case FK_LOG_DEBUG:
-		level_name = "DEBUG";
-		break;
-	}
-	now = time(NULL);
-	tm_now = localtime(&now);
-	if (tm_now == NULL) {
-		return;
-	}
+    switch (level) {
+    case FK_LOG_ERROR:
+        level_name = "ERROR";
+        break;
+    case FK_LOG_WARN:
+        level_name = "WARN";
+        break;
+    case FK_LOG_INFO:
+        level_name = "INFO";
+        break;
+    case FK_LOG_DEBUG:
+        level_name = "DEBUG";
+        break;
+    }
+    now = time(NULL);
+    tm_now = localtime(&now);
+    if (tm_now == NULL) {
+        return;
+    }
 
-	fprintf(logger.log_file == NULL ? stdout : logger.log_file,
-	        "[%d-%.2d-%.2d %.2d:%.2d:%.2d]<%s>%s",
-	        tm_now->tm_year + 1900,
-	        tm_now->tm_mon + 1,
-	        tm_now->tm_mday,
-	        tm_now->tm_hour,
-	        tm_now->tm_min,
-	        tm_now->tm_sec,
-	        level_name,
-	        data
-	       );
+    fprintf(logger.log_file == NULL ? stdout : logger.log_file,
+            "[%d-%.2d-%.2d %.2d:%.2d:%.2d]<%s>%s",
+            tm_now->tm_year + 1900,
+            tm_now->tm_mon + 1,
+            tm_now->tm_mday,
+            tm_now->tm_hour,
+            tm_now->tm_min,
+            tm_now->tm_sec,
+            level_name,
+            data
+           );
 }

@@ -24,62 +24,62 @@ typedef int (*fk_tmev_cb) (uint32_t, uint8_t, void *);
 
 typedef struct fk_ioev_s fk_ioev_t;
 struct fk_ioev_s {
-	int fd;
-	uint8_t type;/* FK_IOEV_READ|FK_IOEV_WRITE */
-	int activated;/* whether in activated list */
-	void *arg;
-	fk_ioev_cb iocb;
+    int fd;
+    uint8_t type;/* FK_IOEV_READ|FK_IOEV_WRITE */
+    int activated;/* whether in activated list */
+    void *arg;
+    fk_ioev_cb iocb;
 
-	fk_ioev_t *prev;
-	fk_ioev_t *next;
+    fk_ioev_t *prev;
+    fk_ioev_t *next;
 };
 
 typedef struct fk_tmev_s fk_tmev_t;
 struct fk_tmev_s {
-	FK_HEAP_LEAF_HEADER;/* for heap */
+    FK_HEAP_LEAF_HEADER;/* for heap */
 
-	int expired;/* whether in the expired list */
-	uint8_t type;/* FK_TMEV_CYCLE|FK_TMEV_ONCE */
-	uint32_t interval;/* milliseconds */
-	struct timeval when;/* save the trigger point time: now + timeout */
-	void *arg;/* ext arg */
-	fk_tmev_cb tmcb;
+    int expired;/* whether in the expired list */
+    uint8_t type;/* FK_TMEV_CYCLE|FK_TMEV_ONCE */
+    uint32_t interval;/* milliseconds */
+    struct timeval when;/* save the trigger point time: now + timeout */
+    void *arg;/* ext arg */
+    fk_tmev_cb tmcb;
 
-	fk_tmev_t *prev;
-	fk_tmev_t *next;
+    fk_tmev_t *prev;
+    fk_tmev_t *next;
 };
 
 fk_rawlist_def(fk_ioev_t, fk_ioev_list_t);
 fk_rawlist_def(fk_tmev_t, fk_tmev_list_t);
 
 typedef struct {
-	char *iompx_name;/* fk_str_t is not used here, because it's easier to use char* here */
-	void *(*iompx_create)(unsigned max_files);
-	int (*iompx_add)(void *iompx, int fd, uint8_t type);
-	int (*iompx_remove)(void *iompx, int fd, uint8_t type);
-	int (*iompx_dispatch)(void *iompx, struct timeval *timeout);
+    char *iompx_name;/* fk_str_t is not used here, because it's easier to use char* here */
+    void *(*iompx_create)(unsigned max_files);
+    int (*iompx_add)(void *iompx, int fd, uint8_t type);
+    int (*iompx_remove)(void *iompx, int fd, uint8_t type);
+    int (*iompx_dispatch)(void *iompx, struct timeval *timeout);
 } fk_mpxop_t;
 
 typedef struct {
-	int stop;
-	unsigned max_files;
-	uint64_t ioev_cnt;
-	uint64_t tmev_cnt;
-	/* use min_heap to save timer ev */
-	fk_heap_t *timer_heap;
+    int stop;
+    unsigned max_files;
+    uint64_t ioev_cnt;
+    uint64_t tmev_cnt;
+    /* use min_heap to save timer ev */
+    fk_heap_t *timer_heap;
 
-	/* actived file ev */
-	fk_ioev_list_t *act_ioev;
-	fk_tmev_list_t *exp_tmev;/* when SINGLE expire, fk_mem_free() */
-	fk_tmev_list_t *old_tmev;
+    /* actived file ev */
+    fk_ioev_list_t *act_ioev;
+    fk_tmev_list_t *exp_tmev;/* when SINGLE expire, fk_mem_free() */
+    fk_tmev_list_t *old_tmev;
 
-	/* use array to save file ev */
-	/* conn + listen */
-	fk_ioev_t **read_ev;/* max_files */
-	fk_ioev_t **write_ev;/* max_files */
+    /* use array to save file ev */
+    /* conn + listen */
+    fk_ioev_t **read_ev;/* max_files */
+    fk_ioev_t **write_ev;/* max_files */
 
-	/* implemention of epoll/kqueue/poll */
-	void *iompx;
+    /* implemention of epoll/kqueue/poll */
+    void *iompx;
 } fk_evmgr_t;
 
 void fk_ev_init(unsigned max_files);
