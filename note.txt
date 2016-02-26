@@ -271,3 +271,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 104. epoll_wait()中的maxevents, timeout都为int，怎么处理类型转换???对应于这些参数的变量不要用int32_t/uint32_t，直接用int来存储。
 
 105. c99标准规定: char可以实现为等同于signed char或者unsigned char，与int不同，int是等同于signed int的。所以在limits.h中定义CHAR_MAX/CHAR_MIN就依据__CHAR_UNSIGNED__这个宏来区别到底是哪种实现，不过现在用的这些linux上都是采用char等价于signed char，与int的方式保持一致。
+
+106. 与内存或者文件长度相关的值，需要以字节计算的用size_t；与对象个数相关的值用uint32_t/uint64_t；二者之间的转换呢???
