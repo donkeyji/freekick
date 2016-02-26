@@ -3,7 +3,6 @@
 #include <errno.h>
 #include <time.h>
 #include <stdint.h>
-#include <inttypes.h>
 
 #include <unistd.h>
 #include <sys/socket.h>
@@ -265,11 +264,11 @@ int fk_conn_parse_req(fk_conn_t *conn)
             conn->arg_parsed = argc;
 #ifdef FK_DEBUG
             fk_log_debug("[arg_parsed parsed]: %d\n", conn->arg_parsed);
-            fk_log_debug("before arg_vtr stretch: len: %" PRIu32 "\n", fk_vtr_len(conn->arg_vtr));
+            fk_log_debug("before arg_vtr stretch: len: %zu\n", fk_vtr_len(conn->arg_vtr));
 #endif
             fk_vtr_stretch(conn->arg_vtr, (size_t)(conn->arg_parsed));
 #ifdef FK_DEBUG
-            fk_log_debug("after arg_vtr stretch: len: %" PRIu32 "\n", fk_vtr_len(conn->arg_vtr));
+            fk_log_debug("after arg_vtr stretch: len: %zu\n", fk_vtr_len(conn->arg_vtr));
 #endif
 
             fk_buf_low_inc(rbuf, (size_t)(end - start + 1));

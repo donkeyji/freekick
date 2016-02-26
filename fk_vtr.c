@@ -5,7 +5,7 @@
 #include <fk_vtr.h>
 
 
-fk_vtr_t *fk_vtr_create(uint32_t init_len)
+fk_vtr_t *fk_vtr_create(size_t init_len)
 {
     fk_vtr_t *vtr;
 
