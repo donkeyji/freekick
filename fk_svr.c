@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <stdint.h>
 
 /* system headers */
 #include <sys/types.h>
@@ -273,6 +274,7 @@ void fk_svr_init(void)
     server.dbcnt = setting.dbcnt;
 
     /* create global environment */
+    server.arch = sizeof(uintptr_t) == 4 ? 32 : 64;
     server.save_pid = -1;/* -1 is a invalid pid */
     server.start_time = time(NULL);
     server.last_save = time(NULL);

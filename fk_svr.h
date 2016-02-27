@@ -85,6 +85,7 @@ typedef struct {
 } fk_conn_t;
 
 typedef struct {
+    uint32_t arch;/* 32 or 64 */
     int listen_fd;
     unsigned conn_cnt;/* connection count */
     time_t start_time;
