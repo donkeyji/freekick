@@ -63,8 +63,8 @@ typedef struct {
 typedef struct {
     int stop;
     unsigned max_files;
-    uint64_t ioev_cnt;
-    uint64_t tmev_cnt;
+    size_t ioev_cnt;
+    size_t tmev_cnt;
     /* use min_heap to save timer ev */
     fk_heap_t *timer_heap;
 
