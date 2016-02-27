@@ -388,7 +388,7 @@ int fk_conf_parse_dbcnt(fk_cfline_t *line)
         return FK_CONF_ERR;
     }
     dbcnt = atoi(fk_str_raw(line->fields[1]));
-    setting.dbcnt = (unsigned)dbcnt;
+    setting.dbcnt = (uint32_t)dbcnt;
     return FK_CONF_OK;
 }
 

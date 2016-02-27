@@ -20,7 +20,7 @@ static void fk_zline_alloc(fk_zline_t *buf, size_t len);
 static void fk_zline_destroy(fk_zline_t *buf);
 
 /* related to dump */
-static int fk_fkdb_dump(FILE *fp, unsigned db_idx);
+static int fk_fkdb_dump(FILE *fp, uint32_t db_idx);
 static int fk_fkdb_dump_str_elt(FILE *fp, fk_elt_t *elt);
 static int fk_fkdb_dump_list_elt(FILE *fp, fk_elt_t *elt);
 static int fk_fkdb_dump_dict_elt(FILE *fp, fk_elt_t *elt);
@@ -69,7 +69,7 @@ int fk_fkdb_save(void)
 {
     int rt;
     FILE *fp;
-    unsigned i;
+    uint32_t i;
     char *temp_db;
 
     temp_db = "freekick-temp.db";
@@ -104,7 +104,7 @@ int fk_fkdb_save(void)
  * to do:
  * error handling
  */
-int fk_fkdb_dump(FILE *fp, unsigned db_idx)
+int fk_fkdb_dump(FILE *fp, uint32_t db_idx)
 {
     fk_elt_t *elt;
     int type, rt;
@@ -392,9 +392,10 @@ void fk_fkdb_load(fk_str_t *db_file)
 int fk_fkdb_restore(FILE *fp, fk_zline_t *buf)
 {
     int rt;
+    uint32_t idx;
+    unsigned type;
     fk_dict_t *db;
     size_t cnt, i, rz;
-    unsigned type, idx;
 
     /*
      * to do:

@@ -94,7 +94,7 @@ typedef struct {
     fk_tmev_t *svr_timer;
     fk_tmev_t *svr_timer2;
     fk_conn_t **conns_tab;
-    unsigned dbcnt;
+    uint32_t dbcnt;
     fk_dict_t **db;
     pid_t save_pid;/* -1: the save child process ended */
 

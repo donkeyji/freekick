@@ -22,7 +22,7 @@ typedef struct {
     int dump;
     fk_str_t *db_file;
     fk_str_t *dir;
-    unsigned dbcnt;
+    uint32_t dbcnt;
     size_t max_wbuf;
     int blog_on;
     fk_str_t *blog_file;

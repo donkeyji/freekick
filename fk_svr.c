@@ -220,7 +220,7 @@ void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 
 int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 {
-    unsigned i;
+    uint32_t i;
 
     server.timer_cnt++;
 
@@ -260,7 +260,7 @@ int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
 
 void fk_svr_init(void)
 {
-    unsigned i;
+    uint32_t i;
     int blog_loaded;
 
     /* protocol sub module */
