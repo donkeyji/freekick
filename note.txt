@@ -275,3 +275,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 106. 与内存或者文件长度相关的值，需要以字节计算的用size_t；与对象个数相关的值用uint32_t/uint64_t；二者之间的转换呢???
 
 107. atoi替换成strtol/strtoul等。
+
+108. size_t的目的：增加程序的可移植性。32bit gcc: typedef unsigned int, 64bit gcc: typedef long unsigned int。size_t覆盖了当前系统下最大的内存范围。
