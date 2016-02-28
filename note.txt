@@ -274,6 +274,14 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 
 106. 与内存或者文件长度相关的值，需要以字节计算的用size_t；与对象个数相关的值用uint32_t/uint64_t；二者之间的转换呢???
 
-107. atoi替换成strtol/strtoul等。
+107. atoi替换成strtol/strtoul等???
 
-108. size_t的目的：增加程序的可移植性。32bit gcc: typedef unsigned int, 64bit gcc: typedef long unsigned int。size_t覆盖了当前系统下最大的内存范围。
+108. size_t的目的：增加程序的可移植性。32bit gcc: typedef unsigned int, 64bit gcc: typedef long unsigned int。size_t覆盖了当前系统下最大的内存寻址范围，任意内存对象的最大长度都可以用size_t表示。
+
+109. intmax_t/uintmax_t: 最大的integer类型，具体是哪种类型在stdint.h中给出了typedef。
+
+110. ptrdiff_t: 用来表示两个指针的差，长度与size_t其实是一样的，由预定义宏__PTROFF_TYPE__决定，64bit gcc: typedef long int ptroff_t, 32bit gcc: typedef int ptroff_t。
+
+111. wchar_t: 可以容纳所有支持的locale的字符，由预定义宏__WCHAR_TYPE__决定，64bit和32bit gcc: typedef int wchar_t。
+
+112. c标准规定: sizeof(char) >= 1, sizeof(short) >= 2, sizeof(int) >= 2, sizeof(long) >= 4。
