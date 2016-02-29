@@ -1,3 +1,5 @@
+#include <fk_env.h>
+
 /* c standard library headers */
 #include <signal.h>
 #include <time.h>
@@ -16,7 +18,6 @@
 #include <sys/resource.h>
 
 /* local headers */
-#include <fk_env.h>
 #include <fk_conf.h>
 #include <fk_log.h>
 #include <fk_mem.h>

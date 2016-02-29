@@ -19,7 +19,7 @@ static int fk_epoll_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_epoll_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout);
 
-fk_mpxop epoll_op = {
+fk_mpxop_t epoll_op = {
     "epoll",
     fk_epoll_create,
     fk_epoll_add,
@@ -37,7 +37,7 @@ void *fk_epoll_create(int max_files)
         return NULL;
     }
 
-    iompx = (fk_epoll_t *)fk_mem_alloc(sizeof(fk_epoll));
+    iompx = (fk_epoll_t *)fk_mem_alloc(sizeof(fk_epoll_t));
 
     iompx->max_evs = max_files;
     iompx->efd = efd;

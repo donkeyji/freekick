@@ -1,3 +1,5 @@
+#include <fk_env.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -6,7 +8,6 @@
 
 #include <sys/time.h>
 
-#include <fk_env.h>
 #include <fk_ev.h>
 #include <fk_list.h>
 #include <fk_mem.h>
