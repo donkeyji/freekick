@@ -299,3 +299,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 118. 不能完全按照c标准的规定：不知道具体的char/short/int/long/long long的长度，不知道float/double/long double的具体长度和范围，要在具体的编译器实现下来写程序，不要期望写出能在所有平台上移植的代码。
 
 119. 目前已知的符合posix的类unix系统和gcc的实现下，内置类型都是一样的，只要32bit和64bit的差异，所以只要调用符合posix的接口并且注意32bit与64bit的差别即可。
+
+120. linux下feature_test_macros来控制是否暴露一些系统头文件总的接口和类型，必须在包含任何头文件之前来define这些macros来起作用。
