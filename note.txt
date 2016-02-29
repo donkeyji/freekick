@@ -291,3 +291,11 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 114. 与库函数参数相关的变量，尽量采取与其参数类型一致的类型。与系统的struct成员相关的变量，尽量采取与其成员类型一致的类型。用于fk_list_t/fk_heap_t的容器的计数的变量可以用uint32_t/uint64_t等确定长度的类型。twemproxy中强行的将uint8_t转换为char，依次来调用库函数，这样做不好吧???
 
 115. 在具体的OS和gcc平台下code，需要知道每一个内置类型char/shor/int/long/float/double/long double的长度及其能表示的范围。对于标准库函数和system call中涉及到的数据类型，不要强行转换为内置类型，而用sys/types.h中定义的类型来表示。
+
+116. 同样的os，同样的gcc，考虑32bit和64bit间的移植：内置类型就long不一样长度，指针长度不一样。
+
+117. 不同的os，调用符合posix的接口函数，考虑移植：尽量使用sys/types.h中的那些预定义类型，不要用强行转换为内置类型。
+
+118. 不能完全按照c标准的规定：不知道具体的char/short/int/long/long long的长度，不知道float/double/long double的具体长度和范围，要在具体的编译器实现下来写程序，不要期望写出能在所有平台上移植的代码。
+
+119. 目前已知的符合posix的类unix系统和gcc的实现下，内置类型都是一样的，只要32bit和64bit的差异，所以只要调用符合posix的接口并且注意32bit与64bit的差别即可。
