@@ -11,7 +11,7 @@ static int fk_poll_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_poll_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout);
 
-fk_mpxop poll_op = {
+fk_mpxop_t poll_op = {
     "poll",
     fk_poll_create,
     fk_poll_add,
@@ -24,7 +24,7 @@ void *fk_poll_create(int max_files)
     int i;
     fk_poll_t *iompx;
 
-    iompx = (fk_poll_t *)fk_mem_alloc(sizeof(fk_poll));
+    iompx = (fk_poll_t *)fk_mem_alloc(sizeof(fk_poll_t));
     iompx->evlist = (struct pollfd *)fk_mem_alloc(sizeof(struct pollfd) * max_files);
     bzero(iompx->evlist, sizeof(struct pollfd) * max_files);
     iompx->last = 0;
