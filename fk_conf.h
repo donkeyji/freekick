@@ -14,7 +14,7 @@ typedef struct {
     uint16_t port;
     fk_str_t *addr;
     int daemon;
-    unsigned max_conn;
+    int max_conns;
     time_t timeout;
     int log_level;
     fk_str_t *log_path;

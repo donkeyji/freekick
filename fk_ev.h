@@ -54,7 +54,7 @@ fk_rawlist_def(fk_tmev_t, fk_tmev_list_t);
 
 typedef struct {
     char *iompx_name;/* fk_str_t is not used here, because it's easier to use char* here */
-    void *(*iompx_create)(unsigned max_files);
+    void *(*iompx_create)(int max_files);
     int (*iompx_add)(void *iompx, int fd, uint8_t type);
     int (*iompx_remove)(void *iompx, int fd, uint8_t type);
     int (*iompx_dispatch)(void *iompx, struct timeval *timeout);
@@ -62,7 +62,7 @@ typedef struct {
 
 typedef struct {
     int stop;
-    unsigned max_files;
+    int max_files;
     size_t ioev_cnt;
     size_t tmev_cnt;
     /* use min_heap to save timer ev */
@@ -82,7 +82,7 @@ typedef struct {
     void *iompx;
 } fk_evmgr_t;
 
-void fk_ev_init(unsigned max_files);
+void fk_ev_init(int max_files);
 int fk_ev_dispatch(void);
 void fk_ev_cycle(void);
 void fk_ev_stop(void);

@@ -8,13 +8,13 @@
 
 typedef struct {
     int kfd;
-    unsigned max_evs;
+    int max_evs;
     struct kevent kev;
     struct kevent *evlist;
     //uint8_t *emask;/* no need for kqueue */
 } fk_kqueue_t;
 
-static void *fk_kqueue_create(unsigned max_files);
+static void *fk_kqueue_create(int max_files);
 static int fk_kqueue_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout);
@@ -27,7 +27,7 @@ fk_mpxop_t kqueue_op = {
     fk_kqueue_dispatch
 };
 
-void *fk_kqueue_create(unsigned max_files)
+void *fk_kqueue_create(int max_files)
 {
     int kfd;
     fk_kqueue_t *iompx;

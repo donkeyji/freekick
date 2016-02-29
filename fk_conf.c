@@ -128,7 +128,7 @@ void fk_conf_init(char *conf_path)
     /* step 1: set default first */
     setting.port = FK_DEFAULT_PORT;
     setting.daemon = FK_DEFAULT_DAEMON;
-    setting.max_conn = FK_DEFAULT_MAX_CONN;
+    setting.max_conns = FK_DEFAULT_MAX_CONN;
     setting.log_level = FK_DEFAULT_LOG_LEVEL;
     setting.dbcnt = FK_DEFAULT_DB_CNT;
     setting.log_path = fk_str_create(FK_DEFAULT_LOG_PATH, sizeof(FK_DEFAULT_LOG_PATH) - 1);
@@ -366,15 +366,14 @@ int fk_conf_parse_dbfile(fk_cfline_t *line)
 
 int fk_conf_parse_maxconn(fk_cfline_t *line)
 {
-    int rt, max_conn;
+    int rt;
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
         sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
         return FK_CONF_ERR;
     }
-    max_conn = atoi(fk_str_raw(line->fields[1]));
-    setting.max_conn = (unsigned)max_conn;
+    setting.max_conns = atoi(fk_str_raw(line->fields[1]));
     return FK_CONF_OK;
 }
 

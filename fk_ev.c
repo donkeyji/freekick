@@ -56,7 +56,7 @@ static fk_leaf_op_t tmev_op = {
     fk_tmev_cmp
 };
 
-void fk_ev_init(unsigned max_files)
+void fk_ev_init(int max_files)
 {
     evmgr.stop = 0;/* never stop */
     evmgr.max_files = max_files;

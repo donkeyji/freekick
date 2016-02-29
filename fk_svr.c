@@ -194,7 +194,7 @@ void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
             /* any other errno to handle??? */
         }
         /* anything wrong by closing the fd directly? */
-        if (server.conn_cnt == setting.max_conn) {
+        if (server.conn_cnt == setting.max_conns) {
             fk_log_warn("beyond max connections\n");
             close(fd);
             continue;
@@ -206,10 +206,10 @@ void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 
         fk_svr_add_conn(fd);
 #ifdef FK_DEBUG
-        fk_log_debug("conn_cnt: %u, max_conn: %u\n", server.conn_cnt, setting.max_conn);
+        fk_log_debug("conn_cnt: %u, max_conns: %u\n", server.conn_cnt, setting.max_conns);
 #endif
         /* why redis do like below? */
-        //if (server.conn_cnt > server.max_conn) {
+        //if (server.conn_cnt > server.max_conns) {
         //fk_log_info("beyond max connections\n");
         //fk_svr_remove_conn(fk_svr_conn_get(fd));
         //return;
@@ -280,7 +280,7 @@ void fk_svr_init(void)
     server.last_save = time(NULL);
     server.conn_cnt = 0;
     server.timer_cnt = 0;
-    server.conns_tab = (fk_conn_t **)fk_mem_alloc(sizeof(fk_conn_t *) * fk_util_conns_to_files(setting.max_conn));
+    server.conns_tab = (fk_conn_t **)fk_mem_alloc(sizeof(fk_conn_t *) * fk_util_conns_to_files(setting.max_conns));
     server.listen_fd = fk_sock_create_tcp_listen(fk_str_raw(setting.addr), setting.port);
     if (server.listen_fd == FK_SOCK_ERR) {
         fk_log_error("server listen socket creating failed: %s\n", strerror(errno));

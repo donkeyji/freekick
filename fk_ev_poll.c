@@ -6,7 +6,7 @@ typedef struct {
     int *fd2idx;
 } fk_poll_t;
 
-static void *fk_poll_create(unsigned max_files);
+static void *fk_poll_create(int max_files);
 static int fk_poll_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_poll_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout);
@@ -19,7 +19,7 @@ fk_mpxop poll_op = {
     fk_poll_dispatch
 };
 
-void *fk_poll_create(unsigned max_files)
+void *fk_poll_create(int max_files)
 {
     int i;
     fk_poll_t *iompx;

@@ -127,10 +127,10 @@ void fk_setrlimit(void)
 {
     int rt;
     pid_t euid;
+    rlim_t max_files;
     struct rlimit lmt;
-    unsigned max_files;
 
-    max_files = fk_util_conns_to_files(setting.max_conn);
+    max_files = (rlim_t)fk_util_conns_to_files(setting.max_conns);
     rt = getrlimit(RLIMIT_NOFILE, &lmt);
     if (rt < 0) {
         fk_log_error("getrlimit: %s\n", strerror(errno));
@@ -142,6 +142,10 @@ void fk_setrlimit(void)
      */
     fk_log_info("original file number limit: rlim_cur = %"PRIu64", rlim_max = %"PRIu64"\n", (uint64_t)(lmt.rlim_cur), (uint64_t)(lmt.rlim_max));
 
+    /* 
+     * convert built-in type "int" to "rlim_t" type 
+     * make sure this conversion is right
+     */
     if (max_files > lmt.rlim_max) {
         euid = geteuid();
         if (euid == 0) {/* root */
@@ -168,8 +172,8 @@ void fk_setrlimit(void)
                 exit(EXIT_FAILURE);
             }
             /* set current limit to the original setting */
-            setting.max_conn = fk_util_files_to_conns(max_files);
-            fk_log_info("change the setting.max_conn according the current file number limit: %u\n", setting.max_conn);
+            setting.max_conns = (int)fk_util_files_to_conns(max_files);
+            fk_log_info("change the setting.max_conns according the current file number limit: %u\n", setting.max_conns);
         }
     }
 }
@@ -265,7 +269,7 @@ void fk_main_init(char *conf_path)
 
     fk_cache_init();
 
-    fk_ev_init(fk_util_conns_to_files(setting.max_conn));
+    fk_ev_init(fk_util_conns_to_files(setting.max_conns));
 
     fk_svr_init();
 }

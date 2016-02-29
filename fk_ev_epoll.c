@@ -8,13 +8,13 @@
 
 typedef struct {
     int efd;
-    unsigned max_evs;
+    int max_evs;
     struct epoll_event ev;/* temporary variable */
     struct epoll_event *evlist;
     uint8_t *emask;/* to track event associated to fd */
 } fk_epoll_t;
 
-static void *fk_epoll_create(unsigned max_files);
+static void *fk_epoll_create(int max_files);
 static int fk_epoll_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_epoll_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout);
@@ -27,7 +27,7 @@ fk_mpxop epoll_op = {
     fk_epoll_dispatch
 };
 
-void *fk_epoll_create(unsigned max_files)
+void *fk_epoll_create(int max_files)
 {
     int efd;
     fk_epoll_t *iompx;
