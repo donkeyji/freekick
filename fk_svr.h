@@ -90,7 +90,7 @@ typedef struct {
     unsigned conn_cnt;/* connection count */
     time_t start_time;
     time_t last_save;
-    unsigned long long timer_cnt;
+    uint64_t timer_cnt;
     fk_ioev_t *listen_ev;
     fk_tmev_t *svr_timer;
     fk_tmev_t *svr_timer2;

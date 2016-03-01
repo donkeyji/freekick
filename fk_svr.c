@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 /* system headers */
 #include <sys/types.h>
@@ -225,7 +226,7 @@ int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 
     server.timer_cnt++;
 
-    fk_log_info("[timer 1]conn cnt: %u, timer_cnt: %llu, last_save: %zu\n, iompx: %s\n", server.conn_cnt, server.timer_cnt, server.last_save, fk_ev_iompx_name());
+    fk_log_info("[timer 1]conn cnt: %u, timer_cnt: %"PRIu64", last_save: %zu\n, iompx: %s\n", server.conn_cnt, server.timer_cnt, server.last_save, fk_ev_iompx_name());
     for (i = 0; i < server.dbcnt; i++) {
         fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
     }
