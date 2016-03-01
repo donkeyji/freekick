@@ -58,7 +58,7 @@ static fk_leaf_op_t tmev_op = {
 
 void fk_ev_init(int max_files)
 {
-    evmgr.stop = 0;/* never stop */
+    evmgr.stop = false;/* never stop */
     evmgr.max_files = max_files;
     evmgr.ioev_cnt = 0;
     evmgr.tmev_cnt = 0;
@@ -129,14 +129,14 @@ int fk_ev_dispatch(void)
 
 void fk_ev_cycle(void)
 {
-    while (evmgr.stop != 1) {
+    while (!evmgr.stop) {
         fk_ev_dispatch();/* we donot care the retrun value of fk_ev_dispatch() */
     }
 }
 
 void fk_ev_stop(void)
 {
-    evmgr.stop = 1;
+    evmgr.stop = true;
 }
 
 int fk_ev_add_ioev(fk_ioev_t *ioev)

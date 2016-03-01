@@ -1,6 +1,7 @@
 #ifndef _FK_EV_H_
 #define _FK_EV_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <sys/time.h>
@@ -61,7 +62,7 @@ typedef struct {
 } fk_mpxop_t;
 
 typedef struct {
-    int stop;
+    bool stop;
     int max_files;
     size_t ioev_cnt;
     size_t tmev_cnt;
