@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <strings.h>
 
+#include <strings.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/socket.h>

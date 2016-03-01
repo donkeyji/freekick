@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
 #include <stdint.h>
 #include <assert.h>
+
+#include <strings.h>
 
 #include <fk_str.h>
 #include <fk_dict.h>

@@ -1,5 +1,3 @@
-#include <fk_env.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,6 +20,7 @@
 #endif
 #endif
 
+#include <fk_env.h>
 #include <fk_mem.h>
 
 /*

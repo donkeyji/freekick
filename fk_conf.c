@@ -1,10 +1,13 @@
+/* feature test macros */
+#include <fk_ftm.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <limits.h>
-#include <strings.h>
 
+#include <strings.h>
 #include <sys/types.h>
 
 #include <fk_conf.h>
