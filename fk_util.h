@@ -1,13 +1,15 @@
 #ifndef _FK_UTIL_H_
 #define _FK_UTIL_H_
 
+#include <stdint.h>
+
 #include <sys/time.h>
 
 /*
  * no unified status code for this module
  */
 
-void fk_util_cal_expire(struct timeval *tv, unsigned interval);
+void fk_util_cal_expire(struct timeval *tv, uint32_t interval);
 int fk_util_is_positive_seq(const char *start, size_t len);
 int fk_util_is_nonminus_seq(const char *start, size_t len);
 int fk_util_is_digit_seq(const char *start, size_t len);
@@ -16,10 +18,10 @@ size_t fk_util_decimal_digit(int num);
 
 #define fk_util_tv2millis(tv) 	((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
-#define fk_util_millis2tv(ms, tv)				\
-	do {										\
-		(tv)->tv_sec = (ms) / 1000;				\
-		(tv)->tv_usec = ((ms) % 1000) * 1000;	\
+#define fk_util_millis2tv(ms, tv)				                \
+	do {										                \
+		(tv)->tv_sec = (time_t)((ms) / 1000);				    \
+		(tv)->tv_usec = (suseconds_t)(((ms) % 1000) * 1000);	\
 	} while (0)
 
 #define fk_util_tv2ts(tv, ts)	TIMEVAL_TO_TIMESPEC((tv), (ts))
