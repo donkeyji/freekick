@@ -37,7 +37,7 @@
 
 typedef struct {
     unsigned no;/* line number */
-    unsigned cnt;/* the cnt field to parse */
+    uint32_t cnt;/* the cnt field to parse */
     size_t len;
     char *buf;
     char err[FK_CONF_MAX_LEN];
@@ -46,7 +46,7 @@ typedef struct {
 
 typedef struct {/* directive */
     char *name;
-    unsigned field_cnt;
+    uint32_t field_cnt;
     int (*handler) (fk_cfline_t *line);
 } fk_dtv;
 
@@ -226,7 +226,7 @@ int fk_conf_parse_line(fk_cfline_t *line)
 
     while (buf[i] != '\n') {
         if (line->cnt == FK_CONF_MAX_FIELDS) {
-            sprintf(line->err, "the max fields of one line should not be more than %d, line: %d\n", FK_CONF_MAX_FIELDS, line->no);
+            sprintf(line->err, "the max fields of one line should not be more than %d, line: %u\n", FK_CONF_MAX_FIELDS, line->no);
             return FK_CONF_ERR;
         }
         while (buf[i] == ' ' || buf[i] == '\t') {/* fint the first no empty character */
@@ -277,11 +277,11 @@ int fk_conf_proc_line(fk_cfline_t *line)
     cmd = line->fields[0];
     dtv = fk_conf_search(cmd);
     if (dtv == NULL) {
-        sprintf(line->err, "no this cmd: %s, line: %d\n", fk_str_raw(cmd), line->no);
+        sprintf(line->err, "no this cmd: %s, line: %u\n", fk_str_raw(cmd), line->no);
         return FK_CONF_ERR;
     }
     if (dtv->field_cnt != line->cnt) {
-        sprintf(line->err, "field cnt wrong. line: %d\n", line->no);
+        sprintf(line->err, "field cnt wrong. line: %u\n", line->no);
         return FK_CONF_ERR;
     }
     rt = dtv->handler(line);
@@ -317,7 +317,7 @@ int fk_conf_parse_port(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
-        sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
+        sprintf(line->err, "port is not a valid number. line: %u\n", line->no);
         return FK_CONF_ERR;
     }
     /*
@@ -327,7 +327,7 @@ int fk_conf_parse_port(fk_cfline_t *line)
      */
     port = atoi(fk_str_raw(line->fields[1]));
     if (port <= 0 || port > 65535) {
-        sprintf(line->err, "port is not a valid number. line: %d\n", line->no);
+        sprintf(line->err, "port is not a valid number. line: %u\n", line->no);
         return FK_CONF_ERR;
     }
     setting.port = (uint16_t)port;
@@ -373,7 +373,7 @@ int fk_conf_parse_maxconn(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
-        sprintf(line->err, "maxconn is not a valid number. line: %d\n", line->no);
+        sprintf(line->err, "maxconn is not a valid number. line: %u\n", line->no);
         return FK_CONF_ERR;
     }
     setting.max_conns = atoi(fk_str_raw(line->fields[1]));
@@ -386,7 +386,7 @@ int fk_conf_parse_dbcnt(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
-        sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
+        sprintf(line->err, "dbcnt is not a valid number. line: %u\n", line->no);
         return FK_CONF_ERR;
     }
     dbcnt = atoi(fk_str_raw(line->fields[1]));
@@ -415,7 +415,7 @@ int fk_conf_parse_loglevel(fk_cfline_t *line)
     } else if (strcasecmp(level, "error") == 0) {
         setting.log_level = FK_LOG_ERROR;
     } else {
-        sprintf(line->err, "no this log level: %s, line: %d", level, line->no);
+        sprintf(line->err, "no this log level: %s, line: %u", level, line->no);
         return FK_CONF_ERR;
     }
     return FK_CONF_OK;
@@ -427,7 +427,7 @@ int fk_conf_parse_timeout(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
-        sprintf(line->err, "dbcnt is not a valid number. line: %d\n", line->no);
+        sprintf(line->err, "dbcnt is not a valid number. line: %u\n", line->no);
         return FK_CONF_ERR;
     }
     timeout = atoi(fk_str_raw(line->fields[1]));
@@ -449,7 +449,7 @@ int fk_conf_parse_maxwbuf(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
-        sprintf(line->err, "maxwbuf is not a valid number. line: %d\n", line->no);
+        sprintf(line->err, "maxwbuf is not a valid number. line: %u\n", line->no);
         return FK_CONF_ERR;
     }
     maxwbuf = atoi(fk_str_raw(line->fields[1]));
