@@ -39,8 +39,8 @@ typedef struct fk_tmev_s fk_tmev_t;
 struct fk_tmev_s {
     FK_HEAP_LEAF_HEADER;/* for heap */
 
-    int16_t expired;/* whether in the expired list */
     uint8_t type;/* FK_TMEV_CYCLE|FK_TMEV_ONCE */
+    int16_t expired;/* whether in the expired list */
     uint32_t interval;/* milliseconds */
     struct timeval when;/* save the trigger point time: now + timeout */
     void *arg;/* ext arg */
