@@ -105,7 +105,7 @@ typedef struct {
 
 typedef struct {
     char *name;
-    int type;
+    uint16_t type;
     int arg_cnt;
     int (*handler) (fk_conn_t *conn);
 } fk_proto;
