@@ -27,7 +27,7 @@ typedef struct fk_ioev_s fk_ioev_t;
 struct fk_ioev_s {
     int fd;
     uint8_t type;/* FK_IOEV_READ|FK_IOEV_WRITE */
-    int activated;/* whether in activated list */
+    int16_t activated;/* whether in activated list */
     void *arg;
     fk_ioev_cb iocb;
 
