@@ -87,7 +87,7 @@ typedef struct {
 typedef struct {
     uint32_t arch;/* 32 or 64 */
     int listen_fd;
-    unsigned conn_cnt;/* connection count */
+    int conn_cnt;/* connection count */
     time_t start_time;
     time_t last_save;
     uint64_t timer_cnt;

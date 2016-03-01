@@ -207,7 +207,7 @@ void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 
         fk_svr_add_conn(fd);
 #ifdef FK_DEBUG
-        fk_log_debug("conn_cnt: %u, max_conns: %u\n", server.conn_cnt, setting.max_conns);
+        fk_log_debug("conn_cnt: %d, max_conns: %d\n", server.conn_cnt, setting.max_conns);
 #endif
         /* why redis do like below? */
         //if (server.conn_cnt > server.max_conns) {
@@ -226,7 +226,7 @@ int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 
     server.timer_cnt++;
 
-    fk_log_info("[timer 1]conn cnt: %u, timer_cnt: %"PRIu64", last_save: %zu\n, iompx: %s\n", server.conn_cnt, server.timer_cnt, server.last_save, fk_ev_iompx_name());
+    fk_log_info("[timer 1]conn cnt: %d, timer_cnt: %"PRIu64", last_save: %zu\n, iompx: %s\n", server.conn_cnt, server.timer_cnt, server.last_save, fk_ev_iompx_name());
     for (i = 0; i < server.dbcnt; i++) {
         fk_log_info("[timer 1]db %d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
     }
