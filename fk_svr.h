@@ -65,7 +65,7 @@
 #define FK_CONN_FAKE	1
 typedef struct {
     int fd;
-    int type;/* FK_CONN_REAL | FK_CONN_FAKE */
+    uint16_t type;/* FK_CONN_REAL | FK_CONN_FAKE */
     fk_ioev_t *read_ev;
     fk_ioev_t *write_ev;
     int write_added;
