@@ -60,7 +60,7 @@ void fk_item_put_free(fk_item_t *itm)
 }
 */
 
-fk_item_t *fk_item_create(uint16_t type, void *entity)
+fk_item_t *fk_item_create(uint8_t type, void *entity)
 {
     fk_item_t *itm;
     itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t));
