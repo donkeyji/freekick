@@ -143,7 +143,7 @@ void fk_setrlimit(void)
      * the type "rlim_t" has different size in linux from mac,
      * so just convert "rlim_t" to "unsigned long long"
      */
-    fk_log_info("original file number limit: rlim_cur = %"PRIu64", rlim_max = %"PRIu64"\n", (uint64_t)(lmt.rlim_cur), (uint64_t)(lmt.rlim_max));
+    fk_log_info("original file number limit: rlim_cur = %"PRIuMAX", rlim_max = %"PRIuMAX"\n", (uintmax_t)(lmt.rlim_cur), (uintmax_t)(lmt.rlim_max));
 
     /* 
      * convert built-in type "int" to "rlim_t" type 
