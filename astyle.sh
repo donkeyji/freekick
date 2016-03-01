@@ -7,7 +7,8 @@ fi
 echo files
 
 indent_options='-di1 -cd1 --no-tabs -c1 -cd1'
-astyle_options='-A10 -s4 -l -Y -m0 -p -H -j -k3 -n'
+#astyle_options='-A10 -s4 -l -Y -m0 -p -H -j -k3 -n'
+astyle_options='-A10 -s4 -Y -m0 -p -H -j -k3 -n'
 
 for f in $files; do
     #indent $indent_options $f

@@ -3,7 +3,7 @@
 
 /*
  * linux feature test macros
- * no other headers should be included before these 
+ * no other headers should be included before these
  * feature test macros definitons
  * for sigaction/getline
  */

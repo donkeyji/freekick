@@ -145,8 +145,8 @@ void fk_setrlimit(void)
      */
     fk_log_info("original file number limit: rlim_cur = %"PRIuMAX", rlim_max = %"PRIuMAX"\n", (uintmax_t)(lmt.rlim_cur), (uintmax_t)(lmt.rlim_max));
 
-    /* 
-     * convert built-in type "int" to "rlim_t" type 
+    /*
+     * convert built-in type "int" to "rlim_t" type
      * make sure this conversion is right
      */
     if (max_files > lmt.rlim_max) {
