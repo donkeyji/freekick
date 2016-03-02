@@ -52,12 +52,12 @@ void fk_buf_print(const fk_buf_t *buf);
 	}										\
 }
 
-#define fk_buf_stretch(buf)		{				\
-	if ((buf)->len < (buf)->highwat) {			\
-		(buf)->len <<= 1;						\
+#define fk_buf_stretch(buf)		{				    \
+	if ((buf)->len < (buf)->highwat) {			    \
+		(buf)->len <<= 1;						    \
 		(buf) = (fk_buf_t *)fk_mem_realloc((buf),	\
-				sizeof(fk_buf_t) + (buf)->len);	\
-	}											\
+				sizeof(fk_buf_t) + (buf)->len);	    \
+	}											    \
 }
 
 #define fk_buf_shift(buf) 	{			\
