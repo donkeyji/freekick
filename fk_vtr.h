@@ -12,11 +12,11 @@ typedef struct {
 fk_vtr_t *fk_vtr_create(size_t init_len);
 void fk_vtr_destroy(fk_vtr_t *vtr);
 
-#define fk_vtr_len(vtr)		((vtr)->len)
+#define fk_vtr_len(vtr)		        ((vtr)->len)
 
 #define fk_vtr_set(vtr, idx, val)	((vtr)->array)[(idx)] = (val);
 
-#define fk_vtr_get(vtr, idx)	((vtr)->array)[(idx)]
+#define fk_vtr_get(vtr, idx)	    ((vtr)->array)[(idx)]
 
 #define fk_vtr_stretch(vtr, length)		do {						\
 	if ((length) > (vtr)->len) {									\
