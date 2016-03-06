@@ -17,11 +17,11 @@ typedef struct {					\
 
 #define fk_rawlist_destroy(lst)		fk_mem_free((lst))
 
-#define fk_rawlist_head(lst)	((lst)->head)
+#define fk_rawlist_head(lst)	    ((lst)->head)
 
-#define fk_rawlist_tail(lst)	((lst)->tail)
+#define fk_rawlist_tail(lst)	    ((lst)->tail)
 
-#define fk_rawlist_len(lst)		((lst)->len)
+#define fk_rawlist_len(lst)		    ((lst)->len)
 
 #define fk_rawlist_init(lst)	{		\
 	(lst)->head = NULL;					\
@@ -113,8 +113,8 @@ void fk_list_insert_tail(fk_list_t *lst, void *val);
 void fk_list_sorted_insert(fk_list_t *lst, void *val);
 void fk_list_remove_anyone(fk_list_t *lst, fk_node_t *nd);
 
-#define fk_list_insert_head_only	fk_rawlist_insert_head
-#define fk_list_insert_tail_only	fk_rawlist_insert_tail
+#define fk_list_insert_head_only	    fk_rawlist_insert_head
+#define fk_list_insert_tail_only	    fk_rawlist_insert_tail
 #define fk_list_remove_anyone_only		fk_rawlist_remove_anyone
 void fk_list_insert_sorted_only(fk_list_t *lst, fk_node_t *nd);
 
@@ -124,9 +124,9 @@ fk_list_iter_t *fk_list_iter_begin(fk_list_t *lst, int dir);
 fk_node_t *fk_list_iter_next(fk_list_iter_t *iter);
 void fk_list_iter_end(fk_list_iter_t *iter);
 
-#define fk_list_head fk_rawlist_head
-#define fk_list_tail fk_rawlist_tail
-#define fk_list_len fk_rawlist_len
+#define fk_list_head        fk_rawlist_head
+#define fk_list_tail        fk_rawlist_tail
+#define fk_list_len         fk_rawlist_len
 
 #define fk_node_raw(nd)		((nd)->data)
 
