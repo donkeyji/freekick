@@ -31,7 +31,7 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data);
 void fk_skiplist_remove(fk_skiplist *sl, int score);
 fk_skipnode_t *fk_skiplist_search(fk_skiplist *sl, int score);
 
-#define fk_skiplist_len(sl)	((sl)->len)
+#define fk_skiplist_len(sl)	    ((sl)->len)
 
 #define fk_skiplist_level(sl)	((sl)->level)
 
