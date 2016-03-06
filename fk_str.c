@@ -136,4 +136,3 @@ uint32_t fk_str_hash(const fk_str_t *str)
     }
     return hash;
 }
-
