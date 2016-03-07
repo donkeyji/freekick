@@ -15,7 +15,7 @@ typedef struct {
     int id;
     char b;
     int a;
-} foo;
+} foo_t;
 
 #define LEN 1024*1024*5
 
@@ -27,7 +27,7 @@ void t_pool(void)
 
     a = malloc(sizeof(void *) * LEN);
 
-    fk_pool *pool = fk_pool_create(sizeof(foo), 1024);
+    fk_pool_t *pool = fk_pool_create(sizeof(foo_t), 1024);
     t1 = clock();
     for (i = 0; i < LEN; i++) {
         a[i] = fk_pool_malloc(pool);
@@ -44,7 +44,7 @@ void t_pool(void)
 
     t1 = clock();
     for (i = 0; i < LEN; i++) {
-        a[i] = malloc(sizeof(foo));
+        a[i] = malloc(sizeof(foo_t));
     }
     t2 = clock();
     printf("time used for malloc: %lu\n", t2 - t1);
@@ -60,20 +60,20 @@ void t_pool(void)
 void t_dict(void)
 {
     fk_elt_t *elt;
-    fk_dict *dd = fk_dict_create();
+    fk_dict_t *dd = fk_dict_create(NULL);
     printf("11111111\n");
-    fk_str *ss = fk_str_create("huge", 4);
-    fk_str *gg = fk_str_create("ooxx", 4);
+    fk_str_t *ss = fk_str_create("huge", 4);
+    fk_str_t *gg = fk_str_create("ooxx", 4);
     fk_item_t *oo = fk_item_create(FK_ITEM_STR, gg);
 
     fk_dict_add(dd, ss, oo);
 
-    fk_dict_iter *iter = fk_dict_iter_begin(dd);
+    fk_dict_iter_t *iter = fk_dict_iter_begin(dd);
     printf("22222222\n");
     while ((elt = fk_dict_iter_next(iter)) != NULL) {
-        ss = (fk_str *)(elt->key);
+        ss = (fk_str_t *)(elt->key);
         oo = (fk_item_t *)(elt->value);
-        gg = (fk_str *)fk_item_raw(oo);
+        gg = (fk_str_t *)fk_item_raw(oo);
         printf("%s\n", fk_str_raw(ss));
         printf("%s\n", fk_str_raw(gg));
     }
@@ -87,7 +87,7 @@ int int_cmp(void *a, void *b)
     return x - y;
 }
 
-fk_node_op oopp = {
+fk_node_op_t oopp = {
     NULL,
     NULL,
     int_cmp
@@ -96,14 +96,14 @@ fk_node_op oopp = {
 void t_list(void)
 {
     int i;
-    fk_node *nd;
+    fk_node_t *nd;
     int x[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    fk_list *ll = fk_list_create(&oopp);
+    fk_list_t *ll = fk_list_create(&oopp);
     for (i = 0; i < 10; i++) {
         fk_list_insert_head(ll, x + i);
     }
     printf("list len: %zu\n", ll->len);
-    fk_list_iter *iter = fk_list_iter_begin(ll, FK_LIST_ITER_H2T);
+    fk_list_iter_t *iter = fk_list_iter_begin(ll, FK_LIST_ITER_H2T);
     nd = fk_list_iter_next(iter);
     while (nd != NULL) {
         printf("%d\n", *(int *)(nd->data));
