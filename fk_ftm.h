@@ -9,13 +9,11 @@
  */
 #if defined(__linux__)
 
-#define _POSIX_SOURCE
-
-#define _GNU_SOURCE
-
+/* for sigaction */
 #define _POSIX_C_SOURCE 200809L
 
-#define _XOPEN_SOURCE
+/* for getline */
+#define _GNU_SOURCE
 
 #endif
 
