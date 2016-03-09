@@ -10,7 +10,7 @@
 #if defined(__linux__)
 
 /* for sigaction */
-#define _POSIX_C_SOURCE 200809L
+#define _XOPEN_SOURCE
 
 /* for getline */
 #define _GNU_SOURCE
