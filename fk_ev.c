@@ -56,7 +56,8 @@ static fk_leaf_op_t tmev_op = {
     fk_tmev_cmp
 };
 
-void fk_ev_init(int max_files)
+void
+fk_ev_init(int max_files)
 {
     evmgr.stop = false;/* never stop */
     evmgr.max_files = max_files;
@@ -83,7 +84,8 @@ void fk_ev_init(int max_files)
     }
 }
 
-int fk_ev_dispatch(void)
+int
+fk_ev_dispatch(void)
 {
     int rt;
     fk_tmev_t *tmev;
@@ -127,19 +129,22 @@ int fk_ev_dispatch(void)
     return FK_EV_OK;
 }
 
-void fk_ev_cycle(void)
+void
+fk_ev_cycle(void)
 {
     while (!evmgr.stop) {
         fk_ev_dispatch();/* we donot care the retrun value of fk_ev_dispatch() */
     }
 }
 
-void fk_ev_stop(void)
+void
+fk_ev_stop(void)
 {
     evmgr.stop = true;
 }
 
-int fk_ev_add_ioev(fk_ioev_t *ioev)
+int
+fk_ev_add_ioev(fk_ioev_t *ioev)
 {
     int fd, rt;
     uint8_t type;
@@ -169,7 +174,8 @@ int fk_ev_add_ioev(fk_ioev_t *ioev)
     return FK_EV_OK;
 }
 
-int fk_ev_remove_ioev(fk_ioev_t *ioev)
+int
+fk_ev_remove_ioev(fk_ioev_t *ioev)
 {
     int fd, rt;
     uint8_t type;
@@ -204,12 +210,14 @@ int fk_ev_remove_ioev(fk_ioev_t *ioev)
     return FK_EV_OK;
 }
 
-char *fk_ev_iompx_name(void)
+char *
+fk_ev_iompx_name(void)
 {
     return mpxop->iompx_name;
 }
 
-fk_ioev_t *fk_ioev_create(int fd, uint8_t type, void *arg, fk_ioev_cb iocb)
+fk_ioev_t *
+fk_ioev_create(int fd, uint8_t type, void *arg, fk_ioev_cb iocb)
 {
     fk_ioev_t *ioev;
 
@@ -225,12 +233,14 @@ fk_ioev_t *fk_ioev_create(int fd, uint8_t type, void *arg, fk_ioev_cb iocb)
     return ioev;
 }
 
-void fk_ioev_destroy(fk_ioev_t *ioev)
+void
+fk_ioev_destroy(fk_ioev_t *ioev)
 {
     fk_mem_free(ioev);
 }
 
-fk_tmev_t *fk_tmev_create(uint32_t interval, uint8_t type, void *arg, fk_tmev_cb tmcb)
+fk_tmev_t *
+fk_tmev_create(uint32_t interval, uint8_t type, void *arg, fk_tmev_cb tmcb)
 {
     fk_tmev_t *tmev;
 
@@ -248,13 +258,15 @@ fk_tmev_t *fk_tmev_create(uint32_t interval, uint8_t type, void *arg, fk_tmev_cb
     return tmev;
 }
 
-void fk_tmev_destroy(fk_tmev_t *tmev)
+void
+fk_tmev_destroy(fk_tmev_t *tmev)
 {
     /* just free memory, no other things to do */
     fk_mem_free(tmev);
 }
 
-int fk_ev_add_tmev(fk_tmev_t *tmev)
+int
+fk_ev_add_tmev(fk_tmev_t *tmev)
 {
     fk_heap_t *tmhp;
 
@@ -273,7 +285,8 @@ int fk_ev_add_tmev(fk_tmev_t *tmev)
 /*
  * when tmev->expired == FK_TMEV_OLD, this interface also works
  */
-int fk_ev_remove_tmev(fk_tmev_t *tmev)
+int
+fk_ev_remove_tmev(fk_tmev_t *tmev)
 {
     /* this means the tmev has never been added */
     if (fk_tmev_get_stat(tmev) == FK_TMEV_INIT) {
@@ -299,7 +312,8 @@ int fk_ev_remove_tmev(fk_tmev_t *tmev)
     return FK_EV_OK;
 }
 
-void fk_ev_update_pending_tmev(void)
+void
+fk_ev_update_pending_tmev(void)
 {
     int cmp;
     fk_leaf_t *root;
@@ -323,7 +337,8 @@ void fk_ev_update_pending_tmev(void)
     }
 }
 
-void fk_ev_proc_expired_tmev(void)
+void
+fk_ev_proc_expired_tmev(void)
 {
     int rt;
     void *arg;
@@ -364,7 +379,8 @@ void fk_ev_proc_expired_tmev(void)
     }
 }
 
-void fk_ev_proc_activated_ioev(void)
+void
+fk_ev_proc_activated_ioev(void)
 {
     int fd;
     void *arg;
@@ -394,7 +410,8 @@ void fk_ev_proc_activated_ioev(void)
     }
 }
 
-fk_tmev_t *fk_ev_get_nearest_tmev(void)
+fk_tmev_t *
+fk_ev_get_nearest_tmev(void)
 {
     void *root;
     fk_tmev_t *tmev;
@@ -404,7 +421,8 @@ fk_tmev_t *fk_ev_get_nearest_tmev(void)
     return tmev;
 }
 
-void fk_ev_activate_ioev(int fd, uint8_t type)
+void
+fk_ev_activate_ioev(int fd, uint8_t type)
 {
     fk_ioev_t *rioev, *wioev;
 
@@ -433,7 +451,8 @@ void fk_ev_activate_ioev(int fd, uint8_t type)
     }
 }
 
-int fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2)
+int
+fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2)
 {
     fk_tmev_t *t1, *t2;
 
@@ -443,7 +462,8 @@ int fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2)
 }
 
 #ifdef FK_DEBUG
-void fk_ev_stat(void)
+void
+fk_ev_stat(void)
 {
     fprintf(stdout, "[event statistics]ioev_cnt: %zu, tmev_cnt: %zu\n", evmgr.ioev_cnt, evmgr.tmev_cnt);
 }
