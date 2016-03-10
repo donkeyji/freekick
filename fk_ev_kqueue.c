@@ -42,7 +42,7 @@ void *fk_kqueue_create(int max_files)
     iompx->kfd = kfd;
     iompx->evlist = (struct kevent *)fk_mem_alloc(sizeof(struct kevent) * iompx->max_evs);
     //iompx->emask = (uint8_t *)fk_mem_alloc(sizeof(uint8_t *) * max_files);
-    //bzero(iompx->emask, sizeof(uint8_t *) * max_files);
+    //memset(iompx->emask, 0, sizeof(uint8_t *) * max_files);
 
     return iompx;
 }
