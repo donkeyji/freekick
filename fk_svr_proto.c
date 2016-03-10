@@ -42,7 +42,8 @@ static fk_elt_op_t proto_dict_eop = {
     NULL
 };
 
-void fk_proto_init(void)
+void
+fk_proto_init(void)
 {
     int i;
     char *name;
@@ -72,7 +73,8 @@ void fk_proto_init(void)
 #endif
 }
 
-fk_proto *fk_proto_search(fk_str_t *name)
+fk_proto *
+fk_proto_search(fk_str_t *name)
 {
     fk_proto *pto;
 
@@ -81,7 +83,8 @@ fk_proto *fk_proto_search(fk_str_t *name)
     return pto;
 }
 
-uint32_t fk_proto_dict_key_hash(void *key)
+uint32_t
+fk_proto_dict_key_hash(void *key)
 {
     fk_str_t *s;
 
@@ -89,7 +92,8 @@ uint32_t fk_proto_dict_key_hash(void *key)
     return fk_str_hash(s);
 }
 
-int fk_proto_dict_key_cmp(void *k1, void *k2)
+int
+fk_proto_dict_key_cmp(void *k1, void *k2)
 {
     fk_str_t *s1, *s2;
 
