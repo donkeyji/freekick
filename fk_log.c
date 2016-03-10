@@ -31,7 +31,8 @@ static fk_log_t logger = {
  * if fk_log_init() is not invoked, fk_log_info/error/debug/warn can also be called,
  * when the log is redirected to stdout
  */
-void fk_log_init(char *log_path, int log_level)
+void
+fk_log_init(char *log_path, int log_level)
 {
     FILE *fp;
 
@@ -44,27 +45,32 @@ void fk_log_init(char *log_path, int log_level)
     logger.log_file = fp;
 }
 
-void fk_log_error(char *fmt, ...)
+void
+fk_log_error(char *fmt, ...)
 {
     fk_log_write(FK_LOG_ERROR);
 }
 
-void fk_log_warn(char *fmt, ...)
+void
+fk_log_warn(char *fmt, ...)
 {
     fk_log_write(FK_LOG_WARN);
 }
 
-void fk_log_info(char *fmt, ...)
+void
+fk_log_info(char *fmt, ...)
 {
     fk_log_write(FK_LOG_INFO);
 }
 
-void fk_log_debug(char *fmt, ...)
+void
+fk_log_debug(char *fmt, ...)
 {
     fk_log_write(FK_LOG_DEBUG);
 }
 
-void fk_log_fprint_str(int level, char *data)
+void
+fk_log_fprint_str(int level, char *data)
 {
     time_t now;
     char *level_name;
