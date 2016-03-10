@@ -43,7 +43,8 @@ static void fk_main_cycle(void);
 static void fk_main_exit(void);
 
 /*
-static void fk_daemon_run_old(void)
+static void
+fk_daemon_run_old(void)
 {
     if (setting.daemon == 1) {
         if (daemon(1, 0) < 0) {
@@ -53,7 +54,8 @@ static void fk_daemon_run_old(void)
 }
 */
 
-void fk_daemonize(void)
+void
+fk_daemonize(void)
 {
     int  fd;
 
@@ -108,7 +110,8 @@ void fk_daemonize(void)
     }
 }
 
-void fk_create_pidfile(void)
+void
+fk_create_pidfile(void)
 {
     pid_t pid;
     FILE *pid_file;
@@ -126,7 +129,8 @@ void fk_create_pidfile(void)
     fclose(pid_file);
 }
 
-void fk_setrlimit(void)
+void
+fk_setrlimit(void)
 {
     int rt;
     pid_t euid;
@@ -181,12 +185,14 @@ void fk_setrlimit(void)
     }
 }
 
-void fk_set_seed(void)
+void
+fk_set_seed(void)
 {
     srand(time(NULL));
 }
 
-void fk_set_pwd(void)
+void
+fk_set_pwd(void)
 {
     int rt;
 
@@ -198,7 +204,8 @@ void fk_set_pwd(void)
     fk_log_info("change working diretory to %s\n", fk_str_raw(setting.dir));
 }
 
-void fk_signal_exit_handler(int sig)
+void
+fk_signal_exit_handler(int sig)
 {
     /*
      * maybe some other process in other modules, like:
@@ -208,7 +215,8 @@ void fk_signal_exit_handler(int sig)
     fk_svr_signal_exit_handler(sig);
 }
 
-void fk_signal_child_handler(int sig)
+void
+fk_signal_child_handler(int sig)
 {
     /*
      * maybe some other process in other modules, like:
@@ -218,7 +226,8 @@ void fk_signal_child_handler(int sig)
     fk_svr_signal_child_handler(sig);
 }
 
-void fk_signal_register(void)
+void
+fk_signal_register(void)
 {
     int rt;
     struct sigaction sa;
@@ -245,7 +254,8 @@ void fk_signal_register(void)
     }
 }
 
-void fk_main_init(char *conf_path)
+void
+fk_main_init(char *conf_path)
 {
     /* the first to init */
     fk_conf_init(conf_path);
@@ -277,12 +287,14 @@ void fk_main_init(char *conf_path)
     fk_svr_init();
 }
 
-void fk_main_cycle(void)
+void
+fk_main_cycle(void)
 {
     fk_ev_cycle();
 }
 
-void fk_main_exit(void)
+void
+fk_main_exit(void)
 {
     /* maybe some other fk_xxx_exit() to call here */
     fk_svr_exit();
@@ -290,7 +302,8 @@ void fk_main_exit(void)
     //exit(EXIT_SUCCESS);
 }
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
     char *conf_path;
 
