@@ -6,13 +6,15 @@
 /* save free fk_node_t */
 static fk_free_nodes_t *free_nodes = NULL;
 
-void fk_cache_init(void)
+void
+fk_cache_init(void)
 {
     free_nodes = fk_rawlist_create(fk_free_nodes_t);
     fk_rawlist_init(free_nodes);
 }
 
-fk_node_t *fk_cache_get_free_node(void)
+fk_node_t *
+fk_cache_get_free_node(void)
 {
     fk_node_t *nd;
 
@@ -31,7 +33,8 @@ fk_node_t *fk_cache_get_free_node(void)
     return nd;
 }
 
-void fk_cache_put_free_node(fk_node_t *nd)
+void
+fk_cache_put_free_node(fk_node_t *nd)
 {
     nd->prev = NULL;
     nd->next = NULL;
