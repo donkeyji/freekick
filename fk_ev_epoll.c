@@ -44,7 +44,7 @@ void *fk_epoll_create(int max_files)
 
     iompx->evlist = (struct epoll_event *)fk_mem_alloc(sizeof(struct epoll_event) * iompx->max_evs);
     iompx->emask = (uint8_t *)fk_mem_alloc(sizeof(uint8_t *) * iompx->max_evs);
-    bzero(iompx->emask, sizeof(uint8_t *) * iompx->max_evs);
+    memset(iompx->emask, 0, sizeof(uint8_t *) * iompx->max_evs);
 
     return iompx;
 }
