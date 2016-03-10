@@ -31,7 +31,8 @@ static size_t total_alloc = 0;
 
 static void fk_mem_panic(void);
 
-void *fk_mem_alloc(size_t size)
+void *
+fk_mem_alloc(size_t size)
 {
     void *ptr;
     size_t real_size;
@@ -45,7 +46,8 @@ void *fk_mem_alloc(size_t size)
     return ptr;
 }
 
-void *fk_mem_calloc(size_t count, size_t size)
+void *
+fk_mem_calloc(size_t count, size_t size)
 {
     void *ptr;
     size_t real_size;
@@ -59,7 +61,8 @@ void *fk_mem_calloc(size_t count, size_t size)
     return ptr;
 }
 
-void *fk_mem_realloc(void *ptr, size_t size)
+void *
+fk_mem_realloc(void *ptr, size_t size)
 {
     void *new_ptr;
     size_t old_size, new_size;
@@ -77,7 +80,8 @@ void *fk_mem_realloc(void *ptr, size_t size)
     return new_ptr;
 }
 
-void fk_mem_free(void *ptr)
+void
+fk_mem_free(void *ptr)
 {
     size_t real_size;
     real_size = fk_mem_malloc_size(ptr);
@@ -86,12 +90,14 @@ void fk_mem_free(void *ptr)
     free(ptr);
 }
 
-size_t fk_mem_get_alloc(void)
+size_t
+fk_mem_get_alloc(void)
 {
     return total_alloc;
 }
 
-void fk_mem_panic(void)
+void
+fk_mem_panic(void)
 {
     fprintf(stderr, "out of memory");
     fflush(stderr);
