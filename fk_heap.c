@@ -33,7 +33,7 @@ void fk_heap_init(fk_heap_t *hp)
 {
     hp->size = FK_HEAP_INIT_SIZE;
     hp->tree = (fk_leaf_t **)fk_mem_alloc(sizeof(fk_leaf_t *) * hp->size);
-    bzero(hp->tree, sizeof(fk_leaf_t *) * hp->size);
+    memset(hp->tree, 0, sizeof(fk_leaf_t *) * hp->size);
     hp->last = 0;
 }
 
@@ -172,6 +172,6 @@ void fk_heap_stretch(fk_heap_t *hp)
     new_size = hp->size << 1;/* double size */
     hp->tree = (fk_leaf_t **)fk_mem_realloc(hp->tree, sizeof(fk_leaf_t *) * new_size);
     /* initialize the new allocated memory */
-    bzero(hp->tree + hp->size, sizeof(fk_leaf_t *) * hp->size);
+    memset(hp->tree + hp->size, 0, sizeof(fk_leaf_t *) * hp->size);
     hp->size = new_size;
 }
