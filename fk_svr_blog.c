@@ -6,15 +6,18 @@
 static void fk_blog_write_argcnt(void);
 static void fk_blog_write_arg(void);
 
-void fk_blog_init(void)
+void
+fk_blog_init(void)
 {
 }
 
-void fk_blog_load(fk_str_t *blog_path)
+void
+fk_blog_load(fk_str_t *blog_path)
 {
 }
 
-void fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto *pto)
+void
+fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto *pto)
 {
     int i;
     fk_item_t *arg;
@@ -32,10 +35,12 @@ void fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto *pto)
     }
 }
 
-void fk_blog_write_argcnt(void)
+void
+fk_blog_write_argcnt(void)
 {
 }
 
-void fk_blog_write_arg(void)
+void
+fk_blog_write_arg(void)
 {
 }
