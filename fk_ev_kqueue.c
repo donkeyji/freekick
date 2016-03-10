@@ -27,7 +27,8 @@ fk_mpxop_t kqueue_op = {
     fk_kqueue_dispatch
 };
 
-void *fk_kqueue_create(int max_files)
+void *
+fk_kqueue_create(int max_files)
 {
     int kfd;
     fk_kqueue_t *iompx;
@@ -47,7 +48,8 @@ void *fk_kqueue_create(int max_files)
     return iompx;
 }
 
-int fk_kqueue_add(void *ev_iompx, int fd, uint8_t type)
+int
+fk_kqueue_add(void *ev_iompx, int fd, uint8_t type)
 {
     int rt;
     fk_kqueue_t *iompx;
@@ -83,7 +85,8 @@ int fk_kqueue_add(void *ev_iompx, int fd, uint8_t type)
     return FK_EV_OK;
 }
 
-int fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type)
+int
+fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type)
 {
     int rt;
     fk_kqueue_t *iompx;
@@ -119,7 +122,8 @@ int fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type)
     return FK_EV_OK;
 }
 
-int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
+int
+fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 {
     int i, nfds;
     uint8_t type;
