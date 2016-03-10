@@ -99,7 +99,8 @@ static fk_dtv dtv_map[] = {
 /* global variable, referencd by other modules */
 fk_conf_t setting;
 
-fk_cfline_t *fk_cfline_create(void)
+fk_cfline_t *
+fk_cfline_create(void)
 {
     fk_cfline_t *line = (fk_cfline_t *)fk_mem_alloc(sizeof(fk_cfline_t));
     line->no = 0;/* line number */
@@ -111,7 +112,8 @@ fk_cfline_t *fk_cfline_create(void)
     return line;
 }
 
-void fk_cfline_destroy(fk_cfline_t *line)
+void
+fk_cfline_destroy(fk_cfline_t *line)
 {
     unsigned i;
 
@@ -126,7 +128,8 @@ void fk_cfline_destroy(fk_cfline_t *line)
     fk_mem_free(line);
 }
 
-void fk_conf_init(char *conf_path)
+void
+fk_conf_init(char *conf_path)
 {
     int rt;
     /* step 1: set default first */
@@ -156,7 +159,8 @@ void fk_conf_init(char *conf_path)
     }
 }
 
-int fk_conf_parse_file(char *conf_path)
+int
+fk_conf_parse_file(char *conf_path)
 {
     int rt;
     FILE *fp;
@@ -204,7 +208,8 @@ int fk_conf_parse_file(char *conf_path)
     return FK_CONF_OK;
 }
 
-int fk_conf_read_line(fk_cfline_t *line, FILE *fp)
+int
+fk_conf_read_line(fk_cfline_t *line, FILE *fp)
 {
     int rt;
 
@@ -217,7 +222,8 @@ int fk_conf_read_line(fk_cfline_t *line, FILE *fp)
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_line(fk_cfline_t *line)
+int
+fk_conf_parse_line(fk_cfline_t *line)
 {
     char *buf;
     size_t i, start, end;
@@ -252,7 +258,8 @@ int fk_conf_parse_line(fk_cfline_t *line)
     return FK_CONF_OK;
 }
 
-fk_dtv *fk_conf_search(fk_str_t *name)
+fk_dtv *
+fk_conf_search(fk_str_t *name)
 {
     unsigned i;
 
@@ -265,7 +272,8 @@ fk_dtv *fk_conf_search(fk_str_t *name)
     return NULL;
 }
 
-int fk_conf_proc_line(fk_cfline_t *line)
+int
+fk_conf_proc_line(fk_cfline_t *line)
 {
     int rt;
     fk_str_t *cmd;
@@ -293,7 +301,8 @@ int fk_conf_proc_line(fk_cfline_t *line)
     return FK_CONF_OK;
 }
 
-void fk_conf_reset_line(fk_cfline_t *line)
+void
+fk_conf_reset_line(fk_cfline_t *line)
 {
     unsigned i;
 
@@ -312,7 +321,8 @@ void fk_conf_reset_line(fk_cfline_t *line)
     }
 }
 
-int fk_conf_parse_port(fk_cfline_t *line)
+int
+fk_conf_parse_port(fk_cfline_t *line)
 {
     int rt, port;
 
@@ -335,40 +345,46 @@ int fk_conf_parse_port(fk_cfline_t *line)
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_daemon(fk_cfline_t *line)
+int
+fk_conf_parse_daemon(fk_cfline_t *line)
 {
     setting.daemon = 1;
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_dump(fk_cfline_t *line)
+int
+fk_conf_parse_dump(fk_cfline_t *line)
 {
     setting.dump = 1;
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_pidpath(fk_cfline_t *line)
+int
+fk_conf_parse_pidpath(fk_cfline_t *line)
 {
     fk_str_destroy(setting.pid_path);
     setting.pid_path = fk_str_clone(line->fields[1]);
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_logpath(fk_cfline_t *line)
+int
+fk_conf_parse_logpath(fk_cfline_t *line)
 {
     fk_str_destroy(setting.log_path);
     setting.log_path = fk_str_clone(line->fields[1]);
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_dbfile(fk_cfline_t *line)
+int
+fk_conf_parse_dbfile(fk_cfline_t *line)
 {
     fk_str_destroy(setting.db_file);
     setting.db_file = fk_str_clone(line->fields[1]);
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_maxconn(fk_cfline_t *line)
+int
+fk_conf_parse_maxconn(fk_cfline_t *line)
 {
     int rt;
 
@@ -381,7 +397,8 @@ int fk_conf_parse_maxconn(fk_cfline_t *line)
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_dbcnt(fk_cfline_t *line)
+int
+fk_conf_parse_dbcnt(fk_cfline_t *line)
 {
     int rt, dbcnt;
 
@@ -395,14 +412,16 @@ int fk_conf_parse_dbcnt(fk_cfline_t *line)
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_addr(fk_cfline_t *line)
+int
+fk_conf_parse_addr(fk_cfline_t *line)
 {
     fk_str_destroy(setting.addr);
     setting.addr = fk_str_clone(line->fields[1]);
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_loglevel(fk_cfline_t *line)
+int
+fk_conf_parse_loglevel(fk_cfline_t *line)
 {
     char *level;
 
@@ -422,7 +441,8 @@ int fk_conf_parse_loglevel(fk_cfline_t *line)
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_timeout(fk_cfline_t *line)
+int
+fk_conf_parse_timeout(fk_cfline_t *line)
 {
     int rt, timeout;
 
@@ -437,14 +457,16 @@ int fk_conf_parse_timeout(fk_cfline_t *line)
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_dir(fk_cfline_t *line)
+int
+fk_conf_parse_dir(fk_cfline_t *line)
 {
     fk_str_destroy(setting.dir);/* release the default value */
     setting.dir = fk_str_clone(line->fields[1]);
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_maxwbuf(fk_cfline_t *line)
+int
+fk_conf_parse_maxwbuf(fk_cfline_t *line)
 {
     int rt, maxwbuf;
 
@@ -458,14 +480,16 @@ int fk_conf_parse_maxwbuf(fk_cfline_t *line)
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_blogfile(fk_cfline_t *line)
+int
+fk_conf_parse_blogfile(fk_cfline_t *line)
 {
     fk_str_destroy(setting.blog_file);
     setting.blog_file = fk_str_clone(line->fields[1]);
     return FK_CONF_OK;
 }
 
-int fk_conf_parse_blogon(fk_cfline_t *line)
+int
+fk_conf_parse_blogon(fk_cfline_t *line)
 {
     setting.blog_on = 1;
     return FK_CONF_OK;
