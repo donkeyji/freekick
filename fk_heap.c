@@ -15,7 +15,8 @@ static void fk_heap_stretch(fk_heap_t *hp);
 static void fk_heap_init(fk_heap_t *hp);
 static void fk_heap_clear(fk_heap_t *hp);
 
-fk_heap_t *fk_heap_create(fk_leaf_op_t *lop)
+fk_heap_t *
+fk_heap_create(fk_leaf_op_t *lop)
 {
     fk_heap_t *hp;
 
@@ -29,7 +30,8 @@ fk_heap_t *fk_heap_create(fk_leaf_op_t *lop)
     return hp;
 }
 
-void fk_heap_init(fk_heap_t *hp)
+void
+fk_heap_init(fk_heap_t *hp)
 {
     hp->size = FK_HEAP_INIT_SIZE;
     hp->tree = (fk_leaf_t **)fk_mem_alloc(sizeof(fk_leaf_t *) * hp->size);
@@ -37,7 +39,8 @@ void fk_heap_init(fk_heap_t *hp)
     hp->last = 0;
 }
 
-void fk_heap_empty(fk_heap_t *hp)
+void
+fk_heap_empty(fk_heap_t *hp)
 {
     fk_heap_clear(hp);
 
@@ -45,7 +48,8 @@ void fk_heap_empty(fk_heap_t *hp)
 }
 
 /* only remove all the existing leaves */
-void fk_heap_clear(fk_heap_t *hp)
+void
+fk_heap_clear(fk_heap_t *hp)
 {
     size_t i;
 
@@ -55,13 +59,15 @@ void fk_heap_clear(fk_heap_t *hp)
     fk_mem_free(hp->tree);
 }
 
-void fk_heap_destroy(fk_heap_t *hp)
+void
+fk_heap_destroy(fk_heap_t *hp)
 {
     fk_heap_clear(hp);
     fk_mem_free(hp);
 }
 
-void fk_heap_remove(fk_heap_t *hp, fk_leaf_t *leaf)
+void
+fk_heap_remove(fk_heap_t *hp, fk_leaf_t *leaf)
 {
     int cmp;
     size_t i, j, idx;
@@ -114,7 +120,8 @@ void fk_heap_remove(fk_heap_t *hp, fk_leaf_t *leaf)
     }
 }
 
-fk_leaf_t *fk_heap_pop(fk_heap_t *hp)
+fk_leaf_t *
+fk_heap_pop(fk_heap_t *hp)
 {
     fk_leaf_t *root;
 
@@ -128,7 +135,8 @@ fk_leaf_t *fk_heap_pop(fk_heap_t *hp)
     return root;
 }
 
-void fk_heap_push(fk_heap_t *hp, fk_leaf_t *leaf)
+void
+fk_heap_push(fk_heap_t *hp, fk_leaf_t *leaf)
 {
     int cmp;
     size_t i;
@@ -157,7 +165,8 @@ void fk_heap_push(fk_heap_t *hp, fk_leaf_t *leaf)
     }
 }
 
-fk_leaf_t *fk_heap_root(fk_heap_t *hp)
+fk_leaf_t *
+fk_heap_root(fk_heap_t *hp)
 {
     if (hp->last == 0) {
         return NULL;
@@ -165,7 +174,8 @@ fk_leaf_t *fk_heap_root(fk_heap_t *hp)
     return hp->tree[1];/* the first item as the root */
 }
 
-void fk_heap_stretch(fk_heap_t *hp)
+void
+fk_heap_stretch(fk_heap_t *hp)
 {
     size_t new_size;
 
