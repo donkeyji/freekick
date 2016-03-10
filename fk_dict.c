@@ -73,7 +73,7 @@ void fk_dict_init(fk_dict_t *dct)
     dct->limit = dct->size >> 1;/* when up to 50%, it should extend space */
     dct->used = 0;
     dct->buckets = (fk_elt_list_t **)fk_mem_alloc(sizeof(fk_elt_list_t) * FK_DICT_INIT_SIZE);
-    bzero(dct->buckets, sizeof(fk_elt_list_t *) * FK_DICT_INIT_SIZE);
+    memset(dct->buckets, 0, sizeof(fk_elt_list_t *) * FK_DICT_INIT_SIZE);
 }
 
 /*
@@ -261,7 +261,7 @@ int fk_dict_stretch(fk_dict_t *dct)
     }
     new_size = dct->size << 1;
     bks = (fk_elt_list_t **)fk_mem_alloc(new_size * sizeof(fk_elt_list_t *));
-    bzero(bks, sizeof(fk_elt_list_t *) * new_size);
+    memset(bks, 0, sizeof(fk_elt_list_t *) * new_size);
 
     /* rehash to the new buckets */
     for (i = 0; i < dct->size; i++) {
