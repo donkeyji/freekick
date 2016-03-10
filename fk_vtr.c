@@ -6,7 +6,8 @@
 #include <fk_vtr.h>
 
 
-fk_vtr_t *fk_vtr_create(size_t init_len)
+fk_vtr_t *
+fk_vtr_create(size_t init_len)
 {
     fk_vtr_t *vtr;
 
@@ -18,7 +19,8 @@ fk_vtr_t *fk_vtr_create(size_t init_len)
     return vtr;
 }
 
-void fk_vtr_destroy(fk_vtr_t *vtr)
+void
+fk_vtr_destroy(fk_vtr_t *vtr)
 {
     fk_mem_free(vtr->array);
     fk_mem_free(vtr);
