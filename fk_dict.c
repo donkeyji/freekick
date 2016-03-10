@@ -55,7 +55,8 @@ static void fk_dict_buckets_print(size_t idx, fk_elt_list_t *lst);
 #endif
 */
 
-fk_dict_t *fk_dict_create(fk_elt_op_t *eop)
+fk_dict_t *
+fk_dict_create(fk_elt_op_t *eop)
 {
     fk_dict_t *dct;
     dct = (fk_dict_t *)fk_mem_alloc(sizeof(fk_dict_t));
@@ -66,7 +67,8 @@ fk_dict_t *fk_dict_create(fk_elt_op_t *eop)
     return dct;
 }
 
-void fk_dict_init(fk_dict_t *dct)
+void
+fk_dict_init(fk_dict_t *dct)
 {
     dct->size = FK_DICT_INIT_SIZE;
     dct->size_mask = dct->size - 1;
@@ -80,7 +82,8 @@ void fk_dict_init(fk_dict_t *dct)
  * free all the elements
  * free all the buckets
  */
-void fk_dict_clear(fk_dict_t *dct)
+void
+fk_dict_clear(fk_dict_t *dct)
 {
     size_t i;
     fk_elt_t *nd;
@@ -107,21 +110,24 @@ void fk_dict_clear(fk_dict_t *dct)
     dct->buckets = NULL;/* mark bucket NULL */
 }
 
-void fk_dict_empty(fk_dict_t *dct)
+void
+fk_dict_empty(fk_dict_t *dct)
 {
     fk_dict_clear(dct);/* only clear all the elements */
 
     fk_dict_init(dct);/* go back to the initial state */
 }
 
-void fk_dict_destroy(fk_dict_t *dct)
+void
+fk_dict_destroy(fk_dict_t *dct)
 {
     fk_dict_clear(dct);
 
     fk_mem_free(dct);/* free dict itself */
 }
 
-fk_elt_t *fk_dict_search(fk_dict_t *dct, void *key, size_t *bidx)
+fk_elt_t *
+fk_dict_search(fk_dict_t *dct, void *key, size_t *bidx)
 {
     int cmp;
     size_t idx;
@@ -149,7 +155,8 @@ fk_elt_t *fk_dict_search(fk_dict_t *dct, void *key, size_t *bidx)
     return NULL;
 }
 
-void *fk_dict_get(fk_dict_t *dct, void *key)
+void *
+fk_dict_get(fk_dict_t *dct, void *key)
 {
     fk_elt_t *elt;
 
@@ -164,7 +171,8 @@ void *fk_dict_get(fk_dict_t *dct, void *key)
 /*
  * if the key exists already, it fails
  */
-int fk_dict_add(fk_dict_t *dct, void *key, void *value)
+int
+fk_dict_add(fk_dict_t *dct, void *key, void *value)
 {
     size_t idx;
     fk_elt_t *elt;
@@ -205,7 +213,8 @@ int fk_dict_add(fk_dict_t *dct, void *key, void *value)
  * 0: key not exists yet
  * 1: key already exists
  */
-int fk_dict_replace(fk_dict_t *dct, void *key, void *value)
+int
+fk_dict_replace(fk_dict_t *dct, void *key, void *value)
 {
     int rt;
     fk_elt_t *elt;
@@ -226,7 +235,8 @@ int fk_dict_replace(fk_dict_t *dct, void *key, void *value)
     return 1;/* the key exist already */
 }
 
-int fk_dict_remove(fk_dict_t *dct, void *key)
+int
+fk_dict_remove(fk_dict_t *dct, void *key)
 {
     size_t idx;
     fk_elt_t *elt;
@@ -248,7 +258,8 @@ int fk_dict_remove(fk_dict_t *dct, void *key)
     return FK_DICT_OK;
 }
 
-int fk_dict_stretch(fk_dict_t *dct)
+int
+fk_dict_stretch(fk_dict_t *dct)
 {
     fk_elt_t *nd;
     void *key;
@@ -302,7 +313,8 @@ int fk_dict_stretch(fk_dict_t *dct)
 
 /*
 #ifdef FK_DEBUG
-void fk_dict_buckets_print(size_t idx, fk_elt_list_t *lst)
+void
+fk_dict_buckets_print(size_t idx, fk_elt_list_t *lst)
 {
 	fk_elt_t *elt;
 
@@ -315,7 +327,8 @@ void fk_dict_buckets_print(size_t idx, fk_elt_list_t *lst)
 	printf("\n");
 }
 
-void fk_dict_print(fk_dict_t *dct)
+void
+fk_dict_print(fk_dict_t *dct)
 {
 	size_t i;
 	fk_elt_list_t *lst;
@@ -338,7 +351,8 @@ void fk_dict_print(fk_dict_t *dct)
 */
 
 
-fk_dict_iter_t *fk_dict_iter_begin(fk_dict_t *dct)
+fk_dict_iter_t *
+fk_dict_iter_begin(fk_dict_t *dct)
 {
     fk_dict_iter_t *iter;
 
@@ -351,7 +365,8 @@ fk_dict_iter_t *fk_dict_iter_begin(fk_dict_t *dct)
     return iter;
 }
 
-fk_elt_t *fk_dict_iter_next(fk_dict_iter_t *iter)
+fk_elt_t *
+fk_dict_iter_next(fk_dict_iter_t *iter)
 {
     fk_elt_list_t *elst;
 
@@ -380,7 +395,8 @@ fk_elt_t *fk_dict_iter_next(fk_dict_iter_t *iter)
     return NULL;/* all elements have been visited yet */
 }
 
-void fk_dict_iter_end(fk_dict_iter_t *iter)
+void
+fk_dict_iter_end(fk_dict_iter_t *iter)
 {
     fk_mem_free(iter);
 }
