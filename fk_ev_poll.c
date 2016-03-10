@@ -26,7 +26,7 @@ void *fk_poll_create(int max_files)
 
     iompx = (fk_poll_t *)fk_mem_alloc(sizeof(fk_poll_t));
     iompx->evlist = (struct pollfd *)fk_mem_alloc(sizeof(struct pollfd) * max_files);
-    bzero(iompx->evlist, sizeof(struct pollfd) * max_files);
+    memset(iompx->evlist, 0, sizeof(struct pollfd) * max_files);
     iompx->last = 0;
     iompx->fd2idx = (int *)fk_mem_alloc(sizeof(int) * max_files);
     for (i = 0; i < max_files; i++) {
