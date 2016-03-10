@@ -7,7 +7,8 @@
 #include <fk_util.h>
 
 /* interval: millisecond ( 1/1000 sec ) */
-void fk_util_cal_expire(struct timeval *tv, uint32_t interval)
+void
+fk_util_cal_expire(struct timeval *tv, uint32_t interval)
 {
     struct timeval now, itv;
 
@@ -17,7 +18,8 @@ void fk_util_cal_expire(struct timeval *tv, uint32_t interval)
     fk_util_tmval_add(&now, &itv, tv);
 }
 
-int fk_util_is_positive_seq(const char *start, size_t len)
+int
+fk_util_is_positive_seq(const char *start, size_t len)
 {
     const char *p;
 
@@ -38,7 +40,8 @@ int fk_util_is_positive_seq(const char *start, size_t len)
     return 1;
 }
 
-int fk_util_is_nonminus_seq(const char *start, size_t len)
+int
+fk_util_is_nonminus_seq(const char *start, size_t len)
 {
     const char *p;
 
@@ -67,7 +70,8 @@ int fk_util_is_nonminus_seq(const char *start, size_t len)
     return 1;
 }
 
-int fk_util_is_digit_seq(const char *start, size_t len)
+int
+fk_util_is_digit_seq(const char *start, size_t len)
 {
     int i;
     char c;
@@ -98,7 +102,8 @@ int fk_util_is_digit_seq(const char *start, size_t len)
 }
 
 /* if n < 0, return 1 */
-int fk_util_min_power(int n)
+int
+fk_util_min_power(int n)
 {
     uint32_t q;
 
@@ -110,7 +115,8 @@ int fk_util_min_power(int n)
     return 1 << q;
 }
 
-size_t fk_util_decimal_digit(int num)
+size_t
+fk_util_decimal_digit(int num)
 {
     size_t len;
 

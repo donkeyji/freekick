@@ -72,7 +72,8 @@ fk_skipnode_op db_skiplist_op = {
 };
 
 /* -------------------------------------------- */
-uint32_t fk_db_dict_key_hash(void *key)
+uint32_t
+fk_db_dict_key_hash(void *key)
 {
     fk_str_t *s;
     fk_item_t *itm;
@@ -82,7 +83,8 @@ uint32_t fk_db_dict_key_hash(void *key)
     return fk_str_hash(s);
 }
 
-int fk_db_dict_key_cmp(void *k1, void *k2)
+int
+fk_db_dict_key_cmp(void *k1, void *k2)
 {
     fk_str_t *s1, *s2;
     fk_item_t *itm1, *itm2;
@@ -95,7 +97,8 @@ int fk_db_dict_key_cmp(void *k1, void *k2)
     return fk_str_cmp(s1, s2);
 }
 
-void *fk_db_dict_key_copy(void *key)
+void *
+fk_db_dict_key_copy(void *key)
 {
     fk_item_t *itm;
 
@@ -106,7 +109,8 @@ void *fk_db_dict_key_copy(void *key)
     return key;
 }
 
-void fk_db_dict_key_free(void *key)
+void
+fk_db_dict_key_free(void *key)
 {
     fk_item_t *itm;
 
@@ -115,7 +119,8 @@ void fk_db_dict_key_free(void *key)
     fk_item_dec_ref(itm);/* decrease the ref here */
 }
 
-void *fk_db_dict_val_copy(void *val)
+void *
+fk_db_dict_val_copy(void *val)
 {
     fk_item_t *itm;
 
@@ -126,7 +131,8 @@ void *fk_db_dict_val_copy(void *val)
     return val;
 }
 
-void fk_db_dict_val_free(void *val)
+void
+fk_db_dict_val_free(void *val)
 {
     fk_item_t *itm;
     itm = (fk_item_t *)val;
@@ -134,7 +140,8 @@ void fk_db_dict_val_free(void *val)
     fk_item_dec_ref(itm);
 }
 
-void *fk_db_list_val_copy(void *ptr)
+void *
+fk_db_list_val_copy(void *ptr)
 {
     fk_item_t *itm;
 
@@ -146,7 +153,8 @@ void *fk_db_list_val_copy(void *ptr)
 }
 
 /* for lpush/lpop */
-void fk_db_list_val_free(void *ptr)
+void
+fk_db_list_val_free(void *ptr)
 {
     fk_item_t *itm;
 
@@ -155,7 +163,8 @@ void fk_db_list_val_free(void *ptr)
     fk_item_dec_ref(itm);
 }
 
-void *fk_db_skiplist_val_copy(void *ptr)
+void *
+fk_db_skiplist_val_copy(void *ptr)
 {
     fk_item_t *itm;
 
@@ -166,7 +175,8 @@ void *fk_db_skiplist_val_copy(void *ptr)
     return ptr;
 }
 
-void fk_db_skiplist_val_free(void *ptr)
+void
+fk_db_skiplist_val_free(void *ptr)
 {
     fk_item_t *itm;
 
@@ -175,7 +185,8 @@ void fk_db_skiplist_val_free(void *ptr)
     fk_item_dec_ref(itm);
 }
 
-void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
+void
+fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 {
     int fd;
 
@@ -220,7 +231,8 @@ void fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
     return;
 }
 
-int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
+int
+fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 {
     uint32_t i;
 
@@ -242,7 +254,8 @@ int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 }
 
 #ifdef FK_DEBUG
-int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
+int
+fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
 {
     fk_tmev_t *tmev;
 
@@ -260,7 +273,8 @@ int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
 }
 #endif
 
-void fk_svr_init(void)
+void
+fk_svr_init(void)
 {
     uint32_t i;
     int blog_loaded;
@@ -328,7 +342,8 @@ void fk_svr_init(void)
     }
 }
 
-void fk_svr_exit(void)
+void
+fk_svr_exit(void)
 {
     int rt;
 
@@ -357,7 +372,8 @@ void fk_svr_exit(void)
     }
 }
 
-void fk_svr_signal_exit_handler(int sig)
+void
+fk_svr_signal_exit_handler(int sig)
 {
     switch (sig) {
     case SIGINT:
@@ -374,7 +390,8 @@ void fk_svr_signal_exit_handler(int sig)
     //exit(EXIT_SUCCESS);
 }
 
-void fk_svr_signal_child_handler(int sig)
+void
+fk_svr_signal_child_handler(int sig)
 {
     int st;
     pid_t pid;
@@ -390,7 +407,8 @@ void fk_svr_signal_child_handler(int sig)
     fk_log_debug("save db done\n");
 }
 
-int fk_svr_sync_with_master(void)
+int
+fk_svr_sync_with_master(void)
 {
     return FK_SVR_OK;
 }
