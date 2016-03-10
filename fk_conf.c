@@ -106,8 +106,8 @@ fk_cfline_t *fk_cfline_create(void)
     line->cnt = 0;
     line->buf = NULL;
     line->len = 0;
-    bzero(line->err, FK_CONF_MAX_LEN);
-    bzero(line->fields, sizeof(fk_str_t *) * FK_CONF_MAX_FIELDS);
+    memset(line->err, 0, FK_CONF_MAX_LEN);
+    memset(line->fields, 0, sizeof(fk_str_t *) * FK_CONF_MAX_FIELDS);
     return line;
 }
 
