@@ -14,7 +14,7 @@ fk_vtr_t *fk_vtr_create(size_t init_len)
     vtr->init_len = init_len;
     vtr->len = init_len;
     vtr->array = fk_mem_alloc(sizeof(void *) * vtr->init_len);
-    bzero(vtr->array, sizeof(void *) * vtr->init_len);
+    memset(vtr->array, 0, sizeof(void *) * vtr->init_len);
     return vtr;
 }
 

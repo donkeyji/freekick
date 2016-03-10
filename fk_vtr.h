@@ -22,9 +22,9 @@ void fk_vtr_destroy(fk_vtr_t *vtr);
 	if ((length) > (vtr)->len) {									\
 		(vtr)->array = (void **)fk_mem_realloc((vtr)->array,		\
 				sizeof(void *) * (length));							\
-		bzero((vtr)->array + (vtr)->len, 							\
-				sizeof(void *) * 									\
-				((length) - (vtr)->len));							\
+		memset((vtr)->array + (vtr)->len, 							\
+                0,                                                  \
+				sizeof(void *) * ((length) - (vtr)->len));			\
 		(vtr)->len = (length);										\
 	}																\
 } while (0);
