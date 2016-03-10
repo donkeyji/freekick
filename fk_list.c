@@ -33,7 +33,8 @@ static fk_node_op_t default_nop = {
     NULL
 };
 
-fk_list_t *fk_list_create(fk_node_op_t *nop)
+fk_list_t *
+fk_list_create(fk_node_op_t *nop)
 {
     fk_list_t *lst;
 
@@ -48,7 +49,8 @@ fk_list_t *fk_list_create(fk_node_op_t *nop)
 }
 
 
-void fk_list_insert_sorted_only(fk_list_t *lst, fk_node_t *nd)
+void
+fk_list_insert_sorted_only(fk_list_t *lst, fk_node_t *nd)
 {
     int pos;
     fk_node_t *low, *high;
@@ -107,7 +109,8 @@ void fk_list_insert_sorted_only(fk_list_t *lst, fk_node_t *nd)
     return;
 }
 
-fk_list_iter_t *fk_list_iter_begin(fk_list_t *lst, int dir)
+fk_list_iter_t *
+fk_list_iter_begin(fk_list_t *lst, int dir)
 {
     fk_list_iter_t *iter;
 
@@ -120,7 +123,8 @@ fk_list_iter_t *fk_list_iter_begin(fk_list_t *lst, int dir)
     return iter;
 }
 
-fk_node_t *fk_list_iter_next(fk_list_iter_t *iter)
+fk_node_t *
+fk_list_iter_next(fk_list_iter_t *iter)
 {
     if (iter->cur == NULL) {/* the first time to call this function */
         /* from head to tail */
@@ -149,12 +153,14 @@ fk_node_t *fk_list_iter_next(fk_list_iter_t *iter)
     return iter->cur;
 }
 
-void fk_list_iter_end(fk_list_iter_t *iter)
+void
+fk_list_iter_end(fk_list_iter_t *iter)
 {
     fk_mem_free(iter);/* just release the memory */
 }
 
-void fk_list_insert_head(fk_list_t *lst, void *val)
+void
+fk_list_insert_head(fk_list_t *lst, void *val)
 {
     fk_node_t *nd;
 
@@ -165,7 +171,8 @@ void fk_list_insert_head(fk_list_t *lst, void *val)
     fk_list_insert_head_only(lst, nd);
 }
 
-void fk_list_insert_tail(fk_list_t *lst, void *val)
+void
+fk_list_insert_tail(fk_list_t *lst, void *val)
 {
     fk_node_t *nd;
 
@@ -176,7 +183,8 @@ void fk_list_insert_tail(fk_list_t *lst, void *val)
     fk_list_insert_tail_only(lst, nd);
 }
 
-void fk_list_sorted_insert(fk_list_t *lst, void *val)
+void
+fk_list_sorted_insert(fk_list_t *lst, void *val)
 {
     fk_node_t *nd;
 
@@ -187,7 +195,8 @@ void fk_list_sorted_insert(fk_list_t *lst, void *val)
     fk_list_insert_sorted_only(lst, nd);
 }
 
-void fk_list_remove_anyone(fk_list_t *lst, fk_node_t *nd)
+void
+fk_list_remove_anyone(fk_list_t *lst, fk_node_t *nd)
 {
     fk_list_remove_anyone_only(lst, nd);
 
@@ -195,7 +204,8 @@ void fk_list_remove_anyone(fk_list_t *lst, fk_node_t *nd)
     fk_node_destroy(nd);
 }
 
-fk_node_t *fk_list_search(fk_list_t *lst, void *key)
+fk_node_t *
+fk_list_search(fk_list_t *lst, void *key)
 {
     int cmp;
     fk_node_t *nd;
@@ -215,7 +225,8 @@ fk_node_t *fk_list_search(fk_list_t *lst, void *key)
     return NULL;
 }
 
-void fk_list_empty(fk_list_t *lst)
+void
+fk_list_empty(fk_list_t *lst)
 {
     fk_list_clear(lst);
 
@@ -223,7 +234,8 @@ void fk_list_empty(fk_list_t *lst)
 }
 
 /* remove all nodes */
-void fk_list_clear(fk_list_t *lst)
+void
+fk_list_clear(fk_list_t *lst)
 {
     fk_node_t *nd;
 
@@ -234,7 +246,8 @@ void fk_list_clear(fk_list_t *lst)
     }
 }
 
-void fk_list_destroy(fk_list_t *lst)
+void
+fk_list_destroy(fk_list_t *lst)
 {
     fk_list_clear(lst);
 
