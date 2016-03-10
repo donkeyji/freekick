@@ -1,7 +1,8 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-int fk_cmd_hset(fk_conn_t *conn)
+int
+fk_cmd_hset(fk_conn_t *conn)
 {
     int rt;
     fk_dict_t *dct;
@@ -42,7 +43,8 @@ int fk_cmd_hset(fk_conn_t *conn)
     return FK_SVR_OK;
 }
 
-int fk_cmd_hget(fk_conn_t *conn)
+int
+fk_cmd_hget(fk_conn_t *conn)
 {
     int rt;
     fk_dict_t *dct;
