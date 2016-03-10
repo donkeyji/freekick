@@ -31,7 +31,8 @@ static fk_skipnode_op default_skop = {
 
 static int32_t fk_skipnode_rand_level(void);
 
-fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
+fk_skiplist *
+fk_skiplist_create(fk_skipnode_op *skop)
 {
     int i;
     fk_skiplist *sl;
@@ -61,7 +62,8 @@ fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop)
     return sl;
 }
 
-void fk_skiplist_destroy(fk_skiplist *sl)
+void
+fk_skiplist_destroy(fk_skiplist *sl)
 {
     fk_skipnode_t *p, *q;
 
@@ -84,7 +86,8 @@ void fk_skiplist_destroy(fk_skiplist *sl)
 }
 
 /* data: hold the fk_item_t object */
-void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
+void
+fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 {
     int32_t i, nlv;
     fk_skipnode_t *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
@@ -134,7 +137,8 @@ void fk_skiplist_insert(fk_skiplist *sl, int score, void *data)
 }
 
 /* remove node by score */
-void fk_skiplist_remove(fk_skiplist *sl, int score)
+void
+fk_skiplist_remove(fk_skiplist *sl, int score)
 {
     int32_t i;
     fk_skipnode_t *p, *q, *nd, *update[FK_SKLIST_MAX_LEVEL];
@@ -181,7 +185,8 @@ void fk_skiplist_remove(fk_skiplist *sl, int score)
     sl->len--;
 }
 
-fk_skipnode_t *fk_skiplist_search(fk_skiplist *sl, int score)
+fk_skipnode_t *
+fk_skiplist_search(fk_skiplist *sl, int score)
 {
     int32_t i;
     fk_skipnode_t *p, *q;
@@ -204,7 +209,8 @@ fk_skipnode_t *fk_skiplist_search(fk_skiplist *sl, int score)
     return q;
 }
 
-int32_t fk_skipnode_rand_level(void)
+int32_t
+fk_skipnode_rand_level(void)
 {
     int32_t level;
 
