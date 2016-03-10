@@ -3,7 +3,8 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-int fk_cmd_zadd(fk_conn_t *conn)
+int 
+fk_cmd_zadd(fk_conn_t *conn)
 {
     fk_skiplist *sl;
     int score, i, rt;
