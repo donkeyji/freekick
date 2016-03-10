@@ -4,27 +4,32 @@
 static int fk_cmd_generic_push(fk_conn_t *conn, int pos);
 static int fk_cmd_generic_pop(fk_conn_t *conn, int pos);
 
-int fk_cmd_lpush(fk_conn_t *conn)
+int
+fk_cmd_lpush(fk_conn_t *conn)
 {
     return fk_cmd_generic_push(conn, 0);
 }
 
-int fk_cmd_rpush(fk_conn_t *conn)
+int
+fk_cmd_rpush(fk_conn_t *conn)
 {
     return fk_cmd_generic_push(conn, 1);
 }
 
-int fk_cmd_lpop(fk_conn_t *conn)
+int
+fk_cmd_lpop(fk_conn_t *conn)
 {
     return fk_cmd_generic_pop(conn, 0);
 }
 
-int fk_cmd_rpop(fk_conn_t *conn)
+int
+fk_cmd_rpop(fk_conn_t *conn)
 {
     return fk_cmd_generic_pop(conn, 1);
 }
 
-int fk_cmd_llen(fk_conn_t *conn)
+int
+fk_cmd_llen(fk_conn_t *conn)
 {
     int rt, len;
     fk_list_t *lst;
@@ -56,7 +61,8 @@ int fk_cmd_llen(fk_conn_t *conn)
     return FK_SVR_OK;
 }
 
-int fk_cmd_generic_push(fk_conn_t *conn, int pos)
+int
+fk_cmd_generic_push(fk_conn_t *conn, int pos)
 {
     int rt, i;
     fk_list_t *lst;
@@ -108,7 +114,8 @@ int fk_cmd_generic_push(fk_conn_t *conn, int pos)
     return FK_SVR_OK;
 }
 
-int fk_cmd_generic_pop(fk_conn_t *conn, int pos)
+int
+fk_cmd_generic_pop(fk_conn_t *conn, int pos)
 {
     int rt;
     fk_str_t *ss;
