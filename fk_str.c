@@ -10,7 +10,8 @@
  * copy memory from src
  * len: not including '\0'
  */
-fk_str_t *fk_str_create(const char *src, size_t len)
+fk_str_t *
+fk_str_create(const char *src, size_t len)
 {
     fk_str_t *new_one;
 
@@ -21,12 +22,14 @@ fk_str_t *fk_str_create(const char *src, size_t len)
     return new_one;
 }
 
-void fk_str_destroy(fk_str_t *src)
+void
+fk_str_destroy(fk_str_t *src)
 {
     fk_mem_free(src);
 }
 
-fk_str_t *fk_str_clone(const fk_str_t *old_one)
+fk_str_t *
+fk_str_clone(const fk_str_t *old_one)
 {
     fk_str_t *new_one;
 
@@ -37,7 +40,8 @@ fk_str_t *fk_str_clone(const fk_str_t *old_one)
     return new_one;
 }
 
-int fk_str_cmp(const fk_str_t *s1, const fk_str_t *s2)
+int
+fk_str_cmp(const fk_str_t *s1, const fk_str_t *s2)
 {
     int cmp;
     if (s1->len != s2->len) {
@@ -48,7 +52,8 @@ int fk_str_cmp(const fk_str_t *s1, const fk_str_t *s2)
     return cmp;
 }
 
-int fk_str_is_positive(const fk_str_t *str)
+int
+fk_str_is_positive(const fk_str_t *str)
 {
     int rt;
 
@@ -64,7 +69,8 @@ int fk_str_is_positive(const fk_str_t *str)
     }
 }
 
-int fk_str_is_nonminus(const fk_str_t *str)
+int
+fk_str_is_nonminus(const fk_str_t *str)
 {
     int rt;
 
@@ -80,7 +86,8 @@ int fk_str_is_nonminus(const fk_str_t *str)
     }
 }
 
-int fk_str_is_digit(const fk_str_t *str)
+int
+fk_str_is_digit(const fk_str_t *str)
 {
     int rt;
 
@@ -96,7 +103,8 @@ int fk_str_is_digit(const fk_str_t *str)
     }
 }
 
-void fk_str_2upper(fk_str_t *str)
+void
+fk_str_2upper(fk_str_t *str)
 {
     char c;
     size_t i;
@@ -109,7 +117,8 @@ void fk_str_2upper(fk_str_t *str)
     }
 }
 
-void fk_str_2lower(fk_str_t *str)
+void
+fk_str_2lower(fk_str_t *str)
 {
     char c;
     size_t i;
@@ -122,7 +131,8 @@ void fk_str_2lower(fk_str_t *str)
     }
 }
 
-uint32_t fk_str_hash(const fk_str_t *str)
+uint32_t
+fk_str_hash(const fk_str_t *str)
 {
     const char *buf;
     size_t len;
