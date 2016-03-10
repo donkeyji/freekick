@@ -37,21 +37,24 @@ static fk_pool_t *node_pool = NULL;
 static fk_pool_t *obj_pool = NULL;
 static fk_pool_t *str_pool = NULL;
 
-void fk_pool_init(void)
+void
+fk_pool_init(void)
 {
     node_pool = fk_pool_create(sizeof(fk_node_t), 1024);
     obj_pool = fk_pool_create(sizeof(fk_item_t), 1024);
     str_pool = fk_pool_create(sizeof(fk_str_t), 1024);
 }
 
-void fk_pool_exit(void)
+void
+fk_pool_exit(void)
 {
     fk_pool_destroy(node_pool);
     fk_pool_destroy(obj_pool);
     fk_pool_destroy(str_pool);
 }
 
-fk_pool_t *fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
+fk_pool_t *
+fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
 {
     fk_pool_t *pool;
 
@@ -71,7 +74,8 @@ fk_pool_t *fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
     return pool;
 }
 
-void *fk_pool_malloc(fk_pool_t *pool)
+void *
+fk_pool_malloc(fk_pool_t *pool)
 {
     void *ptr;
     fk_block_t *blk;
@@ -98,7 +102,8 @@ void *fk_pool_malloc(fk_pool_t *pool)
     return ptr;
 }
 
-void fk_pool_free(fk_pool_t *pool, void *ptr)
+void
+fk_pool_free(fk_pool_t *pool, void *ptr)
 {
     fk_block_t *cur_blk, *prev_blk;
 
@@ -137,11 +142,13 @@ void fk_pool_free(fk_pool_t *pool, void *ptr)
     }
 }
 
-void fk_pool_destroy(fk_pool_t *pool)
+void
+fk_pool_destroy(fk_pool_t *pool)
 {
 }
 
-fk_block_t *fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
+fk_block_t *
+fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
     uint16_t i;
     uint8_t *ptr;
@@ -163,7 +170,8 @@ fk_block_t *fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
     return blk;
 }
 
-void fk_block_destroy(fk_block_t *blk)
+void
+fk_block_destroy(fk_block_t *blk)
 {
     blk->next = NULL;
     fk_mem_free(blk);
