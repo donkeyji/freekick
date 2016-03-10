@@ -6,7 +6,8 @@
  * I just split the freekick.c into defferent .c files,
  * so just #include <fk_svr.h>
  */
-int fk_cmd_set(fk_conn_t *conn)
+int
+fk_cmd_set(fk_conn_t *conn)
 {
     int rt;
     fk_item_t *key, *value;
@@ -24,7 +25,8 @@ int fk_cmd_set(fk_conn_t *conn)
     return FK_SVR_OK;
 }
 
-int fk_cmd_setnx(fk_conn_t *conn)
+int
+fk_cmd_setnx(fk_conn_t *conn)
 {
     int rt;
     fk_item_t *key, *value;
@@ -49,7 +51,8 @@ int fk_cmd_setnx(fk_conn_t *conn)
     return FK_SVR_OK;
 }
 
-int fk_cmd_mset(fk_conn_t *conn)
+int
+fk_cmd_mset(fk_conn_t *conn)
 {
     int rt, i;
     fk_item_t *key, *value;
@@ -74,7 +77,8 @@ int fk_cmd_mset(fk_conn_t *conn)
     return FK_SVR_OK;
 }
 
-int fk_cmd_mget(fk_conn_t *conn)
+int
+fk_cmd_mget(fk_conn_t *conn)
 {
     int rt, i;
     fk_str_t *ss;
@@ -114,7 +118,8 @@ int fk_cmd_mget(fk_conn_t *conn)
     return FK_SVR_OK;
 }
 
-int fk_cmd_get(fk_conn_t *conn)
+int
+fk_cmd_get(fk_conn_t *conn)
 {
     int rt;
     fk_str_t *ss;
