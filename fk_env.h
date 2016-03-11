@@ -7,6 +7,11 @@
 #endif
 
 #if defined(__linux__)
+#include <features.h>
+#include <linux/version.h>
+#endif
+
+#if defined(__linux__)
 #define FK_HAVE_EPOLL
 #endif
 
