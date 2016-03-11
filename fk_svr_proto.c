@@ -8,27 +8,27 @@ static int fk_proto_dict_key_cmp(void *k1, void *k2);
 
 /* all proto to deal */
 static fk_proto protos[] = {
-    {"SET", 	FK_PROTO_WRITE, 	3, 					fk_cmd_set	 	},
-    {"SETNX", 	FK_PROTO_WRITE, 	3, 					fk_cmd_setnx	},
-    {"MSET", 	FK_PROTO_WRITE,		-3, 				fk_cmd_mset	 	},
-    {"MGET", 	FK_PROTO_READ,		-2, 				fk_cmd_mget	 	},
-    {"GET", 	FK_PROTO_READ, 		2, 					fk_cmd_get	 	},
-    {"DEL", 	FK_PROTO_WRITE,		-2, 				fk_cmd_del	 	},
-    {"FLUSHDB",	FK_PROTO_WRITE, 	1, 					fk_cmd_flushdb	},
-    {"EXISTS",	FK_PROTO_READ, 		2, 					fk_cmd_exists	},
-    {"FLUSHALL", FK_PROTO_WRITE, 	1, 					fk_cmd_flushall	},
-    {"HSET", 	FK_PROTO_WRITE, 	4, 					fk_cmd_hset	 	},
-    {"HGET", 	FK_PROTO_READ, 		3, 					fk_cmd_hget	 	},
-    {"LPUSH", 	FK_PROTO_WRITE,		-3, 				fk_cmd_lpush 	},
-    {"RPUSH", 	FK_PROTO_WRITE,		-3, 				fk_cmd_rpush 	},
-    {"LPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_lpop	 	},
-    {"RPOP", 	FK_PROTO_READ, 		2, 					fk_cmd_rpop	 	},
-    {"LLEN",	FK_PROTO_READ,		2,					fk_cmd_llen		},
-    {"SAVE",	FK_PROTO_READ,		1,					fk_cmd_save		},
-    {"SELECT",	FK_PROTO_WRITE,		2,					fk_cmd_select	},
-    {"EVAL",	FK_PROTO_SCRIPT,	-3,					fk_cmd_eval		},
-    {"ZADD",	FK_PROTO_WRITE,		-4,					fk_cmd_zadd		},
-    {NULL, 		FK_PROTO_INVALID, 	0, 					NULL			}
+    { "SET", FK_PROTO_WRITE, 3, fk_cmd_set },
+    { "SETNX", FK_PROTO_WRITE, 3, fk_cmd_setnx },
+    { "MSET", FK_PROTO_WRITE, -3, fk_cmd_mset },
+    { "MGET", FK_PROTO_READ, -2, fk_cmd_mget },
+    { "GET", FK_PROTO_READ, 2, fk_cmd_get },
+    { "DEL", FK_PROTO_WRITE, -2, fk_cmd_del },
+    { "FLUSHDB", FK_PROTO_WRITE, 1, fk_cmd_flushdb },
+    { "EXISTS", FK_PROTO_READ, 2, fk_cmd_exists },
+    { "FLUSHALL", FK_PROTO_WRITE, 1, fk_cmd_flushall },
+    { "HSET", FK_PROTO_WRITE, 4, fk_cmd_hset },
+    { "HGET", FK_PROTO_READ, 3, fk_cmd_hget },
+    { "LPUSH", FK_PROTO_WRITE, -3, fk_cmd_lpush },
+    { "RPUSH", FK_PROTO_WRITE, -3, fk_cmd_rpush },
+    { "LPOP", FK_PROTO_READ, 2, fk_cmd_lpop },
+    { "RPOP", FK_PROTO_READ, 2, fk_cmd_rpop },
+    { "LLEN", FK_PROTO_READ, 2, fk_cmd_llen },
+    { "SAVE", FK_PROTO_READ, 1, fk_cmd_save },
+    { "SELECT", FK_PROTO_WRITE, 2, fk_cmd_select },
+    { "EVAL", FK_PROTO_SCRIPT, -3, fk_cmd_eval },
+    { "ZADD", FK_PROTO_WRITE, -4, fk_cmd_zadd },
+    { NULL, FK_PROTO_INVALID, 0, NULL }
 };
 
 static fk_dict_t *pmap = NULL;
