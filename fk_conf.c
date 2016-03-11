@@ -78,22 +78,22 @@ static int fk_conf_parse_blogfile(fk_cfline_t *line);
 static int fk_conf_parse_blogon(fk_cfline_t *line);
 
 static fk_dtv dtv_map[] = {
-    {"port", 2, fk_conf_parse_port},
-    {"daemon", 1, fk_conf_parse_daemon},
-    {"pidpath", 2, fk_conf_parse_pidpath},
-    {"logpath", 2, fk_conf_parse_logpath},
-    {"dump", 1, fk_conf_parse_dump},
-    {"dbfile", 2, fk_conf_parse_dbfile},
-    {"dir", 2, fk_conf_parse_dir},
-    {"loglevel", 2, fk_conf_parse_loglevel},
-    {"maxconn", 2, fk_conf_parse_maxconn},
-    {"dbcnt", 2, fk_conf_parse_dbcnt},
-    {"timeout", 2, fk_conf_parse_timeout},
-    {"addr", 2, fk_conf_parse_addr},
-    {"maxwbuf", 2, fk_conf_parse_maxwbuf},
-    {"blogfile", 2, fk_conf_parse_blogfile},
-    {"blogon", 1, fk_conf_parse_blogon},
-    {NULL, 0, NULL}
+    { "port", 2, fk_conf_parse_port },
+    { "daemon", 1, fk_conf_parse_daemon },
+    { "pidpath", 2, fk_conf_parse_pidpath },
+    { "logpath", 2, fk_conf_parse_logpath },
+    { "dump", 1, fk_conf_parse_dump },
+    { "dbfile", 2, fk_conf_parse_dbfile },
+    { "dir", 2, fk_conf_parse_dir },
+    { "loglevel", 2, fk_conf_parse_loglevel },
+    { "maxconn", 2, fk_conf_parse_maxconn },
+    { "dbcnt", 2, fk_conf_parse_dbcnt },
+    { "timeout", 2, fk_conf_parse_timeout },
+    { "addr", 2, fk_conf_parse_addr },
+    { "maxwbuf", 2, fk_conf_parse_maxwbuf },
+    { "blogfile", 2, fk_conf_parse_blogfile },
+    { "blogon", 1, fk_conf_parse_blogon },
+    { NULL, 0, NULL }
 };
 
 /* global variable, referencd by other modules */
