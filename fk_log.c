@@ -105,6 +105,5 @@ fk_log_fprint_str(int level, char *data)
             tm_now->tm_min,
             tm_now->tm_sec,
             level_name,
-            data
-           );
+            data);
 }
