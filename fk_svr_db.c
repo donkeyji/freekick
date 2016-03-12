@@ -9,8 +9,8 @@
 int
 fk_cmd_del(fk_conn_t *conn)
 {
-    fk_item_t *key;
-    int deleted, rt, i;
+    int         deleted, rt, i;
+    fk_item_t  *key;
 
     deleted = 0;
 
@@ -33,7 +33,7 @@ fk_cmd_del(fk_conn_t *conn)
 int
 fk_cmd_flushdb(fk_conn_t *conn)
 {
-    int rt;
+    int  rt;
 
     fk_dict_empty(server.db[conn->db_idx]);
     rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
@@ -46,8 +46,8 @@ fk_cmd_flushdb(fk_conn_t *conn)
 int
 fk_cmd_flushall(fk_conn_t *conn)
 {
-    int rt;
-    unsigned i;
+    int       rt;
+    unsigned  i;
 
     for (i = 0; i < server.dbcnt; i++) {
         fk_dict_empty(server.db[i]);
@@ -63,8 +63,8 @@ fk_cmd_flushall(fk_conn_t *conn)
 int
 fk_cmd_exists(fk_conn_t *conn)
 {
-    int rt, n;
-    fk_item_t *key, *value;
+    int         rt, n;
+    fk_item_t  *key, *value;
 
     key = fk_conn_get_arg(conn, 1);
     value = fk_dict_get(server.db[conn->db_idx], key);
@@ -83,7 +83,7 @@ fk_cmd_exists(fk_conn_t *conn)
 int
 fk_cmd_save(fk_conn_t *conn)
 {
-    int rt, err;
+    int  rt, err;
 
     err = 1;
 
@@ -110,9 +110,9 @@ fk_cmd_save(fk_conn_t *conn)
 int
 fk_cmd_select(fk_conn_t *conn)
 {
-    fk_str_t *s;
-    fk_item_t *itm;
-    int db_idx, rt;
+    int         db_idx, rt;
+    fk_str_t   *s;
+    fk_item_t  *itm;
 
     itm = fk_conn_get_arg(conn, 1);
     s = (fk_str_t *)fk_item_raw(itm);
