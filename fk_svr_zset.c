@@ -6,9 +6,9 @@
 int
 fk_cmd_zadd(fk_conn_t *conn)
 {
-    int score, i, rt;
-    fk_item_t *itm_key, *itm_score, *itm_str, *itm_sl;
-    fk_skiplist_t *sl;
+    int             score, i, rt;
+    fk_item_t      *itm_key, *itm_score, *itm_str, *itm_sl;
+    fk_skiplist_t  *sl;
 
     itm_key = fk_conn_get_arg(conn, 1);
     itm_sl = fk_dict_get(server.db[conn->db_idx], itm_key);
