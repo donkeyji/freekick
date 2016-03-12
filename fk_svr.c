@@ -26,7 +26,6 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-/* ---------------------------------------------------- */
 static int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg);
 #ifdef FK_DEBUG
 static int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg);
@@ -71,7 +70,6 @@ fk_skipnode_op_t db_skiplist_op = {
     NULL
 };
 
-/* -------------------------------------------- */
 uint32_t
 fk_db_dict_key_hash(void *key)
 {
