@@ -26,8 +26,8 @@ fk_item_init(void)
 fk_item_t *
 fk_item_free_obj_get(void)
 {
-    fk_item_t *itm;
-    fk_node_t *nd;
+    fk_item_t  *itm;
+    fk_node_t  *nd;
 
     nd = fk_list_head_pop(free_objs);
     itm = nd->entity;
@@ -67,7 +67,8 @@ fk_item_put_free(fk_item_t *itm)
 fk_item_t *
 fk_item_create(uint8_t type, void *entity)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
+
     itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t));
     itm->entity = entity;
     itm->ref = 0;/* I think the initial value of ref should be 0, not 1 */
