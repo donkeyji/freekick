@@ -12,9 +12,9 @@
 
 
 typedef struct {
-    int id;
-    char b;
-    int a;
+    int   id;
+    char  b;
+    int   a;
 } foo_t;
 
 #define LEN 1024*1024*5
