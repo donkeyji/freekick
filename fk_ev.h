@@ -26,8 +26,8 @@ typedef int (*fk_tmev_cb) (uint32_t, uint8_t, void *);
 typedef struct fk_ioev_s fk_ioev_t;
 struct fk_ioev_s {
     int         fd;
-    uint8_t     type;/* FK_IOEV_READ|FK_IOEV_WRITE */
-    int16_t     activated;/* whether in activated list */
+    uint8_t     type;           /* FK_IOEV_READ|FK_IOEV_WRITE */
+    int16_t     activated;      /* whether in activated list */
     void       *arg;
     fk_ioev_cb  iocb;
 
@@ -37,13 +37,13 @@ struct fk_ioev_s {
 
 typedef struct fk_tmev_s fk_tmev_t;
 struct fk_tmev_s {
-    FK_HEAP_LEAF_HDR;/* for heap */
+    FK_HEAP_LEAF_HDR;               /* for heap */
 
-    uint8_t         type;/* FK_TMEV_CYCLE|FK_TMEV_ONCE */
-    int16_t         expired;/* whether in the expired list */
-    uint32_t        interval;/* milliseconds */
-    struct timeval  when;/* save the trigger point time: now + timeout */
-    void           *arg;/* ext arg */
+    uint8_t         type;           /* FK_TMEV_CYCLE|FK_TMEV_ONCE */
+    int16_t         expired;        /* whether in the expired list */
+    uint32_t        interval;       /* milliseconds */
+    struct timeval  when;           /* save the trigger point time: now + timeout */
+    void           *arg;            /* ext arg */
     fk_tmev_cb      tmcb;
 
     fk_tmev_t      *prev;
@@ -59,7 +59,7 @@ typedef int (*fk_iompx_remove_t)(void *iompx, int fd, uint8_t type);
 typedef int (*fk_iompx_dispatch_t)(void *iompx, struct timeval *timeout);
 
 typedef struct {
-    char                *iompx_name;/* fk_str_t is not used here, because it's easier to use char* here */
+    char                *iompx_name;        /* fk_str_t is not used here, because it's easier to use char* here */
     fk_iompx_create_t    iompx_create;
     fk_iompx_add_t       iompx_add;
     fk_iompx_remove_t    iompx_remove;
@@ -76,13 +76,13 @@ typedef struct {
 
     /* actived file ev */
     fk_ioev_list_t  *act_ioev;
-    fk_tmev_list_t  *exp_tmev;/* when SINGLE expire, fk_mem_free() */
+    fk_tmev_list_t  *exp_tmev;      /* when SINGLE expire, fk_mem_free() */
     fk_tmev_list_t  *old_tmev;
 
     /* use array to save file ev */
     /* conn + listen */
-    fk_ioev_t      **read_ev;/* max_files */
-    fk_ioev_t      **write_ev;/* max_files */
+    fk_ioev_t      **read_ev;       /* max_files */
+    fk_ioev_t      **write_ev;      /* max_files */
 
     /* implemention of epoll/kqueue/poll */
     void            *iompx;
