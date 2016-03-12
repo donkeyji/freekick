@@ -9,7 +9,7 @@
 fk_vtr_t *
 fk_vtr_create(size_t init_len)
 {
-    fk_vtr_t *vtr;
+    fk_vtr_t  *vtr;
 
     vtr = (fk_vtr_t *)fk_mem_alloc(sizeof(fk_vtr_t));
     vtr->init_len = init_len;
