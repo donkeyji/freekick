@@ -5,7 +5,7 @@
 
 typedef struct fk_block_s fk_block_t;
 struct fk_block_s {
-    uint16_t     first;/* the index of the first free unit */
+    uint16_t     first;         /* the index of the first free unit */
     uint16_t     free_cnt;
     uint16_t     unit_cnt;
     uint16_t     unit_size;
