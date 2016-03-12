@@ -34,7 +34,7 @@ static const char *rsp_mbulk	= "*%d\r\n";
 fk_conn_t *
 fk_conn_create(int fd)
 {
-    fk_conn_t *conn;
+    fk_conn_t  *conn;
 
     conn = (fk_conn_t *)fk_mem_alloc(sizeof(fk_conn_t));
 
@@ -108,7 +108,7 @@ fk_conn_destroy(fk_conn_t *conn)
 void
 fk_svr_add_conn(int fd)
 {
-    fk_conn_t *conn;
+    fk_conn_t  *conn;
 
     conn = fk_conn_create(fd);
     fk_conn_set_type(conn, FK_CONN_REAL);
@@ -131,9 +131,9 @@ fk_svr_remove_conn(fk_conn_t *conn)
 int
 fk_conn_recv_data(fk_conn_t *conn)
 {
-    char *free_buf;
-    size_t free_len;
-    ssize_t recv_len;
+    char    *free_buf;
+    size_t   free_len;
+    ssize_t  recv_len;
 
     while (1) {
 #ifdef FK_DEBUG
@@ -196,11 +196,11 @@ fk_conn_recv_data(fk_conn_t *conn)
 int
 fk_conn_parse_req(fk_conn_t *conn)
 {
-    fk_buf_t *rbuf;
-    fk_item_t *itm;
-    char *start, *end;
-    int rt, argl, argc;
-    size_t arg_len, search_len;
+    int         rt, argl, argc;
+    char       *start, *end;
+    size_t      arg_len, search_len;
+    fk_buf_t   *rbuf;
+    fk_item_t  *itm;
 
     rbuf = conn->rbuf;
 
@@ -384,8 +384,8 @@ fk_conn_parse_req(fk_conn_t *conn)
 void
 fk_conn_free_args(fk_conn_t *conn)
 {
-    int i;
-    fk_item_t *arg_itm;
+    int         i;
+    fk_item_t  *arg_itm;
 
     /* arg_cnt: the real number of parsed arguments */
     //for (i = 0; i < conn->arg_parsed; i++) {
@@ -409,10 +409,10 @@ fk_conn_free_args(fk_conn_t *conn)
 int
 fk_conn_proc_cmd(fk_conn_t *conn)
 {
-    int rt;
-    fk_str_t *cmd;
-    fk_item_t *itm;
-    fk_proto_t *pto;
+    int          rt;
+    fk_str_t    *cmd;
+    fk_item_t   *itm;
+    fk_proto_t  *pto;
 
     if (conn->parse_done == 0) {
 #ifdef FK_DEBUG
@@ -473,8 +473,8 @@ fk_conn_proc_cmd(fk_conn_t *conn)
 int
 fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext)
 {
-    time_t now;
-    fk_conn_t *conn;
+    time_t      now;
+    fk_conn_t  *conn;
 
     fk_util_unuse(type);
     fk_util_unuse(interval);
@@ -501,8 +501,8 @@ fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext)
 void
 fk_conn_read_cb(int fd, uint8_t type, void *ext)
 {
-    int rt;
-    fk_conn_t *conn;
+    int         rt;
+    fk_conn_t  *conn;
 
     fk_util_unuse(fd);
     fk_util_unuse(type);
@@ -560,10 +560,10 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
 void
 fk_conn_write_cb(int fd, uint8_t type, void *ext)
 {
-    char *pbuf;
-    size_t plen;
-    fk_conn_t *conn;
-    ssize_t sent_len;
+    char       *pbuf;
+    size_t      plen;
+    ssize_t     sent_len;
+    fk_conn_t  *conn;
 
     fk_util_unuse(type);
 
@@ -617,7 +617,7 @@ fk_conn_write_cb(int fd, uint8_t type, void *ext)
 int
 fk_conn_send_rsp(fk_conn_t *conn)
 {
-    fk_buf_t *wbuf;
+    fk_buf_t  *wbuf;
 
     /* no need to keep step 1, because its function is included in fk_conn_parse_req() */
     /* step 1 -- obsolete */
@@ -661,7 +661,7 @@ fk_conn_send_rsp(fk_conn_t *conn)
 int
 fk_conn_add_status_rsp(fk_conn_t *conn, char *stat, size_t stat_len)
 {
-    size_t len;
+    size_t  len;
 
     len = stat_len + 3;
 
@@ -679,7 +679,7 @@ fk_conn_add_status_rsp(fk_conn_t *conn, char *stat, size_t stat_len)
 int
 fk_conn_add_error_rsp(fk_conn_t *conn, char *error, size_t error_len)
 {
-    size_t len;
+    size_t  len;
 
     len = error_len + 3;
 
@@ -697,7 +697,7 @@ fk_conn_add_error_rsp(fk_conn_t *conn, char *error, size_t error_len)
 int
 fk_conn_add_content_rsp(fk_conn_t *conn, char *content, size_t content_len)
 {
-    size_t len;
+    size_t  len;
 
     len = content_len + 2;
 
@@ -715,7 +715,7 @@ fk_conn_add_content_rsp(fk_conn_t *conn, char *content, size_t content_len)
 int
 fk_conn_add_int_rsp(fk_conn_t *conn, int num)
 {
-    size_t len;
+    size_t  len;
 
     len = fk_util_decimal_digit(num);
     len += 3;
@@ -734,7 +734,7 @@ fk_conn_add_int_rsp(fk_conn_t *conn, int num)
 int
 fk_conn_add_bulk_rsp(fk_conn_t *conn, int bulk_len)
 {
-    size_t len;
+    size_t  len;
 
     len = fk_util_decimal_digit(bulk_len);
     len += 3;
@@ -753,7 +753,7 @@ fk_conn_add_bulk_rsp(fk_conn_t *conn, int bulk_len)
 int
 fk_conn_add_mbulk_rsp(fk_conn_t *conn, int bulk_cnt)
 {
-    size_t len;
+    size_t  len;
 
     len = fk_util_decimal_digit(bulk_cnt);
     len += 3;
