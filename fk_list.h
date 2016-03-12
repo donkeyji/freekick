@@ -6,11 +6,11 @@
 #define FK_LIST_ITER_H2T 1
 #define FK_LIST_ITER_T2H 0
 
-#define fk_rawlist_def(type, name)	\
-typedef struct {					\
-	type *head;						\
-	type *tail;						\
-	size_t len;						\
+#define fk_rawlist_def(type, name)	    \
+typedef struct {					    \
+	type   *head;						\
+	type   *tail;						\
+	size_t  len;						\
 } name
 
 #define fk_rawlist_create(type)		(type *)fk_mem_alloc(sizeof(type))
@@ -78,30 +78,34 @@ typedef struct {					\
 
 typedef struct fk_node_s fk_node_t;
 struct fk_node_s {
-    fk_node_t *prev;
-    fk_node_t *next;
-    void *data;
+    fk_node_t  *prev;
+    fk_node_t  *next;
+    void       *data;
 };
+
+typedef void *(*fk_data_copy_t)(void *);
+typedef void (*fk_data_free_t)(void *);
+typedef int (*fk_data_cmp_t)(void *, void *);
 
 typedef struct {
     /* method specified */
-    void *(*data_copy)(void *);
-    void (*data_free)(void *);
-    int (*data_cmp)(void *, void *);
+    fk_data_copy_t  data_copy;
+    fk_data_free_t  data_free;
+    fk_data_cmp_t   data_cmp;
 } fk_node_op_t;
 
 typedef struct {
-    fk_node_t *head;
-    fk_node_t *tail;
-    size_t len;
-    fk_node_op_t *nop;
+    fk_node_t     *head;
+    fk_node_t     *tail;
+    size_t         len;
+    fk_node_op_t  *nop;
 } fk_list_t;
 
 typedef struct {
-    fk_list_t *lst;
-    fk_node_t *cur;/* return this */
-    fk_node_t *next;/* record the next */
-    int dir;/* 0, 1 */
+    fk_list_t  *lst;
+    fk_node_t  *cur;/* return this */
+    fk_node_t  *next;/* record the next */
+    int         dir;/* 0, 1 */
 } fk_list_iter_t;
 
 fk_list_t *fk_list_create(fk_node_op_t *nop);
