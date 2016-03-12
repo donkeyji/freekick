@@ -10,7 +10,7 @@
 void
 fk_util_cal_expire(struct timeval *tv, uint32_t interval)
 {
-    struct timeval now, itv;
+    struct timeval  now, itv;
 
     gettimeofday(&now, NULL);
     fk_util_millis2tv(interval, &itv);
@@ -21,7 +21,7 @@ fk_util_cal_expire(struct timeval *tv, uint32_t interval)
 int
 fk_util_is_positive_seq(const char *start, size_t len)
 {
-    const char *p;
+    const char  *p;
 
     if (len <= 0) {
         return 0;
@@ -43,7 +43,7 @@ fk_util_is_positive_seq(const char *start, size_t len)
 int
 fk_util_is_nonminus_seq(const char *start, size_t len)
 {
-    const char *p;
+    const char  *p;
 
     if (len <= 0) {
         return 0;
@@ -73,8 +73,8 @@ fk_util_is_nonminus_seq(const char *start, size_t len)
 int
 fk_util_is_digit_seq(const char *start, size_t len)
 {
-    int i;
-    char c;
+    int   i;
+    char  c;
 
     if (len <= 0) {
         return 0;
@@ -105,7 +105,7 @@ fk_util_is_digit_seq(const char *start, size_t len)
 int
 fk_util_min_power(int n)
 {
-    uint32_t q;
+    uint32_t  q;
 
     q = 0;
     while (n > 0) {
@@ -118,7 +118,7 @@ fk_util_min_power(int n)
 size_t
 fk_util_decimal_digit(int num)
 {
-    size_t len;
+    size_t  len;
 
     len = 0;
     if (num < 0) {
