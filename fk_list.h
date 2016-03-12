@@ -99,9 +99,9 @@ typedef struct {
 
 typedef struct {
     fk_list_t  *lst;
-    fk_node_t  *cur;/* return this */
-    fk_node_t  *next;/* record the next */
-    int         dir;/* 0, 1 */
+    fk_node_t  *cur;        /* return this */
+    fk_node_t  *next;       /* record the next */
+    int         dir;        /* 0, 1 */
 } fk_list_iter_t;
 
 fk_list_t *fk_list_create(fk_node_op_t *nop);
