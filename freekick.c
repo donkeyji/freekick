@@ -113,8 +113,8 @@ fk_daemonize(void)
 void
 fk_create_pidfile(void)
 {
-    pid_t pid;
-    FILE *pid_file;
+    FILE  *pid_file;
+    pid_t  pid;
 
     if (setting.daemon == 0) {
         return;
@@ -132,10 +132,10 @@ fk_create_pidfile(void)
 void
 fk_setrlimit(void)
 {
-    int rt;
-    pid_t euid;
-    rlim_t max_files;
-    struct rlimit lmt;
+    int            rt;
+    pid_t          euid;
+    rlim_t         max_files;
+    struct rlimit  lmt;
 
     max_files = (rlim_t)fk_util_conns_to_files(setting.max_conns);
     rt = getrlimit(RLIMIT_NOFILE, &lmt);
@@ -194,7 +194,7 @@ fk_set_seed(void)
 void
 fk_set_pwd(void)
 {
-    int rt;
+    int  rt;
 
     rt = chdir(fk_str_raw(setting.dir));
     if (rt < 0) {
@@ -229,8 +229,8 @@ fk_signal_child_handler(int sig)
 void
 fk_signal_register(void)
 {
-    int rt;
-    struct sigaction sa;
+    int               rt;
+    struct sigaction  sa;
 
     sa.sa_handler = fk_signal_exit_handler;
     sa.sa_flags = 0;
@@ -305,7 +305,7 @@ fk_main_exit(void)
 int
 main(int argc, char **argv)
 {
-    char *conf_path;
+    char  *conf_path;
 
     if (argc > 2) {
         fprintf(stderr, "illegal argument!!!\n");
