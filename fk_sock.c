@@ -16,9 +16,9 @@
 int
 fk_sock_create_tcp_listen(char *addr, uint16_t port)
 {
-    int rt, listen_sock;
+    int                 rt, listen_sock;
     /* struct sockaddr_in has the same size as struct sockaddr */
-    struct sockaddr_in saddr;
+    struct sockaddr_in  saddr;
 
     listen_sock = socket(PF_INET, SOCK_STREAM, 0);
     if (listen_sock == -1) {
@@ -56,7 +56,8 @@ fk_sock_create_tcp_listen(char *addr, uint16_t port)
 int
 fk_sock_set_nonblocking(int fd)
 {
-    int rt;
+    int  rt;
+
     rt = fcntl(fd, F_SETFL, O_NONBLOCK);
     if (rt < 0) {
         return FK_SOCK_ERR;
@@ -68,7 +69,7 @@ fk_sock_set_nonblocking(int fd)
 int
 fk_sock_set_keepalive(int fd)
 {
-    int opt, rt;
+    int  opt, rt;
 
     opt = 1;
     rt = setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, (void *)&opt, sizeof(opt));
@@ -81,7 +82,7 @@ fk_sock_set_keepalive(int fd)
 int
 fk_sock_set_reuseaddr(int fd)
 {
-    int opt, rt;
+    int  opt, rt;
 
     opt = 1;
     rt = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&opt, sizeof(opt));
@@ -94,8 +95,8 @@ fk_sock_set_reuseaddr(int fd)
 int
 fk_sock_set_linger(int fd)
 {
-    int rt;
-    struct linger ling = {0, 0};
+    int            rt;
+    struct linger  ling = {0, 0};
 
     rt = setsockopt(fd, SOL_SOCKET, SO_LINGER, (void *)&ling, sizeof(ling));
     if (rt < 0) {
