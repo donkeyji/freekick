@@ -19,7 +19,7 @@ typedef struct {
     int        log_level;
     fk_str_t  *log_path;
     fk_str_t  *pid_path;
-    int dump;
+    int        dump;
     fk_str_t  *db_file;
     fk_str_t  *dir;
     uint32_t   dbcnt;
