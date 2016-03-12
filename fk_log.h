@@ -12,8 +12,8 @@
 #define FK_LOG_DEBUG 	3
 
 typedef struct {
-    int log_level;
-    FILE *log_file;
+    int    log_level;
+    FILE  *log_file;
 } fk_log_t;
 
 void fk_log_init(char *log_path, int log_level);
