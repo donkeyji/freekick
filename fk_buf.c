@@ -7,7 +7,7 @@
 fk_buf_t *
 fk_buf_create(size_t init_len, size_t highwat)
 {
-    fk_buf_t *buf;
+    fk_buf_t  *buf;
 
     assert(highwat >= init_len);
     buf = (fk_buf_t *)fk_mem_alloc(sizeof(fk_buf_t) + init_len);
@@ -29,8 +29,8 @@ fk_buf_destroy(fk_buf_t *buf)
 void
 fk_buf_print(const fk_buf_t *buf)
 {
-    size_t len;
-    char ps[4096];
+    char  ps[4096];
+    size_t  len;
 
     len = fk_buf_payload_len(buf);
     memcpy(ps, fk_buf_payload_start(buf), len);
