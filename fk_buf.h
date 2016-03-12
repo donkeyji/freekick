@@ -6,11 +6,11 @@
 #include <fk_util.h>
 
 typedef struct {
-    size_t  highwat;/* a constant */
-    size_t  init_len;/* a constant */
-    size_t  len;/* a variable */
-    size_t  low;/* valid begin, init: 0, range: [0-->len], <= high */
-    size_t  high;/* free begin, init: 0, range: [0-->len], <= len */
+    size_t  highwat;        /* a constant */
+    size_t  init_len;       /* a constant */
+    size_t  len;            /* a variable */
+    size_t  low;            /* valid begin, init: 0, range: [0-->len], <= high */
+    size_t  high;           /* free begin, init: 0, range: [0-->len], <= len */
     char    buffer[];
 } fk_buf_t;
 
