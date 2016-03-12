@@ -31,9 +31,9 @@ fk_cmd_rpop(fk_conn_t *conn)
 int
 fk_cmd_llen(fk_conn_t *conn)
 {
-    int rt, len;
-    fk_list_t *lst;
-    fk_item_t *key, *value;
+    int         rt, len;
+    fk_list_t  *lst;
+    fk_item_t  *key, *value;
 
     key = fk_conn_get_arg(conn, 1);
     value = fk_dict_get(server.db[conn->db_idx], key);
@@ -64,9 +64,9 @@ fk_cmd_llen(fk_conn_t *conn)
 int
 fk_cmd_generic_push(fk_conn_t *conn, int pos)
 {
-    int rt, i;
-    fk_list_t *lst;
-    fk_item_t *key, *lst_itm, *str_itm;
+    int         rt, i;
+    fk_list_t  *lst;
+    fk_item_t  *key, *lst_itm, *str_itm;
 
     key = fk_conn_get_arg(conn, 1);
     lst_itm = fk_dict_get(server.db[conn->db_idx], key);
@@ -117,11 +117,11 @@ fk_cmd_generic_push(fk_conn_t *conn, int pos)
 int
 fk_cmd_generic_pop(fk_conn_t *conn, int pos)
 {
-    int rt;
-    fk_str_t *ss;
-    fk_list_t *lst;
-    fk_node_t *nd_itm;
-    fk_item_t *key, *lst_itm, *itm;
+    int         rt;
+    fk_str_t   *ss;
+    fk_list_t  *lst;
+    fk_node_t  *nd_itm;
+    fk_item_t  *key, *lst_itm, *itm;
 
     key = fk_conn_get_arg(conn, 1);
     lst_itm = fk_dict_get(server.db[conn->db_idx], key);
