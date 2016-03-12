@@ -8,7 +8,7 @@
  */
 
 typedef struct {
-    size_t  len;/* valid length, excluding '\0' */
+    size_t  len;        /* valid length, excluding '\0' */
     char    seq[];
 } fk_str_t;
 
