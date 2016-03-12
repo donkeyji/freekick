@@ -4,9 +4,9 @@
 #include  <strings.h>
 
 typedef struct {
-    size_t  init_len;
-    size_t  len;
-    void  **array;
+    size_t   init_len;
+    size_t   len;
+    void   **array;
 } fk_vtr_t;
 
 fk_vtr_t *fk_vtr_create(size_t init_len);
