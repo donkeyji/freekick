@@ -374,7 +374,7 @@ fk_dict_iter_next(fk_dict_iter_t *iter)
         if (iter->cur == NULL) {/* the first time to call this function */
             iter->idx++;
             /* narrow type to wide type */
-            if (iter->idx == (long long)(iter->dct->size)) {
+            if (iter->idx == (intmax_t)(iter->dct->size)) {
                 break;
             }
             elst = (iter->dct->buckets)[iter->idx];

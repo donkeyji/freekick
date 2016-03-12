@@ -47,7 +47,7 @@ typedef struct {
 typedef struct {
     fk_dict_t  *dct;
     fk_elt_t   *cur, *next;
-    long long   idx;/* should be long than size_t type */
+    intmax_t    idx;/* use the biggest integer */
 } fk_dict_iter_t;
 
 fk_dict_t *fk_dict_create(fk_elt_op_t *eop);
