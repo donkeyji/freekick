@@ -34,8 +34,8 @@ static void fk_mem_panic(void);
 void *
 fk_mem_alloc(size_t size)
 {
-    void *ptr;
-    size_t real_size;
+    void   *ptr;
+    size_t  real_size;
 
     ptr = malloc(size);
     if (ptr == NULL) {
@@ -49,8 +49,8 @@ fk_mem_alloc(size_t size)
 void *
 fk_mem_calloc(size_t count, size_t size)
 {
-    void *ptr;
-    size_t real_size;
+    void   *ptr;
+    size_t  real_size;
 
     ptr = calloc(count, size);
     if (ptr == NULL) {
@@ -64,8 +64,8 @@ fk_mem_calloc(size_t count, size_t size)
 void *
 fk_mem_realloc(void *ptr, size_t size)
 {
-    void *new_ptr;
-    size_t old_size, new_size;
+    void   *new_ptr;
+    size_t  old_size, new_size;
 
     old_size = fk_mem_malloc_size(ptr);
 
@@ -83,7 +83,8 @@ fk_mem_realloc(void *ptr, size_t size)
 void
 fk_mem_free(void *ptr)
 {
-    size_t real_size;
+    size_t  real_size;
+
     real_size = fk_mem_malloc_size(ptr);
     total_alloc -= real_size;
     /* how to get the size of the freeing memory??????? */
