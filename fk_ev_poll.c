@@ -22,8 +22,8 @@ fk_mpxop_t poll_op = {
 void *
 fk_poll_create(int max_files)
 {
-    int i;
-    fk_poll_t *iompx;
+    int         i;
+    fk_poll_t  *iompx;
 
     iompx = (fk_poll_t *)fk_mem_alloc(sizeof(fk_poll_t));
     iompx->evlist = (struct pollfd *)fk_mem_alloc(sizeof(struct pollfd) * max_files);
@@ -41,10 +41,10 @@ fk_poll_create(int max_files)
 int
 fk_poll_add(void *ev_iompx, int fd, uint8_t type)
 {
-    int idx;
-    short nev, oev;
-    fk_poll_t *iompx;
-    struct pollfd *pfd;
+    int             idx;
+    short           nev, oev;
+    fk_poll_t      *iompx;
+    struct pollfd  *pfd;
 
     iompx = (fk_poll_t *)ev_iompx;
 
@@ -83,10 +83,10 @@ fk_poll_add(void *ev_iompx, int fd, uint8_t type)
 int
 fk_poll_remove(void *ev_iompx, int fd, uint8_t type)
 {
-    int idx;
-    short nev, oev;
-    fk_poll_t *iompx;
-    struct pollfd *pfd, *tail;
+    int             idx;
+    short           nev, oev;
+    fk_poll_t      *iompx;
+    struct pollfd  *pfd, *tail;
 
     iompx = (fk_poll_t *)ev_iompx;
 
@@ -124,10 +124,10 @@ fk_poll_remove(void *ev_iompx, int fd, uint8_t type)
 int
 fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-    uint8_t type;
-    fk_poll_t *iompx;
-    struct pollfd *pfd;
-    int i, nfds, ms_timeout, fd, cnt;
+    int             i, nfds, ms_timeout, fd, cnt;
+    uint8_t         type;
+    fk_poll_t      *iompx;
+    struct pollfd  *pfd;
 
     ms_timeout = -1;
     if (timeout != NULL) {
