@@ -12,20 +12,16 @@ struct fk_skipnode_s {
     fk_skipnode_t  *next[1];/* at least 1 element */
 };
 
-typedef void *(*fk_skdata_copy_t)(void *);
-typedef void (*fk_skdata_free_t)(void *);
-typedef void (*fk_skdata_cmp_t)(void *, void *);
-
 typedef struct {
-    fk_skdata_copy_t  data_copy;
-    fk_skdata_free_t  data_free;
-    fk_skdata_cmp_t   data_cmp;
+    void  *(*data_copy)(void *);
+    void   (*data_free)(void *);
+    void   (*data_cmp)(void *, void *);
 } fk_skipnode_op_t;
 
 typedef struct {
-    fk_skipnode_t   *head;
-    int32_t          level;/* the max level of the nodes */
-    size_t           len;
+    fk_skipnode_t     *head;
+    int32_t            level;/* the max level of the nodes */
+    size_t             len;
     fk_skipnode_op_t  *skop;
 } fk_skiplist_t;
 
