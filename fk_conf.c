@@ -37,12 +37,12 @@
 #define FK_CONF_MAX_LEN 	1024
 
 typedef struct {
-    uint32_t no;/* line number */
-    uint32_t cnt;/* the cnt field to parse */
-    size_t len;
-    char *buf;
-    char err[FK_CONF_MAX_LEN];
-    fk_str_t *fields[FK_CONF_MAX_FIELDS];
+    uint32_t   no;/* line number */
+    uint32_t   cnt;/* the cnt field to parse */
+    size_t     len;
+    char      *buf;
+    char       err[FK_CONF_MAX_LEN];
+    fk_str_t  *fields[FK_CONF_MAX_FIELDS];
 } fk_cfline_t;
 
 typedef struct {/* directive */
