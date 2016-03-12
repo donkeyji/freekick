@@ -10,8 +10,8 @@
 #define FK_DICT_ERR		-1
 
 typedef struct {
-    uint32_t  (*key_hash)(void *key);/* gen hash */
-    int       (*key_cmp)(void *k1, void *k2);/* key compare */
+    uint32_t  (*key_hash)(void *key);           /* gen hash */
+    int       (*key_cmp)(void *k1, void *k2);   /* key compare */
     void     *(*key_copy)(void *key);
     void      (*key_free)(void *key);
     void     *(*val_copy)(void *val);
@@ -40,7 +40,7 @@ typedef struct {
 typedef struct {
     fk_dict_t  *dct;
     fk_elt_t   *cur, *next;
-    intmax_t    idx;/* use the biggest integer */
+    intmax_t    idx;            /* use the biggest integer */
 } fk_dict_iter_t;
 
 fk_dict_t *fk_dict_create(fk_elt_op_t *eop);
