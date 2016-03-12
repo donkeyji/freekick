@@ -7,22 +7,26 @@
 
 typedef struct fk_skipnode_s fk_skipnode_t;
 struct fk_skipnode_s {
-    int score;/* the value to sort */
-    void *data;/* hold the fk_item_t */
-    fk_skipnode_t *next[1];/* at least 1 element */
+    int             score;/* the value to sort */
+    void           *data;/* hold the fk_item_t */
+    fk_skipnode_t  *next[1];/* at least 1 element */
 };
 
+typedef void *(*fk_skdata_copy_t)(void *);
+typedef void (*fk_skdata_free_t)(void *);
+typedef void (*fk_skdata_cmp_t)(void *, void *);
+
 typedef struct {
-    void *(*data_copy)(void *);
-    void (*data_free)(void *);
-    void (*data_cmp)(void *, void *);
+    fk_skdata_copy_t  data_copy;
+    fk_skdata_free_t  data_free;
+    fk_skdata_cmp_t   data_cmp;
 } fk_skipnode_op;
 
 typedef struct {
-    fk_skipnode_t *head;
-    int32_t level;/* the max level of the nodes */
-    size_t len;
-    fk_skipnode_op *skop;
+    fk_skipnode_t   *head;
+    int32_t          level;/* the max level of the nodes */
+    size_t           len;
+    fk_skipnode_op  *skop;
 } fk_skiplist;
 
 fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop);
