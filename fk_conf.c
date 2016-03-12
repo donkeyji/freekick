@@ -115,7 +115,7 @@ fk_cfline_create(void)
 void
 fk_cfline_destroy(fk_cfline_t *line)
 {
-    unsigned i;
+    unsigned  i;
 
     if (line->buf != NULL) {
         free(line->buf);/* could not use fk_mem_free */
@@ -131,7 +131,8 @@ fk_cfline_destroy(fk_cfline_t *line)
 void
 fk_conf_init(char *conf_path)
 {
-    int rt;
+    int  rt;
+
     /* step 1: set default first */
     setting.port = FK_DEFAULT_PORT;
     setting.daemon = FK_DEFAULT_DAEMON;
@@ -162,11 +163,11 @@ fk_conf_init(char *conf_path)
 int
 fk_conf_parse_file(char *conf_path)
 {
-    int rt;
-    FILE *fp;
-    long tail;
-    fk_cfline_t *line;
-    uint32_t line_num;
+    int           rt;
+    FILE         *fp;
+    long          tail;
+    uint32_t      line_num;
+    fk_cfline_t  *line;
 
     fp = fopen(conf_path, "r");
     if (fp == NULL) {
@@ -211,7 +212,7 @@ fk_conf_parse_file(char *conf_path)
 int
 fk_conf_read_line(fk_cfline_t *line, FILE *fp)
 {
-    int rt;
+    int  rt;
 
     rt = getline(&(line->buf), &(line->len), fp);
     /* no need to think about end-of-file here */
@@ -225,8 +226,8 @@ fk_conf_read_line(fk_cfline_t *line, FILE *fp)
 int
 fk_conf_parse_line(fk_cfline_t *line)
 {
-    char *buf;
-    size_t i, start, end;
+    char   *buf;
+    size_t  i, start, end;
 
     i = 0;
     buf = line->buf;
@@ -261,7 +262,7 @@ fk_conf_parse_line(fk_cfline_t *line)
 fk_dtv *
 fk_conf_search(fk_str_t *name)
 {
-    unsigned i;
+    unsigned  i;
 
     /* no need to use dictionary */
     for (i = 0; dtv_map[i].name != NULL; i++) {
@@ -275,9 +276,9 @@ fk_conf_search(fk_str_t *name)
 int
 fk_conf_proc_line(fk_cfline_t *line)
 {
-    int rt;
-    fk_str_t *cmd;
-    fk_dtv *dtv;
+    int        rt;
+    fk_dtv    *dtv;
+    fk_str_t  *cmd;
 
     if (line->cnt == 0) {/* the current line is a comment or empty line */
         return FK_CONF_OK;
@@ -304,7 +305,7 @@ fk_conf_proc_line(fk_cfline_t *line)
 void
 fk_conf_reset_line(fk_cfline_t *line)
 {
-    unsigned i;
+    unsigned  i;
 
     line->no = 0;
     line->cnt = 0;
@@ -324,7 +325,7 @@ fk_conf_reset_line(fk_cfline_t *line)
 int
 fk_conf_parse_port(fk_cfline_t *line)
 {
-    int rt, port;
+    int  rt, port;
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
@@ -386,7 +387,7 @@ fk_conf_parse_dbfile(fk_cfline_t *line)
 int
 fk_conf_parse_maxconn(fk_cfline_t *line)
 {
-    int rt;
+    int  rt;
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
@@ -400,7 +401,7 @@ fk_conf_parse_maxconn(fk_cfline_t *line)
 int
 fk_conf_parse_dbcnt(fk_cfline_t *line)
 {
-    int rt, dbcnt;
+    int  rt, dbcnt;
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
@@ -423,7 +424,7 @@ fk_conf_parse_addr(fk_cfline_t *line)
 int
 fk_conf_parse_loglevel(fk_cfline_t *line)
 {
-    char *level;
+    char  *level;
 
     level = fk_str_raw(line->fields[1]);
     if (strcasecmp(level, "debug") == 0) {
@@ -444,7 +445,7 @@ fk_conf_parse_loglevel(fk_cfline_t *line)
 int
 fk_conf_parse_timeout(fk_cfline_t *line)
 {
-    int rt, timeout;
+    int  rt, timeout;
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
@@ -468,7 +469,7 @@ fk_conf_parse_dir(fk_cfline_t *line)
 int
 fk_conf_parse_maxwbuf(fk_cfline_t *line)
 {
-    int rt, maxwbuf;
+    int  rt, maxwbuf;
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) {/* not a positive integer */
