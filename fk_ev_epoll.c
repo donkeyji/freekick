@@ -30,8 +30,8 @@ fk_mpxop_t epoll_op = {
 void *
 fk_epoll_create(int max_files)
 {
-    int efd;
-    fk_epoll_t *iompx;
+    int          efd;
+    fk_epoll_t  *iompx;
 
     efd = epoll_create(1);
     if (efd < 0) {
@@ -53,10 +53,10 @@ fk_epoll_create(int max_files)
 int
 fk_epoll_add(void *ev_iompx, int fd, uint8_t type)
 {
-    int rt, op;
-    fk_epoll_t *iompx;
-    int32_t oev, nev;
-    uint8_t otp;
+    int          rt, op;
+    uint8_t      otp;
+    int32_t      oev, nev;
+    fk_epoll_t  *iompx;
 
     iompx = (fk_epoll_t *)ev_iompx;
 
@@ -104,10 +104,10 @@ fk_epoll_add(void *ev_iompx, int fd, uint8_t type)
 int
 fk_epoll_remove(void *ev_iompx, int fd, uint8_t type)
 {
-    int rt, op;
-    fk_epoll_t *iompx;
-    int32_t oev, nev;
-    uint8_t otp;
+    int          rt, op;
+    uint8_t      otp;
+    int32_t      oev, nev;
+    fk_epoll_t  *iompx;
 
     iompx = (fk_epoll_t *)ev_iompx;
 
@@ -155,9 +155,9 @@ fk_epoll_remove(void *ev_iompx, int fd, uint8_t type)
 int
 fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-    uint8_t type;
-    fk_epoll_t *iompx;
-    int i, nfds, fd, ms_timeout;
+    int          i, nfds, fd, ms_timeout;
+    uint8_t      type;
+    fk_epoll_t  *iompx;
 
     iompx = (fk_epoll_t *)ev_iompx;
 
