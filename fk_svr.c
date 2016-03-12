@@ -75,8 +75,8 @@ fk_skipnode_op db_skiplist_op = {
 uint32_t
 fk_db_dict_key_hash(void *key)
 {
-    fk_str_t *s;
-    fk_item_t *itm;
+    fk_str_t    *s;
+    fk_item_t  *itm;
 
     itm = (fk_item_t *)key;
     s = (fk_str_t *)fk_item_raw(itm);
@@ -86,8 +86,8 @@ fk_db_dict_key_hash(void *key)
 int
 fk_db_dict_key_cmp(void *k1, void *k2)
 {
-    fk_str_t *s1, *s2;
-    fk_item_t *itm1, *itm2;
+    fk_str_t    *s1, *s2;
+    fk_item_t  *itm1, *itm2;
 
     itm1 = (fk_item_t *)k1;
     itm2 = (fk_item_t *)k2;
@@ -100,7 +100,7 @@ fk_db_dict_key_cmp(void *k1, void *k2)
 void *
 fk_db_dict_key_copy(void *key)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
 
     itm = (fk_item_t *)key;
 
@@ -112,7 +112,7 @@ fk_db_dict_key_copy(void *key)
 void
 fk_db_dict_key_free(void *key)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
 
     itm = (fk_item_t *)key;
 
@@ -122,7 +122,7 @@ fk_db_dict_key_free(void *key)
 void *
 fk_db_dict_val_copy(void *val)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
 
     itm = (fk_item_t *)val;
 
@@ -134,7 +134,8 @@ fk_db_dict_val_copy(void *val)
 void
 fk_db_dict_val_free(void *val)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
+
     itm = (fk_item_t *)val;
 
     fk_item_dec_ref(itm);
@@ -143,7 +144,7 @@ fk_db_dict_val_free(void *val)
 void *
 fk_db_list_val_copy(void *ptr)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
 
     itm = (fk_item_t *)ptr;
 
@@ -156,7 +157,7 @@ fk_db_list_val_copy(void *ptr)
 void
 fk_db_list_val_free(void *ptr)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
 
     itm = (fk_item_t *)ptr;
 
@@ -166,7 +167,7 @@ fk_db_list_val_free(void *ptr)
 void *
 fk_db_skiplist_val_copy(void *ptr)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
 
     itm = (fk_item_t *)ptr;
 
@@ -178,7 +179,7 @@ fk_db_skiplist_val_copy(void *ptr)
 void
 fk_db_skiplist_val_free(void *ptr)
 {
-    fk_item_t *itm;
+    fk_item_t  *itm;
 
     itm = (fk_item_t *)ptr;
 
@@ -188,7 +189,7 @@ fk_db_skiplist_val_free(void *ptr)
 void
 fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 {
-    int fd;
+    int  fd;
 
     while (1) {
         fd = accept(listen_fd, NULL, NULL);
@@ -234,7 +235,7 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 int
 fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 {
-    uint32_t i;
+    uint32_t  i;
 
     server.timer_cnt++;
 
@@ -257,7 +258,7 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 int
 fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
 {
-    fk_tmev_t *tmev;
+    fk_tmev_t  *tmev;
 
     tmev = server.svr_timer2;
 
@@ -276,8 +277,8 @@ fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
 void
 fk_svr_init(void)
 {
-    uint32_t i;
-    int blog_loaded;
+    int       blog_loaded;
+    uint32_t  i;
 
     /* protocol sub module */
     fk_proto_init();
@@ -345,7 +346,7 @@ fk_svr_init(void)
 void
 fk_svr_exit(void)
 {
-    int rt;
+    int  rt;
 
     if (setting.dump != 1) {
         return;
@@ -393,8 +394,8 @@ fk_svr_signal_exit_handler(int sig)
 void
 fk_svr_signal_child_handler(int sig)
 {
-    int st;
-    pid_t pid;
+    int    st;
+    pid_t  pid;
 
     pid = wait(&st);
     if (pid < 0) {
