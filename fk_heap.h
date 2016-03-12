@@ -7,10 +7,9 @@ typedef struct {
     FK_HEAP_LEAF_HDR;
 } fk_leaf_t;
 
-typedef int (*fk_leaf_cmp_t)(fk_leaf_t *, fk_leaf_t *);
 
 typedef struct {
-    fk_leaf_cmp_t  leaf_cmp;
+    int  (*leaf_cmp)(fk_leaf_t *, fk_leaf_t *);
 } fk_leaf_op_t;
 
 /* do not copy memory from outside, just save a pointer to the field of tree */
