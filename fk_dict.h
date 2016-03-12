@@ -9,20 +9,13 @@
 #define FK_DICT_OK		0
 #define FK_DICT_ERR		-1
 
-typedef uint32_t (*fk_key_hash_t)(void *key);/* gen hash */
-typedef int (*fk_key_cmp_t)(void *k1, void *k2);/* key compare */
-typedef void *(*fk_key_copy_t)(void *key);
-typedef void (*fk_key_free_t)(void *key);
-typedef void *(*fk_val_copy_t)(void *val);
-typedef void (*fk_val_free_t)(void *val);
-
 typedef struct {
-    fk_key_hash_t  key_hash;/* gen hash */
-    fk_key_cmp_t   key_cmp;/* key compare */
-    fk_key_copy_t  key_copy;
-    fk_key_free_t  key_free;
-    fk_val_copy_t  val_copy;
-    fk_val_free_t  val_free;
+    uint32_t  (*key_hash)(void *key);/* gen hash */
+    int       (*key_cmp)(void *k1, void *k2);/* key compare */
+    void     *(*key_copy)(void *key);
+    void      (*key_free)(void *key);
+    void     *(*val_copy)(void *val);
+    void      (*val_free)(void *val);
 } fk_elt_op_t;
 
 typedef struct fk_elt_s fk_elt_t;
