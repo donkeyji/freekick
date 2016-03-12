@@ -2,10 +2,10 @@
 #define _FK_SVR_H_
 
 /* standard c library headers */
-#include <stdint.h>/* for uint_16 */
+#include <stdint.h>             /* for uint_16 */
 
 /* system headers */
-#include <sys/types.h>/* for time_t */
+#include <sys/types.h>          /* for time_t */
 
 /* local headers */
 #include <fk_str.h>
@@ -65,29 +65,29 @@
 #define FK_CONN_FAKE	1
 typedef struct {
     int         fd;
-    uint16_t    type;/* FK_CONN_REAL | FK_CONN_FAKE */
+    uint16_t    type;           /* FK_CONN_REAL | FK_CONN_FAKE */
     fk_ioev_t  *read_ev;
     fk_ioev_t  *write_ev;
     int         write_added;
 
     fk_buf_t   *rbuf;
     fk_buf_t   *wbuf;
-    time_t      last_recv;/* time of last data receiving */
+    time_t      last_recv;      /* time of last data receiving */
     fk_tmev_t  *timer;
 
     fk_vtr_t   *arg_vtr;
-    int         arg_parsed;/* parsed from the head of a protocol, original 0; */
-    int         arg_cnt;/* the number of the arguments which have been parsed, original 0 */
-    int         cur_arglen;/* the argument length of the arg_cnt..TH, original -1 */
-    int         parse_done;/* original 0 */
+    int         arg_parsed;     /* parsed from the head of a protocol, original 0; */
+    int         arg_cnt;        /* the number of the arguments which have been parsed, original 0 */
+    int         cur_arglen;     /* the argument length of the arg_cnt..TH, original -1 */
+    int         parse_done;     /* original 0 */
 
     int         db_idx;
 } fk_conn_t;
 
 typedef struct {
-    uint32_t     arch;/* 32 or 64 */
+    uint32_t     arch;          /* 32 or 64 */
     int          listen_fd;
-    int          conn_cnt;/* connection count */
+    int          conn_cnt;      /* connection count */
     time_t       start_time;
     time_t       last_save;
     uint64_t     timer_cnt;
@@ -97,7 +97,7 @@ typedef struct {
     fk_conn_t  **conns_tab;
     uint32_t     dbcnt;
     fk_dict_t  **db;
-    pid_t        save_pid;/* -1: the save child process ended */
+    pid_t        save_pid;      /* -1: the save child process ended */
 
     int          last_dbidx;
     int          blog_fd;
@@ -186,7 +186,7 @@ int fk_cmd_zadd(fk_conn_t *conn);
 
 /* extern declerations of global variables */
 
-extern fk_svr_t server;/* this "server" is visited in different .c files */
+extern fk_svr_t server;         /* this "server" is visited in different .c files */
 extern fk_elt_op_t db_dict_eop;
 extern fk_node_op_t db_list_op;
 extern fk_skipnode_op_t db_skiplist_op;
