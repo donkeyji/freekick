@@ -7,16 +7,18 @@ typedef struct {
     FK_HEAP_LEAF_HEADER;
 } fk_leaf_t;
 
+typedef int (*fk_leaf_cmp_t)(fk_leaf_t *, fk_leaf_t *);
+
 typedef struct {
-    int (*leaf_cmp)(fk_leaf_t *, fk_leaf_t *);
+    fk_leaf_cmp_t  leaf_cmp;
 } fk_leaf_op_t;
 
 /* do not copy memory from outside, just save a pointer to the field of tree */
 typedef struct {
-    size_t size;/* the total length of the tree */
-    size_t last;/* current the last item index */
-    fk_leaf_t **tree;/* can save any type of obj */
-    fk_leaf_op_t *lop;
+    size_t         size;/* the total length of the tree */
+    size_t         last;/* current the last item index */
+    fk_leaf_t    **tree;/* can save any type of obj */
+    fk_leaf_op_t  *lop;
 } fk_heap_t;
 
 fk_heap_t *fk_heap_create(fk_leaf_op_t *func);
