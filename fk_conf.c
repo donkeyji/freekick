@@ -47,9 +47,9 @@ typedef struct {
 
 /* directive */
 typedef struct {
-    char *name;
-    uint32_t field_cnt;
-    int (*handler) (fk_cfline_t *line);
+    char      *name;
+    uint32_t   field_cnt;
+    int      (*handler) (fk_cfline_t *line);
 } fk_dtv;
 
 static fk_cfline_t *fk_cfline_create(void);
