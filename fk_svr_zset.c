@@ -6,9 +6,9 @@
 int
 fk_cmd_zadd(fk_conn_t *conn)
 {
-    fk_skiplist *sl;
     int score, i, rt;
     fk_item_t *itm_key, *itm_score, *itm_str, *itm_sl;
+    fk_skiplist_t *sl;
 
     itm_key = fk_conn_get_arg(conn, 1);
     itm_sl = fk_dict_get(server.db[conn->db_idx], itm_key);
@@ -17,7 +17,7 @@ fk_cmd_zadd(fk_conn_t *conn)
         itm_sl = fk_item_create(FK_ITEM_SKLIST, sl);
         fk_dict_add(server.db[conn->db_idx], itm_key, itm_sl);
     }
-    sl = (fk_skiplist *)fk_item_raw(itm_sl);
+    sl = (fk_skiplist_t *)fk_item_raw(itm_sl);
 
     if ((conn->arg_cnt - 2) % 2 != 0) {
         rt = fk_conn_add_error_rsp(conn, FK_RSP_ARGC_ERR, sizeof(FK_RSP_ARGC_ERR) - 1);

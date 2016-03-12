@@ -20,20 +20,20 @@ typedef struct {
     fk_skdata_copy_t  data_copy;
     fk_skdata_free_t  data_free;
     fk_skdata_cmp_t   data_cmp;
-} fk_skipnode_op;
+} fk_skipnode_op_t;
 
 typedef struct {
     fk_skipnode_t   *head;
     int32_t          level;/* the max level of the nodes */
     size_t           len;
-    fk_skipnode_op  *skop;
-} fk_skiplist;
+    fk_skipnode_op_t  *skop;
+} fk_skiplist_t;
 
-fk_skiplist *fk_skiplist_create(fk_skipnode_op *skop);
-void fk_skiplist_destroy(fk_skiplist *sl);
-void fk_skiplist_insert(fk_skiplist *sl, int score, void *data);
-void fk_skiplist_remove(fk_skiplist *sl, int score);
-fk_skipnode_t *fk_skiplist_search(fk_skiplist *sl, int score);
+fk_skiplist_t *fk_skiplist_create(fk_skipnode_op_t *skop);
+void fk_skiplist_destroy(fk_skiplist_t *sl);
+void fk_skiplist_insert(fk_skiplist_t *sl, int score, void *data);
+void fk_skiplist_remove(fk_skiplist_t *sl, int score);
+fk_skipnode_t *fk_skiplist_search(fk_skiplist_t *sl, int score);
 
 #define fk_skiplist_len(sl)	    ((sl)->len)
 
