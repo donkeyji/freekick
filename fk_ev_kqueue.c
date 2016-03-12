@@ -30,8 +30,8 @@ fk_mpxop_t kqueue_op = {
 void *
 fk_kqueue_create(int max_files)
 {
-    int kfd;
-    fk_kqueue_t *iompx;
+    int           kfd;
+    fk_kqueue_t  *iompx;
 
     kfd = kqueue();
     if (kfd < 0) {
@@ -51,8 +51,8 @@ fk_kqueue_create(int max_files)
 int
 fk_kqueue_add(void *ev_iompx, int fd, uint8_t type)
 {
-    int rt;
-    fk_kqueue_t *iompx;
+    int           rt;
+    fk_kqueue_t  *iompx;
     //uint8_t otyp;
 
     iompx = (fk_kqueue_t *)(ev_iompx);
@@ -88,8 +88,8 @@ fk_kqueue_add(void *ev_iompx, int fd, uint8_t type)
 int
 fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type)
 {
-    int rt;
-    fk_kqueue_t *iompx;
+    int           rt;
+    fk_kqueue_t  *iompx;
     //uint8_t otyp;
 
     iompx = (fk_kqueue_t *)ev_iompx;
@@ -125,14 +125,13 @@ fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type)
 int
 fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-    int i, nfds;
-    uint8_t type;
-    uintptr_t fd;
+    int               i, nfds;
+    uint8_t           type;
+    uintptr_t         fd;
     //intptr_t data;
     //uint16_t flags;
-    fk_kqueue_t *iompx;
-    struct timespec *pt;
-    struct timespec kev_timeout;
+    fk_kqueue_t      *iompx;
+    struct timespec  *pt, kev_timeout;
 
     iompx = (fk_kqueue_t *)ev_iompx;
 
