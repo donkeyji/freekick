@@ -16,7 +16,7 @@ fk_cache_init(void)
 fk_node_t *
 fk_cache_get_free_node(void)
 {
-    fk_node_t *nd;
+    fk_node_t  *nd;
 
     nd = NULL;
     if (fk_rawlist_len(free_nodes) > 0) {

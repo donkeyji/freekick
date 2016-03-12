@@ -102,7 +102,9 @@ fk_conf_t setting;
 fk_cfline_t *
 fk_cfline_create(void)
 {
-    fk_cfline_t *line = (fk_cfline_t *)fk_mem_alloc(sizeof(fk_cfline_t));
+    fk_cfline_t  *line;
+
+    line = (fk_cfline_t *)fk_mem_alloc(sizeof(fk_cfline_t));
     line->no = 0;/* line number */
     line->cnt = 0;
     line->buf = NULL;

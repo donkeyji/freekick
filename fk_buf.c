@@ -29,7 +29,7 @@ fk_buf_destroy(fk_buf_t *buf)
 void
 fk_buf_print(const fk_buf_t *buf)
 {
-    char  ps[4096];
+    char    ps[4096];
     size_t  len;
 
     len = fk_buf_payload_len(buf);
