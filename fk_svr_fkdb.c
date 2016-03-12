@@ -39,7 +39,7 @@ fk_fkdb_init(void)
 void
 fk_fkdb_bgsave(void)
 {
-    int rt;
+    int  rt;
 
     if (setting.dump != 1) {
         return;
@@ -70,10 +70,10 @@ fk_fkdb_bgsave(void)
 int
 fk_fkdb_save(void)
 {
-    int rt;
-    FILE *fp;
-    uint32_t i;
-    char *temp_db;
+    int       rt;
+    FILE     *fp;
+    char     *temp_db;
+    uint32_t  i;
 
     temp_db = "freekick-temp.db";
 
@@ -110,11 +110,11 @@ fk_fkdb_save(void)
 int
 fk_fkdb_dump(FILE *fp, uint32_t db_idx)
 {
-    fk_elt_t *elt;
-    int type, rt;
-    fk_dict_t *dct;
-    size_t len, wz;
-    fk_dict_iter_t *iter;
+    int              type, rt;
+    size_t           len, wz;
+    fk_elt_t        *elt;
+    fk_dict_t       *dct;
+    fk_dict_iter_t  *iter;
 
     dct = server.db[db_idx];
     if (fk_dict_len(dct) == 0) {
@@ -167,9 +167,9 @@ fk_fkdb_dump(FILE *fp, uint32_t db_idx)
 int
 fk_fkdb_dump_str_elt(FILE *fp, fk_elt_t *elt)
 {
-    size_t len, wz;
-    fk_str_t *key, *value;
-    fk_item_t *kitm, *vitm;
+    size_t      len, wz;
+    fk_str_t   *key, *value;
+    fk_item_t  *kitm, *vitm;
 
     kitm = (fk_item_t *)fk_elt_key(elt);
     vitm = (fk_item_t *)fk_elt_value(elt);
@@ -209,12 +209,12 @@ fk_fkdb_dump_str_elt(FILE *fp, fk_elt_t *elt)
 int
 fk_fkdb_dump_list_elt(FILE *fp, fk_elt_t *elt)
 {
-    fk_node_t *nd;
-    fk_list_t *lst;
-    size_t len, wz;
-    fk_str_t *key, *vs;
-    fk_list_iter_t *iter;
-    fk_item_t *kitm, *vitm, *nitm;
+    size_t           len, wz;
+    fk_str_t        *key, *vs;
+    fk_node_t       *nd;
+    fk_list_t       *lst;
+    fk_item_t       *kitm, *vitm, *nitm;
+    fk_list_iter_t  *iter;
 
     kitm = (fk_item_t *)fk_elt_key(elt);
     vitm = (fk_item_t *)fk_elt_value(elt);
@@ -266,12 +266,12 @@ fk_fkdb_dump_list_elt(FILE *fp, fk_elt_t *elt)
 int
 fk_fkdb_dump_dict_elt(FILE *fp, fk_elt_t *elt)
 {
-    fk_elt_t *selt;
-    fk_dict_t *dct;
-    size_t len, wz;
-    fk_dict_iter_t *iter;
-    fk_str_t *key, *skey, *svs;
-    fk_item_t *kitm, *vitm, *skitm, *svitm;
+    size_t           len, wz;
+    fk_str_t        *key, *skey, *svs;
+    fk_elt_t        *selt;
+    fk_dict_t       *dct;
+    fk_item_t       *kitm, *vitm, *skitm, *svitm;
+    fk_dict_iter_t  *iter;
 
     kitm = (fk_item_t *)fk_elt_key(elt);
     vitm = (fk_item_t *)fk_elt_value(elt);
@@ -337,7 +337,8 @@ fk_fkdb_dump_dict_elt(FILE *fp, fk_elt_t *elt)
 fk_zline_t *
 fk_zline_create(size_t len)
 {
-    fk_zline_t *buf;
+    fk_zline_t  *buf;
+
     buf = fk_mem_alloc(sizeof(fk_zline_t));
     buf->len = len;
     buf->line = (char *)fk_mem_alloc(buf->len);
@@ -364,10 +365,10 @@ fk_zline_destroy(fk_zline_t *buf)
 void
 fk_fkdb_load(fk_str_t *db_file)
 {
-    int rt;
-    FILE *fp;
-    long tail;
-    fk_zline_t *buf;
+    int          rt;
+    FILE        *fp;
+    long         tail;
+    fk_zline_t  *buf;
 
     if (setting.dump != 1) {
         return;
@@ -403,11 +404,11 @@ fk_fkdb_load(fk_str_t *db_file)
 int
 fk_fkdb_restore(FILE *fp, fk_zline_t *buf)
 {
-    int rt;
-    uint32_t idx;
-    unsigned type;
-    fk_dict_t *db;
-    size_t cnt, i, rz;
+    int         rt;
+    size_t      cnt, i, rz;
+    uint32_t    idx;
+    unsigned    type;
+    fk_dict_t  *db;
 
     /*
      * to do:
@@ -465,9 +466,9 @@ fk_fkdb_restore(FILE *fp, fk_zline_t *buf)
 int
 fk_fkdb_restore_str_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 {
-    fk_str_t *key, *value;
-    fk_item_t *kitm, *vitm;
-    size_t klen, vlen, rz;
+    size_t      klen, vlen, rz;
+    fk_str_t   *key, *value;
+    fk_item_t  *kitm, *vitm;
 
     rz = fread(&klen, sizeof(klen), 1, fp);
     if (rz == 0) {
@@ -514,10 +515,10 @@ fk_fkdb_restore_str_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 int
 fk_fkdb_restore_list_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 {
-    fk_list_t *lst;
-    fk_str_t *key, *nds;
-    fk_item_t *kitm, *vitm, *nitm;
-    size_t klen, llen, i, nlen, rz;
+    size_t      klen, llen, i, nlen, rz;
+    fk_str_t   *key, *nds;
+    fk_list_t  *lst;
+    fk_item_t  *kitm, *vitm, *nitm;
 
     rz = fread(&klen, sizeof(klen), 1, fp);
     if (rz == 0) {
@@ -571,10 +572,10 @@ fk_fkdb_restore_list_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 int
 fk_fkdb_restore_dict_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 {
-    fk_dict_t *sdct;
-    fk_str_t *key, *skey, *svalue;
-    fk_item_t *kitm, *skitm, *vitm, *svitm;
-    size_t klen, sklen, svlen, dlen, i, rz;
+    size_t      klen, sklen, svlen, dlen, i, rz;
+    fk_str_t   *key, *skey, *svalue;
+    fk_dict_t  *sdct;
+    fk_item_t  *kitm, *skitm, *vitm, *svitm;
 
     rz = fread(&klen, sizeof(klen), 1, fp);
     if (rz == 0) {
