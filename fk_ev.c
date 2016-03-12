@@ -87,9 +87,9 @@ fk_ev_init(int max_files)
 int
 fk_ev_dispatch(void)
 {
-    int rt;
-    fk_tmev_t *tmev;
-    struct timeval *pto, now, timeout;
+    int              rt;
+    fk_tmev_t       *tmev;
+    struct timeval  *pto, now, timeout;
 
     pto = NULL;/* indefinitely wait */
 
@@ -146,8 +146,8 @@ fk_ev_stop(void)
 int
 fk_ev_add_ioev(fk_ioev_t *ioev)
 {
-    int fd, rt;
-    uint8_t type;
+    int      fd, rt;
+    uint8_t  type;
 
     /* unnecessary to do so? */
     if (fk_ioev_get_stat(ioev) != FK_IOEV_INIT) {
@@ -177,8 +177,8 @@ fk_ev_add_ioev(fk_ioev_t *ioev)
 int
 fk_ev_remove_ioev(fk_ioev_t *ioev)
 {
-    int fd, rt;
-    uint8_t type;
+    int      fd, rt;
+    uint8_t  type;
 
     /* unnecessary ? */
     if (fk_ioev_get_stat(ioev) == FK_IOEV_INIT) {
@@ -219,7 +219,7 @@ fk_ev_iompx_name(void)
 fk_ioev_t *
 fk_ioev_create(int fd, uint8_t type, void *arg, fk_ioev_cb iocb)
 {
-    fk_ioev_t *ioev;
+    fk_ioev_t  *ioev;
 
     ioev = (fk_ioev_t *)fk_mem_alloc(sizeof(fk_ioev_t));
     ioev->fd = fd;
@@ -242,7 +242,7 @@ fk_ioev_destroy(fk_ioev_t *ioev)
 fk_tmev_t *
 fk_tmev_create(uint32_t interval, uint8_t type, void *arg, fk_tmev_cb tmcb)
 {
-    fk_tmev_t *tmev;
+    fk_tmev_t  *tmev;
 
     tmev = (fk_tmev_t *)fk_mem_alloc(sizeof(fk_tmev_t));
     tmev->type = type;
@@ -268,7 +268,7 @@ fk_tmev_destroy(fk_tmev_t *tmev)
 int
 fk_ev_add_tmev(fk_tmev_t *tmev)
 {
-    fk_heap_t *tmhp;
+    fk_heap_t  *tmhp;
 
     /* only when the tmev->expired == FK_TMEV_INIT is legal */
     if (fk_tmev_get_stat(tmev) != FK_TMEV_INIT) {
@@ -315,10 +315,10 @@ fk_ev_remove_tmev(fk_tmev_t *tmev)
 void
 fk_ev_update_pending_tmev(void)
 {
-    int cmp;
-    fk_leaf_t *root;
-    fk_tmev_t *tmev;
-    struct timeval now;
+    int             cmp;
+    fk_leaf_t      *root;
+    fk_tmev_t      *tmev;
+    struct timeval  now;
 
     gettimeofday(&now, NULL);
 
@@ -340,12 +340,12 @@ fk_ev_update_pending_tmev(void)
 void
 fk_ev_proc_expired_tmev(void)
 {
-    int rt;
-    void *arg;
-    uint8_t type;
-    fk_tmev_t *tmev;
-    fk_tmev_cb tmcb;
-    uint32_t interval;
+    int         rt;
+    void       *arg;
+    uint8_t     type;
+    uint32_t    interval;
+    fk_tmev_t  *tmev;
+    fk_tmev_cb  tmcb;
 
     tmev = fk_rawlist_head(evmgr.exp_tmev);
     while (tmev != NULL) {
@@ -382,11 +382,11 @@ fk_ev_proc_expired_tmev(void)
 void
 fk_ev_proc_activated_ioev(void)
 {
-    int fd;
-    void *arg;
-    uint8_t type;
-    fk_ioev_t *ioev;
-    fk_ioev_cb iocb;
+    int         fd;
+    void       *arg;
+    uint8_t     type;
+    fk_ioev_t  *ioev;
+    fk_ioev_cb  iocb;
 
     ioev = fk_rawlist_head(evmgr.act_ioev);
     while (ioev != NULL) {
@@ -413,8 +413,8 @@ fk_ev_proc_activated_ioev(void)
 fk_tmev_t *
 fk_ev_get_nearest_tmev(void)
 {
-    void *root;
-    fk_tmev_t *tmev;
+    void       *root;
+    fk_tmev_t  *tmev;
 
     root = fk_heap_root(evmgr.timer_heap);
     tmev = (fk_tmev_t *)root;
@@ -424,7 +424,7 @@ fk_ev_get_nearest_tmev(void)
 void
 fk_ev_activate_ioev(int fd, uint8_t type)
 {
-    fk_ioev_t *rioev, *wioev;
+    fk_ioev_t  *rioev, *wioev;
 
     /*
      * maybe rioev and wioev point to the same ioev object
@@ -454,7 +454,7 @@ fk_ev_activate_ioev(int fd, uint8_t type)
 int
 fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2)
 {
-    fk_tmev_t *t1, *t2;
+    fk_tmev_t  *t1, *t2;
 
     t1 = (fk_tmev_t *)tmev1;
     t2 = (fk_tmev_t *)tmev2;
