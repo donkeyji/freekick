@@ -54,8 +54,8 @@ int
 fk_lua_pcall(lua_State *L)
 {
     int          i, rt;
-    size_t       len;
     char        *start;
+    size_t       len;
     fk_buf_t    *buf;
     fk_item_t   *itm;
     const char  *arg;
