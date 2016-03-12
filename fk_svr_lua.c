@@ -53,12 +53,12 @@ fk_lua_init(void)
 int
 fk_lua_pcall(lua_State *L)
 {
-    int i, rt;
-    size_t len;
-    char *start;
-    fk_buf_t *buf;
-    fk_item_t *itm;
-    const char *arg;
+    int          i, rt;
+    size_t       len;
+    char        *start;
+    fk_buf_t    *buf;
+    fk_item_t   *itm;
+    const char  *arg;
 
     /* 1. similar to the function: fk_conn_req_parse() */
     lua_conn->arg_parsed = lua_gettop(L); /* get the argument count */
@@ -118,10 +118,10 @@ fk_lua_pcall(lua_State *L)
 int
 fk_lua_conn_proc_cmd(fk_conn_t *conn)
 {
-    int rt;
-    fk_str_t *cmd;
-    fk_item_t *itm;
-    fk_proto_t *pto;
+    int          rt;
+    fk_str_t    *cmd;
+    fk_item_t   *itm;
+    fk_proto_t  *pto;
 
     itm = (fk_item_t *)fk_conn_get_arg(conn, 0);
     cmd = (fk_str_t *)fk_item_raw(itm);
@@ -159,7 +159,7 @@ fk_lua_conn_proc_cmd(fk_conn_t *conn)
 int
 fk_lua_parse_status(lua_State *L, fk_buf_t *buf)
 {
-    char *s;
+    char  *s;
 
     lua_newtable(L);
     lua_pushstring(L, "ok");/* key */
@@ -177,7 +177,7 @@ fk_lua_parse_status(lua_State *L, fk_buf_t *buf)
 int
 fk_lua_parse_error(lua_State *L, fk_buf_t *buf)
 {
-    char *s;
+    char  *s;
 
     lua_newtable(L);
     lua_pushstring(L, "err");/* key */
@@ -194,8 +194,8 @@ fk_lua_parse_error(lua_State *L, fk_buf_t *buf)
 int
 fk_lua_parse_integer(lua_State *L, fk_buf_t *buf)
 {
-    int n;
-    char *s;
+    int    n;
+    char  *s;
 
     s = fk_buf_payload_start(buf);
     n = atoi(s + 1);
@@ -208,8 +208,8 @@ fk_lua_parse_integer(lua_State *L, fk_buf_t *buf)
 int
 fk_lua_parse_bulk(lua_State *L, fk_buf_t *buf)
 {
-    int blen;
-    char *s, *e;
+    int    blen;
+    char  *s, *e;
 
     s = fk_buf_payload_start(buf);
     e = memchr(s, '\n', fk_buf_payload_len(buf));
@@ -228,8 +228,8 @@ fk_lua_parse_bulk(lua_State *L, fk_buf_t *buf)
 int
 fk_lua_parse_mbulk(lua_State *L, fk_buf_t *buf)
 {
-    int mbulk, i, blen, n;
-    char *s, *e;
+    int    mbulk, i, blen, n;
+    char  *s, *e;
 
     lua_newtable(L);
 
@@ -266,8 +266,8 @@ fk_lua_parse_mbulk(lua_State *L, fk_buf_t *buf)
 int
 fk_lua_push_paras(char **paras, int npara, int type)
 {
-    int i;
-    char *name;
+    int    i;
+    char  *name;
 
     lua_newtable(gL);
 
@@ -292,9 +292,9 @@ fk_lua_push_paras(char **paras, int npara, int type)
 int
 fk_lua_run_script(fk_conn_t *conn, char *code)
 {
-    size_t len, slen, olen;
-    const char *p, *sp, *err;
-    int i, rt, top1, top2, nret, type, stype, idx;
+    int          i, rt, top1, top2, nret, type, stype, idx;
+    size_t       len, slen, olen;
+    const char  *p, *sp, *err;
 
     top1 = lua_gettop(gL);
 
@@ -376,10 +376,10 @@ fk_lua_run_script(fk_conn_t *conn, char *code)
 int
 fk_cmd_eval(fk_conn_t *conn)
 {
-    int nkey, nargv, rt, i;
-    char *code, **keys, **argv;
-    fk_str_t *str_nkey, *str_code;
-    fk_item_t *itm_code, *itm_nkey, *itm_arg;
+    int         nkey, nargv, rt, i;
+    char       *code, **keys, **argv;
+    fk_str_t   *str_nkey, *str_code;
+    fk_item_t  *itm_code, *itm_nkey, *itm_arg;
 
     itm_code = fk_conn_get_arg(conn, 1);
     itm_nkey = fk_conn_get_arg(conn, 2);
