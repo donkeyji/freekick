@@ -37,7 +37,7 @@ struct fk_ioev_s {
 
 typedef struct fk_tmev_s fk_tmev_t;
 struct fk_tmev_s {
-    FK_HEAP_LEAF_HEADER;/* for heap */
+    FK_HEAP_LEAF_HDR;/* for heap */
 
     uint8_t         type;/* FK_TMEV_CYCLE|FK_TMEV_ONCE */
     int16_t         expired;/* whether in the expired list */
