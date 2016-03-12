@@ -9,8 +9,9 @@
 #define FK_LOG_BUFF_SIZE 1024
 
 #define fk_log_write(level)	{					\
-	va_list ap;									\
-	char log_buff[FK_LOG_BUFF_SIZE];			\
+	char     log_buff[FK_LOG_BUFF_SIZE];		\
+	va_list  ap;								\
+                                                \
 	if (level > logger.log_level) {				\
 		return;									\
 	}											\
@@ -34,7 +35,7 @@ static fk_log_t logger = {
 void
 fk_log_init(char *log_path, int log_level)
 {
-    FILE *fp;
+    FILE  *fp;
 
     fp = fopen(log_path, "a+");
     if (fp == NULL) {
@@ -72,9 +73,9 @@ fk_log_debug(char *fmt, ...)
 void
 fk_log_fprint_str(int level, char *data)
 {
-    time_t now;
-    char *level_name;
-    struct tm *tm_now;
+    char       *level_name;
+    time_t      now;
+    struct tm  *tm_now;
 
     switch (level) {
     case FK_LOG_ERROR:
