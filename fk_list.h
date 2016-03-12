@@ -83,15 +83,11 @@ struct fk_node_s {
     void       *data;
 };
 
-typedef void *(*fk_data_copy_t)(void *);
-typedef void (*fk_data_free_t)(void *);
-typedef int (*fk_data_cmp_t)(void *, void *);
-
 typedef struct {
     /* method specified */
-    fk_data_copy_t  data_copy;
-    fk_data_free_t  data_free;
-    fk_data_cmp_t   data_cmp;
+    void  *(*data_copy)(void *);
+    void   (*data_free)(void *);
+    int    (*data_cmp)(void *, void *);
 } fk_node_op_t;
 
 typedef struct {
