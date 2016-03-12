@@ -14,7 +14,7 @@
 #include <fk_conf.h>
 #include <fk_mem.h>
 #include <fk_str.h>
-#include <fk_log.h>/* FK_LOG_INFO & FK_LOG_ERR & FK_LOG_DEBUG & FK_LOG_WARN */
+#include <fk_log.h>     /* FK_LOG_INFO & FK_LOG_ERR & FK_LOG_DEBUG & FK_LOG_WARN */
 
 /* default setting */
 #define FK_DEFAULT_MAX_CONN 		10240
@@ -37,15 +37,16 @@
 #define FK_CONF_MAX_LEN 	1024
 
 typedef struct {
-    uint32_t   no;/* line number */
-    uint32_t   cnt;/* the cnt field to parse */
+    uint32_t   no;                              /* line number */
+    uint32_t   cnt;                             /* the cnt field to parse */
     size_t     len;
     char      *buf;
     char       err[FK_CONF_MAX_LEN];
     fk_str_t  *fields[FK_CONF_MAX_FIELDS];
 } fk_cfline_t;
 
-typedef struct {/* directive */
+/* directive */
+typedef struct {
     char *name;
     uint32_t field_cnt;
     int (*handler) (fk_cfline_t *line);
