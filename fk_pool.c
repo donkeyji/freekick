@@ -56,7 +56,7 @@ fk_pool_exit(void)
 fk_pool_t *
 fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
 {
-    fk_pool_t *pool;
+    fk_pool_t  *pool;
 
     pool = (fk_pool_t *)fk_mem_alloc(sizeof(fk_pool_t));
 
@@ -77,8 +77,8 @@ fk_pool_create(uint16_t unit_size, uint16_t init_cnt)
 void *
 fk_pool_malloc(fk_pool_t *pool)
 {
-    void *ptr;
-    fk_block_t *blk;
+    void        *ptr;
+    fk_block_t  *blk;
 
     blk = pool->head;
 
@@ -105,7 +105,7 @@ fk_pool_malloc(fk_pool_t *pool)
 void
 fk_pool_free(fk_pool_t *pool, void *ptr)
 {
-    fk_block_t *cur_blk, *prev_blk;
+    fk_block_t  *cur_blk, *prev_blk;
 
     cur_blk = pool->head;
     prev_blk = cur_blk;/* could not be 'NULL' */
@@ -150,9 +150,9 @@ fk_pool_destroy(fk_pool_t *pool)
 fk_block_t *
 fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
 {
-    uint16_t i;
-    uint8_t *ptr;
-    fk_block_t *blk;
+    uint8_t     *ptr;
+    uint16_t     i;
+    fk_block_t  *blk;
 
     blk = (fk_block_t *)fk_mem_alloc(sizeof(fk_block_t) + (size_t)(unit_size * unit_cnt));
     blk->free_cnt = unit_cnt;
