@@ -35,7 +35,7 @@ fk_skiplist_t *
 fk_skiplist_create(fk_skipnode_op_t *skop)
 {
     int             i;
-    fk_skiplist_t    *sl;
+    fk_skiplist_t  *sl;
     fk_skipnode_t  *nd;
 
     sl = fk_mem_alloc(sizeof(fk_skiplist_t));
