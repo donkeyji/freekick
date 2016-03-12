@@ -7,7 +7,7 @@ static uint32_t fk_proto_dict_key_hash(void *key);
 static int fk_proto_dict_key_cmp(void *k1, void *k2);
 
 /* all proto to deal */
-static fk_proto protos[] = {
+static fk_proto_t protos[] = {
     { "SET", FK_PROTO_WRITE, 3, fk_cmd_set },
     { "SETNX", FK_PROTO_WRITE, 3, fk_cmd_setnx },
     { "MSET", FK_PROTO_WRITE, -3, fk_cmd_mset },
@@ -73,12 +73,12 @@ fk_proto_init(void)
 #endif
 }
 
-fk_proto *
+fk_proto_t *
 fk_proto_search(fk_str_t *name)
 {
-    fk_proto *pto;
+    fk_proto_t *pto;
 
-    pto = (fk_proto *)fk_dict_get(pmap, name);
+    pto = (fk_proto_t *)fk_dict_get(pmap, name);
 
     return pto;
 }

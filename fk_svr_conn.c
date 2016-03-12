@@ -412,7 +412,7 @@ fk_conn_proc_cmd(fk_conn_t *conn)
     int rt;
     fk_str_t *cmd;
     fk_item_t *itm;
-    fk_proto *pto;
+    fk_proto_t *pto;
 
     if (conn->parse_done == 0) {
 #ifdef FK_DEBUG

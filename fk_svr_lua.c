@@ -121,7 +121,7 @@ fk_lua_conn_proc_cmd(fk_conn_t *conn)
     int rt;
     fk_str_t *cmd;
     fk_item_t *itm;
-    fk_proto *pto;
+    fk_proto_t *pto;
 
     itm = (fk_item_t *)fk_conn_get_arg(conn, 0);
     cmd = (fk_str_t *)fk_item_raw(itm);
