@@ -49,7 +49,7 @@ fk_poll_add(void *ev_iompx, int fd, uint8_t type)
     iompx = (fk_poll_t *)ev_iompx;
 
     idx = iompx->fd2idx[fd];
-    if (idx == -1) {/* never add this fd */
+    if (idx == -1) { /* never add this fd */
         idx =  iompx->last;
     }
     pfd = iompx->evlist + idx;
@@ -72,7 +72,7 @@ fk_poll_add(void *ev_iompx, int fd, uint8_t type)
     pfd->fd = fd;
     iompx->fd2idx[fd] = idx;
 
-    if (idx == iompx->last) {/* a new fd */
+    if (idx == iompx->last) { /* a new fd */
         iompx->last++;
         fk_log_debug("after add: last %d\n", iompx->last);
     }
@@ -109,7 +109,7 @@ fk_poll_remove(void *ev_iompx, int fd, uint8_t type)
 
     pfd->events = oev & (~nev);
 
-    if (pfd->events == 0x0000) {/* need to delete */
+    if (pfd->events == 0x0000) { /* need to delete */
         tail = iompx->evlist + iompx->last - 1;
         memcpy(pfd, tail, sizeof(struct pollfd));
         tail->fd = -1;
@@ -159,7 +159,7 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
             continue;
         }
         fk_ev_activate_ioev(fd, type);
-        pfd->revents = 0x0000;/* reset revents */
+        pfd->revents = 0x0000; /* reset revents */
         cnt++;
         if (cnt == nfds) {
             break;

@@ -67,23 +67,23 @@ fk_list_insert_sorted_only(fk_list_t *lst, fk_node_t *nd)
         return;
     }
 
-    pos = 0;/* low */
+    pos = 0; /* low */
     //while (low != NULL && high != NULL) {
     //while (high != NULL) {
     while (low != NULL) {
         if (lst->nop->data_cmp(low->data, nd->data) >= 0) {
-            pos = 0;/* use low as position */
+            pos = 0; /* use low as position */
             break;
         }
         if (lst->nop->data_cmp(high->data, nd->data) <= 0) {
-            pos = 1;/* use high as position */
+            pos = 1; /* use high as position */
             break;
         }
         low = low->next;
         high = high->prev;
     }
 
-    if (pos == 0) {/* use low: before low */
+    if (pos == 0) { /* use low: before low */
         if (low == lst->head) {
             lst->head = nd;
             nd->prev = NULL;
@@ -93,7 +93,7 @@ fk_list_insert_sorted_only(fk_list_t *lst, fk_node_t *nd)
         }
         low->prev = nd;
         nd->next = low;
-    } else {/* use high: behind high */
+    } else { /* use high: behind high */
         if (high == lst->tail) {
             lst->tail = nd;
             nd->next = NULL;
@@ -126,7 +126,7 @@ fk_list_iter_begin(fk_list_t *lst, int dir)
 fk_node_t *
 fk_list_iter_next(fk_list_iter_t *iter)
 {
-    if (iter->cur == NULL) {/* the first time to call this function */
+    if (iter->cur == NULL) { /* the first time to call this function */
         /* from head to tail */
         if (iter->dir == FK_LIST_ITER_H2T) {
             iter->cur = iter->lst->head;
@@ -156,7 +156,7 @@ fk_list_iter_next(fk_list_iter_t *iter)
 void
 fk_list_iter_end(fk_list_iter_t *iter)
 {
-    fk_mem_free(iter);/* just release the memory */
+    fk_mem_free(iter); /* just release the memory */
 }
 
 void
@@ -215,7 +215,7 @@ fk_list_search(fk_list_t *lst, void *key)
         if (lst->nop->data_cmp != NULL) {
             cmp = lst->nop->data_cmp(nd->data, key);
         } else {
-            cmp = (uintptr_t)nd->data - (uintptr_t)key;/* compare the address */
+            cmp = (uintptr_t)nd->data - (uintptr_t)key; /* compare the address */
         }
         if (cmp == 0) {
             return nd;

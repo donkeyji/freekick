@@ -43,7 +43,7 @@ fk_lua_init(void)
     luaL_openlibs(gL);
 
     //luaL_register(gL, "freekick", fklib);
-    luaL_register(gL, "redis", fklib);/* just for convenience when debuging by using "redis" */
+    luaL_register(gL, "redis", fklib); /* just for convenience when debuging by using "redis" */
 
     lua_conn = fk_conn_create(FK_CONN_FAKE_FD);
     fk_conn_set_type(lua_conn, FK_CONN_FAKE);
@@ -112,7 +112,7 @@ fk_lua_pcall(lua_State *L)
         break;
     }
 
-    return rt;/* number of return value */
+    return rt; /* number of return value */
 }
 
 int
@@ -146,7 +146,7 @@ fk_lua_conn_proc_cmd(fk_conn_t *conn)
         return 0;
     }
     rt = pto->handler(conn);
-    if (rt == FK_SVR_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
+    if (rt == FK_SVR_ERR) { /* arg_vtr are not consumed, free all the arg_vtr */
         fk_conn_free_args(conn);
         fk_conn_add_error_rsp(conn, "cmd handler failed", strlen("cmd handler failed"));
         return 0;
@@ -162,10 +162,10 @@ fk_lua_parse_status(lua_State *L, fk_buf_t *buf)
     char  *s;
 
     lua_newtable(L);
-    lua_pushstring(L, "ok");/* key */
+    lua_pushstring(L, "ok"); /* key */
 
     s = fk_buf_payload_start(buf);
-    lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);/* value */
+    lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2); /* value */
 
     lua_rawset(L, -3);
 
@@ -180,10 +180,10 @@ fk_lua_parse_error(lua_State *L, fk_buf_t *buf)
     char  *s;
 
     lua_newtable(L);
-    lua_pushstring(L, "err");/* key */
+    lua_pushstring(L, "err"); /* key */
 
     s = fk_buf_payload_start(buf);
-    lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2);/* value */
+    lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2); /* value */
 
     lua_rawset(L, -3);
 
@@ -200,7 +200,7 @@ fk_lua_parse_integer(lua_State *L, fk_buf_t *buf)
     s = fk_buf_payload_start(buf);
     n = atoi(s + 1);
 
-    lua_pushnumber(L, (lua_Number)n);/* int ---> lua_Number */
+    lua_pushnumber(L, (lua_Number)n); /* int ---> lua_Number */
 
     return 1;
 }
@@ -216,10 +216,10 @@ fk_lua_parse_bulk(lua_State *L, fk_buf_t *buf)
 
     blen = atoi(s + 1);
     if (blen == -1) {
-        //lua_pushnil(L);/* nil */
+        //lua_pushnil(L); /* nil */
         lua_pushboolean(L, 0);
     } else {
-        lua_pushlstring(L, e + 1, blen);/* common string */
+        lua_pushlstring(L, e + 1, blen); /* common string */
     }
 
     return 1;
@@ -299,37 +299,37 @@ fk_lua_run_script(fk_conn_t *conn, char *code)
     top1 = lua_gettop(gL);
 
     rt = luaL_loadstring(gL, code);
-    if (rt != 0) {/* error occurs when load a string */
+    if (rt != 0) { /* error occurs when load a string */
         fk_log_info("load string failed\n");
         err = lua_tolstring(gL, -1, &slen);
         fk_conn_add_bulk_rsp(conn, slen);
         fk_conn_add_content_rsp(conn, (char *)err, slen);
-        lua_pop(gL, 1);/* must pop this error message */
+        lua_pop(gL, 1); /* must pop this error message */
         return 0;
     }
 
-    lua_conn->db_idx = conn->db_idx;/* keep the same db_idx */
+    lua_conn->db_idx = conn->db_idx; /* keep the same db_idx */
 
     rt = lua_pcall(gL, 0, LUA_MULTRET, 0);
-    if (rt != 0) {/* error occurs when run script */
+    if (rt != 0) { /* error occurs when run script */
         fk_log_info("run string failed\n");
         err = lua_tolstring(gL, -1, &slen);
         fk_conn_add_bulk_rsp(conn, slen);
         fk_conn_add_content_rsp(conn, (char *)err, slen);
-        lua_pop(gL, 1);/* must pop this error message */
+        lua_pop(gL, 1); /* must pop this error message */
         return 0;
     }
 
     top2 = lua_gettop(gL);
-    nret = top2 - top1;/* get the number of return value */
+    nret = top2 - top1; /* get the number of return value */
 
-    if (nret == 0) {/* no return value at all */
+    if (nret == 0) { /* no return value at all */
         fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);
         lua_settop(gL, top1);
         return 0;
     }
 
-    idx = -1 - (nret - 1);/* only get the first return value */
+    idx = -1 - (nret - 1); /* only get the first return value */
     type = lua_type(gL, idx);
     switch (type) {
     case LUA_TNUMBER:
@@ -366,7 +366,7 @@ fk_lua_run_script(fk_conn_t *conn, char *code)
         break;
     }
 
-    lua_settop(gL, top1);/* keep the top of the stack */
+    lua_settop(gL, top1); /* keep the top of the stack */
     lua_gc(gL, LUA_GCSTEP, 1);
 
     return 0;

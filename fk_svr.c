@@ -102,7 +102,7 @@ fk_db_dict_key_copy(void *key)
 
     itm = (fk_item_t *)key;
 
-    fk_item_inc_ref(itm);/* increase the ref here */
+    fk_item_inc_ref(itm); /* increase the ref here */
 
     return key;
 }
@@ -114,7 +114,7 @@ fk_db_dict_key_free(void *key)
 
     itm = (fk_item_t *)key;
 
-    fk_item_dec_ref(itm);/* decrease the ref here */
+    fk_item_dec_ref(itm); /* decrease the ref here */
 }
 
 void *
@@ -268,7 +268,7 @@ fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
      */
     fk_ev_remove_tmev(tmev);
 
-    return -1;/* do not cycle once more */
+    return -1; /* do not cycle once more */
 }
 #endif
 
@@ -289,7 +289,7 @@ fk_svr_init(void)
 
     /* create global environment */
     server.arch = sizeof(uintptr_t) == 4 ? 32 : 64;
-    server.save_pid = -1;/* -1 is a invalid pid */
+    server.save_pid = -1; /* -1 is a invalid pid */
     server.start_time = time(NULL);
     server.last_save = time(NULL);
     server.conn_cnt = 0;
@@ -385,7 +385,7 @@ fk_svr_signal_exit_handler(int sig)
         break;
     }
     fk_log_info("to exit by signal: %d\n", sig);
-    fk_ev_stop();/* stop the event cycle */
+    fk_ev_stop(); /* stop the event cycle */
     //exit(EXIT_SUCCESS);
 }
 
@@ -400,7 +400,7 @@ fk_svr_signal_child_handler(int sig)
         exit(EXIT_FAILURE);
     }
     if (st == 0) {
-        server.save_pid = -1;/* the saving child process is terminated */
+        server.save_pid = -1; /* the saving child process is terminated */
         server.last_save = time(NULL);
     }
     fk_log_debug("save db done\n");

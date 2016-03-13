@@ -16,16 +16,16 @@
 /* finite state is useful when add/remove ioev or tmev */
 /* finite state machine for ioev */
 /* 3 kinds of states for fk_ioev_t */
-#define FK_IOEV_INIT            0/* never added to the evmgr */
-#define FK_IOEV_PENDING         1/* not in the activated list */
-#define FK_IOEV_ACTIVATED       2/* in the activated list */
+#define FK_IOEV_INIT            0 /* never added to the evmgr */
+#define FK_IOEV_PENDING         1 /* not in the activated list */
+#define FK_IOEV_ACTIVATED       2 /* in the activated list */
 
 /* finite state machine for tmev */
 /* 4 kinds of states for fk_tmev_t */
-#define FK_TMEV_INIT        0/* never added to the evmgr */
-#define FK_TMEV_PENDING     1/* in the min heap, not in the expired list */
-#define FK_TMEV_EXPIRED     2/* in the expired list, not in the min heap */
-#define FK_TMEV_OLD         3/* added to the evmgr, but not in the min heap, neither the expired list */
+#define FK_TMEV_INIT        0 /* never added to the evmgr */
+#define FK_TMEV_PENDING     1 /* in the min heap, not in the expired list */
+#define FK_TMEV_EXPIRED     2 /* in the expired list, not in the min heap */
+#define FK_TMEV_OLD         3 /* added to the evmgr, but not in the min heap, neither the expired list */
 
 #define fk_ioev_set_stat(ioev, stat)        (ioev)->activated = (stat)
 #define fk_ioev_get_stat(ioev)              ((ioev)->activated)
@@ -59,7 +59,7 @@ static fk_leaf_op_t tmev_op = {
 void
 fk_ev_init(int max_files)
 {
-    evmgr.stop = false;/* never stop */
+    evmgr.stop = false; /* never stop */
     evmgr.max_files = max_files;
     evmgr.ioev_cnt = 0;
     evmgr.tmev_cnt = 0;
@@ -91,7 +91,7 @@ fk_ev_dispatch(void)
     fk_tmev_t       *tmev;
     struct timeval  *pto, now, timeout;
 
-    pto = NULL;/* indefinitely wait */
+    pto = NULL; /* indefinitely wait */
 
     tmev = fk_ev_get_nearest_tmev();
     if (tmev != NULL) {
@@ -133,7 +133,7 @@ void
 fk_ev_cycle(void)
 {
     while (!evmgr.stop) {
-        fk_ev_dispatch();/* we donot care the retrun value of fk_ev_dispatch() */
+        fk_ev_dispatch(); /* we donot care the retrun value of fk_ev_dispatch() */
     }
 }
 
@@ -168,7 +168,7 @@ fk_ev_add_ioev(fk_ioev_t *ioev)
     if (type & FK_IOEV_WRITE) {
         evmgr.write_ev[fd] = ioev;
     }
-    fk_ioev_set_stat(ioev, FK_IOEV_PENDING);/* necessary? */
+    fk_ioev_set_stat(ioev, FK_IOEV_PENDING); /* necessary? */
     evmgr.ioev_cnt++;
 
     return FK_EV_OK;
@@ -197,7 +197,7 @@ fk_ev_remove_ioev(fk_ioev_t *ioev)
     if (fk_ioev_get_stat(ioev) == FK_IOEV_ACTIVATED) {
         fk_rawlist_remove_anyone(evmgr.act_ioev, ioev);
     }
-    fk_ioev_set_stat(ioev, FK_IOEV_INIT);/* go back to init state */
+    fk_ioev_set_stat(ioev, FK_IOEV_INIT); /* go back to init state */
 
     if (type & FK_IOEV_READ) {
         evmgr.read_ev[fd] = NULL;
@@ -254,7 +254,7 @@ fk_tmev_create(uint32_t interval, uint8_t type, void *arg, fk_tmev_cb tmcb)
 
     tmev->prev = NULL;
     tmev->next = NULL;
-    tmev->idx = 0;/* index 0 was not used in min_heap */
+    tmev->idx = 0; /* index 0 was not used in min_heap */
     return tmev;
 }
 
@@ -276,7 +276,7 @@ fk_ev_add_tmev(fk_tmev_t *tmev)
     }
     tmhp = evmgr.timer_heap;
     fk_heap_push(tmhp, (fk_leaf_t *)tmev);
-    fk_tmev_set_stat(tmev, FK_TMEV_PENDING);/* in the min_heap, not in the expired list */
+    fk_tmev_set_stat(tmev, FK_TMEV_PENDING); /* in the min_heap, not in the expired list */
     evmgr.tmev_cnt++;
 
     return FK_EV_OK;
@@ -327,11 +327,11 @@ fk_ev_update_pending_tmev(void)
         tmev = (fk_tmev_t *)root;
         cmp = fk_util_tmval_cmp(&now, &(tmev->when));
         if (cmp >= 0) {
-            fk_heap_pop(evmgr.timer_heap);/* pop root from the heap */
-            fk_rawlist_insert_head(evmgr.exp_tmev, tmev);/* add to the exp list */
+            fk_heap_pop(evmgr.timer_heap); /* pop root from the heap */
+            fk_rawlist_insert_head(evmgr.exp_tmev, tmev); /* add to the exp list */
             fk_tmev_set_stat(tmev, FK_TMEV_EXPIRED);
-            root = fk_heap_root(evmgr.timer_heap);/* get new root */
-        } else {/* break directly */
+            root = fk_heap_root(evmgr.timer_heap); /* get new root */
+        } else { /* break directly */
             break;
         }
     }
@@ -356,10 +356,10 @@ fk_ev_proc_expired_tmev(void)
 
         /* step 1: remove the expired tmev from the expired list first!!!! */
         fk_rawlist_remove_anyone(evmgr.exp_tmev, tmev);
-        fk_rawlist_insert_head(evmgr.old_tmev, tmev);/* move to the old list */
-        fk_tmev_set_stat(tmev, FK_TMEV_OLD);/* not init, not in the min heap, neither the expired list */
+        fk_rawlist_insert_head(evmgr.old_tmev, tmev); /* move to the old list */
+        fk_tmev_set_stat(tmev, FK_TMEV_OLD); /* not init, not in the min heap, neither the expired list */
         /* step 2: call the callback of the expired tmev */
-        rt = tmcb(interval, type, arg);/* maybe fk_ev_remove_tmev() is called in tmcb */
+        rt = tmcb(interval, type, arg); /* maybe fk_ev_remove_tmev() is called in tmcb */
         /*
          * step 3:
          * fk_ev_remove_tmev() should not be called here, even if the return value
@@ -372,7 +372,7 @@ fk_ev_proc_expired_tmev(void)
                 fk_rawlist_remove_anyone(evmgr.old_tmev, tmev);
                 fk_util_cal_expire(&(tmev->when), interval);
                 fk_heap_push(evmgr.timer_heap, (fk_leaf_t *)tmev);
-                fk_tmev_set_stat(tmev, FK_TMEV_PENDING);/* add to min heap again */
+                fk_tmev_set_stat(tmev, FK_TMEV_PENDING); /* add to min heap again */
             }
         }
         tmev = fk_rawlist_head(evmgr.exp_tmev);
@@ -397,9 +397,9 @@ fk_ev_proc_activated_ioev(void)
 
         /* step 1: remove the activated ioev from the activated list first!!!! */
         fk_rawlist_remove_anyone(evmgr.act_ioev, ioev);
-        fk_ioev_set_stat(ioev, FK_IOEV_PENDING);/* not in the activated list now */
+        fk_ioev_set_stat(ioev, FK_IOEV_PENDING); /* not in the activated list now */
         /* step 2: call the callback of the activated ioev */
-        iocb(fd, type, arg);/* maybe fk_ev_remove_ioev() is called in iocb */
+        iocb(fd, type, arg); /* maybe fk_ev_remove_ioev() is called in iocb */
         /*
          * we donot care about the return value of iocb, all error should be handled
          * by iocb itself, but not here.
@@ -433,9 +433,9 @@ fk_ev_activate_ioev(int fd, uint8_t type)
      */
     if (type & FK_IOEV_READ) {
         rioev = evmgr.read_ev[fd];
-        if (rioev != NULL) {/* when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null */
+        if (rioev != NULL) { /* when EPOLLERR/EPOLLHUP occurs, maybe there is no rioev/wioev, so check non-null */
             if (fk_ioev_get_stat(rioev) == FK_IOEV_PENDING) {
-                fk_rawlist_insert_head(evmgr.act_ioev, rioev);/* add to the exp list */
+                fk_rawlist_insert_head(evmgr.act_ioev, rioev); /* add to the exp list */
                 fk_ioev_set_stat(rioev, FK_IOEV_ACTIVATED);
             }
         }
@@ -444,7 +444,7 @@ fk_ev_activate_ioev(int fd, uint8_t type)
         wioev = evmgr.write_ev[fd];
         if (wioev != NULL) {
             if (fk_ioev_get_stat(wioev) == FK_IOEV_PENDING) {
-                fk_rawlist_insert_head(evmgr.act_ioev, wioev);/* add to the exp list */
+                fk_rawlist_insert_head(evmgr.act_ioev, wioev); /* add to the exp list */
                 fk_ioev_set_stat(wioev, FK_IOEV_ACTIVATED);
             }
         }

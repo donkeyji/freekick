@@ -71,15 +71,15 @@ fk_skiplist_destroy(fk_skiplist_t *sl)
 
     /* the head node should be processed specially */
     q = p->next[0];
-    fk_skipnode_destroy(p);/* free the head node */
+    fk_skipnode_destroy(p); /* free the head node */
     p = q;
 
     /* from the lowest list */
     while (p != NULL) {
-        q = p->next[0];/* save the next node */
+        q = p->next[0]; /* save the next node */
         fk_skipnode_free_data(sl, p);
-        fk_skipnode_destroy(p);/* free the current node */
-        p = q;/* go to the next node */
+        fk_skipnode_destroy(p); /* free the current node */
+        p = q; /* go to the next node */
     }
 
     fk_mem_free(sl);
@@ -96,7 +96,7 @@ fk_skiplist_insert(fk_skiplist_t *sl, int score, void *data)
     q = NULL;
 
     for (i = FK_SKLIST_MAX_LEVEL - 1; i >= 0; i--) {
-        q = p->next[i];/* the first node in this level */
+        q = p->next[i]; /* the first node in this level */
         /* if the score exist already, insert this new node after the older one */
         while (q != NULL && q->score <= score) {
             p = q;
@@ -119,9 +119,9 @@ fk_skiplist_insert(fk_skiplist_t *sl, int score, void *data)
      */
     if (nlv > sl->level) {
         for (i = sl->level; i < nlv; i++) {
-            update[i] = sl->head;/* use the head as the previous node */
+            update[i] = sl->head; /* use the head as the previous node */
         }
-        sl->level = nlv;/* set this nlv as the level of skiplist */
+        sl->level = nlv; /* set this nlv as the level of skiplist */
     }
 
     nd = fk_skipnode_create(nlv);
@@ -167,7 +167,7 @@ fk_skiplist_remove(fk_skiplist_t *sl, int score)
 
     nd = q;
     for (i = sl->level - 1; i >= 0; i--) {
-        if (update[i]->next[i] == nd) {/* need to remove */
+        if (update[i]->next[i] == nd) { /* need to remove */
             update[i]->next[i] = nd->next[i];
             /*
              * if the node removed is the current toppest,

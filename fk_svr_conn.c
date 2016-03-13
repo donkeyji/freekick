@@ -57,7 +57,7 @@ fk_conn_create(int fd)
     }
     conn->write_added = 0;
 
-    conn->last_recv = time(NULL);/* save the current time */
+    conn->last_recv = time(NULL); /* save the current time */
 
     conn->arg_vtr = fk_vtr_create(FK_VTR_INIT_LEN);
     conn->cur_arglen = -1;
@@ -93,8 +93,8 @@ fk_conn_destroy(fk_conn_t *conn)
     fk_buf_destroy(conn->rbuf);
     fk_buf_destroy(conn->wbuf);
 
-    fk_conn_free_args(conn);/* free arg_vtr first */
-    fk_vtr_destroy(conn->arg_vtr);/* then free vector */
+    fk_conn_free_args(conn); /* free arg_vtr first */
+    fk_vtr_destroy(conn->arg_vtr); /* then free vector */
 
     conn->last_recv = -1;
 
@@ -102,7 +102,7 @@ fk_conn_destroy(fk_conn_t *conn)
         close(conn->fd);
     }
 
-    fk_mem_free(conn);/* should be the last step */
+    fk_mem_free(conn); /* should be the last step */
 }
 
 void
@@ -146,8 +146,8 @@ fk_conn_recv_data(fk_conn_t *conn)
             fk_buf_stretch(conn->rbuf);
         }
         /* reach the high water of read buffer */
-        if (fk_buf_free_len(conn->rbuf) == 0) {/* could not receive data this time */
-            return FK_SVR_OK;/* go to the next step: parse request */
+        if (fk_buf_free_len(conn->rbuf) == 0) { /* could not receive data this time */
+            return FK_SVR_OK; /* go to the next step: parse request */
         }
 #ifdef FK_DEBUG
         fk_log_debug("[after rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
@@ -157,17 +157,17 @@ fk_conn_recv_data(fk_conn_t *conn)
         free_len = fk_buf_free_len(conn->rbuf);
 
         recv_len = recv(conn->fd, free_buf, free_len, 0);
-        if (recv_len == 0) {/* conn disconnected */
+        if (recv_len == 0) { /* conn disconnected */
             fk_log_info("[conn socket closed] fd: %d\n", conn->fd);
             return FK_SVR_ERR;
         } else if (recv_len < 0) {
             if (errno != EAGAIN) {
                 fk_log_error("[recv error] %s\n", strerror(errno));
                 return FK_SVR_ERR;
-            } else {/* no data left in the read buffer of the socket */
+            } else { /* no data left in the read buffer of the socket */
                 return FK_SVR_OK;
             }
-        } else {/* succeed */
+        } else { /* succeed */
 #ifdef FK_DEBUG
             fk_log_debug("[conn data] fd: %d, recv_len: %d, data: %s\n", conn->fd, recv_len, free_buf);
 #endif
@@ -176,10 +176,10 @@ fk_conn_recv_data(fk_conn_t *conn)
 #ifdef FK_DEBUG
             fk_log_debug("[after recv]rbuf->low: %lu, rbuf->high: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf));
 #endif
-            if (recv_len < free_len) {/* no extra data left */
+            if (recv_len < free_len) { /* no extra data left */
                 return FK_SVR_OK;
-            } else {/* maybe there is still data in socket buffer */
-                continue;/* rbuf is full now */
+            } else { /* maybe there is still data in socket buffer */
+                continue; /* rbuf is full now */
             }
         }
     }
@@ -332,7 +332,7 @@ fk_conn_parse_req(fk_conn_t *conn)
              * because the FK_ARG_HIGHWAT == (64 * 1024 - 2), and
              * INT_MAX > FK_ARG_HIGHWAT
              */
-            argl = atoi(start + 1);/* argument length */
+            argl = atoi(start + 1); /* argument length */
             if (argl < 0 || argl > FK_ARG_HIGHWAT) {
 #ifdef FK_DEBUG
                 fk_log_debug("illegal argument length\n");
@@ -359,15 +359,15 @@ fk_conn_parse_req(fk_conn_t *conn)
                 }
                 itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
                 fk_conn_set_arg(conn, conn->arg_cnt, itm);
-                fk_item_inc_ref(itm);/* ref: from 0 to 1 */
+                fk_item_inc_ref(itm); /* ref: from 0 to 1 */
                 conn->arg_cnt += 1;
                 conn->cur_arglen = -1;
                 fk_buf_low_inc(rbuf, arg_len + 2);
-            } else {/* not received yet */
+            } else { /* not received yet */
                 return FK_SVR_AGAIN;
             }
 
-            if (conn->arg_parsed == conn->arg_cnt) {/* a total protocol has been parsed */
+            if (conn->arg_parsed == conn->arg_cnt) { /* a total protocol has been parsed */
                 conn->parse_done = 1;
                 return FK_SVR_OK;
             }
@@ -396,8 +396,8 @@ fk_conn_free_args(fk_conn_t *conn)
          * were parsed correctly, so maybe arg_itm == NULL at this time
          */
         if (arg_itm != NULL) {
-            fk_item_dec_ref(arg_itm);/* just decrease the ref */
-            fk_conn_set_arg(conn, i, NULL);/* do not ref to this item */
+            fk_item_dec_ref(arg_itm); /* just decrease the ref */
+            fk_conn_set_arg(conn, i, NULL); /* do not ref to this item */
         }
     }
     conn->cur_arglen = -1;
@@ -458,7 +458,7 @@ fk_conn_proc_cmd(fk_conn_t *conn)
         return FK_SVR_OK;
     }
     rt = pto->handler(conn);
-    if (rt == FK_SVR_ERR) {/* arg_vtr are not consumed, free all the arg_vtr */
+    if (rt == FK_SVR_ERR) { /* arg_vtr are not consumed, free all the arg_vtr */
         fk_conn_free_args(conn);
         return FK_SVR_ERR;
     }
@@ -488,7 +488,7 @@ fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext)
         fk_log_debug("connection timeout\n");
 #endif
         fk_svr_remove_conn(conn);
-        return -1;/* tell evmgr not to add this timer again */
+        return -1; /* tell evmgr not to add this timer again */
     }
     return 0;
 }
@@ -510,7 +510,7 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
     conn = (fk_conn_t *)ext;
 
     rt = fk_conn_recv_data(conn);
-    if (rt == FK_SVR_ERR) {/* conn closed */
+    if (rt == FK_SVR_ERR) { /* conn closed */
         /* donot print log here, print detailed log in fk_conn_recv_data */
         //fk_log_error("fatal error occured when receiving data\n");
         fk_svr_remove_conn(conn);
@@ -523,12 +523,12 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
      */
     while (fk_buf_payload_len(conn->rbuf) > 0) {
         rt = fk_conn_parse_req(conn);
-        if (rt == FK_SVR_ERR) {/* error when parsing */
+        if (rt == FK_SVR_ERR) { /* error when parsing */
             /* donot print log here, print detailed log in fk_conn_parse_req */
             //fk_log_error("fatal error occured when parsing protocol\n");
             fk_svr_remove_conn(conn);
             return;
-        } else if (rt == FK_SVR_AGAIN) {/* parsing not completed */
+        } else if (rt == FK_SVR_AGAIN) { /* parsing not completed */
             break;
         }
         /*
@@ -584,9 +584,9 @@ fk_conn_write_cb(int fd, uint8_t type, void *ext)
         if (sent_len < 0) {
             if (errno != EAGAIN) {
                 fk_log_error("send error: %s\n", strerror(errno));
-                fk_svr_remove_conn(conn);/* close the connection directly */
+                fk_svr_remove_conn(conn); /* close the connection directly */
                 return;
-            } else {/* no free space in this write buffer of the socket */
+            } else { /* no free space in this write buffer of the socket */
                 break;
             }
         }

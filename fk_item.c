@@ -71,7 +71,7 @@ fk_item_create(uint8_t type, void *entity)
 
     itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t));
     itm->entity = entity;
-    itm->ref = 0;/* I think the initial value of ref should be 0, not 1 */
+    itm->ref = 0; /* I think the initial value of ref should be 0, not 1 */
     itm->type = type;
 
     return itm;

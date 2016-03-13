@@ -73,7 +73,7 @@ fk_dict_init(fk_dict_t *dct)
 {
     dct->size = FK_DICT_INIT_SIZE;
     dct->size_mask = dct->size - 1;
-    dct->limit = dct->size >> 1;/* when up to 50%, it should extend space */
+    dct->limit = dct->size >> 1; /* when up to 50%, it should extend space */
     dct->used = 0;
     dct->buckets = (fk_elt_list_t **)fk_mem_alloc(sizeof(fk_elt_list_t) * FK_DICT_INIT_SIZE);
     memset(dct->buckets, 0, sizeof(fk_elt_list_t *) * FK_DICT_INIT_SIZE);
@@ -95,28 +95,28 @@ fk_dict_clear(fk_dict_t *dct)
         if (lst == NULL) {
             continue;
         }
-        nd = fk_rawlist_head(lst);/* get the new head */
+        nd = fk_rawlist_head(lst); /* get the new head */
         while (nd != NULL) {
             fk_rawlist_remove_anyone(lst, nd);
-            fk_elt_key_free(dct, nd);/* free key */
-            fk_elt_value_free(dct, nd);/* free value */
-            fk_elt_destroy(nd);/* free element */
-            dct->used--;/* unnecessary */
-            nd = fk_rawlist_head(lst);/* go to the new head */
+            fk_elt_key_free(dct, nd); /* free key */
+            fk_elt_value_free(dct, nd); /* free value */
+            fk_elt_destroy(nd); /* free element */
+            dct->used--; /* unnecessary */
+            nd = fk_rawlist_head(lst); /* go to the new head */
         }
-        fk_rawlist_destroy(lst);/* free element list */
-        dct->buckets[i] = NULL;/* mark list NULL */
+        fk_rawlist_destroy(lst); /* free element list */
+        dct->buckets[i] = NULL; /* mark list NULL */
     }
-    fk_mem_free(dct->buckets);/* free buckets */
-    dct->buckets = NULL;/* mark bucket NULL */
+    fk_mem_free(dct->buckets); /* free buckets */
+    dct->buckets = NULL; /* mark bucket NULL */
 }
 
 void
 fk_dict_empty(fk_dict_t *dct)
 {
-    fk_dict_clear(dct);/* only clear all the elements */
+    fk_dict_clear(dct); /* only clear all the elements */
 
-    fk_dict_init(dct);/* go back to the initial state */
+    fk_dict_init(dct); /* go back to the initial state */
 }
 
 void
@@ -124,7 +124,7 @@ fk_dict_destroy(fk_dict_t *dct)
 {
     fk_dict_clear(dct);
 
-    fk_mem_free(dct);/* free dict itself */
+    fk_mem_free(dct); /* free dict itself */
 }
 
 fk_elt_t *
@@ -223,7 +223,7 @@ fk_dict_replace(fk_dict_t *dct, void *key, void *value)
     /* try to add by call fk_dict_add */
     rt = fk_dict_add(dct, key, value);
     if (rt == FK_DICT_OK) {
-        return 0;/* key not exists */
+        return 0; /* key not exists */
     }
 
     elt = fk_dict_search(dct, key, NULL);
@@ -233,7 +233,7 @@ fk_dict_replace(fk_dict_t *dct, void *key, void *value)
     /* use new value to replace */
     fk_elt_set_value(dct, elt, value);
 
-    return 1;/* the key exist already */
+    return 1; /* the key exist already */
 }
 
 int
@@ -372,7 +372,7 @@ fk_dict_iter_next(fk_dict_iter_t *iter)
     fk_elt_list_t  *elst;
 
     while (1) {
-        if (iter->cur == NULL) {/* the first time to call this function */
+        if (iter->cur == NULL) { /* the first time to call this function */
             iter->idx++;
             /* narrow type to wide type */
             if (iter->idx == (intmax_t)(iter->dct->size)) {
@@ -382,18 +382,18 @@ fk_dict_iter_next(fk_dict_iter_t *iter)
             if (elst != NULL) {
                 iter->cur = fk_rawlist_head(elst);
             }
-        } else {/* not the first time to call this function */
+        } else { /* not the first time to call this function */
             iter->cur = iter->next;
         }
 
         /* found  a non-null element */
         if (iter->cur != NULL) {
-            iter->next = iter->cur->next;/* save the next element */
+            iter->next = iter->cur->next; /* save the next element */
             return iter->cur;
         }
     }
 
-    return NULL;/* all elements have been visited yet */
+    return NULL; /* all elements have been visited yet */
 }
 
 void

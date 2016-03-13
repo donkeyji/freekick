@@ -148,7 +148,7 @@ fk_epoll_remove(void *ev_iompx, int fd, uint8_t type)
     }
 
     /* if succeed, remove from the emask */
-    iompx->emask[fd] = otp & (~type);/* my clever!!!!!! */
+    iompx->emask[fd] = otp & (~type); /* my clever!!!!!! */
     return FK_EV_OK;
 }
 

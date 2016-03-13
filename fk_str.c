@@ -17,7 +17,7 @@ fk_str_create(const char *src, size_t len)
 
     new_one = (fk_str_t *)fk_mem_alloc(sizeof(fk_str_t) + len + 1);
     memcpy((void *)new_one->seq, (void *)src, len);
-    new_one->seq[len] = '\0';/* append '\0' to the tail */
+    new_one->seq[len] = '\0'; /* append '\0' to the tail */
     new_one->len = len;
     return new_one;
 }

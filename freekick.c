@@ -67,14 +67,14 @@ fk_daemonize(void)
     case -1:
         fk_log_error("fork: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
-    case 0:/* child continue */
+    case 0: /* child continue */
         break;
-    default:/* parent exit */
+    default: /* parent exit */
         fk_log_info("parent exit, to run as a daemon\n");
         exit(EXIT_SUCCESS);
     }
 
-    if (setsid() == -1) {/* create a new session */
+    if (setsid() == -1) { /* create a new session */
         fk_log_error("setsid: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
@@ -87,17 +87,17 @@ fk_daemonize(void)
         exit(EXIT_FAILURE);
     }
 
-    if (dup2(fd, STDIN_FILENO) == -1) {/* close STDIN */
+    if (dup2(fd, STDIN_FILENO) == -1) { /* close STDIN */
         fk_log_error("dup2: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
-    if (dup2(fd, STDOUT_FILENO) == -1) {/* close STDOUT */
+    if (dup2(fd, STDOUT_FILENO) == -1) { /* close STDOUT */
         fk_log_error("dup2: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
-    if (dup2(fd, STDERR_FILENO) == -1) {/* close STDERR */
+    if (dup2(fd, STDERR_FILENO) == -1) { /* close STDERR */
         fk_log_error("dup2: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
@@ -155,7 +155,7 @@ fk_setrlimit(void)
      */
     if (max_files > lmt.rlim_max) {
         euid = geteuid();
-        if (euid == 0) {/* root */
+        if (euid == 0) { /* root */
 #ifdef FK_DEBUG
             fk_log_info("running as root\n");
 #endif
@@ -167,11 +167,11 @@ fk_setrlimit(void)
                 exit(EXIT_FAILURE);
             }
             fk_log_info("new file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
-        } else {/* non-root */
+        } else { /* non-root */
 #ifdef FK_DEBUG
             fk_log_info("running as non-root\n");
 #endif
-            max_files = lmt.rlim_max;/* open as many as possible files */
+            max_files = lmt.rlim_max; /* open as many as possible files */
             lmt.rlim_cur = lmt.rlim_max;
             rt = setrlimit(RLIMIT_NOFILE, &lmt);
             if (rt < 0) {

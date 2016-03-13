@@ -14,7 +14,7 @@
 #include <fk_conf.h>
 #include <fk_mem.h>
 #include <fk_str.h>
-#include <fk_log.h>/* FK_LOG_INFO & FK_LOG_ERR & FK_LOG_DEBUG & FK_LOG_WARN */
+#include <fk_log.h> /* FK_LOG_INFO & FK_LOG_ERR & FK_LOG_DEBUG & FK_LOG_WARN */
 
 /* default setting */
 #define FK_DEFAULT_MAX_CONN 		10240
@@ -106,7 +106,7 @@ fk_cfline_create(void)
     fk_cfline_t  *line;
 
     line = (fk_cfline_t *)fk_mem_alloc(sizeof(fk_cfline_t));
-    line->no = 0;/* line number */
+    line->no = 0; /* line number */
     line->cnt = 0;
     line->buf = NULL;
     line->len = 0;
@@ -121,7 +121,7 @@ fk_cfline_destroy(fk_cfline_t *line)
     unsigned  i;
 
     if (line->buf != NULL) {
-        free(line->buf);/* could not use fk_mem_free */
+        free(line->buf); /* could not use fk_mem_free */
     }
     for (i = 0; i < FK_CONF_MAX_FIELDS; i++) {
         if (line->fields[i] != NULL) {
@@ -179,13 +179,13 @@ fk_conf_parse_file(char *conf_path)
     }
     fseek(fp, 0, SEEK_END);
     tail = ftell(fp);
-    rewind(fp);/* fseek(fp, 0, SEEK_SET); */
+    rewind(fp); /* fseek(fp, 0, SEEK_SET); */
     line_num = 0;
     line = fk_cfline_create();
 
     /* do not reach the end of the file */
     while (ftell(fp) != tail) {
-        line_num++;/* it begins from 1, not 0 */
+        line_num++; /* it begins from 1, not 0 */
         fk_conf_reset_line(line);
         line->no = line_num;
         rt = fk_conf_read_line(line, fp);
@@ -240,10 +240,10 @@ fk_conf_parse_line(fk_cfline_t *line)
             sprintf(line->err, "the max fields of one line should not be more than %d, line: %"PRIu32"\n", FK_CONF_MAX_FIELDS, line->no);
             return FK_CONF_ERR;
         }
-        while (buf[i] == ' ' || buf[i] == '\t') {/* fint the first no empty character */
+        while (buf[i] == ' ' || buf[i] == '\t') { /* fint the first no empty character */
             i++;
         }
-        if (buf[i] == '#' || buf[i] == '\n') {/* this line end */
+        if (buf[i] == '#' || buf[i] == '\n') { /* this line end */
             break;
         }
         start = i;
@@ -254,7 +254,7 @@ fk_conf_parse_line(fk_cfline_t *line)
             end++;
         }
         line->fields[line->cnt] = fk_str_create(buf + start, (size_t)(end - start));
-        line->cnt += 1;/* a new token found */
+        line->cnt += 1; /* a new token found */
 
         i = end;
     }
@@ -283,7 +283,7 @@ fk_conf_proc_line(fk_cfline_t *line)
     fk_dtv    *dtv;
     fk_str_t  *cmd;
 
-    if (line->cnt == 0) {/* the current line is a comment or empty line */
+    if (line->cnt == 0) { /* the current line is a comment or empty line */
         return FK_CONF_OK;
     }
 
@@ -313,7 +313,7 @@ fk_conf_reset_line(fk_cfline_t *line)
     line->no = 0;
     line->cnt = 0;
     if (line->buf != NULL) {
-        free(line->buf);/* do not use fk_mem_free() here */
+        free(line->buf); /* do not use fk_mem_free() here */
     }
     line->buf = NULL;
     line->len = 0;
@@ -331,7 +331,7 @@ fk_conf_parse_port(fk_cfline_t *line)
     int  rt, port;
 
     rt = fk_str_is_positive(line->fields[1]);
-    if (rt == 0) {/* not a positive integer */
+    if (rt == 0) { /* not a positive integer */
         sprintf(line->err, "port is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
@@ -393,7 +393,7 @@ fk_conf_parse_maxconn(fk_cfline_t *line)
     int  rt;
 
     rt = fk_str_is_positive(line->fields[1]);
-    if (rt == 0) {/* not a positive integer */
+    if (rt == 0) { /* not a positive integer */
         sprintf(line->err, "maxconn is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
@@ -407,7 +407,7 @@ fk_conf_parse_dbcnt(fk_cfline_t *line)
     int  rt, dbcnt;
 
     rt = fk_str_is_positive(line->fields[1]);
-    if (rt == 0) {/* not a positive integer */
+    if (rt == 0) { /* not a positive integer */
         sprintf(line->err, "dbcnt is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
@@ -451,7 +451,7 @@ fk_conf_parse_timeout(fk_cfline_t *line)
     int  rt, timeout;
 
     rt = fk_str_is_positive(line->fields[1]);
-    if (rt == 0) {/* not a positive integer */
+    if (rt == 0) { /* not a positive integer */
         sprintf(line->err, "dbcnt is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
@@ -464,7 +464,7 @@ fk_conf_parse_timeout(fk_cfline_t *line)
 int
 fk_conf_parse_dir(fk_cfline_t *line)
 {
-    fk_str_destroy(setting.dir);/* release the default value */
+    fk_str_destroy(setting.dir); /* release the default value */
     setting.dir = fk_str_clone(line->fields[1]);
     return FK_CONF_OK;
 }
@@ -475,7 +475,7 @@ fk_conf_parse_maxwbuf(fk_cfline_t *line)
     int  rt, maxwbuf;
 
     rt = fk_str_is_positive(line->fields[1]);
-    if (rt == 0) {/* not a positive integer */
+    if (rt == 0) { /* not a positive integer */
         sprintf(line->err, "maxwbuf is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }

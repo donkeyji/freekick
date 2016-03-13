@@ -39,7 +39,7 @@ fk_kqueue_create(int max_files)
     }
 
     iompx = (fk_kqueue_t *)fk_mem_alloc(sizeof(fk_kqueue_t));
-    iompx->max_evs = max_files << 1;/* read config from global setting */
+    iompx->max_evs = max_files << 1; /* read config from global setting */
     iompx->kfd = kfd;
     iompx->evlist = (struct kevent *)fk_mem_alloc(sizeof(struct kevent) * iompx->max_evs);
     //iompx->emask = (uint8_t *)fk_mem_alloc(sizeof(uint8_t *) * max_files);
@@ -72,7 +72,7 @@ fk_kqueue_add(void *ev_iompx, int fd, uint8_t type)
         //iompx->emask[fd] |= FK_IOEV_READ;
     }
 
-    if (type & FK_IOEV_WRITE) {/* both read & write */
+    if (type & FK_IOEV_WRITE) { /* both read & write */
         EV_SET(&(iompx->kev), fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL );
         rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
         if (rt < 0) {
@@ -109,7 +109,7 @@ fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type)
         }
         //iompx->emask[fd] &= (~FK_IOEV_READ);
     }
-    if (type & FK_IOEV_WRITE) {/* both read & write */
+    if (type & FK_IOEV_WRITE) { /* both read & write */
         EV_SET(&(iompx->kev), fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL );
         rt = kevent(iompx->kfd, &(iompx->kev), 1, NULL, 0, NULL);
         if (rt < 0) {

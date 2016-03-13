@@ -94,7 +94,7 @@ fk_pool_malloc(fk_pool_t *pool)
             return NULL;
         }
         blk->next = pool->head;
-        pool->head = blk;/* inset to the list as head */
+        pool->head = blk; /* inset to the list as head */
     }
 
     fk_pool_block_alloc(blk, ptr);
@@ -108,13 +108,13 @@ fk_pool_free(fk_pool_t *pool, void *ptr)
     fk_block_t  *cur_blk, *prev_blk;
 
     cur_blk = pool->head;
-    prev_blk = cur_blk;/* could not be 'NULL' */
+    prev_blk = cur_blk; /* could not be 'NULL' */
 
     while (cur_blk != NULL && fk_pool_block_nocontain(cur_blk, ptr)) {
         prev_blk = cur_blk;
         cur_blk = cur_blk->next;
     }
-    if (cur_blk == NULL) {/* there is no this block */
+    if (cur_blk == NULL) { /* there is no this block */
         return;
     }
     fk_pool_block_free(cur_blk, ptr);
@@ -158,7 +158,7 @@ fk_block_create(uint16_t unit_size, uint16_t unit_cnt)
     blk->free_cnt = unit_cnt;
     blk->unit_cnt = unit_cnt;
     blk->unit_size = unit_size;
-    blk->first = 0;/* the 0 index unit */
+    blk->first = 0; /* the 0 index unit */
 
     ptr = blk->data;
     for (i = 0; i < unit_cnt - 1; i++) {

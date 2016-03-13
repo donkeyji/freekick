@@ -51,11 +51,11 @@ fk_fkdb_bgsave(void)
 
     fk_log_debug("to save db\n");
     rt = fork();
-    if (rt < 0) {/* should not exit here, just return */
+    if (rt < 0) { /* should not exit here, just return */
         fk_log_error("fork: %s\n", strerror(errno));
         return;
-    } else if (rt > 0) {/* mark the save_pid */
-        server.save_pid = rt;/* save the child process ID */
+    } else if (rt > 0) { /* mark the save_pid */
+        server.save_pid = rt; /* save the child process ID */
         return;
     } else {
         /* execute only in child process */
@@ -87,16 +87,16 @@ fk_fkdb_save(void)
         rt = fk_fkdb_dump(fp, i);
         if (rt == FK_SVR_ERR) {
             fclose(fp);
-            remove(temp_db);/* remove this temporary db file */
+            remove(temp_db); /* remove this temporary db file */
             return FK_SVR_ERR;
         }
     }
-    fclose(fp);/* close before rename */
+    fclose(fp); /* close before rename */
 
     /* step 2: rename temporary file to server.db_file */
     rt = rename(temp_db, fk_str_raw(setting.db_file));
     if (rt < 0) {
-        remove(temp_db);/* remove this temporary db file */
+        remove(temp_db); /* remove this temporary db file */
         return FK_SVR_ERR;
     }
 
@@ -140,7 +140,7 @@ fk_fkdb_dump(FILE *fp, uint32_t db_idx)
         type = fk_item_type(((fk_item_t *)fk_elt_value(elt)));
         wz = fwrite(&type, sizeof(type), 1, fp);
         if (wz == 0) {
-            fk_dict_iter_end(iter);/* need to release iterator */
+            fk_dict_iter_end(iter); /* need to release iterator */
             return FK_SVR_ERR;
         }
         switch (type) {
@@ -155,11 +155,11 @@ fk_fkdb_dump(FILE *fp, uint32_t db_idx)
             break;
         }
         if (rt == FK_SVR_ERR) {
-            fk_dict_iter_end(iter);/* need to release iterator */
+            fk_dict_iter_end(iter); /* need to release iterator */
             return FK_SVR_ERR;
         }
     }
-    fk_dict_iter_end(iter);/* must release this iterator of fk_dict_t */
+    fk_dict_iter_end(iter); /* must release this iterator of fk_dict_t */
 
     return FK_SVR_OK;
 }
@@ -258,7 +258,7 @@ fk_fkdb_dump_list_elt(FILE *fp, fk_elt_t *elt)
             return FK_SVR_ERR;
         }
     }
-    fk_list_iter_end(iter);/* must release this iterator of fk_list_t */
+    fk_list_iter_end(iter); /* must release this iterator of fk_list_t */
 
     return FK_SVR_OK;
 }
@@ -329,7 +329,7 @@ fk_fkdb_dump_dict_elt(FILE *fp, fk_elt_t *elt)
             return FK_SVR_ERR;
         }
     }
-    fk_dict_iter_end(iter);/* must release this iterator of fk_dict_t */
+    fk_dict_iter_end(iter); /* must release this iterator of fk_dict_t */
 
     return FK_SVR_OK;
 }
@@ -376,12 +376,12 @@ fk_fkdb_load(fk_str_t *db_file)
 
     buf = fk_zline_create(4096);
     fp = fopen(fk_str_raw(db_file), "r");
-    if (fp == NULL) {/* db not exist */
+    if (fp == NULL) { /* db not exist */
         return;
     }
-    fseek(fp, 0, SEEK_END);/* move to the tail */
-    tail = ftell(fp);/* record the position of the tail */
-    fseek(fp, 0, SEEK_SET);/* rewind to the head */
+    fseek(fp, 0, SEEK_END); /* move to the tail */
+    tail = ftell(fp); /* record the position of the tail */
+    fseek(fp, 0, SEEK_SET); /* rewind to the head */
 
     while (ftell(fp) != tail) {
         rt = fk_fkdb_restore(fp, buf);
@@ -390,7 +390,7 @@ fk_fkdb_load(fk_str_t *db_file)
             exit(EXIT_FAILURE);
         }
     }
-    fk_zline_destroy(buf);/* must free this block */
+    fk_zline_destroy(buf); /* must free this block */
     fclose(fp);
 
     return;
