@@ -5,3 +5,4 @@ clt_test
 Makefile.dep
 gmon.out
 test/t
+test/makefile.dep
