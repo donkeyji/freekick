@@ -5,11 +5,11 @@ ver=$1
 #git push origin master
 
 if [ -z $ver ]; then
-	d=$(date "+%Y-%m-%d_%H:%M")
-	appendix=$d
+    d=$(date "+%Y-%m-%d_%H:%M")
+    appendix=$d
 else
-	d=$(date "+%Y-%m-%d")
-	appendix=$d-$ver
+    d=$(date "+%Y-%m-%d")
+    appendix=$d-$ver
 fi
 name="freekick-$appendix.tar.gz"
 

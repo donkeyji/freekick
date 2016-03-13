@@ -4,8 +4,8 @@ pid=$(cat /tmp/freekick.pid)
 echo $pid
 sys=$(uname)
 if [ $sys = 'linux' ]; then
-	opt="-p"
+    opt="-p"
 else
-	opt="-pid"
+    opt="-pid"
 fi
 top $opt $pid
