@@ -4,5 +4,5 @@ freekick
 clt_test
 Makefile.dep
 gmon.out
-test/t
-test/makefile.dep
+t/t
+t/makefile.dep
