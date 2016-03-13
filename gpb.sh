@@ -14,7 +14,7 @@ else
 fi
 
 echo -e "Target Branch: \033[32m$branches\033[0m"
-read -p "Wanna Continue? [y/n]" choice
+read -p "Wanna Continue? [y/n]: " choice
 if [ $choice != 'y' ]; then
 	echo -e "\033[33mPushing Canled\033[0m"
 	exit 1
