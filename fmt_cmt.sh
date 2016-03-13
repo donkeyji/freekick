@@ -7,9 +7,12 @@ if [ -z $files ]; then
 fi
 
 for f in $files; do
-    sed -i ''   '/\/\*[^[:space:]]/s#\/\*\([^[:space:]]\)#/* \1#' $f
+    # /*abc */ ===> /* abc */
+    sed -i ''  '/\/\*[^[:space:]]/s#\/\*\([^[:space:]]\)#/* \1#' $f
 
-    sed -i ''   '/[^[:space:]]\*\//s#\([^[:space:]]\)\*\/#\1 */#' $f
+    # /* abc*/ ===> /* abc */
+    sed -i ''  '/[^[:space:]]\*\//s#\([^[:space:]]\)\*\/#\1 */#' $f
 
-    sed -i ''  '/[^[:space:]]\/\*/s/\([^[:space:]]\)\/\*/\1 \/\*/g'  $f
+    # abc;/* xyz */ ===> abc; /* xyz */
+    sed -i ''  '/[^[:space:]]\/\*/s/\([^[:space:]]\)\/\*/\1 \/\*/g' $f
 done
