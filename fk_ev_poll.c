@@ -1,9 +1,9 @@
 #include <poll.h>
 
 typedef struct {
-    struct pollfd  *evlist;
-    int             last;
-    int            *fd2idx;
+    struct pollfd    *evlist;
+    int               last;
+    int              *fd2idx;
 } fk_poll_t;
 
 static void *fk_poll_create(int max_files);

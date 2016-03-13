@@ -7,11 +7,11 @@
  */
 
 typedef struct {
-    int             kfd;
-    int             max_evs;
-    struct kevent   kev;
-    struct kevent  *evlist;
-    //uint8_t      *emask;      /* no need for kqueue */
+    int               kfd;
+    int               max_evs;
+    struct kevent     kev;
+    struct kevent    *evlist;
+    //uint8_t        *emask;      /* no need for kqueue */
 } fk_kqueue_t;
 
 static void *fk_kqueue_create(int max_files);

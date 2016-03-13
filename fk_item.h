@@ -10,9 +10,9 @@
 #define FK_ITEM_SKLIST	4
 
 typedef struct {
-    uint8_t   type;
-    uint32_t  ref;          /* reference count */
-    void     *entity;       /* point to the real data of the itm */
+    uint8_t     type;
+    uint32_t    ref;       /* reference count */
+    void       *entity;    /* point to the real data of the itm */
 } fk_item_t;
 
 void fk_item_init(void);

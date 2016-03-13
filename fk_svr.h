@@ -64,52 +64,52 @@
 #define FK_CONN_REAL	0
 #define FK_CONN_FAKE	1
 typedef struct {
-    int         fd;
-    uint16_t    type;           /* FK_CONN_REAL | FK_CONN_FAKE */
-    fk_ioev_t  *read_ev;
-    fk_ioev_t  *write_ev;
-    int         write_added;
+    int           fd;
+    uint16_t      type;           /* FK_CONN_REAL | FK_CONN_FAKE */
+    fk_ioev_t    *read_ev;
+    fk_ioev_t    *write_ev;
+    int           write_added;
 
-    fk_buf_t   *rbuf;
-    fk_buf_t   *wbuf;
-    time_t      last_recv;      /* time of last data receiving */
-    fk_tmev_t  *timer;
+    fk_buf_t     *rbuf;
+    fk_buf_t     *wbuf;
+    time_t        last_recv;      /* time of last data receiving */
+    fk_tmev_t    *timer;
 
-    fk_vtr_t   *arg_vtr;
-    int         arg_parsed;     /* parsed from the head of a protocol, original 0; */
-    int         arg_cnt;        /* the number of the arguments which have been parsed, original 0 */
-    int         cur_arglen;     /* the argument length of the arg_cnt..TH, original -1 */
-    int         parse_done;     /* original 0 */
+    fk_vtr_t     *arg_vtr;
+    int           arg_parsed;     /* parsed from the head of a protocol, original 0; */
+    int           arg_cnt;        /* the number of the arguments which have been parsed, original 0 */
+    int           cur_arglen;     /* the argument length of the arg_cnt..TH, original -1 */
+    int           parse_done;     /* original 0 */
 
-    int         db_idx;
+    int           db_idx;
 } fk_conn_t;
 
 typedef struct {
-    uint32_t     arch;          /* 32 or 64 */
-    int          listen_fd;
-    int          conn_cnt;      /* connection count */
-    time_t       start_time;
-    time_t       last_save;
-    uint64_t     timer_cnt;
-    fk_ioev_t   *listen_ev;
-    fk_tmev_t   *svr_timer;
-    fk_tmev_t   *svr_timer2;
-    fk_conn_t  **conns_tab;
-    uint32_t     dbcnt;
-    fk_dict_t  **db;
-    pid_t        save_pid;      /* -1: the save child process ended */
+    uint32_t       arch;          /* 32 or 64 */
+    int            listen_fd;
+    int            conn_cnt;      /* connection count */
+    time_t         start_time;
+    time_t         last_save;
+    uint64_t       timer_cnt;
+    fk_ioev_t     *listen_ev;
+    fk_tmev_t     *svr_timer;
+    fk_tmev_t     *svr_timer2;
+    fk_conn_t    **conns_tab;
+    uint32_t       dbcnt;
+    fk_dict_t    **db;
+    pid_t          save_pid;      /* -1: the save child process ended */
 
-    int          last_dbidx;
-    int          blog_fd;
+    int            last_dbidx;
+    int            blog_fd;
 } fk_svr_t;
 
 typedef int (*fk_handler_t) (fk_conn_t *conn);
 
 typedef struct {
-    char         *name;
-    uint16_t      type;
-    int           arg_cnt;
-    fk_handler_t  handler;
+    char           *name;
+    uint16_t        type;
+    int             arg_cnt;
+    fk_handler_t    handler;
 } fk_proto_t;
 
 /* interface of fk_conn_t */

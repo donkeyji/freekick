@@ -11,8 +11,8 @@
 #include <fk_svr.h>
 
 typedef struct {
-    char   *line;
-    size_t  len;
+    char     *line;
+    size_t    len;
 } fk_zline_t;
 
 static fk_zline_t *fk_zline_create(size_t len);

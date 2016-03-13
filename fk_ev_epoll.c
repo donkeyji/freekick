@@ -7,11 +7,11 @@
  */
 
 typedef struct {
-    int                  efd;
-    int                  max_evs;
-    struct epoll_event   ev;/* temporary variable */
-    struct epoll_event  *evlist;
-    uint8_t             *emask;/* to track event associated to fd */
+    int                    efd;
+    int                    max_evs;
+    struct epoll_event     ev;        /* temporary variable */
+    struct epoll_event    *evlist;
+    uint8_t               *emask;     /* to track event associated to fd */
 } fk_epoll_t;
 
 static void *fk_epoll_create(int max_files);

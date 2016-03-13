@@ -8,8 +8,8 @@
  */
 
 typedef struct {
-    size_t  len;        /* valid length, excluding '\0' */
-    char    seq[];
+    size_t    len;      /* valid length, excluding '\0' */
+    char      seq[];
 } fk_str_t;
 
 #define fk_str_raw(str) ((str)->seq)
