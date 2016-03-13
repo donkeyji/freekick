@@ -16,21 +16,21 @@
 /* finite state is useful when add/remove ioev or tmev */
 /* finite state machine for ioev */
 /* 3 kinds of states for fk_ioev_t */
-#define FK_IOEV_INIT 			0/* never added to the evmgr */
-#define FK_IOEV_PENDING 		1/* not in the activated list */
-#define FK_IOEV_ACTIVATED 		2/* in the activated list */
+#define FK_IOEV_INIT            0/* never added to the evmgr */
+#define FK_IOEV_PENDING         1/* not in the activated list */
+#define FK_IOEV_ACTIVATED       2/* in the activated list */
 
 /* finite state machine for tmev */
 /* 4 kinds of states for fk_tmev_t */
-#define FK_TMEV_INIT		0/* never added to the evmgr */
-#define FK_TMEV_PENDING		1/* in the min heap, not in the expired list */
-#define FK_TMEV_EXPIRED		2/* in the expired list, not in the min heap */
-#define FK_TMEV_OLD			3/* added to the evmgr, but not in the min heap, neither the expired list */
+#define FK_TMEV_INIT        0/* never added to the evmgr */
+#define FK_TMEV_PENDING     1/* in the min heap, not in the expired list */
+#define FK_TMEV_EXPIRED     2/* in the expired list, not in the min heap */
+#define FK_TMEV_OLD         3/* added to the evmgr, but not in the min heap, neither the expired list */
 
-#define	fk_ioev_set_stat(ioev, stat)		(ioev)->activated = (stat)
-#define fk_ioev_get_stat(ioev)				((ioev)->activated)
-#define fk_tmev_set_stat(tmev, stat)		(tmev)->expired = (stat)
-#define fk_tmev_get_stat(tmev)				((tmev)->expired)
+#define fk_ioev_set_stat(ioev, stat)        (ioev)->activated = (stat)
+#define fk_ioev_get_stat(ioev)              ((ioev)->activated)
+#define fk_tmev_set_stat(tmev, stat)        (tmev)->expired = (stat)
+#define fk_tmev_get_stat(tmev)              ((tmev)->expired)
 
 static void fk_ev_activate_ioev(int fd, uint8_t type);
 static fk_tmev_t *fk_ev_get_nearest_tmev(void);

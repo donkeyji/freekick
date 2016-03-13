@@ -3,7 +3,7 @@
 
 #include <sys/types.h>
 
-#define FK_SKLIST_MAX_LEVEL		16
+#define FK_SKLIST_MAX_LEVEL     16
 
 typedef struct fk_skipnode_s fk_skipnode_t;
 struct fk_skipnode_s {
@@ -31,8 +31,8 @@ void fk_skiplist_insert(fk_skiplist_t *sl, int score, void *data);
 void fk_skiplist_remove(fk_skiplist_t *sl, int score);
 fk_skipnode_t *fk_skiplist_search(fk_skiplist_t *sl, int score);
 
-#define fk_skiplist_len(sl)	    ((sl)->len)
+#define fk_skiplist_len(sl)     ((sl)->len)
 
-#define fk_skiplist_level(sl)	((sl)->level)
+#define fk_skiplist_level(sl)   ((sl)->level)
 
 #endif

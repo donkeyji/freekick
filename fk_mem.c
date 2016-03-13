@@ -9,14 +9,14 @@
  */
 #if defined(FK_USE_JEMALLOC)
 #include <jemalloc/jemalloc.h>
-#define fk_mem_malloc_size	malloc_usable_size
+#define fk_mem_malloc_size  malloc_usable_size
 #else
 #if defined(__APPLE__)
 #include <malloc/malloc.h>
-#define fk_mem_malloc_size	malloc_size
+#define fk_mem_malloc_size  malloc_size
 #else
 #include <malloc.h>
-#define fk_mem_malloc_size	malloc_usable_size
+#define fk_mem_malloc_size  malloc_usable_size
 #endif
 #endif
 

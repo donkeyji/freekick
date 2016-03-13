@@ -7,8 +7,8 @@
 
 #include <fk_str.h>
 
-#define FK_CONF_OK		0
-#define FK_CONF_ERR		-1
+#define FK_CONF_OK      0
+#define FK_CONF_ERR     -1
 
 typedef struct {
     uint16_t     port;

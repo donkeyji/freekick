@@ -6,8 +6,8 @@
 #include <fk_list.h>
 #include <fk_str.h>
 
-#define FK_DICT_OK		0
-#define FK_DICT_ERR		-1
+#define FK_DICT_OK      0
+#define FK_DICT_ERR     -1
 
 typedef struct {
     uint32_t    (*key_hash)(void *key);            /* gen hash */
@@ -55,9 +55,9 @@ void fk_dict_empty(fk_dict_t *dct);
 void fk_dict_print(fk_dict_t *dct);
 #endif
 
-#define fk_dict_len(dct)	((dct)->used)
-#define fk_elt_key(elt)		((elt)->key)
-#define fk_elt_value(elt)	((elt)->value)
+#define fk_dict_len(dct)    ((dct)->used)
+#define fk_elt_key(elt)     ((elt)->key)
+#define fk_elt_value(elt)   ((elt)->value)
 
 fk_dict_iter_t *fk_dict_iter_begin(fk_dict_t *dct);
 fk_elt_t *fk_dict_iter_next(fk_dict_iter_t *iter);

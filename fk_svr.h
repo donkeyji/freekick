@@ -16,11 +16,11 @@
 #include <fk_vtr.h>
 
 /* reply sent to the clients */
-#define FK_RSP_OK				"OK"
-#define FK_RSP_ERR				"ERROR"
-#define FK_RSP_TYPE_ERR			"Type Error"
-#define FK_RSP_ARGC_ERR			"Argument Number Error"
-#define FK_RSP_NIL				(-1)
+#define FK_RSP_OK               "OK"
+#define FK_RSP_ERR              "ERROR"
+#define FK_RSP_TYPE_ERR         "Type Error"
+#define FK_RSP_ARGC_ERR         "Argument Number Error"
+#define FK_RSP_NIL              (-1)
 
 /* high water */
 /*
@@ -28,41 +28,41 @@
  * 2. FK_BUF_HIGHWAT should be bigger than FK_ARG_HIGHWAT
  * 3. FK_BUF_INIT_LEN should not be bigger than FK_BUF_HIGHWAT
  */
-#define FK_BUF_HIGHWAT				(4 * 1024 * 1024)
-#define FK_BUF_INIT_LEN				16
-#define FK_ARG_HIGHWAT 				(1024 * 1024)
-#define FK_ARG_CNT_HIGHWAT 			128
+#define FK_BUF_HIGHWAT              (4 * 1024 * 1024)
+#define FK_BUF_INIT_LEN             16
+#define FK_ARG_HIGHWAT              (1024 * 1024)
+#define FK_ARG_CNT_HIGHWAT          128
 
 /* the max length of a argument count line, the max line: *128\r\n */
-#define FK_ARG_CNT_LINE_HIGHWAT 	5
+#define FK_ARG_CNT_LINE_HIGHWAT     5
 
 /*
  * the max length of a argument length line, the max line: $1048576\r\n
  * 1024 * 1024 = 1048576
  */
-#define FK_ARG_LEN_LINE_HIGHWAT		9
+#define FK_ARG_LEN_LINE_HIGHWAT     9
 
-#define FK_VTR_INIT_LEN				4
+#define FK_VTR_INIT_LEN             4
 
 /* status code definition copied from nginx */
-#define FK_SVR_OK			 0
-#define FK_SVR_ERR			-1
-#define FK_SVR_AGAIN    	-2
-#define FK_SVR_BUSY     	-3
-#define FK_SVR_DONE     	-4
-#define FK_SVR_DECLINED   	-5
-#define FK_SVR_ABORT      	-6
+#define FK_SVR_OK            0
+#define FK_SVR_ERR          -1
+#define FK_SVR_AGAIN        -2
+#define FK_SVR_BUSY         -3
+#define FK_SVR_DONE         -4
+#define FK_SVR_DECLINED     -5
+#define FK_SVR_ABORT        -6
 
 /* protocol types definitions */
-#define FK_PROTO_INVALID 	0
-#define FK_PROTO_READ 		1
-#define FK_PROTO_WRITE 		2
-#define FK_PROTO_SCRIPT 	3
+#define FK_PROTO_INVALID    0
+#define FK_PROTO_READ       1
+#define FK_PROTO_WRITE      2
+#define FK_PROTO_SCRIPT     3
 
-#define FK_PROTO_VARLEN		0
+#define FK_PROTO_VARLEN     0
 
-#define FK_CONN_REAL	0
-#define FK_CONN_FAKE	1
+#define FK_CONN_REAL    0
+#define FK_CONN_FAKE    1
 typedef struct {
     int           fd;
     uint16_t      type;           /* FK_CONN_REAL | FK_CONN_FAKE */
@@ -113,12 +113,12 @@ typedef struct {
 } fk_proto_t;
 
 /* interface of fk_conn_t */
-#define FK_CONN_FAKE_FD		-1	/* a fake connection, of which fd is -1 */
+#define FK_CONN_FAKE_FD     -1  /* a fake connection, of which fd is -1 */
 fk_conn_t *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn_t *conn);
 void fk_conn_free_args(fk_conn_t *conn);
-#define fk_conn_set_type(conn, t)		((conn)->type = (t))
-#define fk_conn_get_type(conn)			((conn)->type)
+#define fk_conn_set_type(conn, t)       ((conn)->type = (t))
+#define fk_conn_get_type(conn)          ((conn)->type)
 int fk_conn_add_status_rsp(fk_conn_t *conn, char *stat, size_t stat_len);
 int fk_conn_add_error_rsp(fk_conn_t *conn, char *error, size_t error_len);
 int fk_conn_add_content_rsp(fk_conn_t *conn, char *content, size_t content_len);
@@ -126,8 +126,8 @@ int fk_conn_add_int_rsp(fk_conn_t *conn, int num);
 int fk_conn_add_bulk_rsp(fk_conn_t *conn, int bulk_len);
 int fk_conn_add_mbulk_rsp(fk_conn_t *conn, int bulk_cnt);
 
-#define fk_conn_set_arg(conn, idx, a)	fk_vtr_set((conn->arg_vtr), (idx), (a))
-#define fk_conn_get_arg(conn, idx)	fk_vtr_get((conn)->arg_vtr, (idx))
+#define fk_conn_set_arg(conn, idx, a)   fk_vtr_set((conn->arg_vtr), (idx), (a))
+#define fk_conn_get_arg(conn, idx)  fk_vtr_get((conn)->arg_vtr, (idx))
 
 /* interface of fk_svr_t */
 void fk_svr_init(void);

@@ -11,38 +11,38 @@
 
 #define FK_DICT_INIT_SIZE 4
 
-#define fk_elt_create()	(fk_elt_t *)fk_mem_alloc(sizeof(fk_elt_t))
+#define fk_elt_create() (fk_elt_t *)fk_mem_alloc(sizeof(fk_elt_t))
 
-#define fk_elt_destroy(elt)	fk_mem_free(elt)
+#define fk_elt_destroy(elt) fk_mem_free(elt)
 
-#define fk_elt_set_key(dct, elt, k)	{				\
-	if ((dct)->eop->key_copy != NULL) {				\
-		(elt)->key = (dct)->eop->key_copy((k));		\
-	} else {										\
-		(elt)->key = (k);							\
-	}												\
+#define fk_elt_set_key(dct, elt, k) {               \
+    if ((dct)->eop->key_copy != NULL) {             \
+        (elt)->key = (dct)->eop->key_copy((k));     \
+    } else {                                        \
+        (elt)->key = (k);                           \
+    }                                               \
 }
 
-#define fk_elt_set_value(dct, elt, v)	{			\
-	if ((dct)->eop->val_copy != NULL) {				\
-		(elt)->value = (dct)->eop->val_copy((v));	\
-	} else {										\
-		(elt)->value = (v);							\
-	}												\
+#define fk_elt_set_value(dct, elt, v)   {           \
+    if ((dct)->eop->val_copy != NULL) {             \
+        (elt)->value = (dct)->eop->val_copy((v));   \
+    } else {                                        \
+        (elt)->value = (v);                         \
+    }                                               \
 }
 
-#define fk_elt_key_free(dct, elt)	{				\
-	if ((dct)->eop->key_free != NULL) {				\
-		(dct)->eop->key_free((elt)->key);			\
-	}												\
-	(elt)->key = NULL;								\
+#define fk_elt_key_free(dct, elt)   {               \
+    if ((dct)->eop->key_free != NULL) {             \
+        (dct)->eop->key_free((elt)->key);           \
+    }                                               \
+    (elt)->key = NULL;                              \
 }
 
-#define fk_elt_value_free(dct, elt)	{				\
-	if ((dct)->eop->val_free != NULL) {				\
-		(dct)->eop->val_free((elt)->value);			\
-	}												\
-	(elt)->value = NULL;							\
+#define fk_elt_value_free(dct, elt) {               \
+    if ((dct)->eop->val_free != NULL) {             \
+        (dct)->eop->val_free((elt)->value);         \
+    }                                               \
+    (elt)->value = NULL;                            \
 }
 
 static int fk_dict_stretch(fk_dict_t *dct);
@@ -317,36 +317,36 @@ fk_dict_stretch(fk_dict_t *dct)
 void
 fk_dict_buckets_print(size_t idx, fk_elt_list_t *lst)
 {
-	fk_elt_t  *elt;
+    fk_elt_t  *elt;
 
-	printf("%lu: ", idx);
-	elt = lst->head;
-	while (elt != NULL) {
-		printf("%s-->", elt->key->seq);
-		elt = elt->next;
-	}
-	printf("\n");
+    printf("%lu: ", idx);
+    elt = lst->head;
+    while (elt != NULL) {
+        printf("%s-->", elt->key->seq);
+        elt = elt->next;
+    }
+    printf("\n");
 }
 
 void
 fk_dict_print(fk_dict_t *dct)
 {
-	size_t          i;
-	fk_elt_list_t  *lst;
+    size_t          i;
+    fk_elt_list_t  *lst;
 
-	printf("size: %lu, size_mask: %lu, limit: %lu, used: %lu\n",
-			dct->size,
-			dct->size_mask,
-			dct->limit,
-			dct->used
-	);
-	for (i = 0; i < dct->size; i++) {
-		lst = dct->buckets[i];
-		if (lst == NULL) {
-			continue;
-		}
-		fk_dict_buckets_print(i, lst);
-	}
+    printf("size: %lu, size_mask: %lu, limit: %lu, used: %lu\n",
+            dct->size,
+            dct->size_mask,
+            dct->limit,
+            dct->used
+    );
+    for (i = 0; i < dct->size; i++) {
+        lst = dct->buckets[i];
+        if (lst == NULL) {
+            continue;
+        }
+        fk_dict_buckets_print(i, lst);
+    }
 }
 #endif
 */

@@ -6,10 +6,10 @@
 #include <fk_str.h>
 
 /* log level */
-#define FK_LOG_ERROR 	0
-#define FK_LOG_WARN 	1
-#define FK_LOG_INFO 	2
-#define FK_LOG_DEBUG 	3
+#define FK_LOG_ERROR    0
+#define FK_LOG_WARN     1
+#define FK_LOG_INFO     2
+#define FK_LOG_DEBUG    3
 
 typedef struct {
     int      log_level;

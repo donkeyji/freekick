@@ -162,10 +162,10 @@ fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
         flags = iompx->evlist[i].flags;
         data = iompx->evlist[i].data;
         if (flags == EV_ERROR) {
-        	if (data == EBADF || data == EINVAL || data == ENOENT) {
-        		continue;
-        	}
-        	return FK_EV_ERR;
+            if (data == EBADF || data == EINVAL || data == ENOENT) {
+                continue;
+            }
+            return FK_EV_ERR;
         }
         */
 
@@ -177,7 +177,7 @@ fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
             //fk_log_debug("EVFILT_WRITE\n");
             type = FK_IOEV_WRITE;
         }
-        //fk_log_debug("i: %d	fd: %lu	type: %d\n", i, iompx->evlist[i].ident, iompx->evlist[i].filter);
+        //fk_log_debug("i: %d   fd: %lu type: %d\n", i, iompx->evlist[i].ident, iompx->evlist[i].filter);
         fk_ev_activate_ioev(fd, type);
     }
 

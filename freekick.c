@@ -48,7 +48,7 @@ fk_daemon_run_old(void)
 {
     if (setting.daemon == 1) {
         if (daemon(1, 0) < 0) {
-			exit(EXIT_FAILURE);
+            exit(EXIT_FAILURE);
         }
     }
 }

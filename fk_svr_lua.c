@@ -11,8 +11,8 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-#define FK_LUA_PARA_KEYS		0
-#define FK_LUA_PARA_ARGV		1
+#define FK_LUA_PARA_KEYS        0
+#define FK_LUA_PARA_ARGV        1
 
 static int fk_lua_pcall(lua_State *L);
 

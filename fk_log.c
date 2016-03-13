@@ -8,17 +8,17 @@
 
 #define FK_LOG_BUFF_SIZE 1024
 
-#define fk_log_write(level)	{					\
-	char     log_buff[FK_LOG_BUFF_SIZE];		\
-	va_list  ap;								\
+#define fk_log_write(level) {                   \
+    char     log_buff[FK_LOG_BUFF_SIZE];        \
+    va_list  ap;                                \
                                                 \
-	if (level > logger.log_level) {				\
-		return;									\
-	}											\
-	va_start(ap, fmt);							\
-	vsprintf(log_buff, fmt, ap);				\
-	va_end(ap);									\
-	fk_log_fprint_str(level, log_buff);			\
+    if (level > logger.log_level) {             \
+        return;                                 \
+    }                                           \
+    va_start(ap, fmt);                          \
+    vsprintf(log_buff, fmt, ap);                \
+    va_end(ap);                                 \
+    fk_log_fprint_str(level, log_buff);         \
 }
 
 static void fk_log_fprint_str(int level, char *data);

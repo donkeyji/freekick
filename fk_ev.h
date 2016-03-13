@@ -9,16 +9,16 @@
 #include <fk_list.h>
 #include <fk_heap.h>
 
-#define FK_EV_OK		0
-#define FK_EV_ERR		-1
+#define FK_EV_OK        0
+#define FK_EV_ERR       -1
 
 /* for file ev */
-#define FK_IOEV_READ 	0x01
-#define FK_IOEV_WRITE 	0x02
+#define FK_IOEV_READ    0x01
+#define FK_IOEV_WRITE   0x02
 
 /* for timer ev */
-#define FK_TMEV_CYCLE 	1
-#define FK_TMEV_ONCE	2
+#define FK_TMEV_CYCLE   1
+#define FK_TMEV_ONCE    2
 
 typedef void (*fk_ioev_cb) (int, uint8_t, void *);
 typedef int (*fk_tmev_cb) (uint32_t, uint8_t, void *);

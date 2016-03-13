@@ -8,24 +8,24 @@
 #include <fk_mem.h>
 #include <fk_pool.h>
 
-#define fk_pool_block_nocontain(blk, ptr)		((uintptr_t)(ptr) < (uintptr_t)(blk)->data || (uintptr_t)(ptr) > (uintptr_t)((blk)->data + (blk)->unit_size * (blk)->unit_cnt))
+#define fk_pool_block_nocontain(blk, ptr)       ((uintptr_t)(ptr) < (uintptr_t)(blk)->data || (uintptr_t)(ptr) > (uintptr_t)((blk)->data + (blk)->unit_size * (blk)->unit_cnt))
 
-#define fk_pool_block_isfull(blk)		((blk)->free_cnt == 0 ? 1:0)
-#define fk_pool_block_isempty(blk)		((blk)->free_cnt == (blk)->unit_cnt ? 1:0)
+#define fk_pool_block_isfull(blk)       ((blk)->free_cnt == 0 ? 1:0)
+#define fk_pool_block_isempty(blk)      ((blk)->free_cnt == (blk)->unit_cnt ? 1:0)
 
-#define fk_pool_block_alloc(blk, ptr)	{					\
-	(blk)->free_cnt--;										\
-	(ptr) = (blk)->data + (blk)->unit_size * (blk)->first;	\
-	(blk)->first = *((uint16_t *)(ptr));					\
+#define fk_pool_block_alloc(blk, ptr)   {                   \
+    (blk)->free_cnt--;                                      \
+    (ptr) = (blk)->data + (blk)->unit_size * (blk)->first;  \
+    (blk)->first = *((uint16_t *)(ptr));                    \
 }
 
-#define fk_pool_block_free(blk, ptr) {												\
-	(blk)->free_cnt++;																\
-	*((uint16_t *)(ptr)) = (blk)->first;											\
-	(blk)->first = ((uint8_t *)(ptr) - (uint8_t *)(blk)->data) / (blk)->unit_size;	\
+#define fk_pool_block_free(blk, ptr) {                                              \
+    (blk)->free_cnt++;                                                              \
+    *((uint16_t *)(ptr)) = (blk)->first;                                            \
+    (blk)->first = ((uint8_t *)(ptr) - (uint8_t *)(blk)->data) / (blk)->unit_size;  \
 }
 
-#define fk_pool_align_cal(unit_size)	((unit_size) + fk_pool_align - 1) & ~(fk_pool_align - 1)
+#define fk_pool_align_cal(unit_size)    ((unit_size) + fk_pool_align - 1) & ~(fk_pool_align - 1)
 
 #define FK_POOL_MAX_EMPTY_BLOCKS 1
 

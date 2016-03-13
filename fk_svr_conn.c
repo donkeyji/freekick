@@ -24,12 +24,12 @@ static int fk_conn_proc_cmd(fk_conn_t *conn);
 static int fk_conn_send_rsp(fk_conn_t *conn);
 
 /* response format */
-static const char *rsp_status 	= "+%s\r\n";
-static const char *rsp_error 	= "-%s\r\n";
-static const char *rsp_content	= "%s\r\n" ;
-static const char *rsp_int 		= ":%d\r\n";
-static const char *rsp_bulk		= "$%d\r\n";
-static const char *rsp_mbulk	= "*%d\r\n";
+static const char *rsp_status   = "+%s\r\n";
+static const char *rsp_error    = "-%s\r\n";
+static const char *rsp_content  = "%s\r\n" ;
+static const char *rsp_int      = ":%d\r\n";
+static const char *rsp_bulk     = "$%d\r\n";
+static const char *rsp_mbulk    = "*%d\r\n";
 
 fk_conn_t *
 fk_conn_create(int fd)

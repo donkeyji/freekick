@@ -3,24 +3,24 @@
 #include <fk_mem.h>
 #include <fk_skiplist.h>
 
-#define fk_skipnode_create(level)		fk_mem_alloc(sizeof(fk_skipnode_t) + ((level) - 1) * sizeof(fk_skipnode_t *))
+#define fk_skipnode_create(level)       fk_mem_alloc(sizeof(fk_skipnode_t) + ((level) - 1) * sizeof(fk_skipnode_t *))
 
-#define fk_skipnode_destroy(nd)	fk_mem_free(nd)
+#define fk_skipnode_destroy(nd) fk_mem_free(nd)
 
-#define fk_skipnode_set_data(sl, nd, sc, dt)	{	\
-	(nd)->score = (sc);								\
-	if ((sl)->skop->data_copy != NULL) {			\
-		(nd)->data = (sl)->skop->data_copy((dt));	\
-	} else {										\
-		(nd)->data = (dt);							\
-	}												\
+#define fk_skipnode_set_data(sl, nd, sc, dt)    {   \
+    (nd)->score = (sc);                             \
+    if ((sl)->skop->data_copy != NULL) {            \
+        (nd)->data = (sl)->skop->data_copy((dt));   \
+    } else {                                        \
+        (nd)->data = (dt);                          \
+    }                                               \
 }
 
-#define fk_skipnode_free_data(sl, nd)	{			\
-	if ((sl)->skop->data_free != NULL) {			\
-		(sl)->skop->data_free((nd)->data);			\
-	}												\
-	(nd)->data = NULL;								\
+#define fk_skipnode_free_data(sl, nd)   {           \
+    if ((sl)->skop->data_free != NULL) {            \
+        (sl)->skop->data_free((nd)->data);          \
+    }                                               \
+    (nd)->data = NULL;                              \
 }
 
 static fk_skipnode_op_t default_skop = {

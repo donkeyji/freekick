@@ -5,26 +5,26 @@
 #include <fk_list.h>
 #include <fk_mem.h>
 
-#define fk_node_create()		(fk_node_t *)fk_mem_alloc(sizeof(fk_node_t))
+#define fk_node_create()        (fk_node_t *)fk_mem_alloc(sizeof(fk_node_t))
 
-#define fk_node_destroy(nd)	fk_mem_free((nd))
+#define fk_node_destroy(nd) fk_mem_free((nd))
 
-#define fk_node_data_set(lst, nd, dt)	{			\
-	if ((lst)->nop->data_copy != NULL) {			\
-		(nd)->data = (lst)->nop->data_copy((dt));	\
-	} else {										\
-		(nd)->data = (dt);							\
-	}												\
+#define fk_node_data_set(lst, nd, dt)   {           \
+    if ((lst)->nop->data_copy != NULL) {            \
+        (nd)->data = (lst)->nop->data_copy((dt));   \
+    } else {                                        \
+        (nd)->data = (dt);                          \
+    }                                               \
 }
 
-#define fk_node_data_free(lst, nd)	{				\
-	if ((lst)->nop->data_free != NULL) {			\
-		(lst)->nop->data_free((nd)->data);			\
-	}												\
-	(nd)->data = NULL;								\
+#define fk_node_data_free(lst, nd)  {               \
+    if ((lst)->nop->data_free != NULL) {            \
+        (lst)->nop->data_free((nd)->data);          \
+    }                                               \
+    (nd)->data = NULL;                              \
 }
 
-#define fk_list_init	fk_rawlist_init
+#define fk_list_init    fk_rawlist_init
 static void fk_list_clear(fk_list_t *lst);
 
 static fk_node_op_t default_nop = {
