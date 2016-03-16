@@ -4,5 +4,8 @@ freekick
 clt_test
 Makefile.dep
 gmon.out
+*.swp
+*.rdb
+*.db
 t/t
 t/makefile.dep
