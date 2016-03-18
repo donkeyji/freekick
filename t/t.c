@@ -17,7 +17,7 @@ typedef struct {
     int   a;
 } foo_t;
 
-#define LEN 1024*1024*5
+#define LEN (1024*1024*5)
 
 void t_pool(void)
 {
