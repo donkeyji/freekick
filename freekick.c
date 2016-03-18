@@ -233,7 +233,7 @@ fk_signal_register(void)
     struct sigaction  sa;
 
     sa.sa_handler = fk_signal_exit_handler;
-    sa.sa_flags = 0;
+    sa.sa_flags = 0; /* no flags specified */
     rt = sigemptyset(&sa.sa_mask);
 
     /* use the same handler for different signals */
