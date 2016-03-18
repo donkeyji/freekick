@@ -237,10 +237,10 @@ fk_signal_register(void)
     rt = sigemptyset(&sa.sa_mask);
 
     /* use the same handler for different signals */
-    rt = sigaction(SIGINT, &sa, 0);
-    rt = sigaction(SIGTERM, &sa, 0);
-    rt = sigaction(SIGKILL, &sa, 0);
-    rt = sigaction(SIGQUIT, &sa, 0);
+    rt = sigaction(SIGINT, &sa, NULL);
+    rt = sigaction(SIGTERM, &sa, NULL);
+    rt = sigaction(SIGKILL, &sa, NULL);
+    rt = sigaction(SIGQUIT, &sa, NULL);
 
     sa.sa_handler = fk_signal_child_handler;
     sa.sa_flags = 0;
@@ -248,7 +248,7 @@ fk_signal_register(void)
     if (rt < 0) {
         exit(EXIT_FAILURE);
     }
-    rt = sigaction(SIGCHLD, &sa, 0);
+    rt = sigaction(SIGCHLD, &sa, NULL);
     if (rt < 0) {
         exit(EXIT_FAILURE);
     }
