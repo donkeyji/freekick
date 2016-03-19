@@ -389,6 +389,7 @@ fk_svr_exit(void)
 
 /*
  * only mark the sigxxx_flag flag, and return
+ * only those async-signal-safe function can be called inside
  */
 void
 fk_svr_signal_exit_handler(int sig)
