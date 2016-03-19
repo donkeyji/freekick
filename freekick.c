@@ -204,6 +204,7 @@ fk_set_pwd(void)
     fk_log_info("change working diretory to %s\n", fk_str_raw(setting.dir));
 }
 
+/* should be reentrant */
 void
 fk_signal_exit_handler(int sig)
 {

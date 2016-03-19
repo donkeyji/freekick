@@ -371,6 +371,7 @@ fk_svr_exit(void)
     }
 }
 
+/* bugs need to be fixed!!! */
 void
 fk_svr_signal_exit_handler(int sig)
 {
@@ -384,7 +385,13 @@ fk_svr_signal_exit_handler(int sig)
     case SIGQUIT:
         break;
     }
+
+    /*
+     * fk_log_info() is not a async-signal-safe function
+     * because it calls the stdio function fprintf() inside
+     */
     fk_log_info("to exit by signal: %d\n", sig);
+
     fk_ev_stop(); /* stop the event cycle */
     //exit(EXIT_SUCCESS);
 }
