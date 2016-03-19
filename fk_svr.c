@@ -26,6 +26,12 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
+/* signal flags */
+volatile sig_atomic_t sigint_flag = 0;
+volatile sig_atomic_t sigterm_flag = 0;
+volatile sig_atomic_t sigkill_flag = 0;
+volatile sig_atomic_t sigquit_flag = 0;
+
 static int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg);
 #ifdef FK_DEBUG
 static int fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg);
@@ -245,6 +251,15 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
     fk_ev_stat();
 #endif
 
+    /* check the flags of signal */
+    if (sigint_flag == 1 || sigterm_flag == 1
+        || sigkill_flag == 1 || sigquit_flag == 1 )
+    {
+        fk_log_info("to exit by signal\n");
+        fk_ev_stop(); /* will stop the event cycle int the next loop */
+        return 0;
+    }
+
     fk_fkdb_bgsave();
 
     fk_svr_sync_with_master();
@@ -371,28 +386,36 @@ fk_svr_exit(void)
     }
 }
 
-/* bugs need to be fixed!!! */
+
+/*
+ * only mark the sigxxx_flag flag, and return
+ */
 void
 fk_svr_signal_exit_handler(int sig)
 {
     switch (sig) {
     case SIGINT:
+        sigint_flag = 1;
         break;
     case SIGTERM:
+        sigterm_flag = 1;
         break;
     case SIGKILL:
+        sigkill_flag = 1;
         break;
     case SIGQUIT:
+        sigquit_flag = 1;
         break;
     }
 
     /*
      * fk_log_info() is not a async-signal-safe function
      * because it calls the stdio function fprintf() inside
+     * so fk_log_info() should not be called in signal handler
      */
-    fk_log_info("to exit by signal: %d\n", sig);
+    //fk_log_info("to exit by signal: %d\n", sig);
 
-    fk_ev_stop(); /* stop the event cycle */
+    //fk_ev_stop(); /* stop the event cycle */
     //exit(EXIT_SUCCESS);
 }
 
