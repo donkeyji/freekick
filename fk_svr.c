@@ -434,7 +434,12 @@ fk_svr_signal_child_handler(int sig)
         server.save_pid = -1; /* the saving child process is terminated */
         server.last_save = time(NULL);
     }
-    fk_log_debug("save db done\n");
+
+    /*
+     * fk_log_debug() is not a async-signal-safe function
+     * so it should not be invoked here
+     */
+    //fk_log_debug("save db done\n");
 }
 
 int
