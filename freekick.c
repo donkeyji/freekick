@@ -236,6 +236,11 @@ fk_signal_register(void)
     sa.sa_handler = fk_signal_exit_handler;
     sa.sa_flags = 0; /* no flags specified */
     rt = sigemptyset(&sa.sa_mask);
+    sigaddset(&sa.sa_mask, SIGINT);
+    sigaddset(&sa.sa_mask, SIGTERM);
+    /* SIGKILL is not allowed to be blocked */
+    //sigaddset(&sa.sa_mask, SIGKILL);
+    sigaddset(&sa.sa_mask, SIGQUIT);
 
     /* use the same handler for different signals */
     rt = sigaction(SIGINT, &sa, NULL);
