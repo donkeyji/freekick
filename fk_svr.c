@@ -29,8 +29,7 @@
 /* signal flags */
 volatile sig_atomic_t sigint_flag = 0;
 volatile sig_atomic_t sigterm_flag = 0;
-volatile sig_atomic_t sigkill_flag = 0;
-volatile sig_atomic_t sigquit_flag = 0;
+volatile sig_atomic_t sigchld_flag = 0;
 
 static int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg);
 #ifdef FK_DEBUG
@@ -239,6 +238,8 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 int
 fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 {
+    int       st;
+    pid_t     cpid;
     uint32_t  i;
 
     server.timer_cnt++;
@@ -251,10 +252,27 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
     fk_ev_stat();
 #endif
 
-    /* check the flags of signal */
-    if (sigint_flag == 1 || sigterm_flag == 1
-        || sigkill_flag == 1 || sigquit_flag == 1 )
-    {
+    /* deal with the exit of the child process */
+    if (sigchld_flag == 1) {
+        cpid = wait(&st);
+        if (cpid < 0) {
+            exit(EXIT_FAILURE);
+        }
+        if (st == 0) {
+            server.save_pid = -1; /* the saving child process is terminated */
+            server.last_save = time(NULL);
+        }
+        fk_log_debug("db saving done in background process\n");
+
+        sigchld_flag = 0; /* restore the state of sigchld_flag */
+    }
+
+    /* deal with the shutdown signals */
+    if (sigint_flag == 1 || sigterm_flag == 1) {
+        /*
+         * no need to restore the state of sigint_flag & sigterm_flag
+         * because we're going to exit
+         */
         fk_log_info("to exit by signal\n");
         fk_ev_stop(); /* will stop the event cycle int the next loop */
         return 0;
@@ -401,11 +419,7 @@ fk_svr_signal_exit_handler(int sig)
     case SIGTERM:
         sigterm_flag = 1;
         break;
-    case SIGKILL:
-        sigkill_flag = 1;
-        break;
-    case SIGQUIT:
-        sigquit_flag = 1;
+    default:
         break;
     }
 
@@ -423,23 +437,8 @@ fk_svr_signal_exit_handler(int sig)
 void
 fk_svr_signal_child_handler(int sig)
 {
-    int    st;
-    pid_t  pid;
-
-    pid = wait(&st);
-    if (pid < 0) {
-        exit(EXIT_FAILURE);
-    }
-    if (st == 0) {
-        server.save_pid = -1; /* the saving child process is terminated */
-        server.last_save = time(NULL);
-    }
-
-    /*
-     * fk_log_debug() is not a async-signal-safe function
-     * so it should not be invoked here
-     */
-    //fk_log_debug("save db done\n");
+    /* just mark the sigchld_flag and return */
+    sigchld_flag = 1;
 }
 
 int
