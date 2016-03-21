@@ -245,7 +245,8 @@ fk_signal_register(void)
     /* use the same handler for different signals */
     rt = sigaction(SIGINT, &sa, NULL);
     rt = sigaction(SIGTERM, &sa, NULL);
-    rt = sigaction(SIGKILL, &sa, NULL);
+    /* changing the disposition of SIGKILL is not allowed */
+    //rt = sigaction(SIGKILL, &sa, NULL);
     rt = sigaction(SIGQUIT, &sa, NULL);
 
     sa.sa_handler = fk_signal_child_handler;
