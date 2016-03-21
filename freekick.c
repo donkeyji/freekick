@@ -235,30 +235,30 @@ fk_signal_register(void)
 
     sa.sa_handler = fk_signal_exit_handler;
     sa.sa_flags = 0; /* no flags specified */
-    rt = sigemptyset(&sa.sa_mask);
+    /* no need to check the return value when using sigxxxset */
+    sigemptyset(&sa.sa_mask);
     sigaddset(&sa.sa_mask, SIGINT);
     sigaddset(&sa.sa_mask, SIGTERM);
-    /* SIGKILL is not allowed to be blocked */
-    //sigaddset(&sa.sa_mask, SIGKILL);
-    sigaddset(&sa.sa_mask, SIGQUIT);
+    //sigaddset(&sa.sa_mask, SIGKILL); /* attempt of blocking SIGKILL is silently ignored */
 
-    /* use the same handler for different signals */
+    /*
+     * two ways of terminating this process gracefully
+     * 1. SIGINT : ctl - c
+     * 2. SIGTERM: kill / killall
+     * among the three signals, SIGTERM should be the first and the standard
+     * signal to terminate a process gracefully
+     * SIGKILL is just a last resort for killing a runaway process which do not
+     * respond to SIGTERM
+     */
     rt = sigaction(SIGINT, &sa, NULL);
     rt = sigaction(SIGTERM, &sa, NULL);
-    /* changing the disposition of SIGKILL is not allowed */
-    //rt = sigaction(SIGKILL, &sa, NULL);
-    rt = sigaction(SIGQUIT, &sa, NULL);
+    //rt = sigaction(SIGQUIT, &sa, NULL); /* keep the default to get the core dump file */
+    //rt = sigaction(SIGKILL, &sa, NULL); /* changing the disposition of SIGKILL is not allowed */
 
     sa.sa_handler = fk_signal_child_handler;
     sa.sa_flags = 0;
-    rt = sigemptyset(&sa.sa_mask);
-    if (rt < 0) {
-        exit(EXIT_FAILURE);
-    }
+    sigemptyset(&sa.sa_mask);
     rt = sigaction(SIGCHLD, &sa, NULL);
-    if (rt < 0) {
-        exit(EXIT_FAILURE);
-    }
 }
 
 void
