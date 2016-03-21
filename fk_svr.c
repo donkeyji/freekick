@@ -412,6 +412,7 @@ fk_svr_exit(void)
 void
 fk_svr_signal_exit_handler(int sig)
 {
+    /* just mark the flags */
     switch (sig) {
     case SIGINT:
         sigint_flag = 1;
@@ -422,6 +423,8 @@ fk_svr_signal_exit_handler(int sig)
     default:
         break;
     }
+
+    return;
 
     /*
      * fk_log_info() is not a async-signal-safe function
@@ -439,6 +442,8 @@ fk_svr_signal_child_handler(int sig)
 {
     /* just mark the sigchld_flag and return */
     sigchld_flag = 1;
+
+    return;
 }
 
 int
