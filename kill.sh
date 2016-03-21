@@ -9,4 +9,3 @@ else
     echo "pidfile does not exists, to use killall -TERM"
     killall -TERM freekick
 fi
-
