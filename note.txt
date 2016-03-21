@@ -305,3 +305,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 121. 将与系统api和系统预定义类型无关的变量尽量用stdint.h中来表示。
 
 122. linux下的features.h里并不定义_XOPEN_SOURCE/_POSIX_C_SOURCE/_POSIX_SOURCE，而是根据用户是否定义这些宏再定义一下其他的宏，比如如果用户定义了_XOPEN_SOURCE >= 700，就会自动将_POSIX_C_SOURCE定义为200809L。所以先include <fk_ftm.h>，再include <features.h>是没有问题的，可以在fk_env.h里include <features.h>。
+
+123. 需要用到哪些信号，才去注册哪些handler；可能出现哪些信号，才需要去block哪些信号。并不需要关心所有种类的信号。比如freekick中，只利用SIGINT/SIGTERM来terminate进程，并且无需去block任何一种信号。如果一种未注册的信号出现，例如SIGKILL或者SIGQUIT，让系统采取默认的action，我们并不关心，因为这是一种非正常，非预期的结果，正常运用和维护的情况下不应该出现这两个信号。我们只关心我们需要利用的信号，比如freekick里的SIGINT/SIGTERM/SIGCHLD。
