@@ -234,11 +234,12 @@ fk_signal_register(void)
     struct sigaction  sa;
 
     sa.sa_handler = fk_signal_exit_handler;
-    sa.sa_flags = 0; /* no flags specified */
+    sa.sa_flags = 0 ; /* SA_RESTART is not necessary here */
     /* no need to check the return value when using sigxxxset */
-    sigemptyset(&sa.sa_mask);
-    sigaddset(&sa.sa_mask, SIGINT);
-    sigaddset(&sa.sa_mask, SIGTERM);
+    sigfillset(&sa.sa_mask); /* block all the signals when this handler is invoked */
+    //sigemptyset(&sa.sa_mask);
+    //sigaddset(&sa.sa_mask, SIGINT);
+    //sigaddset(&sa.sa_mask, SIGTERM);
     //sigaddset(&sa.sa_mask, SIGKILL); /* attempt of blocking SIGKILL is silently ignored */
 
     /*
@@ -251,14 +252,26 @@ fk_signal_register(void)
      * respond to SIGTERM
      */
     rt = sigaction(SIGINT, &sa, NULL);
+    if (rt < 0) {
+        fk_log_error("sigaction for SIGINT failed: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
     rt = sigaction(SIGTERM, &sa, NULL);
+    if (rt < 0) {
+        fk_log_error("sigaction for SIGTERM failed: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
     //rt = sigaction(SIGQUIT, &sa, NULL); /* keep the default to get the core dump file */
     //rt = sigaction(SIGKILL, &sa, NULL); /* changing the disposition of SIGKILL is not allowed */
 
     sa.sa_handler = fk_signal_child_handler;
-    sa.sa_flags = 0;
-    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    sigfillset(&sa.sa_mask); /* block all the signals when this handler is invoked */
     rt = sigaction(SIGCHLD, &sa, NULL);
+    if (rt < 0) {
+        fk_log_error("sigaction for SIGCHLD failed: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
 }
 
 void
