@@ -5,18 +5,18 @@
 3. fk_evmgr不管理tmev/ioev对象的生命周期，由外部来create/destroy tmev/ioev对象，fk_evmgr也不负责remove tmev/ioev，全部由外部来调用add/remove tmev/ioev对象。
 
 4. 对象的管理原则：
-		A--own-->B 
-	==> A--create/destroy-->B 
-	==> A--add/remove-->B 
-	==> A--call-->B
-	==> B--notify-->A
+        A--own-->B 
+    ==> A--create/destroy-->B 
+    ==> A--add/remove-->B 
+    ==> A--call-->B
+    ==> B--notify-->A
 
 5. fk_conn的write/read buf的长度限制
 
 6. 内存流向:
-	socket--(copy)-->
-	read_buf--(copy)-->
-	args--(move)-->db
+    socket--(copy)-->
+    read_buf--(copy)-->
+    args--(move)-->db
 
 7. server返回给client的协议如何pack比较漂亮
 
@@ -45,7 +45,7 @@
 19. ioev的callback的返回值如何处理？callback出错应该直接忽略？
 
 20. 将所有的dep文件统一放入一个Makefile.dep文件中，不能用-o参数来输出，只能重定向。
-	gcc -MM $(SVRSRC) > Makefile.dep
+    gcc -MM $(SVRSRC) > Makefile.dep
 
 21. EV_WRITE的事件只有当write_buf不为空时才加入到evmgr中，当write_buf发送空之后就从evmgr中删除，否则epoll/kqueue会不停的返回WRITE事件。
 
@@ -104,8 +104,8 @@ server.conns_tab[6]的地址刚好与server.listen_ev地址相同。
 46. 为何执行的lua脚本有时候导致server在fk_conn_cmd_proc出现segment fault?
 
 47. 在定义带参数的宏时，要注意宏参数不能与代码块中的变量名相同，否则在预处理时进行字符串替换时，会将同名的变量也当做宏参数进行了替换，造成错误。如:
-#define fk_node_data_set(lst, nd, data) {	\
- 	nd->data = data;						\
+#define fk_node_data_set(lst, nd, data) {   \
+    nd->data = data;                        \
 }
 会将nd->data处的data也当成了宏参数，造成不必要的错误。
 
