@@ -9,11 +9,17 @@
  */
 #if defined(__linux__)
 
-/* for sigaction */
-#define _XOPEN_SOURCE
-
-/* for getline */
+/* for getline() before glibc 2.1 */
 #define _GNU_SOURCE
+
+/* for getline() since glibc 2.1 */
+#define _POSIX_C_SOURCE 200809L
+#define _XOPEN_SOURCE 700
+
+/* for sigaction() */
+//#define _XOPEN_SOURCE
+//#define _POSIX_C_SOURCE 200809L
+//#define _POSIX_SOURCE
 
 #endif
 
