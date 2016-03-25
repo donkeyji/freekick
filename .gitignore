@@ -9,3 +9,4 @@ gmon.out
 *.db
 t/t
 t/makefile.dep
+*~
