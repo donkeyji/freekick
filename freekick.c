@@ -133,7 +133,7 @@ void
 fk_setrlimit(void)
 {
     int            rt;
-    pid_t          euid;
+    uid_t          euid;
     rlim_t         max_files;
     struct rlimit  lmt;
 
@@ -277,6 +277,9 @@ fk_signal_register(void)
 void
 fk_main_init(char *conf_path)
 {
+    /* where is the best place to call fk_set_seed()?? */
+    fk_set_seed();
+
     /* the first to init */
     fk_conf_init(conf_path);
 
@@ -286,9 +289,6 @@ fk_main_init(char *conf_path)
     fk_set_pwd();
 
     fk_setrlimit();
-
-    /* where is the best place to call fk_set_seed()?? */
-    fk_set_seed();
 
     /*
      * the second to init, so that all the
