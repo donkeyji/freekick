@@ -246,10 +246,10 @@ fk_signal_register(void)
      * two ways of terminating this process gracefully
      * 1. SIGINT : ctl - c
      * 2. SIGTERM: kill / killall
-     * among the three signals, SIGTERM should be the first and the standard
+     * among the two signals, SIGTERM should be the first and the standard
      * signal to terminate a process gracefully
-     * SIGKILL is just a last resort for killing a runaway process which do not
-     * respond to SIGTERM
+     * SIGKILL is just a last resort for killing a runaway process which do
+     * not respond to SIGTERM, so we do not catch SIGKILL here
      */
     rt = sigaction(SIGINT, &sa, NULL);
     if (rt < 0) {
