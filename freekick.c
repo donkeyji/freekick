@@ -209,7 +209,7 @@ void
 fk_signal_exit_handler(int sig)
 {
     /*
-     * maybe some other process in other modules, like:
+     * maybe some other process in other modules, just like:
      * fk_a_signal_exit_handler(sig);
      * fk_b_signal_exit_handler(sig);
      */
@@ -220,7 +220,7 @@ void
 fk_signal_child_handler(int sig)
 {
     /*
-     * maybe some other process in other modules, like:
+     * maybe some other process in other modules, just like:
      * fk_a_signal_child_handler(sig);
      * fk_b_signal_child_handler(sig);
      */
