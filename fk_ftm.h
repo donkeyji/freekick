@@ -9,6 +9,8 @@
  */
 #if defined(__linux__)
 
+/* how to distinguish the version of glibc??? */
+
 /* for getline() before glibc 2.1 */
 #define _GNU_SOURCE
 
