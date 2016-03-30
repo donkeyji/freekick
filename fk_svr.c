@@ -26,7 +26,12 @@
 #include <fk_item.h>
 #include <fk_svr.h>
 
-/* signal flags */
+/*
+ * signal flags
+ * the timer checks these sigxxx_flag periodically to see whether the
+ * corresponding signals have delivered. If delivered, do something and
+ * restore the state of these flags to the origin
+ */
 volatile sig_atomic_t sigint_flag = 0;
 volatile sig_atomic_t sigterm_flag = 0;
 volatile sig_atomic_t sigchld_flag = 0;
