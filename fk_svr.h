@@ -4,7 +4,7 @@
 /* standard c library headers */
 #include <stdint.h>             /* for uint_16 */
 
-/* system headers */
+/* unix headers */
 #include <sys/types.h>          /* for time_t */
 
 /* local headers */

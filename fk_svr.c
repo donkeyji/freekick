@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-/* system headers */
+/* unix headers */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
