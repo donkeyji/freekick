@@ -6,8 +6,8 @@
 #include <unistd.h>
 
 /*
- * 1. use the better malloc/free from jemalloc
- * 2. use the original malloc/free from libc
+ * 1. use the better malloc/free supplied by jemalloc
+ * 2. use the original malloc/free supplied by libc
  */
 #if defined(FK_USE_JEMALLOC)
 #include <jemalloc/jemalloc.h>
