@@ -1,10 +1,13 @@
+/* c standard library headers */
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
+/* unix headers */
 #include <strings.h>
 
+/* local headers */
 #include <fk_heap.h>
 #include <fk_mem.h>
 #include <fk_log.h>

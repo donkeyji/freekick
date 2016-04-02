@@ -1,8 +1,10 @@
+/* c standard library headers */
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
 
+/* local headers */
 #include <fk_log.h>
 #include <fk_mem.h>
 

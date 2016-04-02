@@ -1,6 +1,8 @@
+/* c standard library headers */
 #include <stdio.h>
 #include <stdlib.h>
 
+/* unix headers */
 #include <unistd.h>
 
 /*
@@ -20,6 +22,7 @@
 #endif
 #endif
 
+/* local headers */
 #include <fk_env.h>
 #include <fk_mem.h>
 
