@@ -1,4 +1,4 @@
-/* c standard library headers */
+/* c standard headers */
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>

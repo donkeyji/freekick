@@ -1,7 +1,7 @@
 #ifndef _FK_UTIL_H_
 #define _FK_UTIL_H_
 
-/* c standard library headers */
+/* c standard headers */
 #include <stdint.h>
 
 /* unix headers */

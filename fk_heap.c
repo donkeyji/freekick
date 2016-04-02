@@ -1,4 +1,4 @@
-/* c standard library headers */
+/* c standard headers */
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

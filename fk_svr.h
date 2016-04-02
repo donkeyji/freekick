@@ -1,7 +1,7 @@
 #ifndef _FK_SVR_H_
 #define _FK_SVR_H_
 
-/* standard c library headers */
+/* standard c headers */
 #include <stdint.h>             /* for uint_16 */
 
 /* unix headers */

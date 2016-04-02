@@ -1,7 +1,7 @@
 #ifndef _FK_BUF_H_
 #define _FK_BUF_H_
 
-/* c standard library headers */
+/* c standard headers */
 #include <string.h>
 
 /* local headers */

@@ -1,7 +1,7 @@
 #ifndef _FK_POOL_H_
 #define _FK_POOL_H_
 
-/* c standard library headers */
+/* c standard headers */
 #include <stdint.h>
 
 typedef struct fk_block_s fk_block_t;

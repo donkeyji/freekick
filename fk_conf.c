@@ -1,7 +1,7 @@
 /* feature test macros */
 #include <fk_ftm.h>
 
-/* c standard library headers */
+/* c standard headers */
 #include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>

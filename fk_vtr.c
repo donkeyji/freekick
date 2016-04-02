@@ -1,4 +1,4 @@
-/* c standard library headers */
+/* c standard headers */
 #include <stdlib.h>
 
 /* unix headers */

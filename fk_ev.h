@@ -1,7 +1,7 @@
 #ifndef _FK_EV_H_
 #define _FK_EV_H_
 
-/* c standard library headers */
+/* c standard headers */
 #include <stdbool.h>
 #include <stdint.h>
 
