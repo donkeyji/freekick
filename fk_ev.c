@@ -1,11 +1,14 @@
+/* c standard library headers */
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
 
+/* unix headers */
 #include <strings.h>
 #include <sys/time.h>
 
+/* local headers */
 #include <fk_env.h>
 #include <fk_ev.h>
 #include <fk_list.h>

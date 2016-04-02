@@ -1,6 +1,7 @@
 /* feature test macros */
 #include <fk_ftm.h>
 
+/* c standard library headers */
 #include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,9 +9,11 @@
 #include <errno.h>
 #include <limits.h>
 
+/* unix headers */
 #include <strings.h>
 #include <sys/types.h>
 
+/* local headers */
 #include <fk_conf.h>
 #include <fk_mem.h>
 #include <fk_str.h>

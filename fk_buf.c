@@ -1,6 +1,8 @@
+/* c standard library headers */
 #include <assert.h>
 #include <stdio.h>
 
+/* local headers */
 #include <fk_buf.h>
 #include <fk_mem.h>
 
