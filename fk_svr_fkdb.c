@@ -1,9 +1,12 @@
+/* c standard library headers */
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 
+/* unix headers */
 #include <unistd.h>
 
+/* local headers */
 #include <fk_conf.h>
 #include <fk_log.h>
 #include <fk_mem.h>
@@ -61,9 +64,11 @@ fk_fkdb_bgsave(void)
         /* execute only in child process */
         if (fk_fkdb_save() == FK_SVR_ERR) {
             fk_log_error("db save failed\n");
-            exit(EXIT_FAILURE);
+            /* use _exit() instead of exit() in child process */
+            _exit(EXIT_FAILURE);
         }
-        exit(EXIT_SUCCESS);
+        /* use _exit() instead of exit() in child process */
+        _exit(EXIT_SUCCESS);
     }
 }
 
