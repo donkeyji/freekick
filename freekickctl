@@ -1,0 +1,46 @@
+#!/bin/bash
+
+ACTION=$1
+if [ -z $ACTION ]; then
+    ACTION='start'
+fi
+
+NAME=freekick
+BIN=./freekick
+CONF=./freekick.conf
+PIDFILE=/tmp/freekick.pid
+
+fk_start() {
+    echo "starting freekick..."
+    $BIN $CONF
+}
+
+fk_stop() {
+    if [ -f $PIDFILE ]; then
+        echo "pidfile exists, to use kill -TERM"
+        pid=$(cat /tmp/freekick.pid)
+        echo "stoping freekick..."
+        kill -TERM $pid
+    else
+        echo "pidfile does not exists, to use killall -TERM"
+        echo "stoping freekick..."
+        killall -TERM freekick
+    fi
+}
+
+fk_status() {
+    echo "showing freekick..."
+    ps aux | grep -e $NAME | grep -e $CONF | grep -v 'grep'
+}
+
+case $ACTION in
+    start)
+        fk_start
+    ;;
+    stop)
+        fk_stop
+    ;;
+    status)
+        fk_status
+    ;;
+esac
