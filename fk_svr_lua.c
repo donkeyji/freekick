@@ -1,9 +1,12 @@
+/* c standard library headers */
 #include <stdlib.h>
 
+/* 3rd headers */
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
 
+/* local headers */
 #include <fk_log.h>
 #include <fk_mem.h>
 #include <fk_buf.h>

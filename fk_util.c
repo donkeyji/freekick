@@ -1,9 +1,12 @@
+/* c standard library headers */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 
+/* unix headers */
 #include <sys/time.h>
 
+/* local headers */
 #include <fk_util.h>
 
 /* interval: millisecond ( 1/1000 sec ) */

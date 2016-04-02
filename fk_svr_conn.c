@@ -1,12 +1,15 @@
+/* c standard library headers */
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <time.h>
 #include <stdint.h>
 
+/* unix headers */
 #include <unistd.h>
 #include <sys/socket.h>
 
+/* local headers */
 #include <fk_log.h>
 #include <fk_mem.h>
 #include <fk_sock.h>

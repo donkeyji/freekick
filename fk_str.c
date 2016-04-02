@@ -1,7 +1,9 @@
+/* c standard library headers */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
+/* local headers */
 #include <fk_util.h>
 #include <fk_str.h>
 #include <fk_mem.h>

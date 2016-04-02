@@ -1,6 +1,7 @@
 #ifndef _FK_STR_H_
 #define _FK_STR_H_
 
+/* c standard library headers */
 #include <stdint.h>
 
 /*

@@ -1,5 +1,7 @@
+/* c standard library headers */
 #include <stdlib.h>
 
+/* local headers */
 #include <fk_log.h>
 #include <fk_svr.h>
 

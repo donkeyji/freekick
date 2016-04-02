@@ -1,5 +1,7 @@
+/* unix headers */
 #include <unistd.h>
 
+/* local headers */
 #include <fk_item.h>
 #include <fk_svr.h>
 

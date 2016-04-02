@@ -1,6 +1,8 @@
+/* c standard library headers */
 #include <stdlib.h>
 #include <stdio.h>
 
+/* unix headers */
 #include <strings.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -10,6 +12,7 @@
 #include <netinet/in.h> /* must include this */
 #include <arpa/inet.h>
 
+/* local headers */
 #include <fk_sock.h>
 
 

@@ -1,8 +1,10 @@
 #ifndef _FK_LOG_H_
 #define _FK_LOG_H_
 
+/* c standard library headers */
 #include <stdio.h>
 
+/* local headers */
 #include <fk_str.h>
 
 /* log level */

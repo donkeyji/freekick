@@ -1,11 +1,14 @@
 #ifndef _FK_EV_H_
 #define _FK_EV_H_
 
+/* c standard library headers */
 #include <stdbool.h>
 #include <stdint.h>
 
+/* unix headers */
 #include <sys/time.h>
 
+/* local headers */
 #include <fk_list.h>
 #include <fk_heap.h>
 

@@ -1,6 +1,7 @@
 #ifndef _FK_ITEM_H_
 #define _FK_ITEM_H_
 
+/* c standard library headers */
 #include <stdint.h>
 
 #define FK_ITEM_NIL     0

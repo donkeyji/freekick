@@ -1,10 +1,13 @@
 #ifndef _FK_CONF_H_
 #define _FK_CONF_H_
 
+/* c standard library headers */
 #include <stdint.h>
 
+/* unix headers */
 #include <sys/types.h>
 
+/* local headers */
 #include <fk_str.h>
 
 #define FK_CONF_OK      0

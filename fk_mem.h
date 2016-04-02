@@ -1,6 +1,7 @@
 #ifndef _FK_MEM_H_
 #define _FK_MEM_H_
 
+/* unix headers */
 #include <sys/types.h>
 
 void *fk_mem_alloc(size_t size);

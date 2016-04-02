@@ -1,6 +1,7 @@
 #ifndef _FK_SkIPLIST_H_
 #define _FK_SkIPLIST_H_
 
+/* unix headers */
 #include <sys/types.h>
 
 #define FK_SKLIST_MAX_LEVEL     16

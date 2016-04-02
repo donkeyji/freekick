@@ -1,6 +1,7 @@
 #ifndef _FK_LIST_H_
 #define _FK_LIST_H_
 
+/* unix headers */
 #include <sys/types.h>
 
 #define FK_LIST_ITER_H2T 1

@@ -1,7 +1,10 @@
+/* c standard library headers */
 #include <stdlib.h>
 
+/* unix headers */
 #include <strings.h>
 
+/* local headers */
 #include <fk_mem.h>
 #include <fk_vtr.h>
 

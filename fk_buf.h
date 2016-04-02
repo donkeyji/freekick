@@ -1,8 +1,10 @@
 #ifndef _FK_BUF_H_
 #define _FK_BUF_H_
 
+/* c standard library headers */
 #include <string.h>
 
+/* local headers */
 #include <fk_util.h>
 
 typedef struct {

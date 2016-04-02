@@ -1,6 +1,7 @@
 #ifndef _FK_VTR_H_
 #define _FK_VTR_H_
 
+/* unix headers */
 #include  <strings.h>
 
 typedef struct {

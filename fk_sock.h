@@ -1,6 +1,7 @@
 #ifndef _FK_SOCK_H_
 #define _FK_SOCK_H_
 
+/* c standard library headers */
 #include <stdint.h>
 
 #define FK_SOCK_OK      0

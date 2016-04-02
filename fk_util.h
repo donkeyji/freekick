@@ -1,8 +1,10 @@
 #ifndef _FK_UTIL_H_
 #define _FK_UTIL_H_
 
+/* c standard library headers */
 #include <stdint.h>
 
+/* unix headers */
 #include <sys/time.h>
 
 /*

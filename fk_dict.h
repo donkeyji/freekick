@@ -1,8 +1,10 @@
 #ifndef _FK_DICT_H_
 #define _FK_DICT_H_
 
+/* c standard library headers */
 #include <stdint.h>
 
+/* local headers */
 #include <fk_list.h>
 #include <fk_str.h>
 
