@@ -1,7 +1,6 @@
 *.[od]
 *.pyc
 freekick
-clt_test
 Makefile.dep
 gmon.out
 *.swp
