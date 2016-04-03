@@ -309,3 +309,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 123. 需要用到哪些信号，才去注册哪些handler；可能出现哪些信号，才需要去block哪些信号。并不需要关心所有种类的信号。比如freekick中，只利用SIGINT/SIGTERM来terminate进程，并且无需去block任何一种信号。如果一种未注册的信号出现，例如SIGKILL或者SIGQUIT，让系统采取默认的action，我们并不关心，因为这是一种非正常，非预期的结果，正常运用和维护的情况下不应该出现这两个信号。我们只关心我们需要利用的信号，比如freekick里的SIGINT/SIGTERM/SIGCHLD。
 
 124. 对于hardware-generated signal，都是严重的无法恢复的错误，只需要采取默认的action就行，由系统产生core dump并且terminate掉。从linux 2.6起，hardware-generated signal是不可block，不可ignore，也不可catch的，进程会立即terminate。
+
+125. linux下，采用glibc的malloc/free时，python t.py时会有段错误，使用jemalloc时没有，为啥??
