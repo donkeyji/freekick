@@ -73,24 +73,24 @@ void fk_buf_print(const fk_buf_t *buf);
     }                                   \
 }
 
-#define fk_buf_shrink(buf)  {                           \
-    if ((buf)->len >= (buf)->init_len &&                \
-        fk_buf_payload_len((buf)) < (buf)->init_len)    \
-    {                                                   \
-        fk_buf_shift((buf));                            \
-        (buf) = (fk_buf_t *)fk_mem_realloc((buf),       \
-                sizeof(fk_buf_t) + (buf)->init_len      \
-        );                                              \
-        (buf)->len = (buf)->init_len;                   \
-    }                                                   \
+#define fk_buf_shrink(buf)  {                               \
+    if ((buf)->len >= (buf)->init_len                       \
+         && fk_buf_payload_len((buf)) < (buf)->init_len)    \
+    {                                                       \
+        fk_buf_shift((buf));                                \
+        (buf) = (fk_buf_t *)fk_mem_realloc((buf),           \
+                sizeof(fk_buf_t) + (buf)->init_len          \
+        );                                                  \
+        (buf)->len = (buf)->init_len;                       \
+    }                                                       \
 }
 
 #define fk_buf_alloc(buf, length)   {                   \
     if (fk_buf_free_len((buf)) < (length)) {            \
         fk_buf_shift((buf));                            \
     }                                                   \
-    if (fk_buf_free_len((buf)) < (length) &&            \
-        (buf)->len < (buf)->highwat)                    \
+    if (fk_buf_free_len((buf)) < (length)               \
+        && (buf)->len < (buf)->highwat)                 \
     {                                                   \
         (buf)->len = fk_util_min_power((buf)->len       \
             + (length) - fk_buf_free_len((buf)));       \
