@@ -1,5 +1,5 @@
-#ifndef _FK_FTM_
-#define _FK_FTM_
+#ifndef _FK_FTM_H_
+#define _FK_FTM_H_
 
 /*
  * linux feature test macros
@@ -12,11 +12,11 @@
 /* how to distinguish the version of glibc??? */
 
 /* for getline() before glibc 2.1 */
-#define _GNU_SOURCE
+//#define _GNU_SOURCE
 
 /* for getline() since glibc 2.1 */
 #define _POSIX_C_SOURCE 200809L
-#define _XOPEN_SOURCE 700
+//#define _XOPEN_SOURCE 700
 
 /* for sigaction() */
 //#define _XOPEN_SOURCE
