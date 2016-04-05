@@ -1,7 +1,6 @@
 #---------------------------------------------------
-# usage:
-# make os=xxx debug=xxx jemalloc=xxx gprof=xxx
-# gmake os=xxx debug=xxx jemalloc=xxx gprof=xxx
+# Usage:
+# [g]make os=xxx debug=xxx jemalloc=xxx gprof=xxx
 #---------------------------------------------------
 
 #---------------------------------------------------
