@@ -1,6 +1,11 @@
 #---------------------------------------------------
 # Usage:
 # [g]make os=xxx debug=xxx jemalloc=xxx gprof=xxx
+#
+# os=mac/linux/freebsd
+# debug=yes/no
+# jemalloc=yes/no
+# gprof=yes/no
 #---------------------------------------------------
 
 #---------------------------------------------------
@@ -34,6 +39,8 @@ ifeq ($(os), mac)
 OS_CFLAGS   :=
 OS_LDFLAGS  :=
 OS_LDLIBS   :=
+else
+$(error $(os) not supported at present)
 endif # mac
 endif # linux
 endif # freebsd
@@ -43,21 +50,49 @@ ifeq ($(debug), yes)
 DEBUG_CFLAGS   := -D FK_DEBUG -g
 DEBUG_LDFLAGS  :=
 DEBUG_LDLIBS   :=
-endif
+else
+ifeq ($(debug), no)
+DEBUG_CFLAGS   :=
+DEBUG_LDFLAGS  :=
+DEBUG_LDLIBS   :=
+else
+$(error illegal value for debug)
+endif # no
+endif # yes
 
 # the default malloc/free is original libc malloc/free
 ifeq ($(jemalloc), yes)
 MALLOC_CFLAGS   := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
 MALLOC_LDFLAGS 	:=
 MALLOC_LDLIBS   := -ljemalloc
-endif
+else
+ifeq ($(jemalloc), no)
+MALLOC_CFLAGS   :=
+MALLOC_LDFLAGS 	:=
+MALLOC_LDLIBS   :=
+else
+$(error illegal value for jemalloc)
+endif # no
+endif # yes
 
 # gprof
 ifeq ($(gprof), yes)
+ifeq ($(os), mac)
+$(error gprof is not supported on mac)
+else
 GPROF_CFLAGS   := -g -pg -lc_p
 GPROF_LDFLAGS  := -pg
 GPROF_LDLIBS   := -lc_p
-endif
+endif # mac
+else
+ifeq ($(gprof), no)
+GPROF_CFLAGS   :=
+GPROF_LDFLAGS  :=
+GPROF_LDLIBS   :=
+else
+$(error illegal value for gprof)
+endif # no
+endif # yes
 
 CFLAGS   := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS)
 LDFLAGS  := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
