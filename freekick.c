@@ -265,7 +265,7 @@ fk_signal_register(void)
     //rt = sigaction(SIGKILL, &sa, NULL); /* changing the disposition of SIGKILL is not allowed */
 
     sa.sa_handler = fk_signal_child_handler;
-    sa.sa_flags = SA_RESTART;
+    sa.sa_flags = SA_RESTART; /* when the child is terminated or stopped, SIGCHLD is generated */
     sigfillset(&sa.sa_mask); /* block all the signals when this handler is invoked */
     rt = sigaction(SIGCHLD, &sa, NULL);
     if (rt < 0) {
