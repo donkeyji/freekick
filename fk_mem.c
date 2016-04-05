@@ -16,8 +16,12 @@
 #if defined(__APPLE__)
 #include <malloc/malloc.h>
 #define fk_mem_malloc_size  malloc_size
-#else
+#elif defined(__linux__)
 #include <malloc.h>
+#define fk_mem_malloc_size  malloc_usable_size
+#elif defined(__FreeBSD__)
+#include <stdlib.h>
+#include <malloc_np.h>
 #define fk_mem_malloc_size  malloc_usable_size
 #endif
 #endif

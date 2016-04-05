@@ -1,13 +1,43 @@
 #---------------------------------------------------
+# usage:
+# make os=xxx debug=xxx jemalloc=xxx gprof=xxx
+# gmake os=xxx debug=xxx jemalloc=xxx gprof=xxx
+#---------------------------------------------------
+
+#---------------------------------------------------
 # CC && CFLAGS && LDFLAGS && LDLIBS
 #---------------------------------------------------
 CC := gcc
 
 BASIC_CFLAGS   := -std=c99 -pedantic -Wall -O2 -I .
 BASIC_LDFLAGS  :=
-BASIC_LDLIBS   := -llua -ldl -lm
+BASIC_LDLIBS   := -llua
 # -ldl: needed when in linux, but not in mac
 # -lm: needed when in linux, but not in mac
+
+# default value for arguments
+os       := mac
+debug    := no
+jemalloc := no
+gprof    := no
+
+ifeq ($(os), freebsd)
+OS_CFLAGS   := -I /usr/local/include
+OS_LDFLAGS  := -L /usr/local/lib
+OS_LDLIBS   := -lm
+else
+ifeq ($(os), linux)
+OS_CFLAGS   :=
+OS_LDFLAGS  :=
+OS_LDLIBS   := -ldl -lm
+else
+ifeq ($(os), mac)
+OS_CFLAGS   :=
+OS_LDFLAGS  :=
+OS_LDLIBS   :=
+endif # mac
+endif # linux
+endif # freebsd
 
 # debug mode is the default
 ifeq ($(debug), yes)
@@ -30,9 +60,9 @@ GPROF_LDFLAGS  := -pg
 GPROF_LDLIBS   := -lc_p
 endif
 
-CFLAGS   := $(BASIC_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS)
-LDFLAGS  := $(BASIC_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
-LDLIBS   := $(BASIC_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS)
+CFLAGS   := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS)
+LDFLAGS  := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
+LDLIBS   := $(BASIC_LDLIBS)  $(OS_LDLIBS) $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS)
 
 #---------------------------------------------------
 # sources && objects && Makefile.dep

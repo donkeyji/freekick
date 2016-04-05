@@ -246,9 +246,9 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
 int
 fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 {
+    int        st;
     pid_t      cpid;
     uint32_t   i;
-    siginfo_t  infop;
 
     server.timer_cnt++;
 
@@ -266,11 +266,13 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
          * only one child, wait for the child with a specified pid
          * no need to call waitid() in a loop
          */
-        cpid = waitid(P_PID, server.save_pid, &infop, WEXITED|WNOHANG);
+        cpid = waitpid(server.save_pid, &st, WNOHANG);
+        /* error occured */
         if (cpid < 0 && errno != ECHILD) {
             exit(EXIT_FAILURE);
         }
-        if (infop.si_status == EXIT_SUCCESS) {
+        /* the child exit with success */
+        if (st == EXIT_SUCCESS) {
             server.save_pid = -1; /* the saving child process is terminated */
             server.last_save = time(NULL);
         }

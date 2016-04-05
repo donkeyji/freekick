@@ -1,6 +1,7 @@
 /* c standard headers */
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 /* unix headers */
 #include <strings.h>

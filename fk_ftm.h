@@ -25,4 +25,9 @@
 
 #endif
 
+#if defined(__FreeBSD__)
+/* for getline() */
+#define _WITH_GETLINE
+#endif
+
 #endif
