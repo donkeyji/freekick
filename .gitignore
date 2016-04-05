@@ -9,3 +9,4 @@ gmon.out
 t/t
 t/makefile.dep
 *~
+v.log
