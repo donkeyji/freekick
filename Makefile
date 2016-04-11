@@ -20,11 +20,16 @@ BASIC_LDLIBS  := -llua
 # -lm: needed when in linux, but not in mac
 
 # default value for arguments
-os       := mac
+os       := generic
 debug    := no
 jemalloc := no
 gprof    := no
 
+ifeq ($(os), generic)
+OS_CFLAGS  :=
+OS_LDFLAGS :=
+OS_LDLIBS  := -ldl -lm
+else
 ifeq ($(os), freebsd)
 OS_CFLAGS  := -I /usr/local/include
 OS_LDFLAGS := -L /usr/local/lib
@@ -44,6 +49,7 @@ $(error $(os) not supported at present)
 endif # mac
 endif # linux
 endif # freebsd
+endif # general
 
 # debug mode is the default
 ifeq ($(debug), yes)
