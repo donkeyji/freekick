@@ -53,9 +53,8 @@ $(error $(os) not supported at present)
 endif # mac
 endif # linux
 endif # freebsd
-endif # general
+endif # generic
 
-# debug mode is the default
 ifeq ($(debug), yes)
 DEBUG_CFLAGS  := -D FK_DEBUG -g
 DEBUG_LDFLAGS :=
@@ -70,7 +69,6 @@ $(error illegal value for debug)
 endif # no
 endif # yes
 
-# the default malloc/free is original libc malloc/free
 ifeq ($(jemalloc), yes)
 MALLOC_CFLAGS  := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
 MALLOC_LDFLAGS :=
@@ -85,7 +83,6 @@ $(error illegal value for jemalloc)
 endif # no
 endif # yes
 
-# gprof
 ifeq ($(gprof), yes)
 ifeq ($(os), mac)
 $(error gprof is not supported on mac)
