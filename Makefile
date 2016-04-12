@@ -16,14 +16,18 @@ CC := gcc
 BASIC_CFLAGS  := -std=c99 -pedantic -Wall -O2 -I .
 BASIC_LDFLAGS :=
 BASIC_LDLIBS  := -llua
-# -ldl: needed when in linux, but not in mac
-# -lm: needed when in linux, but not in mac
 
 # default value for arguments
 os       := generic
 debug    := no
 jemalloc := no
 gprof    := no
+
+$(info [Listing Arguments Used...])
+$(info os:       $(os))
+$(info debug:    $(debug))
+$(info jemalloc: $(jemalloc))
+$(info gprof:    $(gprof))
 
 ifeq ($(os), generic)
 OS_CFLAGS  :=
