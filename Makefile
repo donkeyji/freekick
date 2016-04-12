@@ -132,6 +132,7 @@ $(SVRBIN) : $(SVROBJS)
 -include $(DEPS)
 
 # if Makefile.dep does not exist, this target will be executed
+# this target is always the first part to be executed
 $(DEPS) :
 	@echo "[Generating Makefile.dep...]"
 	$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
