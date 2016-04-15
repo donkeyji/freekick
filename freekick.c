@@ -74,6 +74,12 @@ fk_daemonize(void)
         exit(EXIT_SUCCESS);
     }
 
+    /*
+     * after calling setsid(), a new session will be created as follows:
+     * 1. this process will become the leader of the new session
+     * 2. this process will be the leader of the new process group in this new session
+     * 2. this process has no controlling terminal any more
+     */
     if (setsid() == -1) { /* create a new session */
         fk_log_error("setsid: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
