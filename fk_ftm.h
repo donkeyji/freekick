@@ -15,8 +15,16 @@
 //#define _GNU_SOURCE
 
 /* for getline() since glibc 2.1 */
-#define _POSIX_C_SOURCE 200809L
-//#define _XOPEN_SOURCE 700
+/*
+ * better using "#define _XOPEN_SOURCE 700" instead of 
+ * using "#define _POSIX_C_SOURCE 200809L"
+ * since _POSIX_C_SOURCE is encompassed by _XOPEN_SOURCE
+ * in particular, when compiled under RHEL 5.8, of which the version of 
+ * glibc is 2.5, if #define _POSIX_C_SOURCE 200809L is used, the flag 
+ * SA_RESTART will be undeclared when using sigaction()
+ */
+//#define _POSIX_C_SOURCE 200809L
+#define _XOPEN_SOURCE 700
 
 /* for sigaction() */
 //#define _XOPEN_SOURCE
