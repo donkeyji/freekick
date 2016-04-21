@@ -311,3 +311,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 124. 对于hardware-generated signal，都是严重的无法恢复的错误，只需要采取默认的action就行，由系统产生core dump并且terminate掉。从linux 2.6起，hardware-generated signal是不可block，不可ignore，也不可catch的，进程会立即terminate。
 
 125. linux下，采用glibc的malloc/free时，python t.py时会有段错误，使用jemalloc时没有，为啥?? 错误在fk_buf_alloc()里的realloc()发生，为啥呢???
+
+126. 在rhel5中，sigaction()的SA_RESTART编译出现undelared错误，非加上_BSD_SOURCE的feature test macro么?
