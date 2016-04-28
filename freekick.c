@@ -71,7 +71,7 @@ fk_daemonize(void)
         break;
     default: /* parent exit */
         fk_log_info("parent exit, to run as a daemon\n");
-        exit(EXIT_SUCCESS);
+        _exit(EXIT_SUCCESS); /* do not use exit(EXIT_SUCCESS) */
     }
 
     /*
@@ -83,6 +83,24 @@ fk_daemonize(void)
     if (setsid() == -1) { /* create a new session */
         fk_log_error("setsid: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
+    }
+
+    /*
+     * after this secondary fork(), the parent exit, and the child continues.
+     * The child is not the session leader, and thus, according to the System V
+     * conventions, this child can never reacquire a controlling terminal.
+     * In BSDs, this secondary fork() has no effect, but do no harm.
+     */
+    switch (fork()) {
+    case -1:
+        fk_log_error("fork: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+        break;
+    case 0:
+        break;
+    default:
+        _exit(EXIT_SUCCESS);
+        break;
     }
 
     umask(0);
