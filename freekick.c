@@ -111,7 +111,9 @@ fk_daemonize(void)
     umask(0);
 
     /*
-     * we donot close any file descriptors here
+     * we donot close any file descriptors here, in fact, we did not open
+     * any file before calling fk_daemonize(). The configuration file was
+     * opened for reading, but later closed.
      * we just redirect 0,1,2 to /dev/null
      */
 
