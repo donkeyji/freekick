@@ -63,6 +63,10 @@ fk_daemonize(void)
         return;
     }
 
+    /*
+     * after this fork(), this child will no be the group leader, thus
+     * the following call to setsid() will succeed
+     */
     switch (fork()) {
     case -1:
         fk_log_error("fork: %s\n", strerror(errno));
@@ -103,8 +107,19 @@ fk_daemonize(void)
         break;
     }
 
+    /* clear file mode creation mask */
     umask(0);
 
+    /*
+     * we donot close any file descriptors here
+     * we just redirect 0,1,2 to /dev/null
+     */
+
+    /*
+     * file descriptor 0,1,2 should redirected to /dev/null
+     * 1. later calls to library functions which may perform I/O on 0,1,2
+     * 2. prevent the possibility that 0,1,2 will be occupied by other files
+     */
     fd = open("/dev/null", O_RDWR);
     if (fd == -1) {
         fk_log_error("open /dev/null: %s\n", strerror(errno));
@@ -126,6 +141,10 @@ fk_daemonize(void)
         exit(EXIT_FAILURE);
     }
 
+    /*
+     * we have redirected 0,1,2 to fd, and fd will never be used
+     * so it is preferable to close fd
+     */
     if (fd > STDERR_FILENO) {
         if (close(fd) == -1) {
             fk_log_error("close: %s\n", strerror(errno));
