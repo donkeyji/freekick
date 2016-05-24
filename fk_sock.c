@@ -24,7 +24,7 @@ fk_sock_create_tcp_listen(char *addr, uint16_t port)
     /* struct sockaddr_in has the same size as struct sockaddr */
     struct sockaddr_in  saddr;
 
-    listen_sock = socket(PF_INET, SOCK_STREAM, 0);
+    listen_sock = socket(AF_INET, SOCK_STREAM, 0);
     if (listen_sock == -1) {
         return FK_SOCK_ERR;
     }
