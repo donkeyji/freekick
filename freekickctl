@@ -28,6 +28,11 @@ fk_stop() {
     fi
 }
 
+fk_restart() {
+    fk_stop
+    fk_start
+}
+
 fk_status() {
     echo "showing freekick..."
     ps aux | grep -e $NAME | grep -e $CONF | grep -v 'grep'
@@ -39,6 +44,9 @@ case $ACTION in
     ;;
     stop)
         fk_stop
+    ;;
+    restart)
+        fk_restart
     ;;
     status)
         fk_status
