@@ -225,6 +225,10 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
         }
 
         /* no need to check the return code???? */
+        /*
+         * nonblocking could not be inherited by this client fd
+         * after accept() on linux, so we need to set the option again
+         */
         fk_sock_set_nonblocking(fd);
         fk_sock_set_keepalive(fd);
 
