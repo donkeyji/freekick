@@ -314,3 +314,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 在freebsd 10.3/mac 10.9下都没有这个错误，在freebsd 8.4下只要执行一个cmd就会段错误，在debian 7.9/rhel 6/7下执行到一定的时候会报错，rhel5没有测试。
 
 126. 在rhel5中，sigaction()的SA_RESTART编译出现undelared错误，非加上_BSD_SOURCE的feature test macro么?
+
+127. MSL在linux下为30 seconds。
