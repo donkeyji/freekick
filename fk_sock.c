@@ -67,6 +67,10 @@ fk_sock_set_nonblocking(int fd)
 {
     int  rt;
 
+    /*
+     * this flag can not be inherited by the new fd returned by accept()
+     * since this flag could be altered by fcntl() F_SETFL operation
+     */
     rt = fcntl(fd, F_SETFL, O_NONBLOCK);
     if (rt < 0) {
         return FK_SOCK_ERR;
