@@ -43,7 +43,7 @@ static void fk_main_cycle(void);
 static void fk_main_exit(void);
 
 /*
- * daemon() is obsolete
+ * just because this daemon() library function is obsolete
 static void
 fk_daemon_run_old(void)
 {
