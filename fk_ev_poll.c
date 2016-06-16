@@ -58,10 +58,10 @@ fk_poll_add(void *ev_iompx, int fd, uint8_t type)
 
     nev = 0x0000;
     if (type & FK_IOEV_READ) {
-        nev |= POLLIN;
+        nev |= POLLIN; /* equivalent to POLLRDNORM */
     }
     if (type & FK_IOEV_WRITE) {
-        nev |= POLLOUT;
+        nev |= POLLOUT; /* equivalent to POLLWRNORM */
     }
 
     if (oev & nev) {
@@ -150,10 +150,11 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
         pfd = iompx->evlist + i;
         fd = pfd->fd;
         type = 0x00;
-        if (pfd->revents & POLLIN) {
+        /* perform the similar check to epoll, ORing POLLHUB | POLLERR */
+        if (pfd->revents & (POLLIN | POLLHUP | POLLERR)) {
             type |= FK_IOEV_READ;
         }
-        if (pfd->revents & POLLOUT) {
+        if (pfd->revents & (POLLOUT | POLLHUP | POLLERR)) {
             type |= FK_IOEV_WRITE;
         }
         if (type == 0x00) {
