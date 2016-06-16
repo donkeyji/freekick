@@ -1,6 +1,13 @@
 /* unix headers */
 #include <poll.h>
 
+/*
+ * in practice, the flags of real interest of poll() are:
+ * read:       POLLIN, POLLRDHUP, POLLPRI
+ * write:      POLLOUT
+ * additional: POLLHUP, POLLERR
+ */
+
 typedef struct {
     struct pollfd    *evlist;
     int               last;
