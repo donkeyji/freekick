@@ -185,10 +185,10 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
          * as well as the global "errno"
          *
          */
-        if (pfd->revents & (POLLIN | POLLHUP | POLLERR/* | POLLNVAL */)) {
+        if (pfd->revents & (POLLIN | POLLHUP | POLLERR /* | POLLNVAL */)) {
             type |= FK_IOEV_READ;
         }
-        if (pfd->revents & (POLLOUT | POLLHUP | POLLERR/* | POLLNVAL */)) {
+        if (pfd->revents & (POLLOUT | POLLHUP | POLLERR /* | POLLNVAL */)) {
             type |= FK_IOEV_WRITE;
         }
         if (type == 0x00) {
