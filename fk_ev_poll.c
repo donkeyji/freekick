@@ -157,7 +157,15 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
         pfd = iompx->evlist + i;
         fd = pfd->fd;
         type = 0x00;
-        /* perform the similar check to epoll, ORing POLLHUB | POLLERR */
+        /*
+         * perform the similar check to epoll, ORing POLLHUB | POLLERR
+         *
+         * when POLLHUB or POLLERR occurs, we mark the corresponding fd
+         * as readable and writable,  and then a subsequent call to
+         * read()/write() could tell us what exactly happened to the fd
+         * by checking the return value of the corresponding call, as well
+         * as the global "errno"
+         */
         if (pfd->revents & (POLLIN | POLLHUP | POLLERR)) {
             type |= FK_IOEV_READ;
         }
