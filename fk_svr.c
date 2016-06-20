@@ -228,6 +228,12 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
         /*
          * nonblocking could not be inherited by this client fd
          * after accept() on linux, so we need to set the option again
+         *
+         * Why do we need to set nonblocking for the client fd?
+         * Since we may later try to read as much data as possible from
+         * the client by calling send() when epoll()/kqueue()/poll()
+         * triggered, if the fd is not nonblocking, this operation will
+         * eventually block. See fk_conn_read_cb() in fk_svr_conn.c
          */
         fk_sock_set_nonblocking(fd);
         fk_sock_set_keepalive(fd);
