@@ -144,6 +144,12 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
 
     iompx = (fk_poll_t *)ev_iompx;
 
+    /*
+     * Every time when poll() called, the array "evlist" need
+     * to be coped from user to kernel space and back again.
+     * This behavior greatly reduce the performance of poll()
+     * when monitoring a large number of file descriptors
+     */
     nfds = poll(iompx->evlist, iompx->last, ms_timeout);
     if (nfds < 0) {
         fk_log_debug("poll failed: %s\n", strerror(errno));
@@ -162,7 +168,7 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
          * POLLNVAL is not included, because POLLNVAL occurs only when
          * the corresponding fd is not open, but this could not happen
          * in this scenario, we ensure that every fd added to the poll
-         * is valid.
+         * is valid. We can usually keep track of the closed fd.
          *
          * when POLLHUB or POLLERR occurs, we mark the corresponding fd
          * as readable and writable,  and then a subsequent call to
