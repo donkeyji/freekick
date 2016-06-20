@@ -148,7 +148,9 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
      * Every time when poll() called, the array "evlist" need
      * to be coped from user to kernel space and back again.
      * This behavior greatly reduce the performance of poll()
-     * when monitoring a large number of file descriptors
+     * when monitoring a large number of file descriptors. So
+     * the scaling performance sucks in this scenario, but it
+     * is still better then select()
      */
     nfds = poll(iompx->evlist, iompx->last, ms_timeout);
     if (nfds < 0) {
@@ -159,6 +161,12 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
         return FK_EV_OK;
     }
     cnt = 0;
+    /*
+     * We may need to check all of the elements in the array
+     * "evlist", it's not a  good idea when the "last" is large,
+     * and a large amount of CPU time would be wasted within
+     * the loop
+     */
     for (i = 0; i < iompx->last; i++) {
         pfd = iompx->evlist + i;
         fd = pfd->fd;
