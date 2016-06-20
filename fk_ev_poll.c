@@ -162,9 +162,9 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
          *
          * when POLLHUB or POLLERR occurs, we mark the corresponding fd
          * as readable and writable,  and then a subsequent call to
-         * read()/write() could tell us what exactly happened to the fd
-         * by checking the return value of the corresponding call, as well
-         * as the global "errno"
+         * read()/write()/recv()/send() could tell us what exactly happened
+         * to the fd by checking the return value of the corresponding call,
+         * as well as the global "errno"
          */
         if (pfd->revents & (POLLIN | POLLHUP | POLLERR)) {
             type |= FK_IOEV_READ;
