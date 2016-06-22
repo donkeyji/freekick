@@ -173,6 +173,7 @@ fk_select_dispatch(void *ev_iompx, struct timeval *timeout)
      * On Linux, the pto will be modified by select()
      * ensure that the object that timeout point to will not
      * be modified by select()
+     * for portability, do not rely on the returned value of pto
      */
     pto.tv_sec = timeout->tv_sec;
     pto.tv_usec = timeout->tv_usec;
