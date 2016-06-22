@@ -316,3 +316,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 126. 在rhel5中，sigaction()的SA_RESTART编译出现undelared错误，非加上_BSD_SOURCE的feature test macro么?
 
 127. MSL在linux下为30 seconds。
+
+128. fk_ev把epoll/kqueue/poll提供的细分的多种对fd上发生的event监测简化成READ/WRITE这2种，适用各种类型的fd，至于对不同类型的fd的read/write操作由各自的callback函数来决定。
