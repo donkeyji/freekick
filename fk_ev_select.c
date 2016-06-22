@@ -41,7 +41,7 @@ fk_select_create(int max_files)
 {
     fk_select_t *iompx;
 
-    /* select can not monitor beyond 1024 fds */
+    /* select can not monitor beyond FD_SETSIZE */
     if (max_files > FD_SETSIZE) {
         return NULL;
     }
@@ -57,6 +57,8 @@ fk_select_create(int max_files)
     FD_ZERO(&(iompx->run_eset));
 
     iompx->max_fd = -1; /* an invalid fd as the initial value */
+
+    /* initialized to 0 */
     iompx->fd_map = (uint8_t *)fk_mem_calloc(max_files, sizeof(uint8_t));
 
     return iompx;
