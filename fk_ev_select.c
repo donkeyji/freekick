@@ -3,23 +3,23 @@
 
 /*
  * kernel dosen't remember the events to be monitored, so we
- * do this by ourself by using the fields rset/wset/eset in
+ * do this by ourself by using the fields save_rset/save_wset/save_eset in
  * fk_select_t
  */
 
 typedef struct {
     /* store all the events to be monitored */
-    fd_set      rset;
-    fd_set      wset;
-    fd_set      eset;
+    fd_set      save_rset;
+    fd_set      save_wset;
+    fd_set      save_eset;
 
     /* passed to the select() system call */
     fd_set      run_rset;
     fd_set      run_wset;
     fd_set      run_eset;
 
-    /* the current max fd */
-    int         max_fd; /* how to track the current fd ??? */
+    /* how to track the current max fd efficiently??? */
+    int         max_fd;
     uint8_t    *fd_map; /* record all the fds added */
 } fk_select_t;
 
@@ -48,9 +48,9 @@ fk_select_create(int max_files)
 
     iompx = (fk_select_t *)fk_mem_alloc(sizeof(fk_select_t));
 
-    FD_ZERO(&(iompx->rset));
-    FD_ZERO(&(iompx->wset));
-    FD_ZERO(&(iompx->eset));
+    FD_ZERO(&(iompx->save_rset));
+    FD_ZERO(&(iompx->save_wset));
+    FD_ZERO(&(iompx->save_eset));
 
     FD_ZERO(&(iompx->run_rset));
     FD_ZERO(&(iompx->run_wset));
@@ -74,18 +74,18 @@ fk_select_add(void *ev_iompx, int fd, uint8_t type)
     iompx = (fk_select_t *)ev_iompx;
 
     if (type & FK_EV_READ) {
-        if (FD_ISSET(fd, &(iompx->rset))) {
+        if (FD_ISSET(fd, &(iompx->save_rset))) {
             return FK_EV_ERR;
         }
-        FD_SET(fd, &(iompx->rset));
+        FD_SET(fd, &(iompx->save_rset));
         r_added = 1;
     }
 
     if (type & FK_EV_WRITE) {
-        if (FD_ISSET(fd, &(iompx->wset))) {
+        if (FD_ISSET(fd, &(iompx->save_wset))) {
             return FK_EV_ERR;
         }
-        FD_SET(fd, &(iompx->wset));
+        FD_SET(fd, &(iompx->save_wset));
         w_added = 1;
     }
 
@@ -112,19 +112,19 @@ fk_select_remove(void *ev_iompx, int fd, uint8_t type)
 
     if (type & FK_EV_READ) {
         /* no this fd */
-        if (!FD_ISSET(fd, &(iompx->rset))) {
+        if (!FD_ISSET(fd, &(iompx->save_rset))) {
             return FK_EV_ERR;
         }
-        FD_CLR(fd, &(iompx->rset));
+        FD_CLR(fd, &(iompx->save_rset));
         r_rmed = 1;
     }
 
     if (type & FK_EV_WRITE) {
         /* no this fd */
-        if (!FD_ISSET(fd, &(iompx->wset))) {
+        if (!FD_ISSET(fd, &(iompx->save_wset))) {
             return FK_EV_ERR;
         }
-        FD_CLR(fd, &(iompx->wset));
+        FD_CLR(fd, &(iompx->save_wset));
         w_rmed = 1;
     }
 
@@ -132,6 +132,7 @@ fk_select_remove(void *ev_iompx, int fd, uint8_t type)
         iompx->fd_map[fd] = 0;
     }
 
+    /* how to update the iompx->max_fd efficiently??? */
     if (fd == iompx->max_fd) {
         if (iompx->fd_map[fd] == 0) {
         }
@@ -143,45 +144,50 @@ fk_select_remove(void *ev_iompx, int fd, uint8_t type)
 int
 fk_select_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-    int           nfds, fd, cnt;
+    int           fd, ready_total, ready_cnt;
     uint8_t       ev;
     fk_select_t  *iompx;
 
     iompx = (fk_select_t *)ev_iompx;
 
-    /* need to do it every time when calling select, shit!!! */
-    FD_COPY(&(iompx->run_rset), &(iompx->rset));
-    FD_COPY(&(iompx->run_wset), &(iompx->wset));
-    FD_COPY(&(iompx->run_eset), &(iompx->eset));
-    nfds = select(iompx->max + 1, &(iompx->rset), &(iompx->wset), &(iompx->eset), timeout);
+    /* need to perform this copy every time when calling select, shit!!! */
+    FD_COPY(&(iompx->run_rset), &(iompx->save_rset));
+    FD_COPY(&(iompx->run_wset), &(iompx->save_wset));
+    FD_COPY(&(iompx->run_eset), &(iompx->save_eset));
 
-    if (nfds < 0) {
+    ready_total = select(iompx->max + 1, &(iompx->save_rset), &(iompx->save_wset), &(iompx->save_eset), timeout);
+
+    /* error occurs */
+    if (ready_total < 0) {
         return FK_EV_ERR;
     }
     
     /* timeout */
-    if (nfds == 0) {
+    if (ready_total == 0) {
         return FK_EV_OK;
     }
 
-    cnt = 0;
+    /* some fd are ready */
+    ready_cnt = 0;
     for (fd = 0; fd <= iompx->max_fd; fd++) {
         ev = 0x00;
 
-        if (FD_ISSET(fd, &(iompx->rset))) {
+        /* check read */
+        if (FD_ISSET(fd, &(iompx->save_rset))) {
             ev |= FK_EV_READ;
-            cnt++;
+            ready_cnt++;
         }
 
-        if (FD_ISSET(fd, &(iompx->wset))) {
+        /* check write */
+        if (FD_ISSET(fd, &(iompx->save_wset))) {
             ev |= FK_EV_WRITE;
-            cnt++;
+            ready_cnt++;
         }
 
         fk_ev_activate_ioev(fd, ev);
 
         /* no need to check any more */
-        if (cnt == nfds) {
+        if (ready_cnt == ready_total) {
             break;
         }
     }
