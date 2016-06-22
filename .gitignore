@@ -11,3 +11,4 @@ t/makefile.dep
 *~
 v.log
 *.core
+*.bak

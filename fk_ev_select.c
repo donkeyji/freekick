@@ -39,11 +39,11 @@ fk_mpxop_t select_op = {
 void *
 fk_select_create(int max_files)
 {
-    void  *iompx;
+    fk_select_t *iompx;
 
     /* select can not monitor beyond 1024 fds */
     if (max_files > FD_SETSIZE) {
-        return FK_EV_ERR;
+        return NULL;
     }
 
     iompx = (fk_select_t *)fk_mem_alloc(sizeof(fk_select_t));
@@ -57,7 +57,7 @@ fk_select_create(int max_files)
     FD_ZERO(&(iompx->run_eset));
 
     iompx->max_fd = -1; /* an invalid fd as the initial value */
-    iompx->fd_map = (int *)fk_mem_calloc(max_files, sizeof(uint8_t));
+    iompx->fd_map = (uint8_t *)fk_mem_calloc(max_files, sizeof(uint8_t));
 
     return iompx;
 }
@@ -68,12 +68,12 @@ fk_select_add(void *ev_iompx, int fd, uint8_t type)
     int r_added, w_added;
     fk_select_t *iompx;
 
-    radded = 0;
-    wadded = 0;
+    r_added = 0;
+    w_added = 0;
 
     iompx = (fk_select_t *)ev_iompx;
 
-    if (type & FK_EV_READ) {
+    if (type & FK_IOEV_READ) {
         if (FD_ISSET(fd, &(iompx->save_rset))) {
             return FK_EV_ERR;
         }
@@ -81,7 +81,7 @@ fk_select_add(void *ev_iompx, int fd, uint8_t type)
         r_added = 1;
     }
 
-    if (type & FK_EV_WRITE) {
+    if (type & FK_IOEV_WRITE) {
         if (FD_ISSET(fd, &(iompx->save_wset))) {
             return FK_EV_ERR;
         }
@@ -102,7 +102,7 @@ fk_select_add(void *ev_iompx, int fd, uint8_t type)
 int
 fk_select_remove(void *ev_iompx, int fd, uint8_t type)
 {
-    int r_rmed, w_rmed;
+    int r_rmed, w_rmed, i;
     fk_select_t *iompx;
 
     r_rmed = 0;
@@ -110,7 +110,7 @@ fk_select_remove(void *ev_iompx, int fd, uint8_t type)
 
     iompx = (fk_select_t *)ev_iompx;
 
-    if (type & FK_EV_READ) {
+    if (type & FK_IOEV_READ) {
         /* no this fd */
         if (!FD_ISSET(fd, &(iompx->save_rset))) {
             return FK_EV_ERR;
@@ -119,7 +119,7 @@ fk_select_remove(void *ev_iompx, int fd, uint8_t type)
         r_rmed = 1;
     }
 
-    if (type & FK_EV_WRITE) {
+    if (type & FK_IOEV_WRITE) {
         /* no this fd */
         if (!FD_ISSET(fd, &(iompx->save_wset))) {
             return FK_EV_ERR;
@@ -135,6 +135,14 @@ fk_select_remove(void *ev_iompx, int fd, uint8_t type)
     /* how to update the iompx->max_fd efficiently??? */
     if (fd == iompx->max_fd) {
         if (iompx->fd_map[fd] == 0) {
+            iompx->max_fd = -1;
+            /* search the current max fd */
+            for (i = fd; i >= 0; i--) {
+                if (iompx->fd_map[i] == 1) {
+                    iompx->max_fd = i;
+                    break;
+                }
+            }
         }
     }
 
@@ -151,11 +159,12 @@ fk_select_dispatch(void *ev_iompx, struct timeval *timeout)
     iompx = (fk_select_t *)ev_iompx;
 
     /* need to perform this copy every time when calling select, shit!!! */
-    FD_COPY(&(iompx->run_rset), &(iompx->save_rset));
-    FD_COPY(&(iompx->run_wset), &(iompx->save_wset));
-    FD_COPY(&(iompx->run_eset), &(iompx->save_eset));
+    memcpy(&(iompx->run_rset), &(iompx->save_rset), sizeof(fd_set));
+    memcpy(&(iompx->run_wset), &(iompx->save_wset), sizeof(fd_set));
+    memcpy(&(iompx->run_eset), &(iompx->save_eset), sizeof(fd_set));
 
-    ready_total = select(iompx->max + 1, &(iompx->save_rset), &(iompx->save_wset), &(iompx->save_eset), timeout);
+    /* why dose this select() always return with "interrupted system call"???? */
+    ready_total = select(iompx->max_fd + 1, &(iompx->save_rset), &(iompx->save_wset), &(iompx->save_eset), timeout);
 
     /* error occurs */
     if (ready_total < 0) {
@@ -174,13 +183,13 @@ fk_select_dispatch(void *ev_iompx, struct timeval *timeout)
 
         /* check read */
         if (FD_ISSET(fd, &(iompx->save_rset))) {
-            ev |= FK_EV_READ;
+            ev |= FK_IOEV_READ;
             ready_cnt++;
         }
 
         /* check write */
         if (FD_ISSET(fd, &(iompx->save_wset))) {
-            ev |= FK_EV_WRITE;
+            ev |= FK_IOEV_WRITE;
             ready_cnt++;
         }
 
