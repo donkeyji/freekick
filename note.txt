@@ -317,4 +317,4 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 
 127. MSL在linux下为30 seconds。
 
-128. fk_ev把epoll/kqueue/poll提供的细分的多种对fd上发生的event监测简化成READ/WRITE这2种，适用各种类型的fd，至于对不同类型的fd的read/write操作由各自的callback函数来决定。
+128. epoll/poll/kqueue提供的监测各种类型的fd上的event细分为很多种，但按大类划分也就是read/write这2大类的event，且poll()的分类比epoll()更多。fk_ev仅提供read/write两种大类的event监测，对应于epoll/poll/kqueue提供的read/write 2大类event，且对各种类型的fd有效，对各自类型的fd的read/write处理由注册的callback决定，所以fk_ev仅仅只是将epoll/poll/kqueue进行封装而已，提供一个高层次的接口。
