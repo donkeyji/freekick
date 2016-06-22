@@ -3,20 +3,19 @@
 
 /*
  * kernel dosen't remember the events to be monitored, so we
- * do this by ourself by using the fields save_rset/save_wset/save_eset in
- * fk_select_t
+ * do this by ourself by using the fields saved_rset/saved_wset
+ * in fk_select_t, we can also add some extra fields to record
+ * more information for {fd, event} pairs
  */
 
 typedef struct {
     /* store all the events to be monitored */
-    fd_set      save_rset;
-    fd_set      save_wset;
-    fd_set      save_eset;
+    fd_set      saved_rset;
+    fd_set      saved_wset;
 
     /* passed to the select() system call */
-    fd_set      run_rset;
-    fd_set      run_wset;
-    fd_set      run_eset;
+    fd_set      work_rset;
+    fd_set      work_wset;
 
     /* how to track the current max fd efficiently??? */
     int         max_fd;
@@ -48,13 +47,12 @@ fk_select_create(int max_files)
 
     iompx = (fk_select_t *)fk_mem_alloc(sizeof(fk_select_t));
 
-    FD_ZERO(&(iompx->save_rset));
-    FD_ZERO(&(iompx->save_wset));
-    FD_ZERO(&(iompx->save_eset));
+    FD_ZERO(&(iompx->saved_rset));
+    FD_ZERO(&(iompx->saved_wset));
 
-    FD_ZERO(&(iompx->run_rset));
-    FD_ZERO(&(iompx->run_wset));
-    FD_ZERO(&(iompx->run_eset));
+    /* actually, no need to zero these two work fd_set */
+    FD_ZERO(&(iompx->work_rset));
+    FD_ZERO(&(iompx->work_wset));
 
     iompx->max_fd = -1; /* an invalid fd as the initial value */
 
@@ -76,18 +74,20 @@ fk_select_add(void *ev_iompx, int fd, uint8_t type)
     iompx = (fk_select_t *)ev_iompx;
 
     if (type & FK_IOEV_READ) {
-        if (FD_ISSET(fd, &(iompx->save_rset))) {
+        if (FD_ISSET(fd, &(iompx->saved_rset))) {
+            fk_log_error("try to add existing ev\n");
             return FK_EV_ERR;
         }
-        FD_SET(fd, &(iompx->save_rset));
+        FD_SET(fd, &(iompx->saved_rset));
         r_added = 1;
     }
 
     if (type & FK_IOEV_WRITE) {
-        if (FD_ISSET(fd, &(iompx->save_wset))) {
+        if (FD_ISSET(fd, &(iompx->saved_wset))) {
+            fk_log_error("try to add existing ev\n");
             return FK_EV_ERR;
         }
-        FD_SET(fd, &(iompx->save_wset));
+        FD_SET(fd, &(iompx->saved_wset));
         w_added = 1;
     }
 
@@ -114,19 +114,21 @@ fk_select_remove(void *ev_iompx, int fd, uint8_t type)
 
     if (type & FK_IOEV_READ) {
         /* no this fd */
-        if (!FD_ISSET(fd, &(iompx->save_rset))) {
+        if (!FD_ISSET(fd, &(iompx->saved_rset))) {
+            fk_log_error("try to remove a non-existing ev\n");
             return FK_EV_ERR;
         }
-        FD_CLR(fd, &(iompx->save_rset));
+        FD_CLR(fd, &(iompx->saved_rset));
         r_rmed = 1;
     }
 
     if (type & FK_IOEV_WRITE) {
         /* no this fd */
-        if (!FD_ISSET(fd, &(iompx->save_wset))) {
+        if (!FD_ISSET(fd, &(iompx->saved_wset))) {
+            fk_log_error("try to remove a non-existing ev\n");
             return FK_EV_ERR;
         }
-        FD_CLR(fd, &(iompx->save_wset));
+        FD_CLR(fd, &(iompx->saved_wset));
         w_rmed = 1;
     }
 
@@ -154,23 +156,43 @@ fk_select_remove(void *ev_iompx, int fd, uint8_t type)
 int
 fk_select_dispatch(void *ev_iompx, struct timeval *timeout)
 {
-    int           fd, ready_total, ready_cnt;
-    uint8_t       ev;
-    fk_select_t  *iompx;
+    int             fd, ready_total, ready_cnt;
+    uint8_t         ev;
+    fk_select_t    *iompx;
+    struct timeval  pto;
 
     iompx = (fk_select_t *)ev_iompx;
 
     /* need to perform this copy every time when calling select, shit!!! */
-    memcpy(&(iompx->run_rset), &(iompx->save_rset), sizeof(fd_set));
-    memcpy(&(iompx->run_wset), &(iompx->save_wset), sizeof(fd_set));
-    memcpy(&(iompx->run_eset), &(iompx->save_eset), sizeof(fd_set));
+    //memcpy(&(iompx->work_rset), &(iompx->saved_rset), sizeof(fd_set));
+    //memcpy(&(iompx->work_wset), &(iompx->saved_wset), sizeof(fd_set));
+    iompx->work_rset = iompx->saved_rset;
+    iompx->work_wset = iompx->saved_wset;
 
-    /* why dose this select() always return with "interrupted system call"???? */
-    ready_total = select(iompx->max_fd + 1, &(iompx->save_rset), &(iompx->save_wset), &(iompx->save_eset), timeout);
+    /*
+     * On Linux, the pto will be modified by select()
+     * ensure that the object that timeout point to will not
+     * be modified by select()
+     */
+    pto.tv_sec = timeout->tv_sec;
+    pto.tv_usec = timeout->tv_usec;
+
+    /*
+     * why dose this select() always return with "interrupted system call"????
+     * because the child process perform saving exits periodically
+     */
+    ready_total = select(iompx->max_fd + 1, &(iompx->work_rset), &(iompx->work_wset), NULL, &pto);
 
     /* error occurs */
     if (ready_total < 0) {
-        return FK_EV_ERR;
+        /*
+         * no need to care about EINTR
+         * in this scenario, SIGCHLD will appear periodically
+         */
+        if (errno != EINTR) {
+            return FK_EV_ERR;
+        }
+        return FK_EV_OK;
     }
     
     /* timeout */
@@ -184,13 +206,13 @@ fk_select_dispatch(void *ev_iompx, struct timeval *timeout)
         ev = 0x00;
 
         /* check read */
-        if (FD_ISSET(fd, &(iompx->save_rset))) {
+        if (FD_ISSET(fd, &(iompx->work_rset))) {
             ev |= FK_IOEV_READ;
             ready_cnt++;
         }
 
         /* check write */
-        if (FD_ISSET(fd, &(iompx->save_wset))) {
+        if (FD_ISSET(fd, &(iompx->work_wset))) {
             ev |= FK_IOEV_WRITE;
             ready_cnt++;
         }
