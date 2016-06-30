@@ -7,6 +7,11 @@
  * than using 2 array of fk_tmev_t pointer which used in libevent^_^
  */
 
+/*
+ * Note that epoll could not be used on regular file or directory.
+ * epoll could be used on socket/fifo/pipe...
+ */
+
 typedef struct {
     int                    efd;
     int                    max_evs;
@@ -89,6 +94,14 @@ fk_epoll_add(void *ev_iompx, int fd, uint8_t type)
         op = EPOLL_CTL_MOD;
     }
     iompx->ev.events = oev | nev;
+    /*
+     * the epoll_event.data.fd or epoll_event.data.ptr is the only
+     * mechanism for finding out the number of the file descriptor
+     * when epoll_wait() returns with success
+     * We can use epoll_event.data.ptr to store a pointer referring
+     * to an object which stores more information associated with
+     * this fd
+     */
     iompx->ev.data.fd = fd;
 
     rt = epoll_ctl(iompx->efd, op, fd, &(iompx->ev));
