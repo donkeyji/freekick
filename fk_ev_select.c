@@ -184,6 +184,9 @@ fk_select_dispatch(void *ev_iompx, struct timeval *timeout)
     /*
      * why dose this select() always return with "interrupted system call"????
      * because the child process perform saving exits periodically
+     * On linux, the timeout argument for select() system call will be modified
+     * by select() to indicate the remaining time not slept, but this feature
+     * is not implemented on other unix systems
      */
     ready_total = select(iompx->max_fd + 1, &(iompx->work_rset), &(iompx->work_wset), NULL, &pto);
 
