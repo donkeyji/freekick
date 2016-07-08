@@ -10,6 +10,14 @@
 /*
  * Note that epoll could not be used on regular file or directory.
  * epoll could be used on socket/fifo/pipe...
+ * epoll() performs much better than select()/poll() when monitoring
+ * large numbers of file descriptors for the reason that select()/poll()
+ * passes a complete list of file descriptors to be monitored to the
+ * kernel, and then the kernel return a list of file descriptors which
+ * are ready for reading/writing, so the time required by select()/poll()
+ * grows with the increase of number of file descriptors, rather than
+ * the number of I/O events. By contrast, with epoll(), the time required
+ * just increase with the number of I/O events.
  */
 
 typedef struct {
