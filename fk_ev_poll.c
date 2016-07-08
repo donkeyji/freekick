@@ -6,6 +6,8 @@
  * read:       POLLIN, POLLRDHUP, POLLPRI
  * write:      POLLOUT
  * additional: POLLHUP, POLLERR
+ * poll() can only provide level-triggered notification, as well as
+ * select()
  */
 
 typedef struct {
