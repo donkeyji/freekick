@@ -324,9 +324,10 @@ fk_ev_update_pending_tmev(void)
     struct timeval  now;
 
     /*
-     * gettimeofday() is specified by SUSv3, but marked as obsolete by SUSv4,
-     * so in new applications, clock_gettime() is recommended.
-     * in libevent, getime() is a wrapper of gettimeofday() and clock_gettime()
+     * gettimeofday() is specified by SUSv3(but not settimeofday()), but marked
+     * as obsolete by SUSv4, so in new applications, clock_gettime() is
+     * recommended. In libevent, getime() is a wrapper of gettimeofday() and
+     * clock_gettime().
      * although gettimeofday() provide the precision of microsecond, but this
      * accuracy depends on the architecture-dependent implementation.
      */
