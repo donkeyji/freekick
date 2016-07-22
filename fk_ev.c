@@ -328,8 +328,14 @@ fk_ev_update_pending_tmev(void)
      * as obsolete by SUSv4, so in new applications, clock_gettime() is
      * recommended. In libevent, getime() is a wrapper of gettimeofday() and
      * clock_gettime().
-     * although gettimeofday() provide the precision of microsecond, but this
+     * Although gettimeofday() provide the precision of microsecond, but this
      * accuracy depends on the architecture-dependent implementation.
+     * Thus, the following call to gettimeofday(&now, NULL) is approximately
+     * equivalent to clock_gettime(CLOCK_REALTIME, &ts), where the ts argument
+     * is a pointer to a timespec structure, and the CLOCK_REALTIME argument
+     * should be preferably replaced by CLOCK_MONOTONIC, which means that the
+     * result would not be affected by the discontinuous jump int the system
+     * time.
      */
     gettimeofday(&now, NULL);
 
