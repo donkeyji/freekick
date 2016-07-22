@@ -323,6 +323,11 @@ fk_ev_update_pending_tmev(void)
     fk_tmev_t      *tmev;
     struct timeval  now;
 
+    /*
+     * gettimeofday() is specified by SUSv3, but marked as obsolete by SUSv4
+     * in new applications, clock_gettime() is recommended.
+     * in libevent, getime() is a wrapper of gettimeofday() and clock_gettime()
+     */
     gettimeofday(&now, NULL);
 
     root = fk_heap_root(evmgr.timer_heap);
