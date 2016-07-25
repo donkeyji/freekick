@@ -93,7 +93,12 @@ fk_log_fprint_str(int level, char *data)
         level_name = "DEBUG";
         break;
     }
+    /* obtain the number of seconds since the Epoch*/
     now = time(NULL);
+    /*
+     * convert a time_t value into a broken-down time, which is statically
+     * allocated structure
+     */
     tm_now = localtime(&now);
     if (tm_now == NULL) {
         return;
@@ -101,12 +106,12 @@ fk_log_fprint_str(int level, char *data)
 
     fprintf(logger.log_file == NULL ? stdout : logger.log_file,
             "[%d-%.2d-%.2d %.2d:%.2d:%.2d]<%s>%s",
-            tm_now->tm_year + 1900,
-            tm_now->tm_mon + 1,
-            tm_now->tm_mday,
-            tm_now->tm_hour,
-            tm_now->tm_min,
-            tm_now->tm_sec,
+            tm_now->tm_year + 1900, /* year since 1900 */
+            tm_now->tm_mon + 1,     /* month in the range of 0 to 11 */
+            tm_now->tm_mday,        /* day of the month (1-31) */
+            tm_now->tm_hour,        /* hours (0-23) */
+            tm_now->tm_min,         /* minutes (0-59) */
+            tm_now->tm_sec,         /* seconds (0-60) */
             level_name,
             data);
 }
