@@ -93,11 +93,13 @@ fk_log_fprint_str(int level, char *data)
         level_name = "DEBUG";
         break;
     }
-    /* obtain the number of seconds since the Epoch*/
+    /* obtain the number of seconds since the Epoch (UTC) */
     now = time(NULL);
     /*
-     * convert a time_t value into a broken-down time, which is statically
-     * allocated structure
+     * convert a time_t value into a broken-down time corresponding to the
+     * system's local time. The returned value is statically allocated, which
+     * may be overwrote by another call to localtime()/gmtime()/ctime()/
+     * asctime().
      */
     tm_now = localtime(&now);
     if (tm_now == NULL) {
