@@ -18,6 +18,8 @@
  * clock_gettime() provides better precise control over the time obtaining, so
  * clock_gettime() precedes gettimeofday() when choosing the interface to get
  * time of the system
+ * We must use fk_get_time() to replace all the orignal calls to gettimeofday()
+ * in those sources of freekick
  */
 int
 fk_get_time(struct timeval *tv)
