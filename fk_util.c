@@ -30,6 +30,9 @@ fk_get_time(struct timeval *tv)
 #ifdef FK_HAVE_CLOCK_GETTIME
     struct timespec ts;
 
+    /*
+     * this clock_id CLOCK_MONOTONIC is conforming to POSIX
+     */
     rt = clock_gettime(CLOCK_MONOTONIC, &ts);
     if (rt < 0) {
         return -1;
