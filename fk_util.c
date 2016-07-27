@@ -1,13 +1,47 @@
+#include <fk_ftm.h>
+
 /* c standard headers */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 
 /* unix headers */
 #include <sys/time.h>
 
 /* local headers */
+#include <fk_env.h>
 #include <fk_util.h>
+
+/*
+ * a wrapper of gettimeofday() / clock_gettime()
+ * clock_gettime() provides better precise control over the time obtaining, so
+ * clock_gettime() precedes gettimeofday() when choosing the interface to get
+ * time of the system
+ */
+int
+fk_get_time(struct timeval *tv)
+{
+    int rt;
+
+#ifdef FK_HAVE_CLOCK_GETTIME
+    struct timespec ts;
+
+    rt = clock_gettime(CLOCK_MONOTONIC, &ts);
+    if (rt < 0) {
+        return -1;
+    }
+    fk_util_ts2tv(tv, &ts);
+#else
+    rt = gettimeofday(tv, NULL);
+    if (rt < 0) {
+        return -1;
+    }
+#endif
+
+    rt = 0; /* unnecessary, could be ommited */
+    return rt;
+}
 
 /* interval: millisecond ( 1/1000 sec ) */
 void
@@ -15,7 +49,8 @@ fk_util_cal_expire(struct timeval *tv, uint32_t interval)
 {
     struct timeval  now, itv;
 
-    gettimeofday(&now, NULL);
+    //gettimeofday(&now, NULL);
+    fk_get_time(&now);
     fk_util_millis2tv(interval, &itv);
 
     fk_util_tmval_add(&now, &itv, tv);

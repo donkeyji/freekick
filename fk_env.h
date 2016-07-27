@@ -19,4 +19,8 @@
 #define FK_HAVE_KQUEUE
 #endif
 
+#if defined(__linux__) || defined(__FreeBSD__)
+#define FK_HAVE_CLOCK_GETTIME
+#endif
+
 #endif

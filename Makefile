@@ -42,7 +42,7 @@ else
 ifeq ($(os), linux)
 OS_CFLAGS  :=
 OS_LDFLAGS :=
-OS_LDLIBS  := -ldl -lm
+OS_LDLIBS  := -ldl -lm -lrt
 else
 ifeq ($(os), mac)
 OS_CFLAGS  :=

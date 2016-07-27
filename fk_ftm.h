@@ -14,6 +14,13 @@
 /* for getline() before glibc 2.1 */
 //#define _GNU_SOURCE
 
+/*
+ * for TIMEVAL_TO_TIMESPEC and TIMESPEC_TO_TIMEVAL, which are defined only
+ * when the macro __USE_GNU is defined on Linux
+ * not necessary On FreeBSD or Macintosh
+ */
+#define _GNU_SOURCE
+
 /* for getline() since glibc 2.1 */
 /*
  * better using "#define _XOPEN_SOURCE 700" instead of 
