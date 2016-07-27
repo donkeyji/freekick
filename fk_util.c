@@ -14,6 +14,7 @@
 #include <fk_util.h>
 
 /*
+ * the main purpose: Timer checking, not for obtaining calendar time
  * a wrapper of gettimeofday() / clock_gettime()
  * clock_gettime() provides better precise control over the time obtaining, so
  * clock_gettime() precedes gettimeofday() when choosing the interface to get
