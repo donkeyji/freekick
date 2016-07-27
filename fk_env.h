@@ -19,6 +19,7 @@
 #define FK_HAVE_KQUEUE
 #endif
 
+/* On Linux and FreeBSD, clock_gettime() is available, but not on Macintosh */
 #if defined(__linux__) || defined(__FreeBSD__)
 #define FK_HAVE_CLOCK_GETTIME
 #endif
