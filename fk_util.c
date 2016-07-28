@@ -33,7 +33,7 @@ fk_get_time(struct timeval *tv)
 
     /*
      * this clock_id CLOCK_MONOTONIC is conforming to POSIX
-     * the returned time is since the system reboot
+     * the returned time is since the system reboots
      */
     rt = clock_gettime(CLOCK_MONOTONIC, &ts);
     if (rt < 0) {
