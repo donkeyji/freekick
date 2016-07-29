@@ -348,6 +348,10 @@ fk_svr_init(void)
     /* create global environment */
     server.arch = sizeof(uintptr_t) == 4 ? 32 : 64;
     server.save_pid = -1; /* -1 is a invalid pid */
+    /*
+     * here we use time() other than gettimeofday()/clock_gettime(), because
+     * the accuracy[precision] of second would statisfy our needs
+     */
     server.start_time = time(NULL);
     server.last_save = time(NULL);
     server.conn_cnt = 0;
