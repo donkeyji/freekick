@@ -65,8 +65,8 @@ fk_daemonize(void)
     }
 
     /*
-     * after this fork(), this child will no be the group leader, thus
-     * the following call to setsid() will succeed
+     * after making the call to fork(), this child will no be the group leader,
+     * thus the following call to setsid() will succeed
      */
     switch (fork()) {
     case -1:
@@ -80,10 +80,10 @@ fk_daemonize(void)
     }
 
     /*
-     * after calling setsid(), a new session will be created as follows:
+     * after calling setsid(), a new session will be created as the following:
      * 1. this process will become the leader of the new session
      * 2. this process will be the leader of the new process group in this new session
-     * 2. this process has no controlling terminal any more
+     * 3. this process has no controlling terminal any more
      */
     if (setsid() == -1) { /* create a new session */
         fk_log_error("setsid: %s\n", strerror(errno));
@@ -94,7 +94,7 @@ fk_daemonize(void)
      * after this secondary fork(), the parent exit, and the child continues.
      * The child is not the session leader, and thus, according to the System V
      * conventions, this child can never reacquire a controlling terminal.
-     * In BSDs, this secondary fork() has no effect, but do no harm.
+     * On BSDs, this secondary fork() has no effect, but do no harm.
      */
     switch (fork()) {
     case -1:
@@ -119,7 +119,7 @@ fk_daemonize(void)
      */
 
     /*
-     * file descriptor 0,1,2 should redirected to /dev/null
+     * file descriptor 0,1,2 should be redirected to /dev/null
      * 1. later calls to library functions which may perform I/O on 0,1,2
      * 2. prevent the possibility that 0,1,2 will be occupied by other files
      */
@@ -146,7 +146,7 @@ fk_daemonize(void)
 
     /*
      * we have redirected 0,1,2 to fd, and fd will never be used
-     * so it is preferable to close fd
+     * so it is preferable to close this fd
      */
     if (fd > STDERR_FILENO) {
         if (close(fd) == -1) {
@@ -190,8 +190,8 @@ fk_setrlimit(void)
         exit(EXIT_FAILURE);
     }
     /*
-     * the type "rlim_t" has different size in linux from mac,
-     * so just convert "rlim_t" to "unsigned long long"
+     * the "rlim_t" type has a different size on linux from mac, so just
+     * convert "rlim_t" to "unsigned long long" for portable code
      */
     fk_log_info("original file number limit: rlim_cur = %"PRIuMAX", rlim_max = %"PRIuMAX"\n", (uintmax_t)(lmt.rlim_cur), (uintmax_t)(lmt.rlim_max));
 
@@ -217,14 +217,14 @@ fk_setrlimit(void)
 #ifdef FK_DEBUG
             fk_log_info("running as non-root\n");
 #endif
-            max_files = lmt.rlim_max; /* open as many as possible files */
+            max_files = lmt.rlim_max; /* open as many files as possible */
             lmt.rlim_cur = lmt.rlim_max;
             rt = setrlimit(RLIMIT_NOFILE, &lmt);
             if (rt < 0) {
                 fk_log_error("setrlimit: %s\n", strerror(errno));
                 exit(EXIT_FAILURE);
             }
-            /* set current limit to the original setting */
+            /* set the current limit to the original setting */
             setting.max_conns = (int)fk_util_files_to_conns(max_files);
             fk_log_info("change the setting.max_conns according the current file number limit: %u\n", setting.max_conns);
         }
@@ -255,7 +255,7 @@ void
 fk_signal_exit_handler(int sig)
 {
     /*
-     * maybe some other process in other modules, just like:
+     * maybe some other processes in other modules, just like:
      * fk_a_signal_exit_handler(sig);
      * fk_b_signal_exit_handler(sig);
      */
@@ -281,7 +281,7 @@ fk_signal_register(void)
 
     sa.sa_handler = fk_signal_exit_handler;
     sa.sa_flags = 0 ; /* SA_RESTART is not necessary here */
-    /* no need to check the return value when using sigxxxset */
+    /* no need to check the returned value when using sigxxxset */
     sigfillset(&sa.sa_mask); /* block all the signals when this handler is invoked */
     //sigemptyset(&sa.sa_mask);
     //sigaddset(&sa.sa_mask, SIGINT);
@@ -293,7 +293,7 @@ fk_signal_register(void)
      * 1. SIGINT : ctl - c
      * 2. SIGTERM: kill / killall
      * among the two signals, SIGTERM should be the first and the standard
-     * signal to terminate a process gracefully
+     * choice to terminate a process gracefully
      * SIGKILL is just a last resort for killing a runaway process which do
      * not respond to SIGTERM, so we do not catch SIGKILL here
      */
@@ -326,10 +326,10 @@ fk_main_init(char *conf_path)
     /* where is the best place to call fk_set_seed()?? */
     fk_set_seed();
 
-    /* the first to init */
+    /* the first module to init */
     fk_conf_init(conf_path);
 
-    /* it must be done before fk_log_init(), but why??? */
+    /* must be called before fk_log_init(), but why??? */
     fk_daemonize();
 
     fk_set_pwd();
@@ -337,8 +337,7 @@ fk_main_init(char *conf_path)
     fk_setrlimit();
 
     /*
-     * the second to init, so that all the
-     * ther module can call fk_log_xxx()
+     * the second to init, so that all the ther module can call fk_log_xxx()
      */
     fk_log_init(fk_str_raw(setting.log_path), setting.log_level);
 
