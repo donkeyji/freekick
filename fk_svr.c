@@ -32,7 +32,7 @@
 /*
  * signal flags
  * the timer checks these sigxxx_flag periodically to see whether the
- * corresponding signals have delivered. If delivered, do something and
+ * corresponding signals have been delivered. If delivered, do something and
  * restore the state of these flags to the original
  */
 volatile sig_atomic_t sigint_flag = 0;
@@ -205,12 +205,12 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
     while (1) {
         fd = accept(listen_fd, NULL, NULL);
         if (fd < 0) {
-            /* interrupt by a signal */
+            /* interrupted by a signal */
             if (errno == EINTR) {
                 fk_log_debug("accept interrupted by a signal\n");
                 continue;
             }
-            /* no more connection */
+            /* no more connections */
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
                 fk_log_debug("no more connection available now\n");
                 break;
@@ -224,7 +224,7 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
             continue;
         }
 
-        /* no need to check the return code???? */
+        /* no need to check the returned code???? */
         /*
          * nonblocking could not be inherited by this client fd
          * after accept() on linux, so we need to set the option again
@@ -232,7 +232,7 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
          * Why do we need to set nonblocking for the client fd?
          * Since we may later try to read as much data as possible from
          * the client by calling send() when epoll()/kqueue()/poll()
-         * triggered, if the fd is not nonblocking, this operation will
+         * is triggered, if the fd is not nonblocking, this operation will
          * eventually block. See fk_conn_read_cb() in fk_svr_conn.c
          */
         fk_sock_set_nonblocking(fd);
@@ -296,7 +296,7 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
     if (sigint_flag == 1 || sigterm_flag == 1) {
         /*
          * no need to restore the state of sigint_flag & sigterm_flag
-         * because we're going to exit
+         * because we're gonna to exit
          */
         fk_log_info("to exit by signal\n");
         fk_ev_stop(); /* will stop the event cycle int the next loop */
@@ -321,8 +321,8 @@ fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
     fk_log_info("[timer 2]\n");
 
     /*
-     * if we donot want to use this timer any more, remove it in this callback
-     * because fk_ev donot remove any timer
+     * if we donot wanna use this timer any more, remove it in this callback
+     * because fk_ev donot remove any timer at all
      */
     fk_ev_remove_tmev(tmev);
 
@@ -458,7 +458,7 @@ fk_svr_signal_exit_handler(int sig)
     /*
      * fk_log_info() is not a async-signal-safe function
      * because it calls the stdio function fprintf() inside
-     * so fk_log_info() should not be called in signal handler
+     * so fk_log_info() should not be called in a signal handler
      */
     //fk_log_info("to exit by signal: %d\n", sig);
 
