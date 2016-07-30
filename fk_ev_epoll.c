@@ -2,9 +2,9 @@
 #include <sys/epoll.h>
 
 /*
- * I use emask to track the existing ev associated to fd because of
+ * here I use emask to track the existing ev associated to fd because of
  * the limitation of the interface of epoll, and I think it's better
- * than using 2 array of fk_tmev_t pointer which used in libevent^_^
+ * than using 2 arrays of fk_tmev_t pointer which are used in libevent^_^
  */
 
 /*
@@ -25,7 +25,7 @@ typedef struct {
     int                    max_evs;
     struct epoll_event     ev;        /* temporary variable */
     struct epoll_event    *evlist;
-    uint8_t               *emask;     /* to track event associated to fd */
+    uint8_t               *emask;     /* to track events associated to a fd */
 } fk_epoll_t;
 
 static void *fk_epoll_create(int max_files);
@@ -103,12 +103,11 @@ fk_epoll_add(void *ev_iompx, int fd, uint8_t type)
     }
     iompx->ev.events = oev | nev;
     /*
-     * the epoll_event.data.fd or epoll_event.data.ptr is the only
-     * mechanism for finding out the number of the file descriptor
-     * when epoll_wait() returns with success
-     * We can use epoll_event.data.ptr to store a pointer referring
-     * to an object which stores more information associated with
-     * this fd
+     * the epoll_event.data.fd or epoll_event.data.ptr is the only mechanism
+     * for finding out the number of the file descriptors when epoll_wait()
+     * returns with success.
+     * We can use epoll_event.data.ptr to store a pointer referring to an
+     * object which stores more information associated with this fd
      */
     iompx->ev.data.fd = fd;
 
