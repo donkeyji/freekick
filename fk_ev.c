@@ -16,7 +16,7 @@
 #include <fk_util.h>
 #include <fk_log.h>
 
-/* finite state is useful when add/remove ioev or tmev */
+/* finite state is useful when adding/removing a ioev or a tmev */
 /* finite state machine for ioev */
 /* 3 kinds of states for fk_ioev_t */
 #define FK_IOEV_INIT            0 /* never added to the evmgr */
@@ -69,7 +69,7 @@ fk_ev_init(int max_files)
 
     evmgr.timer_heap = fk_heap_create(&tmev_op);
 
-    /* use macro to initialize this two member */
+    /* use macro to initialize these two members */
     evmgr.read_ev = (fk_ioev_t **)fk_mem_alloc(sizeof(fk_ioev_t *) * (evmgr.max_files));
     evmgr.write_ev = (fk_ioev_t **)fk_mem_alloc(sizeof(fk_ioev_t *) * (evmgr.max_files));
 
@@ -121,8 +121,7 @@ fk_ev_dispatch(void)
     }
 
     /*
-     * remove the nearest timer from timer_heap,
-     * insert it to the exp_tmev
+     * remove the nearest timer from timer_heap, and insert it to the exp_tmev
      */
     fk_ev_update_pending_tmev();
 
@@ -137,7 +136,7 @@ void
 fk_ev_cycle(void)
 {
     while (!evmgr.stop) {
-        fk_ev_dispatch(); /* we donot care the retrun value of fk_ev_dispatch() */
+        fk_ev_dispatch(); /* we donot care the retruned value */
     }
 }
 
@@ -197,11 +196,11 @@ fk_ev_remove_ioev(fk_ioev_t *ioev)
         return FK_EV_ERR;
     }
 
-    /* maybe this ioev in activated list */
+    /* maybe this ioev is in activated list */
     if (fk_ioev_get_stat(ioev) == FK_IOEV_ACTIVATED) {
         fk_rawlist_remove_anyone(evmgr.act_ioev, ioev);
     }
-    fk_ioev_set_stat(ioev, FK_IOEV_INIT); /* go back to init state */
+    fk_ioev_set_stat(ioev, FK_IOEV_INIT); /* go back to the init state */
 
     if (type & FK_IOEV_READ) {
         evmgr.read_ev[fd] = NULL;
@@ -258,7 +257,7 @@ fk_tmev_create(uint32_t interval, uint8_t type, void *arg, fk_tmev_cb tmcb)
 
     tmev->prev = NULL;
     tmev->next = NULL;
-    tmev->idx = 0; /* index 0 was not used in min_heap */
+    tmev->idx = 0; /* index 0 is not used in min_heap */
     return tmev;
 }
 
@@ -302,7 +301,7 @@ fk_ev_remove_tmev(fk_tmev_t *tmev)
         fk_heap_remove(evmgr.timer_heap, (fk_leaf_t *)tmev);
     }
 
-    /* maybe this tmev in expired list */
+    /* maybe this tmev is in expired list */
     if (fk_tmev_get_stat(tmev) == FK_TMEV_EXPIRED) {
         fk_rawlist_remove_anyone(evmgr.exp_tmev, tmev);
     }
@@ -349,7 +348,7 @@ fk_ev_update_pending_tmev(void)
             fk_heap_pop(evmgr.timer_heap); /* pop root from the heap */
             fk_rawlist_insert_head(evmgr.exp_tmev, tmev); /* add to the exp list */
             fk_tmev_set_stat(tmev, FK_TMEV_EXPIRED);
-            root = fk_heap_root(evmgr.timer_heap); /* get new root */
+            root = fk_heap_root(evmgr.timer_heap); /* get the new root */
         } else { /* break directly */
             break;
         }
@@ -376,13 +375,13 @@ fk_ev_proc_expired_tmev(void)
         /* step 1: remove the expired tmev from the expired list first!!!! */
         fk_rawlist_remove_anyone(evmgr.exp_tmev, tmev);
         fk_rawlist_insert_head(evmgr.old_tmev, tmev); /* move to the old list */
-        fk_tmev_set_stat(tmev, FK_TMEV_OLD); /* not init, not in the min heap, neither the expired list */
-        /* step 2: call the callback of the expired tmev */
+        fk_tmev_set_stat(tmev, FK_TMEV_OLD); /* not init, neither in the min heap, nor the expired list */
+        /* step 2: call the corresponding callback of the expired tmev */
         rt = tmcb(interval, type, arg); /* maybe fk_ev_remove_tmev() is called in tmcb */
         /*
          * step 3:
-         * fk_ev_remove_tmev() should not be called here, even if the return value
-         * of tmcb < 0
+         * fk_ev_remove_tmev() should not be called here, even if the returned
+         * value of tmcb < 0
          * if we do not want to use this timer anymore, we should manually call
          * fk_ev_remove_tmev() in outside modules
          */
@@ -420,8 +419,8 @@ fk_ev_proc_activated_ioev(void)
         /* step 2: call the callback of the activated ioev */
         iocb(fd, type, arg); /* maybe fk_ev_remove_ioev() is called in iocb */
         /*
-         * we donot care about the return value of iocb, all error should be handled
-         * by iocb itself, but not here.
+         * we donot care about the returned value of iocb, all error should be
+         * handled by iocb itself, but not here.
          * we do nothing here, we donot call fk_ev_remove_ioev() here
          * fk_ev_remove_ioev() should be called in outside modules
          */
@@ -447,7 +446,7 @@ fk_ev_activate_ioev(int fd, uint8_t type)
 
     /*
      * maybe rioev and wioev point to the same ioev object
-     * use ioev->activated to avoid inerting the ioev object
+     * use ioev->activated to avoid inserting the ioev object
      * to the activated list twice
      */
     if (type & FK_IOEV_READ) {
