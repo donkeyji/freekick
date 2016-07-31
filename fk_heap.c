@@ -90,7 +90,7 @@ fk_heap_remove(fk_heap_t *hp, fk_leaf_t *leaf)
     /* step 3: decrease hp->last */
     hp->last -= 1;
     /* step 4: mark the removed leaf as 0,
-     *if step 4 is before step 1, when idx == hp->last, it will cause error */
+     *if step 4 is before step 1, when idx == hp->last, it will cause an error */
     leaf->idx = 0;
 
     i = idx;

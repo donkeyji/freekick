@@ -2,9 +2,9 @@
 #include <sys/event.h>
 
 /*
- * no need to keep tracking the existing ev associated to fd,
- * which should be done in epoll. If an existing/non-existing
- * ev is added/removed, just return FK_EV_ERR to the caller
+ * no need to keep tracking the existing events associated to a fd, which should
+ * be done in epoll. If an existing/non-existing ev is added/removed, just
+ * return FK_EV_ERR to the caller
  */
 
 typedef struct {
@@ -40,7 +40,7 @@ fk_kqueue_create(int max_files)
     }
 
     iompx = (fk_kqueue_t *)fk_mem_alloc(sizeof(fk_kqueue_t));
-    iompx->max_evs = max_files << 1; /* read config from global setting */
+    iompx->max_evs = max_files << 1; /* read config from the global setting */
     iompx->kfd = kfd;
     iompx->evlist = (struct kevent *)fk_mem_alloc(sizeof(struct kevent) * iompx->max_evs);
     //iompx->emask = (uint8_t *)fk_mem_alloc(sizeof(uint8_t *) * max_files);
@@ -154,10 +154,11 @@ fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
     //fk_log_debug("kevent return\n");
     for (i = 0; i < nfds; i++) {
         fd = iompx->evlist[i].ident;
-        /* unnecessary to check error here, because I call kevent to add fd before,
-         * and the timeout && struct kevent is valid, unlike libevent. libevent do
-         * not call kevent to add fd before, but only call kevent one time when
-         * polling */
+        /* unnecessary to check error here, because I call kevent to add fd
+         * before, and the timeout && struct kevent is valid, unlike libevent.
+         * libevent do not call kevent to add fd before, but only call kevent
+         * one time when polling
+         */
 
         /*
         flags = iompx->evlist[i].flags;

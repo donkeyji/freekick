@@ -184,9 +184,9 @@ fk_dict_add(fk_dict_t *dct, void *key, void *value)
     fk_elt_list_t  *lst;
 
     /*
-     * should be called before fk_dict_search
+     * should be called before fk_dict_search.
      * if fk_dict_search called first, the idx
-     * maybe need to be calculated once more
+     * may need to be calculated once more
      */
     if (dct->used == dct->limit) {
         fk_dict_stretch(dct);

@@ -27,12 +27,12 @@ static void fk_log_fprint_str(int level, char *data);
 
 static fk_log_t logger = {
     FK_LOG_DEBUG,
-    NULL /* could not be "stdout" here, because "stdout" is not a compile-time constant */
+    NULL /* could not be "stdout" here, because "stdout" isn't a compile-time constant */
 };
 
 /*
- * if fk_log_init() is not invoked, fk_log_info/error/debug/warn can also be called,
- * when the log is redirected to stdout
+ * if fk_log_init() is not invoked, fk_log_info/error/debug/warn can also be
+ * called, when the log is redirected to stdout
  */
 void
 fk_log_init(char *log_path, int log_level)
