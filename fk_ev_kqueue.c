@@ -154,10 +154,11 @@ fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout)
     //fk_log_debug("kevent return\n");
     for (i = 0; i < nfds; i++) {
         fd = iompx->evlist[i].ident;
-        /* unnecessary to check error here, because I call kevent to add fd
-         * before, and the timeout && struct kevent is valid, unlike libevent.
-         * libevent do not call kevent to add fd before, but only call kevent
-         * one time when polling
+        /*
+         * unnecessary to check error here, because kevent() is called to add fd
+         * before, and the timeout && struct kevent are valid. By contrast with
+         * libevent, it does not call kevent to add fd before, but only calls
+         * kevent only one time when polling
          */
 
         /*

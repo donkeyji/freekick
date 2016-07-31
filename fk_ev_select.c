@@ -2,11 +2,9 @@
 #include <sys/select.h>
 
 /*
- * kernel dosen't remember the events to be monitored, so we
- * do this by ourself by using the fields saved_rset/saved_wset
- * in fk_select_t, we can also add some extra fields to record
- * more information for {fd, event} pairs
- *
+ * kernel dosen't remember the events to be monitored, so we do this by ourself
+ * by using the fields saved_rset/saved_wset in fk_select_t, we can also add
+ * some extra fields to record more information for {fd, event} pairs.
  * select() can only provide level-triggered notification, as well as
  * poll()
  */
@@ -173,28 +171,27 @@ fk_select_dispatch(void *ev_iompx, struct timeval *timeout)
     iompx->work_wset = iompx->saved_wset;
 
     /*
-     * On Linux, the pto will be modified by select()
-     * ensure that the object that timeout point to will not
-     * be modified by select()
-     * for portability, do not rely on the returned value of pto
+     * On Linux, the pto will be modified by select() ensuring that the object
+     * that timeout points to will not be modified by select(). For portability,
+     * do not rely on the returned value of pto
      */
     pto.tv_sec = timeout->tv_sec;
     pto.tv_usec = timeout->tv_usec;
 
     /*
      * why dose this select() always return with "interrupted system call"????
-     * because the child process perform saving exits periodically
-     * On linux, the timeout argument for select() system call will be modified
-     * by select() to indicate the remaining time not slept, but this feature
-     * is not implemented on other unix systems
+     * because the child process perform saving exits periodically.
+     * On linux, the timeout argument to select() system call will be modified
+     * by select() to denote the remaining time not slept, but this feature is
+     * not implemented on other unix systems
      */
     ready_total = select(iompx->max_fd + 1, &(iompx->work_rset), &(iompx->work_wset), NULL, &pto);
 
     /* error occurs */
     if (ready_total < 0) {
         /*
-         * no need to care about EINTR
-         * in this scenario, SIGCHLD will appear periodically
+         * No need to care about EINTR.
+         * In this scenario, SIGCHLD will appear periodically
          */
         if (errno != EINTR) {
             return FK_EV_ERR;

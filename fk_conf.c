@@ -100,7 +100,7 @@ static fk_dtv dtv_map[] = {
     { NULL, 0, NULL }
 };
 
-/* global variable, referencd by other modules */
+/* global variable, referred to by other modules */
 fk_conf_t setting;
 
 fk_cfline_t *
@@ -186,7 +186,7 @@ fk_conf_parse_file(char *conf_path)
     line_num = 0;
     line = fk_cfline_create();
 
-    /* do not reach the end of the file */
+    /* do not encounter the end of the file */
     while (ftell(fp) != tail) {
         line_num++; /* it begins from 1, not 0 */
         fk_conf_reset_line(line);
@@ -339,9 +339,9 @@ fk_conf_parse_port(fk_cfline_t *line)
         return FK_CONF_ERR;
     }
     /*
-     * port of integer type can hold the 0 ~ 65535, if the
-     * line->fileds[1] beyond the range which an integer
-     * could hold atoi() will return a minus value
+     * a port of integer type can hold a range of 0 ~ 65535, if the
+     * line->fileds[1] is beyond the range which an integer type could
+     * hold atoi() will return a minus value
      */
     port = atoi(fk_str_raw(line->fields[1]));
     if (port <= 0 || port > 65535) {

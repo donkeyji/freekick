@@ -2,12 +2,11 @@
 #include <poll.h>
 
 /*
- * in practice, the flags of real interest of poll() are:
+ * in practice, the flags of real interests of poll() are the following:
  * read:       POLLIN, POLLRDHUP, POLLPRI
  * write:      POLLOUT
  * additional: POLLHUP, POLLERR
- * poll() can only provide level-triggered notification, as well as
- * select()
+ * poll() can only provide level-triggered notification, as well as select()
  */
 
 typedef struct {
@@ -147,12 +146,11 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
     iompx = (fk_poll_t *)ev_iompx;
 
     /*
-     * Every time when poll() called, the array "evlist" need
-     * to be coped from user to kernel space and back again.
-     * This behavior greatly reduce the performance of poll()
-     * when monitoring a large number of file descriptors. So
-     * the scaling performance sucks in this scenario, but it
-     * is still better then select()
+     * Every time when poll() is called, the array "evlist" needs to be coped
+     * from user to kernel space and back again. This behavior greatly reduces
+     * the performance of poll() when monitoring a large number of file
+     * descriptors. So the scaling performance sucks in this scenario, but it
+     * is still better than select()
      */
     nfds = poll(iompx->evlist, iompx->last, ms_timeout);
     if (nfds < 0) {
@@ -164,28 +162,25 @@ fk_poll_dispatch(void *ev_iompx, struct timeval *timeout)
     }
     cnt = 0;
     /*
-     * We may need to check all of the elements in the array
-     * "evlist", it's not a  good idea when the "last" is large,
-     * and a large amount of CPU time would be wasted within
-     * the loop
+     * We may need to check all of the elements in the array "evlist", it's not
+     * a good idea when the "last" is large, and a large amount of CPU time
+     * would be wasted within the loop
      */
     for (i = 0; i < iompx->last; i++) {
         pfd = iompx->evlist + i;
         fd = pfd->fd;
         type = 0x00;
         /*
-         * perform the similar check to epoll, ORing POLLHUB | POLLERR
-         * POLLNVAL is not included, because POLLNVAL occurs only when
-         * the corresponding fd is not open, but this could not happen
-         * in this scenario, we ensure that every fd added to the poll
-         * is valid. We can usually keep track of the closed fd.
-         *
-         * when POLLHUB or POLLERR occurs, we mark the corresponding fd
-         * as readable and writable,  and then a subsequent call to
+         * perform the similar check to epoll, ORing POLLHUB | POLLERR. POLLNVAL
+         * is not included, because POLLNVAL occurs only when the corresponding
+         * fd is not open, but this could not happen in this scenario, we ensure
+         * that every fd added to the poll is valid. We can usually keep track
+         * of the closed fd.
+         * when POLLHUB or POLLERR occurs, we mark the corresponding fd as
+         * readable and writable,  and then a subsequent call to 
          * read()/write()/recv()/send() could tell us what exactly happened
-         * to the fd by checking the return value of the corresponding call,
+         * to the fd by checking the returned value of the corresponding call,
          * as well as the global "errno"
-         *
          */
         if (pfd->revents & (POLLIN | POLLHUP | POLLERR /* | POLLNVAL */)) {
             type |= FK_IOEV_READ;

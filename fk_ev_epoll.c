@@ -2,22 +2,22 @@
 #include <sys/epoll.h>
 
 /*
- * here I use emask to track the existing ev associated to fd because of
- * the limitation of the interface of epoll, and I think it's better
- * than using 2 arrays of fk_tmev_t pointer which are used in libevent^_^
+ * here I use emask to track the existing ev associated to fd because of the
+ * limitation of the interface of epoll, and I think it's better than using 2
+ * arrays of fk_tmev_t pointer which are used in libevent^_^
  */
 
 /*
- * Note that epoll could not be used on regular file or directory.
- * epoll could be used on socket/fifo/pipe...
- * epoll() performs much better than select()/poll() when monitoring
- * large numbers of file descriptors for the reason that select()/poll()
- * passes a complete list of file descriptors to be monitored to the
- * kernel, and then the kernel return a list of file descriptors which
- * are ready for reading/writing, so the time required by select()/poll()
- * grows with the increase of number of file descriptors, rather than
- * the number of I/O events. By contrast, with epoll(), the time required
- * just increase with the number of I/O events.
+ * Note that epoll could be used on socket/fifo/pipe..., but not regular files
+ * directories.
+ * epoll() performs much better than select()/poll() when monitoring large
+ * numbers of file descriptors for the reason that select()/poll() passes a
+ * complete list of file descriptors to be monitored to the kernel, and then
+ * the kernel return a list of file descriptors which are ready for
+ * reading/writing, so the time required by select()/poll() grows with the
+ * increase of number of file descriptors, rather than the number of I/O events.
+ * By contrast, with epoll(), the time required just increase with the number of
+ * I/O events.
  */
 
 typedef struct {
@@ -103,11 +103,11 @@ fk_epoll_add(void *ev_iompx, int fd, uint8_t type)
     }
     iompx->ev.events = oev | nev;
     /*
-     * the epoll_event.data.fd or epoll_event.data.ptr is the only mechanism
-     * for finding out the number of the file descriptors when epoll_wait()
-     * returns with success.
-     * We can use epoll_event.data.ptr to store a pointer referring to an
-     * object which stores more information associated with this fd
+     * the epoll_event.data.fd or epoll_event.data.ptr is the only mechanism for
+     * finding out the number of the file descriptors when epoll_wait() returns
+     * with success.
+     * We can use epoll_event.data.ptr to store a pointer referring to an object
+     * which stores more information associated with this fd
      */
     iompx->ev.data.fd = fd;
 
