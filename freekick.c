@@ -65,7 +65,7 @@ fk_daemonize(void)
     }
 
     /*
-     * after making the call to fork(), this child will no be the group leader,
+     * after making the call to fork(), this child will not be the group leader,
      * thus the following call to setsid() will succeed
      */
     switch (fork()) {
@@ -82,7 +82,8 @@ fk_daemonize(void)
     /*
      * after calling setsid(), a new session will be created as the following:
      * 1. this process will become the leader of the new session
-     * 2. this process will be the leader of the new process group in this new session
+     * 2. this process will be the leader of the new process group in this new
+     *    session
      * 3. this process has no controlling terminal any more
      */
     if (setsid() == -1) { /* create a new session */
@@ -91,10 +92,10 @@ fk_daemonize(void)
     }
 
     /*
-     * after this secondary fork(), the parent exit, and the child continues.
+     * after this secondary fork(), the parent exits, and the child continues.
      * The child is not the session leader, and thus, according to the System V
      * conventions, this child can never reacquire a controlling terminal.
-     * On BSDs, this secondary fork() has no effect, but do no harm.
+     * On BSDs, this secondary fork() has no effect, but does no harm.
      */
     switch (fork()) {
     case -1:
@@ -112,9 +113,9 @@ fk_daemonize(void)
     umask(0);
 
     /*
-     * we donot close any file descriptors here, in fact, we did not open
-     * any file before calling fk_daemonize(). The configuration file was
-     * opened for reading, but later closed.
+     * we do not close any file descriptors here, in fact, we did not open any
+     * file before calling fk_daemonize(). The configuration file was opened for
+     * reading, but later closed.
      * we just redirect 0,1,2 to /dev/null
      */
 
@@ -190,8 +191,8 @@ fk_setrlimit(void)
         exit(EXIT_FAILURE);
     }
     /*
-     * the "rlim_t" type has a different size on linux from mac, so just
-     * convert "rlim_t" to "unsigned long long" for portable code
+     * the "rlim_t" type has a different size on linux from mac, so just convert
+     * "rlim_t" to "unsigned long long" for portable code
      */
     fk_log_info("original file number limit: rlim_cur = %"PRIuMAX", rlim_max = %"PRIuMAX"\n", (uintmax_t)(lmt.rlim_cur), (uintmax_t)(lmt.rlim_max));
 
