@@ -68,9 +68,9 @@ fk_sock_set_nonblocking(int fd)
     int  rt;
 
     /*
-     * on linux, this flag can not be inherited by the new fd returned by
-     * accept(), since this flag could be altered by fcntl() F_SETFL
-     * operation, and these flags includes O_NONBLOCK, O_ASYNC
+     * On linux, this flag can not be inherited by the new fd returned by
+     * accept(), since this flag could be altered by fcntl() F_SETFL operation,
+     * and these flags includes O_NONBLOCK, O_ASYNC.
      */
     rt = fcntl(fd, F_SETFL, O_NONBLOCK);
     if (rt < 0) {

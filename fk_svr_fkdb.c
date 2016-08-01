@@ -407,7 +407,7 @@ fk_fkdb_load(fk_str_t *db_file)
 }
 
 /*
- * return value: -1
+ * returned value: -1
  * 1. error occurs when reading
  * 2. reaching to the end of file
  */
@@ -469,7 +469,7 @@ fk_fkdb_restore(FILE *fp, fk_zline_t *buf)
 }
 
 /*
- * return value: -1
+ * returned value: -1
  * 1. error occurs when reading
  * 2. reaching to the end of file
  */
@@ -518,7 +518,7 @@ fk_fkdb_restore_str_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 }
 
 /*
- * return value: -1
+ * returned value: -1
  * 1. error occurs when reading
  * 2. reaching to the end of file
  */
@@ -575,7 +575,7 @@ fk_fkdb_restore_list_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
 }
 
 /*
- * return value: -1
+ * returned value: -1
  * 1. error occurs when reading
  * 2. reaching to the end of file
  */

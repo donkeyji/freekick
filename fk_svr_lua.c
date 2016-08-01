@@ -115,7 +115,7 @@ fk_lua_pcall(lua_State *L)
         break;
     }
 
-    return rt; /* number of return value */
+    return rt; /* number of returned value */
 }
 
 int
@@ -324,15 +324,15 @@ fk_lua_run_script(fk_conn_t *conn, char *code)
     }
 
     top2 = lua_gettop(gL);
-    nret = top2 - top1; /* get the number of return value */
+    nret = top2 - top1; /* get the number of returned value */
 
-    if (nret == 0) { /* no return value at all */
+    if (nret == 0) { /* no returned value at all */
         fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);
         lua_settop(gL, top1);
         return 0;
     }
 
-    idx = -1 - (nret - 1); /* only get the first return value */
+    idx = -1 - (nret - 1); /* only get the first returned value */
     type = lua_type(gL, idx);
     switch (type) {
     case LUA_TNUMBER:

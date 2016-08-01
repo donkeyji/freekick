@@ -214,7 +214,7 @@ fk_dict_add(fk_dict_t *dct, void *key, void *value)
 }
 
 /*
- * return value:
+ * returned value:
  * 0: key not exists yet
  * 1: key already exists
  */

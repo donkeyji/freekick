@@ -191,7 +191,8 @@ fk_conn_recv_data(fk_conn_t *conn)
 }
 
 /*
- * even if only a single completed line is received, this line will be parsed
+ * Even if only one single complete line has been received, this line will be
+ * parsed.
  * (1)if a completed protocol is parsed, FK_SVR_OK is returned
  * (2)if not all data of a completed protocol is received, FK_SVR_AGAIN is returned
  * (3)if any illegal data is found in conn->rbuf, FK_SVR_ERR is returned
@@ -258,9 +259,8 @@ fk_conn_parse_req(fk_conn_t *conn)
                 return FK_SVR_ERR;
             }
             /*
-             * a variable of integer type can hold the argument
-             * count, because the FK_ARG_CNT_HIGHWAT == 128,
-             * and INT_MAX > FK_ARG_CNT_HIGHWAT
+             * a variable of integer type can hold the argument count, because
+             * the FK_ARG_CNT_HIGHWAT == 128, and INT_MAX > FK_ARG_CNT_HIGHWAT
              */
             argc = atoi(start + 1);
             if (argc <= 0 || argc > FK_ARG_CNT_HIGHWAT) {
@@ -269,7 +269,10 @@ fk_conn_parse_req(fk_conn_t *conn)
 #endif
                 return FK_SVR_ERR;
             }
-            /* first check the argc, only when argc is legal set the conn->arg_parsed */
+            /*
+             * first check the validity of argc, then assign argc to
+             * conn->arg_parsed
+             */
             conn->arg_parsed = argc;
 #ifdef FK_DEBUG
             fk_log_debug("[arg_parsed parsed]: %d\n", conn->arg_parsed);
@@ -331,9 +334,8 @@ fk_conn_parse_req(fk_conn_t *conn)
                 return FK_SVR_ERR;
             }
             /*
-             * argl of integer type can hold the argument length,
-             * because the FK_ARG_HIGHWAT == (64 * 1024 - 2), and
-             * INT_MAX > FK_ARG_HIGHWAT
+             * argl of integer type can hold the argument length, because the
+             * FK_ARG_HIGHWAT == (64 * 1024 - 2), and INT_MAX > FK_ARG_HIGHWAT
              */
             argl = atoi(start + 1); /* argument length */
             if (argl < 0 || argl > FK_ARG_HIGHWAT) {
@@ -395,8 +397,8 @@ fk_conn_free_args(fk_conn_t *conn)
     for (i = 0; i < conn->arg_cnt; i++) {
         arg_itm = fk_conn_get_arg(conn, i);
         /*
-         * when arg_parsed was parsed correctly, but not all the arguments
-         * were parsed correctly, so maybe arg_itm == NULL at this time
+         * when arg_parsed was parsed correctly, but not all the arguments were
+         * parsed correctly, so maybe arg_itm == NULL in this scenario
          */
         if (arg_itm != NULL) {
             fk_item_dec_ref(arg_itm); /* just decrease the ref */
@@ -498,7 +500,7 @@ fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext)
 
 /*
  * callback for conn read event
- * evmgr do not care the return value of this callback
+ * evmgr does not care the returned value of this callback
  * so this callback itself should handle all error occurs
  */
 void
@@ -521,8 +523,8 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
     }
 
     /*
-     * maybe more than one completed protocol were received
-     * parse all the complete protocol received yet
+     * maybe more than one complete protocol were received
+     * parse all the complete protocols received yet
      */
     while (fk_buf_payload_len(conn->rbuf) > 0) {
         rt = fk_conn_parse_req(conn);
@@ -614,8 +616,8 @@ fk_conn_write_cb(int fd, uint8_t type, void *ext)
 }
 
 /*
- * do misc things that should be done after fk_conn_recv_data/fk_conn_parse_req/
- * fk_conn_proc_cmd
+ * do misc things that should be done after calling to
+ * fk_conn_recv_data/fk_conn_parse_req/fk_conn_proc_cmd
  */
 int
 fk_conn_send_rsp(fk_conn_t *conn)
@@ -633,10 +635,11 @@ fk_conn_send_rsp(fk_conn_t *conn)
      * (3)the argument content line is too long
      * in fact, (3) will never happen, because:
      * if a too long argument length is sent, in the fk_conn_parse_req() willl
-     * detect this kind of exception and close the exceptional connection
+     * detect this kind of exception and close the exceptional connection.
      * if a valid argument length is sent, but the real length of the following
-     * argument content if longer than the length sent before, the fk_conn_parse_req() will
-     * also detect this kind of exception and close this connection, too.
+     * argument content if longer than the length sent before,the
+     * fk_conn_parse_req() will also detect this kind of exception and close
+     * this connection, too.
      */
     //if (fk_buf_reach_highwat(conn->rbuf) &&
     //fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))

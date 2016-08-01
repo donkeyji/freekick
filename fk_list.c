@@ -138,7 +138,7 @@ fk_list_iter_next(fk_list_iter_t *iter)
             iter->cur = iter->lst->tail;
         }
     } else {
-        /* use cur as return value */
+        /* use cur as returned value */
         iter->cur = iter->next;
         /* if visiting not completed */
     }

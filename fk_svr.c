@@ -33,7 +33,7 @@
  * signal flags
  * the timer checks these sigxxx_flag periodically to see whether the
  * corresponding signals have been delivered. If delivered, do something and
- * restore the state of these flags to the original
+ * restore the states of these flags to the original
  */
 volatile sig_atomic_t sigint_flag = 0;
 volatile sig_atomic_t sigterm_flag = 0;
@@ -230,10 +230,10 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
          * after accept() on linux, so we need to set the option again
          *
          * Why do we need to set nonblocking for the client fd?
-         * Since we may later try to read as much data as possible from
-         * the client by calling send() when epoll()/kqueue()/poll()
-         * is triggered, if the fd is not nonblocking, this operation will
-         * eventually block. See fk_conn_read_cb() in fk_svr_conn.c
+         * Since we may later try to read as much data as possible from the
+         * client by calling send() when epoll()/kqueue()/poll() is triggered,
+         * if the fd is not nonblocking, this operation will eventually block.
+         * See fk_conn_read_cb() in fk_svr_conn.c
          */
         fk_sock_set_nonblocking(fd);
         fk_sock_set_keepalive(fd);
@@ -321,8 +321,8 @@ fk_svr_timer_cb2(uint32_t interval, uint8_t type, void *arg)
     fk_log_info("[timer 2]\n");
 
     /*
-     * if we donot wanna use this timer any more, remove it in this callback
-     * because fk_ev donot remove any timer at all
+     * if we do not wanna use this timer any more, remove it in this callback
+     * because fk_ev does not remove any timer at all
      */
     fk_ev_remove_tmev(tmev);
 

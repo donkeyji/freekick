@@ -50,9 +50,9 @@ fk_skiplist_create(fk_skipnode_op_t *skop)
 
     nd = fk_skipnode_create(FK_SKLIST_MAX_LEVEL);
     /*
-     * head is a empty node which donot hold a score nor a fk_item
-     * the head node should be processed specially
-     * could not use fk_skipnode_set_data(sl, nd, 0, NULL);
+     * the head is an empty node which does not hold a score or a fk_item, so it
+     * should be specially dealt with.
+     * fk_skipnode_set_data(sl, nd, 0, NULL) should not be used here
      */
     nd->score = 0;
     nd->data = NULL;
@@ -99,7 +99,9 @@ fk_skiplist_insert(fk_skiplist_t *sl, int score, void *data)
 
     for (i = FK_SKLIST_MAX_LEVEL - 1; i >= 0; i--) {
         q = p->next[i]; /* the first node in this level */
-        /* if the score exist already, insert this new node after the older one */
+        /*
+         * if the score exists already, insert this new node after the older one
+         */
         while (q != NULL && q->score <= score) {
             p = q;
             q = p->next[i];

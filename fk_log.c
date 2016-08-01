@@ -31,8 +31,8 @@ static fk_log_t logger = {
 };
 
 /*
- * if fk_log_init() is not invoked, fk_log_info/error/debug/warn can also be
- * called, when the log is redirected to stdout
+ * fk_log_info/error/debug/warn can also be called without calling to
+ * fk_log_init(), in which case the log is redirected to stdout
  */
 void
 fk_log_init(char *log_path, int log_level)
