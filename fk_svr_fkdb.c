@@ -68,10 +68,10 @@ fk_fkdb_bgsave(void)
             _exit(EXIT_FAILURE);
         }
         /*
-         * use _exit() instead of exit() in child process
-         * since _exit() do not flush the standard I/O buffer
-         * if exit() used here, maybe the same standard I/O buffer will be flushed
-         * both in parent and child
+         * use _exit() instead of exit() in the child process
+         * since _exit() does not flush the standard I/O buffer
+         * if exit() is used here, maybe the same standard I/O buffer will be
+         * flushed both in parent and child process
          */
         _exit(EXIT_SUCCESS);
     }

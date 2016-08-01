@@ -70,9 +70,10 @@ fk_lua_pcall(lua_State *L)
     fk_vtr_stretch(lua_conn->arg_vtr, (size_t)(lua_conn->arg_parsed));
 
     for (i = 0; i < lua_conn->arg_parsed; i++) {
-        /* do not use luaL_checklstring() here, because if luaL_checklstring()
-         * fails, this function will return to lua directly, so that error
-         * couldn't be handled inside this function
+        /*
+         * do not use luaL_checklstring() here, since if luaL_checklstring()
+         * fails, this function will return to lua directly, consequently, the
+         * error couldn't be handled within this function
          */
         if (!lua_isstring(L, i + 1)) {
             lua_pushstring(L, "the argument of pcall should be string");
