@@ -350,7 +350,7 @@ fk_svr_init(void)
     server.save_pid = -1; /* -1 is a invalid pid */
     /*
      * here we use time() other than gettimeofday()/clock_gettime(), because
-     * the accuracy[precision] of second would statisfy our needs
+     * the accuracy[precision] of second would satisfy our requirements
      */
     server.start_time = time(NULL);
     server.last_save = time(NULL);
