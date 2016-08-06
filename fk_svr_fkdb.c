@@ -96,11 +96,19 @@ fk_fkdb_save(void)
     for (i = 0; i < server.dbcnt; i++) {
         rt = fk_fkdb_dump(fp, i);
         if (rt == FK_SVR_ERR) {
+            /*
+             * no need to flush data to disk, because in this case, the
+             * temporary db file with errors will be removed.
+             */
             fclose(fp);
             remove(temp_db); /* remove this temporary db file */
             return FK_SVR_ERR;
         }
     }
+    /* flush all buffered data in stdio buffer to kernel buffer cache */
+    fflush(fp);
+    /* flush all kernel buffered data to disk physically */
+    fsync(fileno(fp));
     fclose(fp); /* close before rename */
 
     /* step 2: rename temporary file to server.db_file */
