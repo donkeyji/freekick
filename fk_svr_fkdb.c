@@ -109,6 +109,11 @@ fk_fkdb_save(void)
     fflush(fp);
     /* flush all kernel buffered data to disk physically */
     fsync(fileno(fp));
+    /*
+     * dissociate the fp from the file stream previously opened by fopen.
+     * fflush() will be invoked implicitly inside, but this does not guarantee
+     * all data are flushed to disk physically
+     */
     fclose(fp); /* close before rename */
 
     /* step 2: rename temporary file to server.db_file */

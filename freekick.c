@@ -179,10 +179,10 @@ fk_create_pidfile(void)
 
     /*
      * although fclose() will implicitly call fflush() to flush all buffered
-     * data in stdio buffer space to kernel buffer cache, but is not guaranteed
-     * that all data has been written to disk physically, so we need to provide
-     * this guarantee manually by calling fflush() and fsync() before calling
-     * fclose().
+     * data in stdio buffer space to kernel buffer cache, but it is not
+     * guaranteed that all data has been written to disk physically, so we need
+     * to provide this guarantee manually by calling fflush() and fsync() before
+     * calling fclose().
      * fflush() and fsync() will, respectively, flush stdio buffered data to
      * kernel buffer cache and flush kernel buffered data to disk.
      * rather than fdatasync(), we choose fsync() for a more restrictive
