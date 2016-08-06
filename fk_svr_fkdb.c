@@ -107,7 +107,10 @@ fk_fkdb_save(void)
     }
     /* flush all buffered data in stdio buffer to kernel buffer cache */
     fflush(fp);
-    /* flush all kernel buffered data to disk physically */
+    /*
+     * flush all kernel buffered data to disk physically, and guarantee
+     * synchronized I/O file integrity.
+     */
     fsync(fileno(fp));
     /*
      * dissociate the fp from the file stream previously opened by fopen.

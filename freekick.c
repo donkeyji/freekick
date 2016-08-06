@@ -186,7 +186,7 @@ fk_create_pidfile(void)
      * fflush() and fsync() will, respectively, flush stdio buffered data to
      * kernel buffer cache and flush kernel buffered data to disk.
      * rather than fdatasync(), we choose fsync() for a more restrictive
-     * integrity reason, which provides synchronized I/O file integrity, while
+     * integrity reason, which ensures synchronized I/O file integrity, while
      * fdatasync() only provide synchronized I/O data integrity.
      */
     fflush(pid_file); /* flush the buffered data in stdio buffer */
