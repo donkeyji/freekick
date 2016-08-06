@@ -167,12 +167,30 @@ fk_create_pidfile(void)
         return;
     }
 
+    /*
+     * By default, fully buffered is employed for disk files
+     */
     pid_file = fopen(fk_str_raw(setting.pid_path), "w+");
     pid = getpid();
 #ifdef FK_DEBUG
     fk_log_debug("pid: %d, pid file: %s\n", pid, fk_str_raw(setting.pid_path));
 #endif
     fprintf(pid_file, "%d\n", pid);
+
+    /*
+     * although fclose() will implicitly call fflush() to flush all buffered
+     * data in stdio buffer space to kernel buffer cache, but is not guaranteed
+     * that all data has been written to disk physically, so we need to provide
+     * this guarantee manually by calling fflush() and fsync() before calling
+     * fclose().
+     * fflush() and fsync() will, respectively, flush stdio buffered data to
+     * kernel buffer cache and flush kernel buffered data to disk.
+     * rather than fdatasync(), we choose fsync() for a more restrictive
+     * integrity reason, which provides synchronized I/O file integrity, while
+     * fdatasync() only provide synchronized I/O data integrity.
+     */
+    fflush(pid_file); /* flush the buffered data in stdio buffer */
+    fsync(fileno(pid_file)); /* physically flush data to disk */
     fclose(pid_file);
 }
 
