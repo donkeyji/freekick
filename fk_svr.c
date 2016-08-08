@@ -396,6 +396,19 @@ fk_svr_init(void)
     if (setting.dump == 1) {
         fk_fkdb_init();
         if (blog_loaded == 0) {
+            /*
+             * the time gap between access() and fk_fkdb_load() may yield a race
+             * condition for the reason that the returned information by
+             * access() may be not right at the time of the later operation.
+             * here this means maybe the db_file exists when calling access(),
+             * but disappeares when call fk_fkdb_load().
+             * but in this scenario, even if this race condition occurs, there
+             * will be no harm to this program, because some related checking
+             * will be preformed in fk_fkdb_load(), such as the checking of the
+             * returned valued of fopen() or the global errno. so we take this
+             * access() as a initial checking to avoid further actions when the
+             * db_file does not exist.
+             */
             if (access(fk_str_raw(setting.db_file), F_OK) == 0) {
                 fk_fkdb_load(setting.db_file);
             }
