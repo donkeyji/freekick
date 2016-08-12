@@ -261,6 +261,15 @@ fk_set_pwd(void)
 {
     int  rt;
 
+    /*
+     * each process has two directory-related attributes:
+     * 1. root directory <==> chroot(), privileged required
+     * 2. current working directory <==> chdir(), nonprivileged required
+     * root directory determines the point from which absolute pathnames are
+     * interpreted; by contrast, current working directory determines the point
+     * from which relative pathnames are interpreted. Both of these two
+     * directory of a new process are inherited from the parent process.
+     */
     rt = chdir(fk_str_raw(setting.dir));
     if (rt < 0) {
         fk_log_error("chdir failed: %s\n", strerror(errno));
