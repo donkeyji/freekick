@@ -122,6 +122,11 @@ fk_fkdb_save(void)
     /* step 2: rename temporary file to server.db_file */
     rt = rename(temp_db, fk_str_raw(setting.db_file));
     if (rt < 0) {
+        /*
+         * remove() is a wrapper of the unlink() and rmdir() system call,
+         * conforming to C89/C99. when operating on a file, it calls unlink()
+         * inside; when operating on a directory, it calls rmdir().
+         */
         remove(temp_db); /* remove this temporary db file */
         return FK_SVR_ERR;
     }
