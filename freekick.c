@@ -266,9 +266,13 @@ fk_set_pwd(void)
      * 1. root directory <==> chroot(), privileged required
      * 2. current working directory <==> chdir(), nonprivileged required
      * root directory determines the point from which absolute pathnames are
-     * interpreted; by contrast, current working directory determines the point
-     * from which relative pathnames are interpreted. Both of these two
-     * directory of a new process are inherited from the parent process.
+     * interpreted;
+     * current working directory determines the point from which relative
+     * pathnames are interpreted.
+     * Both of these two directory of a new process are inherited from the
+     * parent process.
+     * the argument pathname of chdir() identifies the new current working
+     * directory, specified via a relative or an absolute pathname
      */
     rt = chdir(fk_str_raw(setting.dir));
     if (rt < 0) {
