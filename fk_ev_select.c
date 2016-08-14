@@ -5,8 +5,7 @@
  * kernel dosen't remember the events to be monitored, so we do this by ourself
  * by using the fields saved_rset/saved_wset in fk_select_t, we can also add
  * some extra fields to record more information for {fd, event} pairs.
- * select() can only provide level-triggered notification, as well as
- * poll()
+ * select() can only provide level-triggered notification, as well as poll()
  */
 
 typedef struct {
