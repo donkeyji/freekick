@@ -273,6 +273,9 @@ fk_set_pwd(void)
      * parent process.
      * the argument pathname of chdir() identifies the new current working
      * directory, specified via a relative or an absolute pathname
+     * note that the current working directory would not be changed after a
+     * chroot() call, so this result can be used to break out of the chroot
+     * jail for a unpriviledge/privileged program.
      */
     rt = chdir(fk_str_raw(setting.dir));
     if (rt < 0) {
