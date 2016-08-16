@@ -55,7 +55,7 @@ fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto_t *pto)
     /* dump arguments number */
     fprintf(fp, "*%d\r\n", argc);
 
-    /* dump all the argument individually */
+    /* dump all the arguments individually */
     for (i = 0; i < argc; i++) {
         arg_itm = fk_vtr_get(arg_vtr, i);
         arg_str = fk_item_raw(arg_itm);
