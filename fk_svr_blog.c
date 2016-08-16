@@ -68,6 +68,6 @@ fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto_t *pto)
     /*
      * flush data from user space buffer to kernel buffer after writing one
      * complete protocol
-     *
+     */
     fflush(fp);
 }
