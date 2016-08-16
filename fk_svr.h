@@ -3,6 +3,7 @@
 
 /* standard c headers */
 #include <stdint.h>             /* for uint_16 */
+#include <stdio.h>
 
 /* unix headers */
 #include <sys/types.h>          /* for time_t */
@@ -100,7 +101,7 @@ typedef struct {
     pid_t          save_pid;      /* -1: the save child process ended */
 
     int            last_dbidx;
-    int            blog_fd;
+    FILE          *blog_file;
 } fk_svr_t;
 
 typedef int (*fk_handler_t) (fk_conn_t *conn);
