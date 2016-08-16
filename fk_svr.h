@@ -8,6 +8,11 @@
 /* unix headers */
 #include <sys/types.h>          /* for time_t */
 
+/* 3rd headers */
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+
 /* local headers */
 #include <fk_str.h>
 #include <fk_dict.h>
@@ -102,6 +107,10 @@ typedef struct {
 
     int            last_dbidx;
     FILE          *blog_file;
+
+    /* lua script related fields */
+    lua_State     *gL;
+    fk_conn_t     *lua_conn;
 } fk_svr_t;
 
 typedef int (*fk_handler_t) (fk_conn_t *conn);

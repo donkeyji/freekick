@@ -30,9 +30,6 @@ static int fk_lua_parse_integer(lua_State *L, fk_buf_t *buf);
 static int fk_lua_parse_mbulk(lua_State *L, fk_buf_t *buf);
 static int fk_lua_parse_bulk(lua_State *L, fk_buf_t *buf);
 
-static lua_State *gL = NULL;
-static fk_conn_t *lua_conn = NULL;
-
 static const struct luaL_Reg fklib[] = {
     {"pcall", fk_lua_pcall},
     {NULL, NULL}
@@ -41,15 +38,20 @@ static const struct luaL_Reg fklib[] = {
 void
 fk_lua_init(void)
 {
+    lua_State  *gL;
+    fk_conn_t  *lua_conn;
+
     gL = luaL_newstate();
 
     luaL_openlibs(gL);
 
     //luaL_register(gL, "freekick", fklib);
     luaL_register(gL, "redis", fklib); /* just for convenience when debuging by using "redis" */
+    server.gL = gL;
 
     lua_conn = fk_conn_create(FK_CONN_FAKE_FD);
     fk_conn_set_type(lua_conn, FK_CONN_FAKE);
+    server.lua_conn = lua_conn;
 }
 
 /* similar to fk_conn_read_cb */
@@ -61,8 +63,10 @@ fk_lua_pcall(lua_State *L)
     size_t       len;
     fk_buf_t    *buf;
     fk_item_t   *itm;
+    fk_conn_t   *lua_conn;
     const char  *arg;
 
+    lua_conn = server.lua_conn;
     /* 1. similar to the function: fk_conn_req_parse() */
     lua_conn->arg_parsed = lua_gettop(L); /* get the argument count */
 
@@ -270,8 +274,12 @@ fk_lua_parse_mbulk(lua_State *L, fk_buf_t *buf)
 int
 fk_lua_push_paras(char **paras, int npara, int type)
 {
-    int    i;
-    char  *name;
+    int         i;
+    char       *name;
+    lua_State  *gL;
+
+    /* copy pointers from global server */
+    gL = server.gL;
 
     lua_newtable(gL);
 
@@ -298,7 +306,13 @@ fk_lua_run_script(fk_conn_t *conn, char *code)
 {
     int          i, rt, top1, top2, nret, type, stype, idx;
     size_t       len, slen, olen;
+    lua_State   *gL;
+    fk_conn_t   *lua_conn;
     const char  *p, *sp, *err;
+
+    /* copy pointers from global server */
+    gL = server.gL;
+    lua_conn = server.lua_conn;
 
     top1 = lua_gettop(gL);
 
