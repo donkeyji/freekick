@@ -32,6 +32,7 @@ fk_blog_init(void)
         exit(EXIT_FAILURE);
     }
 
+    /* update the global server */
     server.blog_fp = fp;
     server.blog_conn = fk_conn_create(FK_CONN_FAKE_FD);
 }
@@ -42,10 +43,11 @@ fk_blog_read_data(fk_conn_t *conn)
     int      fd;
     char    *free_buf;
     size_t   free_len;
-    ssize_t  recv_len;
+    ssize_t  rlen;
 
     /* translate file stream to file descriptor */
     fd = fileno(server.blog_fp);
+    /* after calling fopen(), the stream is positioned at the end of the file */
     lseek(fd, 0, SEEK_SET);
 
     while (1) {
@@ -55,30 +57,25 @@ fk_blog_read_data(fk_conn_t *conn)
         if (fk_buf_free_len(conn->rbuf) == 0) {
             fk_buf_stretch(conn->rbuf);
         }
-        /* reach the high water of read buffer */
-        if (fk_buf_free_len(conn->rbuf) == 0) { /* could not receive data this time */
-            return FK_SVR_ERR; /* go to the next step: parse request */
+        /* rbuf is reaching the max, but probably data left unread in the blog */
+        if (fk_buf_free_len(conn->rbuf) == 0) {
+            return FK_SVR_OK;
         }
 
         free_buf = fk_buf_free_start(conn->rbuf);
         free_len = fk_buf_free_len(conn->rbuf);
 
-        recv_len = read(fd, free_buf, free_len);
-        printf("===recv_len: %ld\n", (long)recv_len);
-        if (recv_len == 0) {
-            fk_log_info("blog file read completed\n");
-            return FK_SVR_OK;
-        } else if (recv_len < 0) {
-            if (errno != EAGAIN) {
-                fk_log_error("[read error] %s\n", strerror(errno));
-                return FK_SVR_ERR;
-            } else {
-                return FK_SVR_OK;
-            }
+        rlen = read(fd, free_buf, free_len);
+        if (rlen == 0) { /* 0 indicates the end of the file */
+            fk_log_info("blog read completed\n");
+            return FK_SVR_DONE;
+        } else if (rlen < 0) {
+            return FK_SVR_ERR;
         } else {
-            fk_buf_high_inc(conn->rbuf, recv_len);
-            if (recv_len < free_len) {
-                return FK_SVR_OK;
+            fk_buf_high_inc(conn->rbuf, rlen);
+            if (rlen < free_len) {
+                /* FK_SVR_DONE could not be used here */
+                return FK_SVR_OK; /* indicates that all data has been read */
             } else {
                 continue;
             }
@@ -94,39 +91,56 @@ fk_blog_load(void)
     fk_conn_t  *conn;
 
     conn = server.blog_conn;
-    /* read data from blog file, and write them to blog_conn->rbuf */
-    rt = fk_blog_read_data(conn);
 
-    while (fk_buf_payload_len(conn->rbuf) > 0) {
-        rt = fk_conn_parse_req(conn);
+    while (1) {
+        /* read data from blog file, and write them to blog_conn->rbuf */
+        rt = fk_blog_read_data(conn);
         if (rt == FK_SVR_ERR) {
             return;
-        } else if (rt == FK_SVR_AGAIN) {
+        } else if (rt == FK_SVR_DONE) {
             break;
         }
 
-        rt = fk_conn_proc_cmd(conn);
-        if (rt == FK_SVR_ERR) {
-            return;
+        while (fk_buf_payload_len(conn->rbuf) > 0) {
+            rt = fk_conn_parse_req(conn);
+            if (rt == FK_SVR_ERR) {
+                return;
+            } else if (rt == FK_SVR_AGAIN) {
+                break;
+            }
+
+            rt = fk_conn_proc_cmd(conn);
+            if (rt == FK_SVR_ERR) {
+                return;
+            }
         }
+
+        fk_buf_shrink(conn->rbuf);
+        fk_vtr_shrink(conn->arg_vtr);
     }
 }
 
 void
-fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto_t *pto)
+fk_blog_append(fk_conn_t *conn, fk_proto_t *pto)
 {
-    int         i;
+    int         i, argc;
     FILE       *fp;
     char       *arg;
     size_t      len;
     fk_str_t   *arg_str;
+    fk_vtr_t   *arg_vtr;
     fk_item_t  *arg_itm;
 
     /* no need to dump read protocol */
     if (pto->type == FK_PROTO_READ) {
         return;
     }
+    if (conn->type == FK_CONN_FAKE) {
+        return;
+    }
 
+    argc = conn->arg_cnt;
+    arg_vtr = conn->arg_vtr;
     fp = server.blog_fp;
 
     /* dump arguments number */

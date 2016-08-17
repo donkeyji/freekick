@@ -465,7 +465,7 @@ fk_conn_proc_cmd(fk_conn_t *conn)
     }
 
     /* append this protocol to the bin-log file */
-    fk_blog_append(conn->arg_cnt, conn->arg_vtr, pto);
+    fk_blog_append(conn, pto);
 
     fk_conn_free_args(conn);
     return FK_SVR_OK;

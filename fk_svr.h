@@ -169,7 +169,7 @@ void fk_lua_init(void);
 /* related to binary log */
 void fk_blog_init(void);
 void fk_blog_load(void);
-void fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto_t *pto);
+void fk_blog_append(fk_conn_t *conn, fk_proto_t *pto);
 
 /* related to protocol */
 void fk_proto_init(void);
