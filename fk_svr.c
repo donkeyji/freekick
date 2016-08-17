@@ -388,7 +388,7 @@ fk_svr_init(void)
     if (setting.blog_on == 1) {
         fk_blog_init();
         if (access(fk_str_raw(setting.blog_file), F_OK) == 0) {
-            fk_blog_load(setting.blog_file);
+            fk_blog_load();
             blog_loaded = 1;
         }
     }

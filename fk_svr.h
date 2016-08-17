@@ -106,7 +106,8 @@ typedef struct {
     pid_t          save_pid;      /* -1: the save child process ended */
 
     int            last_dbidx;
-    FILE          *blog_file;
+    FILE          *blog_fp;
+    fk_conn_t     *blog_conn;
 
     /* lua script related fields */
     lua_State     *gL;
@@ -139,6 +140,11 @@ int fk_conn_add_mbulk_rsp(fk_conn_t *conn, int bulk_cnt);
 #define fk_conn_set_arg(conn, idx, a)   fk_vtr_set((conn->arg_vtr), (idx), (a))
 #define fk_conn_get_arg(conn, idx)  fk_vtr_get((conn)->arg_vtr, (idx))
 
+int fk_conn_parse_req(fk_conn_t *conn);
+int fk_conn_recv_data(fk_conn_t *conn);
+int fk_conn_proc_cmd(fk_conn_t *conn);
+int fk_conn_send_rsp(fk_conn_t *conn);
+
 /* interface of fk_svr_t */
 void fk_svr_init(void);
 void fk_svr_exit(void);
@@ -162,7 +168,7 @@ void fk_lua_init(void);
 
 /* related to binary log */
 void fk_blog_init(void);
-void fk_blog_load(fk_str_t *blog_path);
+void fk_blog_load(void);
 void fk_blog_append(int argc, fk_vtr_t *arg_vtr, fk_proto_t *pto);
 
 /* related to protocol */

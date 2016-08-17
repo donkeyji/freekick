@@ -21,10 +21,6 @@
 static void fk_conn_read_cb(int fd, uint8_t type, void *ext);
 static void fk_conn_write_cb(int fd, uint8_t type, void *ext);
 static int fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext);
-static int fk_conn_parse_req(fk_conn_t *conn);
-static int fk_conn_recv_data(fk_conn_t *conn);
-static int fk_conn_proc_cmd(fk_conn_t *conn);
-static int fk_conn_send_rsp(fk_conn_t *conn);
 
 /* response format */
 static const char *rsp_status   = "+%s\r\n";
