@@ -121,7 +121,7 @@ fk_blog_load(void)
 }
 
 void
-fk_blog_append(fk_conn_t *conn, fk_proto_t *pto)
+fk_blog_append(fk_conn_t *conn)
 {
     int         i, argc;
     FILE       *fp;
@@ -130,16 +130,6 @@ fk_blog_append(fk_conn_t *conn, fk_proto_t *pto)
     fk_str_t   *arg_str;
     fk_vtr_t   *arg_vtr;
     fk_item_t  *arg_itm;
-
-    /* no need to dump read protocol */
-    if (pto->type == FK_PROTO_READ) {
-        return;
-    }
-
-    /* no need to append blog with a fake client */
-    if (conn->type == FK_CONN_FAKE) {
-        return;
-    }
 
     argc = conn->arg_cnt;
     arg_vtr = conn->arg_vtr;

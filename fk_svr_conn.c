@@ -464,8 +464,16 @@ fk_conn_proc_cmd(fk_conn_t *conn)
         return FK_SVR_ERR;
     }
 
-    /* append this protocol to the bin-log file */
-    fk_blog_append(conn, pto);
+    /*
+     * append this protocol to the bin-log file
+     * we place these checking outside fk_blog_append(), attempting to reduce
+     * the times of calling to fk_blog_append()
+     */
+    if (pto->type != FK_PROTO_READ) {
+        if (conn->type == FK_CONN_REAL) {
+            fk_blog_append(conn);
+        }
+    }
 
     fk_conn_free_args(conn);
     return FK_SVR_OK;
