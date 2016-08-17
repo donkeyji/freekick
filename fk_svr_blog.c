@@ -26,7 +26,7 @@ fk_blog_init(void)
     }
 
     /* if blog file does not exist, create it */
-    fp = fopen(fk_str_raw(setting.blog_file), "w");
+    fp = fopen(fk_str_raw(setting.blog_file), "a+");
     if (fp == NULL) {
         fk_log_error("open blog failed\n");
         exit(EXIT_FAILURE);
@@ -34,7 +34,6 @@ fk_blog_init(void)
 
     server.blog_fp = fp;
     server.blog_conn = fk_conn_create(FK_CONN_FAKE_FD);
-    printf("=====%d\n", fileno(fp));
 }
 
 int
@@ -45,8 +44,9 @@ fk_blog_read_data(fk_conn_t *conn)
     size_t   free_len;
     ssize_t  recv_len;
 
+    /* translate file stream to file descriptor */
     fd = fileno(server.blog_fp);
-    printf("===read fd: %d\n", fd);
+    lseek(fd, 0, SEEK_SET);
 
     while (1) {
         if (fk_buf_payload_len(conn->rbuf) > (3 * (fk_buf_len(conn->rbuf) >> 2))) {
@@ -63,7 +63,6 @@ fk_blog_read_data(fk_conn_t *conn)
         free_buf = fk_buf_free_start(conn->rbuf);
         free_len = fk_buf_free_len(conn->rbuf);
 
-        printf("-----before fd: %d\n", fd);
         recv_len = read(fd, free_buf, free_len);
         printf("===recv_len: %ld\n", (long)recv_len);
         if (recv_len == 0) {
@@ -101,7 +100,6 @@ fk_blog_load(void)
     while (fk_buf_payload_len(conn->rbuf) > 0) {
         rt = fk_conn_parse_req(conn);
         if (rt == FK_SVR_ERR) {
-            fk_svr_remove_conn(conn);
             return;
         } else if (rt == FK_SVR_AGAIN) {
             break;
@@ -109,7 +107,6 @@ fk_blog_load(void)
 
         rt = fk_conn_proc_cmd(conn);
         if (rt == FK_SVR_ERR) {
-            fk_svr_remove_conn(conn);
             return;
         }
     }
