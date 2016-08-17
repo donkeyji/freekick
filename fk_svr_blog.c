@@ -135,6 +135,8 @@ fk_blog_append(fk_conn_t *conn, fk_proto_t *pto)
     if (pto->type == FK_PROTO_READ) {
         return;
     }
+
+    /* no need to append blog with a fake client */
     if (conn->type == FK_CONN_FAKE) {
         return;
     }
