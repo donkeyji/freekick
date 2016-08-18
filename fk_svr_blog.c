@@ -47,8 +47,6 @@ fk_blog_read_data(fk_conn_t *conn)
 
     /* translate file stream to file descriptor */
     fd = fileno(server.blog_fp);
-    /* after calling fopen(), the stream is positioned at the end of the file */
-    lseek(fd, 0, SEEK_SET);
 
     while (1) {
         if (fk_buf_payload_len(conn->rbuf) > (3 * (fk_buf_len(conn->rbuf) >> 2))) {
@@ -88,9 +86,14 @@ void
 fk_blog_load(void)
 {
     int         rt;
+    FILE       *fp;
     fk_conn_t  *conn;
 
     conn = server.blog_conn;
+    fp = server.blog_fp;
+
+    /* after calling fopen(), the stream is positioned at the end of the file */
+    fseek(fp, 0, SEEK_SET);
 
     while (1) {
         /* read data from blog file, and write them to blog_conn->rbuf */
