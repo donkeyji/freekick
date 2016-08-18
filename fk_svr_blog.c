@@ -131,11 +131,11 @@ fk_blog_append(fk_conn_t *conn)
     char       *arg;
     size_t      len;
     fk_str_t   *arg_str;
-    fk_vtr_t   *arg_vtr;
+    fk_vtr_t   *argv;
     fk_item_t  *arg_itm;
 
     argc = conn->arg_cnt;
-    arg_vtr = conn->arg_vtr;
+    argv = conn->arg_vtr;
     fp = server.blog_fp;
 
     /* dump arguments number */
@@ -143,7 +143,7 @@ fk_blog_append(fk_conn_t *conn)
 
     /* dump all the arguments individually */
     for (i = 0; i < argc; i++) {
-        arg_itm = fk_vtr_get(arg_vtr, i);
+        arg_itm = fk_vtr_get(argv, i);
         arg_str = fk_item_raw(arg_itm);
         len = fk_str_len(arg_str);
         arg = fk_str_raw(arg_str);
