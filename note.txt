@@ -319,4 +319,5 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 
 128. epoll/poll/kqueue提供的监测各种类型的fd上的event细分为很多种，但按大类划分也就是read/write这2大类的event，且poll()的分类比epoll()更多。epoll/poll/kqueue提供的2类read/write的event，对于不同类型的fd有着不同的含义。fk_ev仅提供read/write两种大类的event监测，对应于epoll/poll/kqueue提供的read/write 2大类event，且对各种类型的fd有效，对各自类型的fd的read/write处理由注册的callback决定，所以fk_ev仅仅只是将epoll/poll/kqueue进行封装而已，提供一个高层次的接口。
 
-129. epoll/kqueue一次read事件触发，有没有以下这种可能：既有client的有效数据发送到，并且client关闭了连接？ 现在的fk_conn_recv_data中while循环来读取数据，就可能有逻辑错误。
+129. epoll/kqueue一次read事件触发，有没有以下这种可能：既有client的有效数据发送到，并且client关闭了连接？ 现在的fk_conn_recv_data中while循环来读取数据，就可能有逻辑错误。需要重构这几个函数。
+
