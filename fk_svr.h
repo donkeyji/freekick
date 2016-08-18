@@ -107,6 +107,8 @@ typedef struct {
 
     int            last_dbidx;
     int            blog_fd;
+    char          *blog_buf;
+    size_t         blog_buflen;
     fk_conn_t     *blog_conn;
 
     /* lua script related fields */

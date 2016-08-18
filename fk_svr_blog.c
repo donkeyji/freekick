@@ -6,6 +6,8 @@
 /* unix headers */
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 /* local headers */
 #include <fk_conf.h>
@@ -25,12 +27,20 @@ fk_blog_init(void)
         return;
     }
 
-    /* if blog file does not exist, create it */
-    fd = open(fk_str_raw(setting.blog_file), O_CREAT | O_RDWR);
+    /* when O_CREAT is specified, the 3rd argument mode is required */
+    fd = open(fk_str_raw(setting.blog_file), O_CREAT | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
     if (fd < 0) {
         fk_log_error("open blog failed\n");
         exit(EXIT_FAILURE);
     }
+
+    /*
+     * sufficient to accommodate an argument length plus a complete argument
+     * e.g. $3\r\nSET\r\n
+     * to do: probably we can use the blog_conn.wbuf as the blog_buf
+     */
+    server.blog_buflen = FK_ARG_HIGHWAT + FK_ARG_LEN_LINE_HIGHWAT;
+    server.blog_buf = (char *)fk_mem_alloc(server.blog_buflen);
 
     /* update the global server */
     server.blog_fd = fd;
@@ -111,12 +121,13 @@ fk_blog_load(void)
     }
 }
 
+
 void
 fk_blog_append(fk_conn_t *conn)
 {
-    int         i, argc, fd;
-    char       *arg;
-    size_t      len;
+    int         i, argc, fd, plen, wlen;
+    char       *arg, *blog_buf;
+    size_t      len, blog_buflen;
     fk_str_t   *arg_str;
     fk_vtr_t   *argv;
     fk_item_t  *arg_itm;
@@ -124,9 +135,12 @@ fk_blog_append(fk_conn_t *conn)
     argc = conn->arg_cnt;
     argv = conn->arg_vtr;
     fd = server.blog_fd;
+    blog_buf = server.blog_buf;
+    blog_buflen = server.blog_buflen;
 
     /* dump arguments number */
-    dprintf(fd, "*%d\r\n", argc);
+    plen = snprintf(blog_buf, blog_buflen, "*%d\r\n", argc);
+    wlen = write(fd, blog_buf, (size_t)plen);
 
     /* dump all the arguments individually */
     for (i = 0; i < argc; i++) {
@@ -134,7 +148,7 @@ fk_blog_append(fk_conn_t *conn)
         arg_str = fk_item_raw(arg_itm);
         len = fk_str_len(arg_str);
         arg = fk_str_raw(arg_str);
-        dprintf(fd, "$%zu\r\n", len);
-        dprintf(fd, "%s\r\n", arg);
+        plen = snprintf(blog_buf, blog_buflen, "$%zu\r\n%s\r\n", len, arg);
+        write(fd, blog_buf, (size_t)plen);
     }
 }
