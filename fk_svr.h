@@ -106,7 +106,7 @@ typedef struct {
     pid_t          save_pid;      /* -1: the save child process ended */
 
     int            last_dbidx;
-    FILE          *blog_fp;
+    int            blog_fd;
     fk_conn_t     *blog_conn;
 
     /* lua script related fields */

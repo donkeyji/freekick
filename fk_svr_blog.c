@@ -19,22 +19,23 @@ static int fk_blog_read_data(fk_conn_t *conn);
 void
 fk_blog_init(void)
 {
-    FILE  *fp;
+    int  fd;
 
     if (setting.blog_on != 1) {
         return;
     }
 
     /* if blog file does not exist, create it */
-    fp = fopen(fk_str_raw(setting.blog_file), "a+");
-    if (fp == NULL) {
+    fd = open(fk_str_raw(setting.blog_file), O_CREAT | O_RDWR);
+    if (fd < 0) {
         fk_log_error("open blog failed\n");
         exit(EXIT_FAILURE);
     }
 
     /* update the global server */
-    server.blog_fp = fp;
+    server.blog_fd = fd;
     server.blog_conn = fk_conn_create(FK_CONN_FAKE_FD);
+    fk_conn_set_type(server.blog_conn, FK_CONN_FAKE); /* cannot be omitted, very important */
 }
 
 int
@@ -45,39 +46,31 @@ fk_blog_read_data(fk_conn_t *conn)
     size_t   free_len;
     ssize_t  rlen;
 
-    /* translate file stream to file descriptor */
-    fd = fileno(server.blog_fp);
+    fd = server.blog_fd;
 
-    while (1) {
-        if (fk_buf_payload_len(conn->rbuf) > (3 * (fk_buf_len(conn->rbuf) >> 2))) {
-            fk_buf_shift(conn->rbuf);
-        }
-        if (fk_buf_free_len(conn->rbuf) == 0) {
-            fk_buf_stretch(conn->rbuf);
-        }
-        /* rbuf is reaching the max, but probably data left unread in the blog */
-        if (fk_buf_free_len(conn->rbuf) == 0) {
-            return FK_SVR_OK;
-        }
+    if (fk_buf_payload_len(conn->rbuf) > (3 * (fk_buf_len(conn->rbuf) >> 2))) {
+        fk_buf_shift(conn->rbuf);
+    }
+    if (fk_buf_free_len(conn->rbuf) == 0) {
+        fk_buf_stretch(conn->rbuf);
+    }
+    /* rbuf is reaching the max, but probably data left unread in the blog */
+    if (fk_buf_free_len(conn->rbuf) == 0) {
+        return FK_SVR_ERR;
+    }
 
-        free_buf = fk_buf_free_start(conn->rbuf);
-        free_len = fk_buf_free_len(conn->rbuf);
+    free_buf = fk_buf_free_start(conn->rbuf);
+    free_len = fk_buf_free_len(conn->rbuf);
 
-        rlen = read(fd, free_buf, free_len);
-        if (rlen == 0) { /* 0 indicates the end of the file */
-            fk_log_info("blog read completed\n");
-            return FK_SVR_DONE;
-        } else if (rlen < 0) {
-            return FK_SVR_ERR;
-        } else {
-            fk_buf_high_inc(conn->rbuf, rlen);
-            if (rlen < free_len) {
-                /* FK_SVR_DONE could not be used here */
-                return FK_SVR_OK; /* indicates that all data has been read */
-            } else {
-                continue;
-            }
-        }
+    rlen = read(fd, free_buf, free_len);
+    if (rlen == 0) { /* 0 indicates the end of the file */
+        fk_log_info("blog read completed\n");
+        return FK_SVR_DONE;
+    } else if (rlen < 0) {
+        return FK_SVR_ERR;
+    } else {
+        fk_buf_high_inc(conn->rbuf, rlen);
+        return FK_SVR_OK; /* indicates that all data has been read */
     }
 }
 
@@ -86,14 +79,9 @@ void
 fk_blog_load(void)
 {
     int         rt;
-    FILE       *fp;
     fk_conn_t  *conn;
 
     conn = server.blog_conn;
-    fp = server.blog_fp;
-
-    /* after calling fopen(), the stream is positioned at the end of the file */
-    fseek(fp, 0, SEEK_SET);
 
     while (1) {
         /* read data from blog file, and write them to blog_conn->rbuf */
@@ -126,8 +114,7 @@ fk_blog_load(void)
 void
 fk_blog_append(fk_conn_t *conn)
 {
-    int         i, argc;
-    FILE       *fp;
+    int         i, argc, fd;
     char       *arg;
     size_t      len;
     fk_str_t   *arg_str;
@@ -136,10 +123,10 @@ fk_blog_append(fk_conn_t *conn)
 
     argc = conn->arg_cnt;
     argv = conn->arg_vtr;
-    fp = server.blog_fp;
+    fd = server.blog_fd;
 
     /* dump arguments number */
-    fprintf(fp, "*%d\r\n", argc);
+    dprintf(fd, "*%d\r\n", argc);
 
     /* dump all the arguments individually */
     for (i = 0; i < argc; i++) {
@@ -147,13 +134,7 @@ fk_blog_append(fk_conn_t *conn)
         arg_str = fk_item_raw(arg_itm);
         len = fk_str_len(arg_str);
         arg = fk_str_raw(arg_str);
-        fprintf(fp, "$%zu\r\n", len);
-        fprintf(fp, "%s\r\n", arg);
+        dprintf(fd, "$%zu\r\n", len);
+        dprintf(fd, "%s\r\n", arg);
     }
-
-    /*
-     * flush data from user space buffer to kernel buffer after writing one
-     * complete protocol
-     */
-    fflush(fp);
 }
