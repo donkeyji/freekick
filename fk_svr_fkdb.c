@@ -135,7 +135,7 @@ fk_fkdb_save(void)
 }
 
 /*
- * to do:
+ * TODO:
  * error handling
  */
 int
@@ -442,7 +442,7 @@ fk_fkdb_restore(FILE *fp, fk_zline_t *buf)
     fk_dict_t  *db;
 
     /*
-     * to do:
+     * TODO:
      * check the range of "idx"
      */
     /* restore the index */

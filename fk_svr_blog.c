@@ -37,7 +37,7 @@ fk_blog_init(void)
     /*
      * sufficient to accommodate an argument length plus a complete argument
      * e.g. $3\r\nSET\r\n
-     * to do: probably we can use the blog_conn.wbuf as the blog_buf
+     * TODO: probably we can use the blog_conn.wbuf as the blog_buf
      */
     server.blog_buflen = FK_ARG_HIGHWAT + FK_ARG_LEN_LINE_HIGHWAT;
     server.blog_buf = (char *)fk_mem_alloc(server.blog_buflen);
