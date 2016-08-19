@@ -33,6 +33,8 @@ fk_get_time(struct timeval *tv)
     struct timespec ts;
 
     /*
+     * clock_gettime() is a POSIX clocks API providing nanosecond precision,
+     * by contrast, UNIX traditional APIs do not.
      * this clock_id CLOCK_MONOTONIC is conforming to POSIX
      * the returned time is since the system reboots
      */
