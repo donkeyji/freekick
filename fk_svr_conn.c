@@ -134,6 +134,30 @@ fk_conn_recv_data(fk_conn_t *conn)
     size_t   free_len;
     ssize_t  recv_len;
 
+    /*
+     * execute a finite loop to recv data from socket of the client connection.
+     * But this probably contains an underlying logic error.
+     * Suppose the following scinario:
+     * 2 recv() have been performed, the first one succeeded, but the second
+     * one failed. In this case, we just return FK_SVR_ERR to indicate the
+     * caller fk_conn_read_cb() to perform a fk_svr_remove_conn() to close
+     * this connection, but probably this connection has contained some valid
+     * data read via the first call to recv(), which should be parsed to execute
+     * a corresponding command to operate on the db, so this may lose some valid
+     * data from the client.
+     * TODO: dropping the while() loop here is preferable, and move while() to
+     * the caller fk_conn_read_cb(). That is once a single recv() has been
+     * performed, the subsequent fk_conn_parse_req() and fk_conn_proc_cmd()
+     * should be invoked to process the data read yet. Like this:
+     * while (1) {
+     *     fk_conn_recv_data();
+     *     while (1) {
+     *         fk_conn_parse_req();
+     *         fk_conn_proc_cmd();
+     *     }
+     *     fk_conn_send_rsp();
+     * }
+     */
     while (1) {
 #ifdef FK_DEBUG
         fk_log_debug("[before rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
@@ -144,9 +168,15 @@ fk_conn_recv_data(fk_conn_t *conn)
         if (fk_buf_free_len(conn->rbuf) == 0) {
             fk_buf_stretch(conn->rbuf);
         }
-        /* reach the high water of read buffer */
-        if (fk_buf_free_len(conn->rbuf) == 0) { /* could not receive data this time */
-            return FK_SVR_OK; /* go to the next step: parse request */
+        /*
+         * reaching the high water of read buffer at this point, and could not
+         * receive data this time. In this scinario, instead of returning a
+         * FK_SVR_ERR, we just simply return FK_SVR_OK to indicate the caller to
+         * the next step: parsing request. any types of illegal protocols could
+         * be determined in the fk_conn_parse_req() function.
+         */
+        if (fk_buf_free_len(conn->rbuf) == 0) {
+            return FK_SVR_OK;
         }
 #ifdef FK_DEBUG
         fk_log_debug("[after rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
