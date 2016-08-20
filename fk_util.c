@@ -44,6 +44,10 @@ fk_get_time(struct timeval *tv)
     }
     fk_util_ts2tv(tv, &ts);
 #else
+    /*
+     * gettimeofday() was marked as obsolete by SYSv4, so clock_gettime() is
+     * recommended instead.
+     */
     rt = gettimeofday(tv, NULL);
     if (rt < 0) {
         return -1;
