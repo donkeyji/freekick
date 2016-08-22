@@ -75,15 +75,16 @@ fk_blog_read_data(fk_conn_t *conn)
     rlen = read(fd, free_buf, free_len);
     if (rlen == 0) { /* 0 indicates the end of the file */
         fk_log_info("blog read completed\n");
-        return FK_SVR_DECLINED;
+        return FK_SVR_DONE;
     } else if (rlen < 0) {
+        /* no need to distinguish EAGAIN */
         return FK_SVR_ERR;
     } else {
         fk_buf_high_inc(conn->rbuf, rlen);
         if (rlen < free_len) {
-            return FK_SVR_OK;
+            return FK_SVR_DONE;
         } else {
-            return FK_SVR_AGAIN; /* indicates that all data has been read */
+            return FK_SVR_OK; /* indicates that all data has been read */
         }
     }
 }
@@ -103,12 +104,10 @@ fk_blog_load(void)
         rt = fk_blog_read_data(conn);
         if (rt == FK_SVR_ERR) {
             return;
-        } else if (rt == FK_SVR_DECLINED) {
-            break;
-        } else if (rt == FK_SVR_AGAIN) {
-            again = 1;
-        } else if (rt == FK_SVR_OK) {
+        } else if (rt == FK_SVR_DONE) {
             again = 0;
+        } else if (rt == FK_SVR_OK) {
+            again = 1;
         }
 
         while (fk_buf_payload_len(conn->rbuf) > 0) {
