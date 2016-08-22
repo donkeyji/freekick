@@ -175,7 +175,7 @@ fk_conn_recv_data(fk_conn_t *conn)
      * to fk_conn_parse_req() will consume some data in the rbuf, or detect
      * any illegal too long arguments, and the illegal connection will be
      * closed then. so here we just mark it as an error, but note that in
-     * practice this is unlikely to happen.
+     * practice this is unlikely to occur.
      */
     if (fk_buf_free_len(conn->rbuf) == 0) {
         //return FK_SVR_OK;
