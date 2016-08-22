@@ -158,7 +158,7 @@ fk_conn_recv_data(fk_conn_t *conn)
      *     fk_conn_send_rsp();
      * }
      */
-    while (1) {
+    //while (1) {
 #ifdef FK_DEBUG
         fk_log_debug("[before rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
 #endif
@@ -176,7 +176,8 @@ fk_conn_recv_data(fk_conn_t *conn)
          * be determined in the fk_conn_parse_req() function.
          */
         if (fk_buf_free_len(conn->rbuf) == 0) {
-            return FK_SVR_OK;
+            //return FK_SVR_OK;
+            return FK_SVR_ERR;
         }
 #ifdef FK_DEBUG
         fk_log_debug("[after rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
@@ -194,7 +195,8 @@ fk_conn_recv_data(fk_conn_t *conn)
                 fk_log_error("[recv error] %s\n", strerror(errno));
                 return FK_SVR_ERR;
             } else { /* no data left in the read buffer of the socket */
-                return FK_SVR_OK;
+                //return FK_SVR_OK;
+                return FK_SVR_DECLINED;
             }
         } else { /* succeed */
 #ifdef FK_DEBUG
@@ -206,14 +208,16 @@ fk_conn_recv_data(fk_conn_t *conn)
             fk_log_debug("[after recv]rbuf->low: %lu, rbuf->high: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf));
 #endif
             if (recv_len < free_len) { /* no extra data left */
+                //return FK_SVR_OK;
                 return FK_SVR_OK;
             } else { /* maybe there is still data in socket buffer */
-                continue; /* rbuf is full now */
+                //continue; /* rbuf is full now */
+                return FK_SVR_AGAIN;
             }
         }
-    }
+    //}
 
-    return FK_SVR_OK;
+    //return FK_SVR_OK;
 }
 
 /*
@@ -540,7 +544,7 @@ fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext)
 void
 fk_conn_read_cb(int fd, uint8_t type, void *ext)
 {
-    int         rt;
+    int         rt, again;
     fk_conn_t  *conn;
 
     fk_util_unuse(fd);
@@ -548,12 +552,20 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
 
     conn = (fk_conn_t *)ext;
 
+    again = 1;
+    while (again == 1) {
     rt = fk_conn_recv_data(conn);
     if (rt == FK_SVR_ERR) { /* conn closed */
         /* donot print log here, print detailed log in fk_conn_recv_data */
         //fk_log_error("fatal error occured when receiving data\n");
         fk_svr_remove_conn(conn);
         return;
+    } else if (rt == FK_SVR_DECLINED) {
+        break;
+    } else if (rt == FK_SVR_AGAIN) {
+        again = 1;
+    } else if (rt == FK_SVR_OK) {
+        again = 0;
     }
 
     /*
@@ -591,6 +603,8 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
         //fk_log_error("fatal error occurs when sending response\n");
         fk_svr_remove_conn(conn);
         return;
+    }
+
     }
 
     return;
