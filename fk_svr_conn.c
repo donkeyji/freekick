@@ -557,6 +557,12 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
     again = 1;
     while (again == 1) {
         rt = fk_conn_recv_data(conn);
+        /*
+         * we have to distinguish the following 4 types of returned values,
+         * which determine whether to execute this while (again == 1) loop.
+         * TODO: define these 4 types of constants in a better manner, the 4
+         * currently used seem a little bit weird.
+         */
         if (rt == FK_SVR_ERR) { /* conn closed */
             /* donot print log here, print detailed log in fk_conn_recv_data */
             //fk_log_error("fatal error occured when receiving data\n");
