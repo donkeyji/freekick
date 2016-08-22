@@ -160,61 +160,63 @@ fk_conn_recv_data(fk_conn_t *conn)
      */
     //while (1) {
 #ifdef FK_DEBUG
-        fk_log_debug("[before rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
+    fk_log_debug("[before rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
 #endif
-        if (fk_buf_payload_len(conn->rbuf) > (3 * (fk_buf_len(conn->rbuf) >> 2))) {
-            fk_buf_shift(conn->rbuf);
-        }
-        if (fk_buf_free_len(conn->rbuf) == 0) {
-            fk_buf_stretch(conn->rbuf);
-        }
-        /*
-         * reaching the high water of read buffer at this point, and could not
-         * receive data this time. In this scinario, instead of returning a
-         * FK_SVR_ERR, we just simply return FK_SVR_OK to indicate the caller to
-         * the next step: parsing request. any types of illegal protocols could
-         * be determined in the fk_conn_parse_req() function.
-         */
-        if (fk_buf_free_len(conn->rbuf) == 0) {
+    if (fk_buf_payload_len(conn->rbuf) > (3 * (fk_buf_len(conn->rbuf) >> 2))) {
+        fk_buf_shift(conn->rbuf);
+    }
+    if (fk_buf_free_len(conn->rbuf) == 0) {
+        fk_buf_stretch(conn->rbuf);
+    }
+    /*
+     * reaching the high water of read buffer at this point, and could not
+     * receive data this time.
+     * In normal cases, this could not occur, because each subsequent call
+     * to fk_conn_parse_req() will consume some data in the rbuf, or detect
+     * any illegal too long arguments, and the illegal connection will be
+     * closed then. so here we just mark it as an error, but note that in
+     * practice this is unlikely to happen.
+     */
+    if (fk_buf_free_len(conn->rbuf) == 0) {
+        //return FK_SVR_OK;
+        return FK_SVR_ERR;
+    }
+#ifdef FK_DEBUG
+    fk_log_debug("[after rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
+#endif
+
+    free_buf = fk_buf_free_start(conn->rbuf);
+    free_len = fk_buf_free_len(conn->rbuf);
+
+    recv_len = recv(conn->fd, free_buf, free_len, 0);
+    if (recv_len == 0) { /* conn disconnected */
+        fk_log_info("[conn socket closed] fd: %d\n", conn->fd);
+        return FK_SVR_ERR;
+    } else if (recv_len < 0) {
+        if (errno != EAGAIN) {
+            fk_log_error("[recv error] %s\n", strerror(errno));
+            return FK_SVR_ERR;
+        } else { /* no data left in the read buffer of the socket */
             //return FK_SVR_OK;
-            return FK_SVR_ERR;
+            return FK_SVR_DECLINED;
         }
+    } else { /* succeed */
 #ifdef FK_DEBUG
-        fk_log_debug("[after rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
+        fk_log_debug("[conn data] fd: %d, recv_len: %d, data: %s\n", conn->fd, recv_len, free_buf);
 #endif
-
-        free_buf = fk_buf_free_start(conn->rbuf);
-        free_len = fk_buf_free_len(conn->rbuf);
-
-        recv_len = recv(conn->fd, free_buf, free_len, 0);
-        if (recv_len == 0) { /* conn disconnected */
-            fk_log_info("[conn socket closed] fd: %d\n", conn->fd);
-            return FK_SVR_ERR;
-        } else if (recv_len < 0) {
-            if (errno != EAGAIN) {
-                fk_log_error("[recv error] %s\n", strerror(errno));
-                return FK_SVR_ERR;
-            } else { /* no data left in the read buffer of the socket */
-                //return FK_SVR_OK;
-                return FK_SVR_DECLINED;
-            }
-        } else { /* succeed */
+        conn->last_recv = time(NULL);
+        fk_buf_high_inc(conn->rbuf, recv_len);
 #ifdef FK_DEBUG
-            fk_log_debug("[conn data] fd: %d, recv_len: %d, data: %s\n", conn->fd, recv_len, free_buf);
+        fk_log_debug("[after recv]rbuf->low: %lu, rbuf->high: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf));
 #endif
-            conn->last_recv = time(NULL);
-            fk_buf_high_inc(conn->rbuf, recv_len);
-#ifdef FK_DEBUG
-            fk_log_debug("[after recv]rbuf->low: %lu, rbuf->high: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf));
-#endif
-            if (recv_len < free_len) { /* no extra data left */
-                //return FK_SVR_OK;
-                return FK_SVR_OK;
-            } else { /* maybe there is still data in socket buffer */
-                //continue; /* rbuf is full now */
-                return FK_SVR_AGAIN;
-            }
+        if (recv_len < free_len) { /* no extra data left */
+            //return FK_SVR_OK;
+            return FK_SVR_OK;
+        } else { /* maybe there is still data in socket buffer */
+            //continue; /* rbuf is full now */
+            return FK_SVR_AGAIN;
         }
+    }
     //}
 
     //return FK_SVR_OK;
@@ -554,59 +556,57 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
 
     again = 1;
     while (again == 1) {
-    rt = fk_conn_recv_data(conn);
-    if (rt == FK_SVR_ERR) { /* conn closed */
-        /* donot print log here, print detailed log in fk_conn_recv_data */
-        //fk_log_error("fatal error occured when receiving data\n");
-        fk_svr_remove_conn(conn);
-        return;
-    } else if (rt == FK_SVR_DECLINED) {
-        break;
-    } else if (rt == FK_SVR_AGAIN) {
-        again = 1;
-    } else if (rt == FK_SVR_OK) {
-        again = 0;
-    }
-
-    /*
-     * maybe more than one complete protocol were received
-     * parse all the complete protocols received yet
-     */
-    while (fk_buf_payload_len(conn->rbuf) > 0) {
-        rt = fk_conn_parse_req(conn);
-        if (rt == FK_SVR_ERR) { /* error when parsing */
-            /* donot print log here, print detailed log in fk_conn_parse_req */
-            //fk_log_error("fatal error occured when parsing protocol\n");
+        rt = fk_conn_recv_data(conn);
+        if (rt == FK_SVR_ERR) { /* conn closed */
+            /* donot print log here, print detailed log in fk_conn_recv_data */
+            //fk_log_error("fatal error occured when receiving data\n");
             fk_svr_remove_conn(conn);
             return;
-        } else if (rt == FK_SVR_AGAIN) { /* parsing not completed */
+        } else if (rt == FK_SVR_DECLINED) {
             break;
+        } else if (rt == FK_SVR_AGAIN) {
+            again = 1;
+        } else if (rt == FK_SVR_OK) {
+            again = 0;
         }
-        /*
-         * only when rt == FK_SVR_OK, the following fk_conn_proc_cmd()
-         * is called
-         */
 
-        rt = fk_conn_proc_cmd(conn);
+        /*
+         * maybe more than one complete protocol were received
+         * parse all the complete protocols received yet
+         */
+        while (fk_buf_payload_len(conn->rbuf) > 0) {
+            rt = fk_conn_parse_req(conn);
+            if (rt == FK_SVR_ERR) { /* error when parsing */
+                /* donot print log here, print detailed log in fk_conn_parse_req */
+                //fk_log_error("fatal error occured when parsing protocol\n");
+                fk_svr_remove_conn(conn);
+                return;
+            } else if (rt == FK_SVR_AGAIN) { /* parsing not completed */
+                break;
+            }
+            /*
+             * only when rt == FK_SVR_OK, the following fk_conn_proc_cmd()
+             * is called
+             */
+
+            rt = fk_conn_proc_cmd(conn);
+            if (rt == FK_SVR_ERR) {
+                /* donot print log here, print detailed log in fk_conn_proc_cmd */
+                //fk_log_error("fatal error occured when processing cmd\n");
+                fk_svr_remove_conn(conn);
+                return;
+            }
+        }
+
+        /* maybe at this time, there is no reply data in conn->wbuf */
+        rt = fk_conn_send_rsp(conn);
         if (rt == FK_SVR_ERR) {
-            /* donot print log here, print detailed log in fk_conn_proc_cmd */
-            //fk_log_error("fatal error occured when processing cmd\n");
+            /* donot print log here, print detailed log in fk_conn_send_rsp */
+            //fk_log_error("fatal error occurs when sending response\n");
             fk_svr_remove_conn(conn);
             return;
         }
     }
-
-    /* maybe at this time, there is no reply data in conn->wbuf */
-    rt = fk_conn_send_rsp(conn);
-    if (rt == FK_SVR_ERR) {
-        /* donot print log here, print detailed log in fk_conn_send_rsp */
-        //fk_log_error("fatal error occurs when sending response\n");
-        fk_svr_remove_conn(conn);
-        return;
-    }
-
-    }
-
     return;
 }
 
