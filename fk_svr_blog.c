@@ -100,7 +100,12 @@ fk_blog_load(void)
 
     again = 1;
     while (again == 1) {
-        /* read data from blog file, and write them to blog_conn->rbuf */
+        /*
+         * read data from the blog file, and write them to blog_conn->rbuf
+         * by contrast with fk_conn_recv_data(), fk_blog_read_data() has only 3
+         * types of returned values, since reading data from a regular file
+         * slightly differs from a socket.
+         */
         rt = fk_blog_read_data(conn);
         if (rt == FK_SVR_ERR) {
             return;
