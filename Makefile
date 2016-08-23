@@ -57,7 +57,7 @@ endif # generic
 
 ifeq ($(debug), yes)
 DEBUG_CFLAGS  := -D FK_DEBUG -g
-DEBUG_LDFLAGS :=
+DEBUG_LDFLAGS := -rdynamic
 DEBUG_LDLIBS  :=
 else
 ifeq ($(debug), no)
