@@ -99,7 +99,7 @@ fk_ev_dispatch(void)
     tmev = fk_ev_get_nearest_tmev();
     if (tmev != NULL) {
         //gettimeofday(&now, NULL);
-        fk_get_time(&now);
+        fk_util_get_time(&now);
         fk_util_tmval_sub(&(tmev->when), &now, &timeout);
         if ((fk_util_tv2millis(&timeout)) < 0) {
             timeout.tv_sec = 0;
@@ -342,7 +342,7 @@ fk_ev_update_pending_tmev(void)
      * time.
      */
     //gettimeofday(&now, NULL);
-    fk_get_time(&now);
+    fk_util_get_time(&now);
 
     root = fk_heap_root(evmgr.timer_heap);
     while (root != NULL) {

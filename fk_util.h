@@ -11,7 +11,7 @@
  * no unified status code for this module
  */
 
-int fk_get_time(struct timeval *tv);
+int fk_util_get_time(struct timeval *tv);
 void fk_util_cal_expire(struct timeval *tv, uint32_t interval);
 int fk_util_is_positive_seq(const char *start, size_t len);
 int fk_util_is_nonminus_seq(const char *start, size_t len);
