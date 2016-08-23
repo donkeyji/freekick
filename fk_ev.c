@@ -253,6 +253,10 @@ fk_tmev_create(uint32_t interval, uint8_t type, void *arg, fk_tmev_cb tmcb)
     tmev->interval = interval;
     tmev->arg = arg;
     tmev->tmcb = tmcb;
+    /*
+     * for accuracy, we use an absolute time as the expiration point, avoding
+     * the problem of oversleeping
+     */
     fk_util_cal_expire(&(tmev->when), interval);
 
     tmev->prev = NULL;
