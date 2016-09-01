@@ -76,6 +76,7 @@ void
 fk_log_fprint_str(int level, char *data)
 {
     char       *level_name;
+    FILE       *fp;
     time_t      now;
     struct tm  *tm_now;
 
@@ -106,7 +107,8 @@ fk_log_fprint_str(int level, char *data)
         return;
     }
 
-    fprintf(logger.log_file == NULL ? stdout : logger.log_file,
+    fp = logger.log_file == NULL ? stdout : logger.log_file;
+    fprintf(fp,
             "[%d-%.2d-%.2d %.2d:%.2d:%.2d]<%s>%s",
             tm_now->tm_year + 1900, /* year since 1900 */
             tm_now->tm_mon + 1,     /* month in the range of 0 to 11 */
@@ -115,5 +117,9 @@ fk_log_fprint_str(int level, char *data)
             tm_now->tm_min,         /* minutes (0-59) */
             tm_now->tm_sec,         /* seconds (0-60) */
             level_name,
-            data);
+            data
+    );
+
+    /* no buffering is preferable for logging */
+    fflush(fp);
 }
