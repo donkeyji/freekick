@@ -120,6 +120,10 @@ fk_log_fprint_str(int level, char *data)
             data
     );
 
-    /* no buffering is preferable for logging */
+    /*
+     * no buffering is preferable for logging
+     * with log file, it's desirable to flush all the contents written to a disk
+     * file ASAP, in case of a crash of the server when running
+     */
     fflush(fp);
 }
