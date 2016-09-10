@@ -81,7 +81,7 @@ fk_mem_realloc(void *ptr, size_t size)
         fk_mem_panic();
     }
 
-    new_size = fk_mem_malloc_size(ptr);
+    new_size = fk_mem_malloc_size(new_ptr);
     total_alloc = total_alloc - old_size + new_size;
 
     return new_ptr;
