@@ -13,7 +13,7 @@
 #---------------------------------------------------
 CC := gcc
 
-BASIC_CFLAGS  := -std=c99 -pedantic -Wall -O2 -I .
+BASIC_CFLAGS  := -std=c99 -pedantic -Wall -I .
 BASIC_LDFLAGS :=
 BASIC_LDLIBS  := -llua
 
@@ -22,12 +22,14 @@ os       := generic
 debug    := no
 jemalloc := no
 gprof    := no
+optimize := no
 
 $(info [Listing Arguments Used...])
 $(info os:       $(os))
 $(info debug:    $(debug))
 $(info jemalloc: $(jemalloc))
 $(info gprof:    $(gprof))
+$(info optimize: $(optimize))
 
 ifeq ($(os), generic)
 OS_CFLAGS  :=
@@ -101,9 +103,23 @@ $(error illegal value for gprof)
 endif # no
 endif # yes
 
-CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS)
-LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS)
-LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS)
+ifeq ($(optimize), yes)
+OPTIMIZE_CFLAGS  := -O2
+OPTIMIZE_LDFLAGS :=
+OPTIMIZE_LIBS    :=
+else
+ifeq ($(optimize), no)
+OPTIMIZE_CFLAGS  := -O0
+OPTIMIZE_LDFLAGS :=
+OPTIMIZE_LIBS    :=
+else
+$(error illegal value for optimize)
+endif
+endif
+
+CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS) $(OPTIMIZE_CFLAGS)
+LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS) $(OPTIMIZE_LDFLAGS)
+LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS) $(OPTIMIZE_LIBS)
 
 #---------------------------------------------------
 # sources && objects && Makefile.dep
