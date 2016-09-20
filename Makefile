@@ -1,16 +1,17 @@
-#---------------------------------------------------
+#--------------------------------------------------------------
 # Usage:
-# [g]make os=xxx debug=xxx jemalloc=xxx gprof=xxx
+# [g]make os=xxx debug=xxx jemalloc=xxx gprof=xxx optimize=xxx
 #
 # os       = generic/mac/linux/freebsd
 # debug    = yes/no
 # jemalloc = yes/no
 # gprof    = yes/no
-#---------------------------------------------------
+# optimize = yes/no
+#--------------------------------------------------------------
 
-#---------------------------------------------------
+#--------------------------------------------------------------
 # CC && CFLAGS && LDFLAGS && LDLIBS
-#---------------------------------------------------
+#--------------------------------------------------------------
 CC := gcc
 
 BASIC_CFLAGS  := -std=c99 -pedantic -Wall -I .
@@ -121,9 +122,9 @@ CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(G
 LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS) $(OPTIMIZE_LDFLAGS)
 LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS) $(OPTIMIZE_LIBS)
 
-#---------------------------------------------------
+#--------------------------------------------------------------
 # sources && objects && Makefile.dep
-#---------------------------------------------------
+#--------------------------------------------------------------
 SVRBIN  := freekick
 SVRSRCS := fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c                        \
            fk_mem.c fk_sock.c fk_str.c fk_util.c fk_heap.c                      \
