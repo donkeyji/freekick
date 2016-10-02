@@ -157,6 +157,12 @@ fk_daemonize(void)
     }
 }
 
+/*
+ * TODO:
+ * We can place a exclusive file lock on the pidfile in order to permit only one
+ * instance to run at one time. Every time the program try to write pid to the
+ * pidfile, it need to obtain the exclusive file lock first.
+ */
 void
 fk_create_pidfile(void)
 {
