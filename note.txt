@@ -323,3 +323,4 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 
 129. epoll/kqueue一次read事件触发，有没有以下这种可能：既有client的有效数据发送到，并且client关闭了连接？ 现在的fk_conn_recv_data中while循环来读取数据，就可能有逻辑错误。需要重构这几个函数。
 
+130. v13版本里，fk_cmd_mget->fk_conn_add_content_rsp()导致conn->timer的内存被错误的写，conn->timer->expired被写成了0，导致fk_svr_remove_conn->fk_conn_destroy->fk_ev_remove_tmev时并未删掉将conn->timer从evmgr里删掉，在conn断开后又触发了该timer的callback，导致segment fault.到底是哪里出现了内存越界呢??
