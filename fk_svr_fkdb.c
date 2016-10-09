@@ -1,3 +1,6 @@
+/* feature test macros */
+#include <fk_ftm.h>
+
 /* c standard headers */
 #include <stdlib.h>
 #include <stdio.h>
