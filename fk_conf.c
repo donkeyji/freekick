@@ -223,6 +223,11 @@ fk_conf_read_line(fk_cfline_t *line, FILE *fp)
     rt = getline(&(line->buf), &(line->len), fp);
     /* no need to think about end-of-file here */
     if (rt < 0) {
+        /*
+         * in order to avoid memory overflow, it is preferable to employ
+         * snprintf() instead of sprintf(), with respect to the 'size' argument
+         * determining the maximum length of the resulting formatted string
+         */
         snprintf(line->err, FK_CONF_MAX_LEN, "%s\n", strerror(errno));
         return FK_CONF_ERR;
     }
