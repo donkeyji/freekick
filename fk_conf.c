@@ -223,7 +223,7 @@ fk_conf_read_line(fk_cfline_t *line, FILE *fp)
     rt = getline(&(line->buf), &(line->len), fp);
     /* no need to think about end-of-file here */
     if (rt < 0) {
-        sprintf(line->err, "%s\n", strerror(errno));
+        snprintf(line->err, FK_CONF_MAX_LEN, "%s\n", strerror(errno));
         return FK_CONF_ERR;
     }
     return FK_CONF_OK;
@@ -240,7 +240,7 @@ fk_conf_parse_line(fk_cfline_t *line)
 
     while (buf[i] != '\n') {
         if (line->cnt == FK_CONF_MAX_FIELDS) {
-            sprintf(line->err, "the max fields of one line should not be more than %d, line: %"PRIu32"\n", FK_CONF_MAX_FIELDS, line->no);
+            snprintf(line->err, FK_CONF_MAX_LEN, "the max fields of one line should not be more than %d, line: %"PRIu32"\n", FK_CONF_MAX_FIELDS, line->no);
             return FK_CONF_ERR;
         }
         while (buf[i] == ' ' || buf[i] == '\t') { /* fint the first no empty character */
@@ -293,11 +293,11 @@ fk_conf_proc_line(fk_cfline_t *line)
     cmd = line->fields[0];
     dtv = fk_conf_search(cmd);
     if (dtv == NULL) {
-        sprintf(line->err, "no this cmd: %s, line: %"PRIu32"\n", fk_str_raw(cmd), line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "no this cmd: %s, line: %"PRIu32"\n", fk_str_raw(cmd), line->no);
         return FK_CONF_ERR;
     }
     if (dtv->field_cnt != line->cnt) {
-        sprintf(line->err, "field cnt wrong. line: %"PRIu32"\n", line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "field cnt wrong. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
     rt = dtv->handler(line);
@@ -335,7 +335,7 @@ fk_conf_parse_port(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) { /* not a positive integer */
-        sprintf(line->err, "port is not a valid number. line: %"PRIu32"\n", line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "port is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
     /*
@@ -345,7 +345,7 @@ fk_conf_parse_port(fk_cfline_t *line)
      */
     port = atoi(fk_str_raw(line->fields[1]));
     if (port <= 0 || port > 65535) {
-        sprintf(line->err, "port is not a valid number. line: %"PRIu32"\n", line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "port is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
     setting.port = (uint16_t)port;
@@ -397,7 +397,7 @@ fk_conf_parse_maxconn(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) { /* not a positive integer */
-        sprintf(line->err, "maxconn is not a valid number. line: %"PRIu32"\n", line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "maxconn is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
     setting.max_conns = atoi(fk_str_raw(line->fields[1]));
@@ -411,7 +411,7 @@ fk_conf_parse_dbcnt(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) { /* not a positive integer */
-        sprintf(line->err, "dbcnt is not a valid number. line: %"PRIu32"\n", line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "dbcnt is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
     dbcnt = atoi(fk_str_raw(line->fields[1]));
@@ -442,7 +442,7 @@ fk_conf_parse_loglevel(fk_cfline_t *line)
     } else if (strcasecmp(level, "error") == 0) {
         setting.log_level = FK_LOG_ERROR;
     } else {
-        sprintf(line->err, "no this log level: %s, line: %"PRIu32"", level, line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "no this log level: %s, line: %"PRIu32"", level, line->no);
         return FK_CONF_ERR;
     }
     return FK_CONF_OK;
@@ -455,7 +455,7 @@ fk_conf_parse_timeout(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) { /* not a positive integer */
-        sprintf(line->err, "dbcnt is not a valid number. line: %"PRIu32"\n", line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "dbcnt is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
     timeout = atoi(fk_str_raw(line->fields[1]));
@@ -479,7 +479,7 @@ fk_conf_parse_maxwbuf(fk_cfline_t *line)
 
     rt = fk_str_is_positive(line->fields[1]);
     if (rt == 0) { /* not a positive integer */
-        sprintf(line->err, "maxwbuf is not a valid number. line: %"PRIu32"\n", line->no);
+        snprintf(line->err, FK_CONF_MAX_LEN, "maxwbuf is not a valid number. line: %"PRIu32"\n", line->no);
         return FK_CONF_ERR;
     }
     maxwbuf = atoi(fk_str_raw(line->fields[1]));
