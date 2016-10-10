@@ -777,7 +777,20 @@ fk_conn_add_content_rsp(fk_conn_t *conn, char *content, size_t content_len)
         return FK_SVR_ERR;
     }
 
+    /*
+     * TODO:
+     * move this temporary buf to fk_conn_t in order to avoid calling
+     * fk_mem_alloc() and fk_mem_free() each time fk_conn_add_xxx_rsp() function
+     * is invoked
+     */
     buf = (char *)fk_mem_alloc(len + 1);
+    /*
+     * it's wrong to use sprintf(), since sprintf() cannot control the real
+     * lenght of the string to be formatted, instead it assume the source string
+     * has a terminating ending '\0', so this probably causes memory overflow.
+     * This behavior really sucks!!! Be Careful!!! A previous severe bug
+     * originates in this misuse.
+     */
     snprintf(buf, len + 1, rsp_content, content);
     memcpy(fk_buf_free_start(conn->wbuf), buf, len);
     fk_mem_free(buf);
