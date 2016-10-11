@@ -348,3 +348,6 @@ bug排查的线索：
 (9)在每一个frame层上查看conn, conn->timer, conn->wbuf的内容都是一样的，是因为此时程序已经执行到最深层的frame，已经将conn->wbuf, conn->timer所指向的内容修改过了，所以不管在那一层来查看这些位于heap上的变量时，结果都是一样的。
 
 131. v13 commit ae91d31a1bd70911a735f71709ce36a9c28754d5中: fk_svr_conn.c的fk_conn_read_cb()中的fk_conn_send_rsp()的调用地方不对, 当一个protocol未完全解析完成时，会调到执行fk_conn_send_rsp()将arg_vtr给清理掉了，造成内存错误.
+主要是fk_vtr_shrink(conn->arg_vtr)的时机不对，应该放到每一次cmd成功处理之后来执行；
+fk_buf_shrink(conn->arg_vtr)应该放在fk_conn_proc_cmd()里，与fk_conn_parse_req()中的fk_vtr_stretch(conn->arg_vtr)对应，每一个protocol会执行一次；
+fk_buf_shrink(conn->rbuf)可以放在fk_conn_rsp_send()里，与fk_conn_recv_data()中的fk_buf_stretch(conn->rbuf)对应，每一次read callback会执行一次；
