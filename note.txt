@@ -353,3 +353,16 @@ fk_buf_shrink(conn->arg_vtr)应该放在fk_conn_proc_cmd()里，与fk_conn_parse
 fk_buf_shrink(conn->rbuf)可以放在fk_conn_rsp_send()里，与fk_conn_recv_data()中的fk_buf_stretch(conn->rbuf)对应，每一次read callback会执行一次；
 
 在v13里，由于修改了fk_conn_recv_data()的策略，并不是先一次while循环全部recv()完所有数据，再去parse req和proc cmd; 而是执行一次recv()后就去parse req和proc cmd，导致对于mset这种协议数据太多，由于rbuf的限制未能一次recv()读取所有数据，导致fk_conn_parse_req()返回了FK_SVR_AGAIN，从而break跳出while，接着执行了fk_conn_send_rsp()导致错误的在此时执行了fk_vtr_shrink()将parse时分配的5个长度的arg_vtr给复原成了4个长度，导致mset的第5个参数弄丢了，悲剧！！！
+
+bug排查线索:
+在make os=linux debug=yes jemalloc=yes情况下
+(1) python t.py出现segment fault，查出是运行到处理第2条mset指令时出现segment
+fault；
+
+(2) 直接查server，发现是dict的某个fk_elt_t的节点的key为NULL，一头雾水；
+
+(2) 查server困难，只好一段一段排查t.py，到底是哪一部分导致的segment faul，发现与mset之前的指令都无关，只要运行2条mset指令就会出现错误；
+
+(3) 打断点在fk_cmd_mset处，来跟踪这2条mset指令。print出conn, conn->arg_vtr等变量，发现在处理第一天mset时就出现conn->arg_vtr->len为4，conn->arg_parsed为5，显然有问题，猜想conn->arg_vtr->len内存被修改；
+
+(4) watch指令监视conn->arg_vtr->len，发现是fk_conn_send_rsp里的fk_vtr_shrink处复原了conn->arg_vtr的长度为初始值4；单步跟踪，发现是fk_conn_parse_req()未解析完整个protocol时跳转到执行fk_conn_send_rsp，这样一来将fk_conn_parse_req()的分配的arg_vtr又复原到初始长度4，导致第解析出第5个argument后存储到了越界内存处，即v2，在后续的处理中，将一个非法内存存入到dict中去了，导致在后续在fk_dict_strech时发现有非法内存，导致segment fault。
