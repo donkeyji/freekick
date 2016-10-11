@@ -335,7 +335,7 @@ bug排查的线索：
 
 (3) fk_conn_destroy()时的conn->timer->expired正常情况下不可能为0，可能是某处修改了conn->timer->expired的值，采用gdb的watch指令来监视conn->timer->expired的值(先打印出expired的地址ADDRESS，然后直接watch *ADDRESS);
 
-(4) 发现是fk_conn_add_content_rsp()中的sprintf()修改了conn->timer->expired的值，猜测可能是内存越界；
+(4) 发现是fk_conn_add_content_rsp()中的sprintf()修改了conn->timer->expired的值，猜测可能是写conn->wbuf内存越界影响到了conn->timer；
 
 (5) 发现conn->wbuf与conn->timer的地址很接近，采用print和x指令打印出wbuf, timer的值，发现wbuf->buffer所指的字符串覆盖到了timer的内存
 
