@@ -346,3 +346,5 @@ bug排查的线索：
 (8) 用snprintf()提供了size来控制拷贝的长度，也就是format出来的字符串最多为size-1个字节，外加自动添加的结尾'\0'。直接使用snprintf()将字符串写入wbuf并不方便，因为有一个结尾的'\0'要处理，所以添加一个临时的buf和memcpy()来处理. TODO: 将临时的buf移到fk_conn_t里，免得每次都alloc/free。
 
 (9)在每一个frame层上查看conn, conn->timer, conn->wbuf的内容都是一样的，是因为此时程序已经执行到最深层的frame，已经将conn->wbuf, conn->timer所指向的内容修改过了，所以不管在那一层来查看这些位于heap上的变量时，结果都是一样的。
+
+131. v13 commit ae91d31a1bd70911a735f71709ce36a9c28754d5中: fk_svr_conn.c的fk_conn_read_cb()中的fk_conn_send_rsp()的调用地方不对, 当一个protocol未完全解析完成时，会调到执行fk_conn_send_rsp()将arg_vtr给清理掉了，造成内存错误.
