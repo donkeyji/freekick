@@ -22,7 +22,7 @@ def pfunc():
     f.seek(0)
     i = 0;
     for line in f:
-        rd.set('%d' % i, line.rstrip())
+        rd.setnx('%d' % i, line.rstrip())
         i += 1
 
     # exists
@@ -43,7 +43,7 @@ def pfunc():
     for line in f:
         k1, k2 = '%d' % i, '%d' % (i+1)
         v1, v2 = line.rstrip(), line.rstrip()
-        rd.mset(k1=v1, k2=v2)
+        rd.mset(**{k1:v1, k2:v2})
         i += 1
 
     # mget

@@ -441,6 +441,11 @@ fk_conn_free_args(fk_conn_t *conn)
     conn->arg_parsed = 0;
     conn->parse_done = 0;
     conn->arg_cnt = 0;
+    /*
+     * it is preferable to shrink here, reset all fields associated with
+     * argument parsed
+     */
+    fk_vtr_shrink(conn->arg_vtr);
 }
 
 int
@@ -512,6 +517,7 @@ fk_conn_proc_cmd(fk_conn_t *conn)
     }
 
     fk_conn_free_args(conn);
+
     return FK_SVR_OK;
 }
 
@@ -602,16 +608,22 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
                 fk_svr_remove_conn(conn);
                 return;
             }
-        }
+        } /* end of while (fk_buf_payload_len(conn->rbuf) > 0) */
+    } /* end of while (again == 1) */
 
-        /* maybe at this time, there is no reply data in conn->wbuf */
-        rt = fk_conn_send_rsp(conn);
-        if (rt == FK_SVR_ERR) {
-            /* donot print log here, print detailed log in fk_conn_send_rsp */
-            //fk_log_error("fatal error occurs when sending response\n");
-            fk_svr_remove_conn(conn);
-            return;
-        }
+    /*
+     * move fk_conn_send_rsp() out of the loop while (again)
+     * no matter how many complete protocols have been processed previously in
+     * fk_conn_read_cb() this time, only one singal call to fk_conn_send_rsp()
+     * is needed to shrink conn->rbuf and register conn->write_ev
+     */
+    /* maybe at this time, there is no reply data in conn->wbuf */
+    rt = fk_conn_send_rsp(conn);
+    if (rt == FK_SVR_ERR) {
+        /* donot print log here, print detailed log in fk_conn_send_rsp */
+        //fk_log_error("fatal error occurs when sending response\n");
+        fk_svr_remove_conn(conn);
+        return;
     }
     return;
 }
@@ -706,7 +718,16 @@ fk_conn_send_rsp(fk_conn_t *conn)
 
     /* step 2 */
     fk_buf_shrink(conn->rbuf);
-    fk_vtr_shrink(conn->arg_vtr);
+
+    /*
+     * conn->arg_vtr should not be shrinked here, instead it should be shrinked
+     * just after every single protocol has been handled.
+     * Each time fk_conn_read_cb() was called, probably multiple complete
+     * protocols were received, with calling fk_vtr_stretch() multiple times,
+     * so fk_vtr_shrink(conn->arg_vtr) should be called after a protocol was
+     * processed
+     */
+    //fk_vtr_shrink(conn->arg_vtr);
 
     /* step 3 */
     wbuf = conn->wbuf;
