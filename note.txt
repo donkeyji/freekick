@@ -351,3 +351,5 @@ bug排查的线索：
 主要是fk_vtr_shrink(conn->arg_vtr)的时机不对，应该放到每一次cmd成功处理之后来执行；
 fk_buf_shrink(conn->arg_vtr)应该放在fk_conn_proc_cmd()里，与fk_conn_parse_req()中的fk_vtr_stretch(conn->arg_vtr)对应，每一个protocol会执行一次；
 fk_buf_shrink(conn->rbuf)可以放在fk_conn_rsp_send()里，与fk_conn_recv_data()中的fk_buf_stretch(conn->rbuf)对应，每一次read callback会执行一次；
+
+在v13里，由于修改了fk_conn_recv_data()的策略，并不是先一次while循环全部recv()完所有数据，再去parse req和proc cmd; 而是执行一次recv()后就去parse req和proc cmd，导致对于mset这种协议数据太多，由于rbuf的限制未能一次recv()读取所有数据，导致fk_conn_parse_req()返回了FK_SVR_AGAIN，从而break跳出while，接着执行了fk_conn_send_rsp()导致错误的在此时执行了fk_vtr_shrink()将parse时分配的5个长度的arg_vtr给复原成了4个长度，导致mset的第5个参数弄丢了，悲剧！！！
