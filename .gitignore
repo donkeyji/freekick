@@ -14,3 +14,4 @@ v.log
 *.bak
 *.log
 core
+clean.sh
