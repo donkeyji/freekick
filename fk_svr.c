@@ -298,7 +298,7 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
          * no need to restore the state of sigint_flag & sigterm_flag
          * because we're gonna to exit
          */
-        fk_log_info("to exit by signal\n");
+        fk_log_info("exiting via signal\n");
         fk_ev_stop(); /* will stop the event cycle int the next loop */
         return 0;
     }
@@ -473,7 +473,7 @@ fk_svr_signal_exit_handler(int sig)
      * because it calls the stdio function fprintf() inside
      * so fk_log_info() should not be called in a signal handler
      */
-    //fk_log_info("to exit by signal: %d\n", sig);
+    //fk_log_info("exiting via signal: %d\n", sig);
 
     //fk_ev_stop(); /* stop the event cycle */
     //exit(EXIT_SUCCESS);

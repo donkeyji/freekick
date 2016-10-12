@@ -442,8 +442,9 @@ fk_conn_free_args(fk_conn_t *conn)
     conn->parse_done = 0;
     conn->arg_cnt = 0;
     /*
-     * it is preferable to shrink here, reset all fields associated with
-     * argument parsed
+     * it is preferable to shrink arg_vtr here. Reset all fields associated with
+     * argument parsed in fk_conn_free_args, so as to prepare for the next
+     * complete protocol sent from the client
      */
     fk_vtr_shrink(conn->arg_vtr);
 }
@@ -616,12 +617,13 @@ fk_conn_read_cb(int fd, uint8_t type, void *ext)
     } /* end of while (again == 1) */
 
     /*
-     * move fk_conn_send_rsp() out of the loop while (again)
+     * move fk_conn_send_rsp() out of the loop while (again == 1) {}
      * no matter how many complete protocols have been processed previously in
-     * fk_conn_read_cb() this time, only one singal call to fk_conn_send_rsp()
+     * fk_conn_read_cb() this time, only one single call to fk_conn_send_rsp()
      * is needed to shrink conn->rbuf and register conn->write_ev
+     * probably there is no any reply data in conn->wbuf at this point for the
+     * reason that even not a single protocol has been received.
      */
-    /* maybe at this time, there is no reply data in conn->wbuf */
     rt = fk_conn_send_rsp(conn);
     if (rt == FK_SVR_ERR) {
         /* donot print log here, print detailed log in fk_conn_send_rsp */
