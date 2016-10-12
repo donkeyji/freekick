@@ -516,6 +516,10 @@ fk_conn_proc_cmd(fk_conn_t *conn)
         }
     }
 
+    /*
+     * after a whole protocol was processed, clear all the fields associated
+     * with arguments for this protocol to prepare for the next protocol
+     */
     fk_conn_free_args(conn);
 
     return FK_SVR_OK;

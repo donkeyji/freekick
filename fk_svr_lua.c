@@ -123,6 +123,7 @@ fk_lua_pcall(lua_State *L)
     return rt; /* number of returned value */
 }
 
+/* fk_lua_conn_proc_cmd() performs similar steps as fk_conn_proc_cmd() */
 int
 fk_lua_conn_proc_cmd(fk_conn_t *conn)
 {
