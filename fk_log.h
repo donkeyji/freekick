@@ -19,10 +19,25 @@ typedef struct {
 } fk_log_t;
 
 void fk_log_init(char *log_path, int log_level);
+void fk_log_write(int level, char *fmt, ...);
+/*
 void fk_log_error(char *fmt, ...);
 void fk_log_warn(char *fmt, ...);
 void fk_log_info(char *fmt, ...);
 void _fk_log_debug(char *fmt, ...);
+*/
+
+#define fk_log_info(...)    do {                 \
+    fk_log_write(FK_LOG_INFO, __VA_ARGS__);      \
+} while (0)
+
+#define fk_log_warn(...)    do {                 \
+    fk_log_write(FK_LOG_WARN, __VA_ARGS__);      \
+} while (0)
+
+#define fk_log_error(...)   do {                 \
+    fk_log_write(FK_LOG_ERROR, __VA_ARGS__);     \
+} while (0)
 
 /*
  * ##__VA_ARGS__ is an gcc extention for c99 variadic macro, which is used to
@@ -35,9 +50,11 @@ void _fk_log_debug(char *fmt, ...);
  * warning: ISO C99 requires rest arguments to be used [enabled by default]
  */
 #ifdef FK_DEBUG
-#define fk_log_debug(fmt, ...) _fk_log_debug(fmt, ##__VA_ARGS__)
+#define fk_log_debug(...)   do {               \
+    fk_log_write(FK_LOG_DEBUG, __VA_ARGS__);   \
+} while (0)
 #else
-#define fk_log_debug(fmt, ...)
+#define fk_log_debug(...)
 #endif
 
 #endif

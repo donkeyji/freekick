@@ -10,6 +10,7 @@
 
 #define FK_LOG_BUFF_SIZE 1024
 
+/*
 #define fk_log_write(level) {                   \
     char     log_buff[FK_LOG_BUFF_SIZE];        \
     va_list  ap;                                \
@@ -22,6 +23,7 @@
     va_end(ap);                                 \
     fk_log_fprint_str(level, log_buff);         \
 }
+*/
 
 static void fk_log_fprint_str(int level, char *data);
 
@@ -48,6 +50,7 @@ fk_log_init(char *log_path, int log_level)
     logger.log_file = fp;
 }
 
+/*
 void
 fk_log_error(char *fmt, ...)
 {
@@ -71,6 +74,7 @@ _fk_log_debug(char *fmt, ...)
 {
     fk_log_write(FK_LOG_DEBUG);
 }
+*/
 
 void
 fk_log_fprint_str(int level, char *data)
@@ -126,4 +130,19 @@ fk_log_fprint_str(int level, char *data)
      * file ASAP, in case of a crash of the server when running
      */
     fflush(fp);
+}
+
+void
+fk_log_write(int level, char *fmt, ...)
+{
+    char     log_buff[FK_LOG_BUFF_SIZE];
+    va_list  ap;
+
+    if (level > logger.log_level) {
+        return;
+    }
+    va_start(ap, fmt);
+    vsprintf(log_buff, fmt, ap);
+    va_end(ap);
+    fk_log_fprint_str(level, log_buff);
 }
