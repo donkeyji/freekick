@@ -159,9 +159,7 @@ fk_conn_recv_data(fk_conn_t *conn)
      * }
      */
     //while (1) {
-#ifdef FK_DEBUG
     fk_log_debug("[before rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
-#endif
     if (fk_buf_payload_len(conn->rbuf) > (3 * (fk_buf_len(conn->rbuf) >> 2))) {
         fk_buf_shift(conn->rbuf);
     }
@@ -181,9 +179,7 @@ fk_conn_recv_data(fk_conn_t *conn)
         //return FK_SVR_OK;
         return FK_SVR_ERR;
     }
-#ifdef FK_DEBUG
     fk_log_debug("[after rbuf adjust]rbuf->low: %lu, rbuf->high: %lu, rbuf->len: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf), fk_buf_len(conn->rbuf));
-#endif
 
     free_buf = fk_buf_free_start(conn->rbuf);
     free_len = fk_buf_free_len(conn->rbuf);
@@ -201,14 +197,10 @@ fk_conn_recv_data(fk_conn_t *conn)
             return FK_SVR_AGAIN;
         }
     } else { /* succeed */
-#ifdef FK_DEBUG
         fk_log_debug("[conn data] fd: %d, recv_len: %d, data: %s\n", conn->fd, recv_len, free_buf);
-#endif
         conn->last_recv = time(NULL);
         fk_buf_high_inc(conn->rbuf, recv_len);
-#ifdef FK_DEBUG
         fk_log_debug("[after recv]rbuf->low: %lu, rbuf->high: %lu\n", fk_buf_low(conn->rbuf), fk_buf_high(conn->rbuf));
-#endif
         if (recv_len < free_len) { /* no extra data left */
             //return FK_SVR_OK;
             return FK_SVR_DONE;
@@ -240,54 +232,38 @@ fk_conn_parse_req(fk_conn_t *conn)
 
     rbuf = conn->rbuf;
 
-#ifdef FK_DEBUG
     fk_log_debug("[before parsing] low: %lu, high: %lu\n", fk_buf_low(rbuf), fk_buf_high(rbuf));
-#endif
 
     if (conn->arg_parsed == 0) {
         if (fk_buf_payload_len(rbuf) > 0) {
             start = fk_buf_payload_start(rbuf);
             if (*start != '*') {
-#ifdef FK_DEBUG
                 fk_log_debug("illegal beginning of a protocol\n");
-#endif
                 return FK_SVR_ERR;
             }
-#ifdef FK_DEBUG
             fk_log_debug("payload left: %zu, max argcnt line: %zu\n", fk_buf_payload_len(rbuf) - 1, (size_t)FK_ARG_CNT_LINE_HIGHWAT);
-#endif
             search_len = fk_util_smaller(fk_buf_payload_len(rbuf) - 1, FK_ARG_CNT_LINE_HIGHWAT);
             end = memchr(start + 1, '\n', search_len);
             if (end == NULL) {
                 if (search_len == FK_ARG_CNT_LINE_HIGHWAT) {
                     /* cannot locate the '\n' in the max length */
-#ifdef FK_DEBUG
                     fk_log_debug("an illegal argument count line appeares\n");
-#endif
                     return FK_SVR_ERR;
                 }
-#ifdef FK_DEBUG
                 fk_log_debug("a completed argument count line was not received\n");
-#endif
                 return FK_SVR_AGAIN;
             }
             if (*(end - 1) != '\r') {
-#ifdef FK_DEBUG
                 fk_log_debug("illegal end of a protocol\n");
-#endif
                 return FK_SVR_ERR;
             }
             if (end - 2 < start + 1) {
-#ifdef FK_DEBUG
                 fk_log_debug("wrong length of argument count seq\n");
-#endif
                 return FK_SVR_ERR;
             }
             rt = fk_util_is_positive_seq(start + 1, (size_t)(end - 2 - start));
             if (rt != 1) {
-#ifdef FK_DEBUG
                 fk_log_debug("illegal argument count format\n");
-#endif
                 return FK_SVR_ERR;
             }
             /*
@@ -296,9 +272,7 @@ fk_conn_parse_req(fk_conn_t *conn)
              */
             argc = atoi(start + 1);
             if (argc <= 0 || argc > FK_ARG_CNT_HIGHWAT) {
-#ifdef FK_DEBUG
                 fk_log_debug("illegal argument count\n");
-#endif
                 return FK_SVR_ERR;
             }
             /*
@@ -306,14 +280,10 @@ fk_conn_parse_req(fk_conn_t *conn)
              * conn->arg_parsed
              */
             conn->arg_parsed = argc;
-#ifdef FK_DEBUG
             fk_log_debug("[arg_parsed parsed]: %d\n", conn->arg_parsed);
             fk_log_debug("before arg_vtr stretch: len: %zu\n", fk_vtr_len(conn->arg_vtr));
-#endif
             fk_vtr_stretch(conn->arg_vtr, (size_t)(conn->arg_parsed));
-#ifdef FK_DEBUG
             fk_log_debug("after arg_vtr stretch: len: %zu\n", fk_vtr_len(conn->arg_vtr));
-#endif
 
             fk_buf_low_inc(rbuf, (size_t)(end - start + 1));
         }
@@ -323,46 +293,32 @@ fk_conn_parse_req(fk_conn_t *conn)
         if (conn->cur_arglen == -1) {
             start = fk_buf_payload_start(rbuf);
             if (*start != '$') {
-#ifdef FK_DEBUG
                 fk_log_debug("illegal beginning of a argument length\n");
-#endif
                 return FK_SVR_ERR;
             }
-#ifdef FK_DEBUG
             fk_log_debug("payload left: %zu, max arglen line: %zu\n", fk_buf_payload_len(rbuf) - 1, (size_t)FK_ARG_LEN_LINE_HIGHWAT);
-#endif
             search_len = fk_util_smaller(fk_buf_payload_len(rbuf) - 1, FK_ARG_LEN_LINE_HIGHWAT);
             end = memchr(start + 1, '\n', search_len);
             if (end == NULL) {
                 if (search_len == FK_ARG_LEN_LINE_HIGHWAT) {
                     /* cannot locate the '\n' in the max length */
-#ifdef FK_DEBUG
                     fk_log_debug("an illegal argument length line appeares\n");
-#endif
                     return FK_SVR_ERR;
                 }
-#ifdef FK_DEBUG
                 fk_log_debug("a completed argument length line was not received\n");
-#endif
                 return FK_SVR_AGAIN;
             }
             if (*(end - 1) != '\r') {
-#ifdef FK_DEBUG
                 fk_log_debug("illegal end of a argument length\n");
-#endif
                 return FK_SVR_ERR;
             }
             if (end - 2 < start + 1) {
-#ifdef FK_DEBUG
                 fk_log_debug("wrong length of argument length seq\n");
-#endif
                 return FK_SVR_ERR;
             }
             rt = fk_util_is_nonminus_seq(start + 1, (size_t)(end - 2 - start));
             if (rt != 1) {
-#ifdef FK_DEBUG
                 fk_log_debug("illegal argument length format\n");
-#endif
                 return FK_SVR_ERR;
             }
             /*
@@ -371,9 +327,7 @@ fk_conn_parse_req(fk_conn_t *conn)
              */
             argl = atoi(start + 1); /* argument length */
             if (argl < 0 || argl > FK_ARG_HIGHWAT) {
-#ifdef FK_DEBUG
                 fk_log_debug("illegal argument length\n");
-#endif
                 return FK_SVR_ERR;
             }
             conn->cur_arglen = argl;
@@ -383,15 +337,11 @@ fk_conn_parse_req(fk_conn_t *conn)
         if (conn->cur_arglen != -1) {
             start = fk_buf_payload_start(rbuf);
             arg_len = (size_t)(conn->cur_arglen);
-#ifdef FK_DEBUG
             fk_log_debug("saved arg_len: %lu\n", arg_len);
-#endif
             if (fk_buf_payload_len(rbuf) >= arg_len + 2) {
                 if (*(start + arg_len) != '\r' ||
                     *(start + arg_len + 1) != '\n') {
-#ifdef FK_DEBUG
                     fk_log_debug("the real length of argument line does not equal the length parsed before\n");
-#endif
                     return FK_SVR_ERR;
                 }
                 itm = fk_item_create(FK_ITEM_STR, fk_str_create(start, arg_len));
@@ -411,9 +361,7 @@ fk_conn_parse_req(fk_conn_t *conn)
         }
     }
 
-#ifdef FK_DEBUG
     fk_log_debug("[after parsing] low: %lu, high: %lu\n", fk_buf_low(rbuf), fk_buf_high(rbuf));
-#endif
 
     return FK_SVR_AGAIN;
 }
@@ -458,9 +406,7 @@ fk_conn_proc_cmd(fk_conn_t *conn)
     fk_proto_t  *pto;
 
     if (conn->parse_done == 0) {
-#ifdef FK_DEBUG
         fk_log_debug("parse not completed yet\n");
-#endif
         return FK_SVR_OK;
     }
     itm = (fk_item_t *)fk_conn_get_arg(conn, 0);
@@ -540,9 +486,7 @@ fk_conn_timer_cb(unsigned interval, uint8_t type, void *ext)
     now = time(NULL);
 
     if (now - conn->last_recv > setting.timeout) {
-#ifdef FK_DEBUG
         fk_log_debug("connection timeout\n");
-#endif
         fk_svr_remove_conn(conn);
         return -1; /* tell evmgr not to add this timer again */
     }
@@ -646,16 +590,12 @@ fk_conn_write_cb(int fd, uint8_t type, void *ext)
 
     conn = (fk_conn_t *)ext;
 
-#ifdef FK_DEBUG
     fk_log_debug("data to sent: paylen: %d, data: %s\n", fk_buf_payload_len(conn->wbuf), fk_buf_payload_start(conn->wbuf));
-#endif
 
     while (fk_buf_payload_len(conn->wbuf) > 0) {
         plen = fk_buf_payload_len(conn->wbuf);
         pbuf = fk_buf_payload_start(conn->wbuf);
-#ifdef FK_DEBUG
         fk_log_debug("[before send]low: %lu, high: %lu\n", fk_buf_low(conn->wbuf), fk_buf_high(conn->wbuf));
-#endif
 
         sent_len = send(fd, pbuf, plen, 0);
         if (sent_len < 0) {
@@ -668,9 +608,7 @@ fk_conn_write_cb(int fd, uint8_t type, void *ext)
             }
         }
         fk_buf_low_inc(conn->wbuf, (size_t)(sent_len));
-#ifdef FK_DEBUG
         fk_log_debug("[after send]low: %lu, high: %lu\n", fk_buf_low(conn->wbuf), fk_buf_high(conn->wbuf));
-#endif
     }
 
     fk_buf_shrink(conn->wbuf);
@@ -716,9 +654,7 @@ fk_conn_send_rsp(fk_conn_t *conn)
     //if (fk_buf_reach_highwat(conn->rbuf) &&
     //fk_buf_payload_len(conn->rbuf) == fk_buf_len(conn->rbuf))
     //{
-    //#ifdef FK_DEBUG
     //fk_log_debug("a incompleted line is too long, even longer than the max length of read buffer\n");
-    //#endif
     //return FK_SVR_ERR;
     //}
 

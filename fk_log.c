@@ -67,7 +67,7 @@ fk_log_info(char *fmt, ...)
 }
 
 void
-fk_log_debug(char *fmt, ...)
+_fk_log_debug(char *fmt, ...)
 {
     fk_log_write(FK_LOG_DEBUG);
 }

@@ -239,9 +239,7 @@ fk_svr_listen_cb(int listen_fd, uint8_t type, void *arg)
         fk_sock_set_keepalive(fd);
 
         fk_svr_add_conn(fd);
-#ifdef FK_DEBUG
         fk_log_debug("conn_cnt: %d, max_conns: %d\n", server.conn_cnt, setting.max_conns);
-#endif
         /* why redis do like below? */
         //if (server.conn_cnt > server.max_conns) {
         //fk_log_info("beyond max connections\n");
@@ -362,9 +360,7 @@ fk_svr_init(void)
         fk_log_error("server listen socket creating failed: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
-#ifdef FK_DEBUG
     fk_log_debug("listen fd: %d\n", server.listen_fd);
-#endif
     server.listen_ev = fk_ioev_create(server.listen_fd, FK_IOEV_READ, NULL, fk_svr_listen_cb);
     fk_ev_add_ioev(server.listen_ev);
 

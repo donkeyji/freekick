@@ -178,9 +178,7 @@ fk_create_pidfile(void)
      */
     pid_file = fopen(fk_str_raw(setting.pid_path), "w+");
     pid = getpid();
-#ifdef FK_DEBUG
     fk_log_debug("pid: %d, pid file: %s\n", pid, fk_str_raw(setting.pid_path));
-#endif
     fprintf(pid_file, "%d\n", pid);
 
     /*
@@ -227,9 +225,7 @@ fk_setrlimit(void)
     if (max_files > lmt.rlim_max) {
         euid = geteuid();
         if (euid == 0) { /* root */
-#ifdef FK_DEBUG
-            fk_log_info("running as root\n");
-#endif
+            fk_log_debug("running as root\n");
             lmt.rlim_max = max_files;
             lmt.rlim_cur = max_files;
             rt = setrlimit(RLIMIT_NOFILE, &lmt);
@@ -239,9 +235,7 @@ fk_setrlimit(void)
             }
             fk_log_info("new file number limit: rlim_cur = %llu, rlim_max = %llu\n", (unsigned long long)lmt.rlim_cur, (unsigned long long)lmt.rlim_max);
         } else { /* non-root */
-#ifdef FK_DEBUG
-            fk_log_info("running as non-root\n");
-#endif
+            fk_log_debug("running as non-root\n");
             max_files = lmt.rlim_max; /* open as many files as possible */
             lmt.rlim_cur = lmt.rlim_max;
             rt = setrlimit(RLIMIT_NOFILE, &lmt);
