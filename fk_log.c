@@ -142,7 +142,8 @@ fk_log_write(int level, char *fmt, ...)
         return;
     }
     va_start(ap, fmt);
-    vsprintf(log_buff, fmt, ap);
+    //vsprintf(log_buff, fmt, ap);
+    vsnprintf(log_buff, FK_LOG_BUFF_SIZE, fmt, ap);
     va_end(ap);
     fk_log_fprint_str(level, log_buff);
 }
