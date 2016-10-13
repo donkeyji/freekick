@@ -27,6 +27,11 @@ void fk_log_info(char *fmt, ...);
 void _fk_log_debug(char *fmt, ...);
 */
 
+/*
+ * we do not use the form of fk_log_info(fmt, ...), since probably only one
+ * argument is passed. Doing so could avoid the following warning:
+ * warning: ISO C99 requires rest arguments to be used [enabled by default]
+ */
 #define fk_log_info(...)    do {                 \
     fk_log_write(FK_LOG_INFO, __VA_ARGS__);      \
 } while (0)
