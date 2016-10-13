@@ -5,12 +5,15 @@ ulimit -c unlimited
 
 # the core file's name is determined by /proc/sys/kernel/core_pattern
 # the default names vary across ditributions
+GDB_OPTIONS='-tui --args'
+GDB_BIN=gdb
+
 CORE_FILE=/tmp/*core*
 FK_CONF=freekick.conf
 FK_BIN=freekick
 
 if [ -f $CORE_FILE ]; then
-    gdb -c $CORE_FILE --args $FK_BIN $FK_CONF
+    $GDB_BIN $GDB_OPTIONS -c $CORE_FILE $FK_BIN $FK_CONF
 else
-    gdb --args $FK_BIN $FK_CONF
+    $GDB_BIN $GDB_OPTIONS $FK_BIN $FK_CONF
 fi
