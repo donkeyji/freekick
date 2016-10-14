@@ -46,12 +46,22 @@ fk_log_init(char *log_path, int log_level)
 void
 fk_log_error(char *fmt, ...)
 {
+    /* va_list is a pointer, something like (void *) or (char *) */
     va_list ap;
 
     fk_log_loggable(FK_LOG_ERROR);
 
+    /*
+     * va_start is actually a macro
+     * fmt must be the last static argument of this function, after calling
+     * va_start, ap points to address of the first variable argument
+     */
     va_start(ap, fmt);
     fk_log_exec(FK_LOG_ERROR, fmt, ap);
+
+    /*
+     * va_end is actually a macro as va_start
+     * at this point, ap is make point to an invalid address*/
     va_end(ap);
 }
 
