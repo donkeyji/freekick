@@ -10,22 +10,15 @@
 
 #define FK_LOG_BUFF_SIZE 1024
 
-/*
-#define fk_log_write(level) {                   \
-    char     log_buff[FK_LOG_BUFF_SIZE];        \
-    va_list  ap;                                \
-                                                \
-    if (level > logger.log_level) {             \
+#define fk_log_loggable(level)  do {            \
+    /* beyond the current capacity of log */    \
+    if ((level) > logger.log_level) {                \
         return;                                 \
     }                                           \
-    va_start(ap, fmt);                          \
-    vsprintf(log_buff, fmt, ap);                \
-    va_end(ap);                                 \
-    fk_log_fprint_str(level, log_buff);         \
-}
-*/
+} while (0)
 
-static void fk_log_fprint_str(int level, char *data);
+static void fk_log_output(int level, char *data);
+static void fk_log_exec(int level, char *fmt, va_list ap);
 
 static fk_log_t logger = {
     FK_LOG_DEBUG,
@@ -50,34 +43,56 @@ fk_log_init(char *log_path, int log_level)
     logger.log_file = fp;
 }
 
-/*
 void
 fk_log_error(char *fmt, ...)
 {
-    fk_log_write(FK_LOG_ERROR);
+    va_list ap;
+
+    fk_log_loggable(FK_LOG_ERROR);
+
+    va_start(ap, fmt);
+    fk_log_exec(FK_LOG_ERROR, fmt, ap);
+    va_end(ap);
 }
 
 void
 fk_log_warn(char *fmt, ...)
 {
-    fk_log_write(FK_LOG_WARN);
+    va_list ap;
+
+    fk_log_loggable(FK_LOG_WARN);
+
+    va_start(ap, fmt);
+    fk_log_exec(FK_LOG_WARN, fmt, ap);
+    va_end(ap);
 }
 
 void
 fk_log_info(char *fmt, ...)
 {
-    fk_log_write(FK_LOG_INFO);
+    va_list ap;
+
+    fk_log_loggable(FK_LOG_INFO);
+
+    va_start(ap, fmt);
+    fk_log_exec(FK_LOG_INFO, fmt, ap);
+    va_end(ap);
 }
 
 void
-_fk_log_debug(char *fmt, ...)
+fk_log_debugx(char *fmt, ...)
 {
-    fk_log_write(FK_LOG_DEBUG);
+    va_list ap;
+
+    fk_log_loggable(FK_LOG_DEBUG);
+
+    va_start(ap, fmt);
+    fk_log_exec(FK_LOG_DEBUG, fmt, ap);
+    va_end(ap);
 }
-*/
 
 void
-fk_log_fprint_str(int level, char *data)
+fk_log_output(int level, char *data)
 {
     char       *level_name;
     FILE       *fp;
@@ -133,17 +148,16 @@ fk_log_fprint_str(int level, char *data)
 }
 
 void
-fk_log_write(int level, char *fmt, ...)
+fk_log_exec(int level, char *fmt, va_list ap)
 {
     char     log_buff[FK_LOG_BUFF_SIZE];
-    va_list  ap;
 
-    if (level > logger.log_level) {
-        return;
-    }
-    va_start(ap, fmt);
+    /*
+     * vsnprintf() is more safer than vsprintf(), since vsprintf() can probably
+     * cause memory overflow
+     */
     //vsprintf(log_buff, fmt, ap);
     vsnprintf(log_buff, FK_LOG_BUFF_SIZE, fmt, ap);
-    va_end(ap);
-    fk_log_fprint_str(level, log_buff);
+
+    fk_log_output(level, log_buff);
 }
