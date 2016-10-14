@@ -234,7 +234,7 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 
 86. extern与static都是用来申明变量/函数的，二者意义相反，不能同时实施与同一个对象。static申明的作用：不生成global属性的符号，查看汇编可看到。用static申明的变量/函数，其定义只能出现在该static申明出现的.c文件中。所以static不能出现在.h文件中。
 
-87. fk_modA.c中应该#include <fk_modA.h>的原因：为了避免申明与定义不一致。加入不这样做，如果在fk_modB.c中#include <fk_modA.h>，但是fk_modA.c中的实现与fk_modA.h的申明不一致，链接时就会找不到reference。
+87. fk_modA.c中应该#include <fk_modA.h>的原因：为了避免申明与定义不一致。假如不这样做，如果在fk_modB.c中#include <fk_modA.h>，但是fk_modA.c中的实现与fk_modA.h的申明不一致，链接时就会找不到reference。
 
 88. 由于在申明无参数的函数原型时没有使用void，会导致编译器认为这是一个K&R方式的函数申明，所以按照K&R方式来处理函数调用，以至于函数调用时传入了错误的参数也能通过编译。比如fk_ev_cycle/fk_ev_get_nearest_tmev的使用，我居然一直传错了参数，OMG...所以对于无参数的函数申明和定义一定要使用void。
 
@@ -246,11 +246,11 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 
 92. 为何现在的gcc对于没有static修饰的inline函数，不要求必须在同一个.c文件中定义，gcc会把这个inline函数当成普通的函数?感觉好confused...
 
-93. To Do:尽量的使用int32_t/int64_t/uint32_t/uint64_t/int8_t/uint8_t来替换掉int/long/char，用来承载一些需要表示一定数值范围的变量。int仅仅用来表示一些状态值，比如0/1/-1等。在处理函数参数时要注意做安全的类型转换。
+93. TODO:尽量的使用int32_t/int64_t/uint32_t/uint64_t/int8_t/uint8_t来替换掉int/long/char，用来承载一些需要表示一定数值范围的变量。int仅仅用来表示一些状态值，比如0/1/-1等。在处理函数参数时要注意做安全的类型转换。
 
-94. To Do: fk_svr_listen_cb里循环调用accept直到出错，因为有可能有多个新连接到来。
+94. TODO: fk_svr_listen_cb里循环调用accept直到出错，因为有可能有多个新连接到来。
 
-95. To Do: 去掉fk_sock_accept/fk_sock_close
+95. TODO: 去掉fk_sock_accept/fk_sock_close
 
 96. 只处理在当前情况下会出现的errno，而不处理所有情况下的errno。
 
