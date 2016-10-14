@@ -10,11 +10,11 @@
 
 #define FK_LOG_BUFF_SIZE 1024
 
-#define fk_log_loggable(level)  do {            \
-    /* beyond the current capacity of log */    \
-    if ((level) > logger.log_level) {           \
-        return;                                 \
-    }                                           \
+#define fk_log_loggable(level)  do {                        \
+    /* beyond the current verbosity setting of logger */    \
+    if ((level) > logger.log_level) {                       \
+        return;                                             \
+    }                                                       \
 } while (0)
 
 static void fk_log_output(int level, char *data);
