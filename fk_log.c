@@ -12,7 +12,7 @@
 
 #define fk_log_loggable(level)  do {            \
     /* beyond the current capacity of log */    \
-    if ((level) > logger.log_level) {                \
+    if ((level) > logger.log_level) {           \
         return;                                 \
     }                                           \
 } while (0)
