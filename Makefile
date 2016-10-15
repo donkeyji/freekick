@@ -64,7 +64,7 @@ DEBUG_LDFLAGS := -rdynamic
 DEBUG_LDLIBS  :=
 else
 ifeq ($(debug), no)
-DEBUG_CFLAGS  :=
+DEBUG_CFLAGS  := -DNDEBUG
 DEBUG_LDFLAGS :=
 DEBUG_LDLIBS  :=
 else
