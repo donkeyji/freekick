@@ -370,3 +370,5 @@ fault；
 (3) 打断点在fk_cmd_mset处，来跟踪这2条mset指令。print出conn, conn->arg_vtr等变量，发现在处理第一天mset时就出现conn->arg_vtr->len为4，conn->arg_parsed为5，显然有问题，猜想conn->arg_vtr->len内存被修改；
 
 (4) watch指令监视conn->arg_vtr->len，发现是fk_conn_send_rsp里的fk_vtr_shrink处复原了conn->arg_vtr的长度为初始值4；单步跟踪，发现是fk_conn_parse_req()未解析完整个protocol时跳转到执行fk_conn_send_rsp，这样一来将fk_conn_parse_req()的分配的arg_vtr又复原到初始长度4，导致第解析出第5个argument后存储到了越界内存处，即v2，在后续的处理中，将一个非法内存存入到dict中去了，导致在后续在fk_dict_strech时发现有非法内存，导致segment fault。
+
+132. assert()和fk_log_debug()在非debug编译时都应该为空, assert()通过NDEBUG宏来控制。
