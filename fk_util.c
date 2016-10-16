@@ -9,6 +9,7 @@
 
 /* unix headers */
 #include <sys/time.h>
+#include <execinfo.h>
 
 /* local headers */
 #include <fk_env.h>
@@ -184,4 +185,34 @@ fk_util_decimal_digit(int num)
     } while (num != 0);
 
     return len;
+}
+
+void
+fk_util_backtrace(int level)
+{
+    int nframes, i;
+    void *stack[64];
+    char **symbols;
+
+    /*
+     * on success, each item on the array stack is a pointer to stack frame,
+     * and frames is the actually number of stack frames. we must ensure that
+     * 64 is big enough to hold the maximun depth of frame
+     */
+    nframes = backtrace(stack, 64);
+
+    /*
+     * after obtaining all the stack frames in the array stack, we can
+     * translate the frames into a string array describing the addresses
+     * symbolically using backtrace_symbols().
+     */
+    symbols = backtrace_symbols(stack, nframes);
+    if (symbols == NULL) {
+        return;
+    }
+
+    /* simply display each symbolic description */
+    for (i = level; i < nframes; i++) {
+        fprintf(stderr, "[%d] %s\n", i, symbols[i]); /* we don't use fk_log_xxx() here */
+    }
 }

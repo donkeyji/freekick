@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <assert.h>
 #include <string.h>
 
 /* unix headers */
@@ -12,6 +11,7 @@
 #include <fk_str.h>
 #include <fk_dict.h>
 #include <fk_mem.h>
+#include <fk_util.h>
 
 #define FK_DICT_INIT_SIZE 4
 
@@ -65,7 +65,7 @@ fk_dict_create(fk_elt_op_t *eop)
     fk_dict_t  *dct;
 
     dct = (fk_dict_t *)fk_mem_alloc(sizeof(fk_dict_t));
-    assert(eop != NULL && eop->key_hash != NULL && eop->key_cmp != NULL);
+    fk_util_assert(eop != NULL && eop->key_hash != NULL && eop->key_cmp != NULL);
     dct->eop = eop;
     fk_dict_init(dct);
 

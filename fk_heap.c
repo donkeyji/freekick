@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 
 /* unix headers */
 #include <strings.h>
@@ -11,6 +10,7 @@
 #include <fk_heap.h>
 #include <fk_mem.h>
 #include <fk_log.h>
+#include <fk_util.h>
 
 #define FK_HEAP_INIT_SIZE 64
 
@@ -23,7 +23,7 @@ fk_heap_create(fk_leaf_op_t *lop)
 {
     fk_heap_t  *hp;
 
-    assert(lop != NULL);
+    fk_util_assert(lop != NULL);
 
     hp = (fk_heap_t *)fk_mem_alloc(sizeof(fk_heap_t));
     hp->lop = lop;

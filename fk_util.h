@@ -3,6 +3,7 @@
 
 /* c standard headers */
 #include <stdint.h>
+#include <stdlib.h>
 
 /* unix headers */
 #include <sys/time.h>
@@ -18,6 +19,7 @@ int fk_util_is_nonminus_seq(const char *start, size_t len);
 int fk_util_is_digit_seq(const char *start, size_t len);
 int fk_util_min_power(int n);
 size_t fk_util_decimal_digit(int num);
+void fk_util_backtrace(int level);
 
 #define fk_util_tv2millis(tv)   ((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
@@ -72,5 +74,22 @@ size_t fk_util_decimal_digit(int num);
 
 #define fk_util_smaller(a, b)                   ((a) <= (b) ? (a) : (b))
 #define fk_util_bigger(a, b)                    ((a) >= (b) ? (a) : (b))
+
+/*
+ * we implement our own version of assert macro to offer more detailed
+ * information than assert() provided by standard c library
+ */
+
+#ifdef FK_DEBUG
+#define fk_util_assert(exp)    do {                                         \
+    if (!(exp)) {                                                           \
+        /* passing 1 is to exclude the frame of fk_util_backtrace() */      \
+        fk_util_backtrace(1);                                               \
+        abort();                                                            \
+    }                                                       \
+} while (0)
+#else
+#define fk_util_assert(exp)
+#endif
 
 #endif

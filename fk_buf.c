@@ -1,17 +1,17 @@
 /* c standard headers */
-#include <assert.h>
 #include <stdio.h>
 
 /* local headers */
 #include <fk_buf.h>
 #include <fk_mem.h>
+#include <fk_util.h>
 
 fk_buf_t *
 fk_buf_create(size_t init_len, size_t highwat)
 {
     fk_buf_t  *buf;
 
-    assert(highwat >= init_len);
+    fk_util_assert(highwat >= init_len);
     buf = (fk_buf_t *)fk_mem_alloc(sizeof(fk_buf_t) + init_len);
     buf->highwat = highwat;
     buf->init_len = init_len;
