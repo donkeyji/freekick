@@ -214,6 +214,10 @@ fk_util_backtrace(int level)
 
     /* simply display each symbolic description */
     for (i = level; i < nframes; i++) {
+        /*
+         * here employ the interface from fk_log.c. interaction between fk_util.c
+         * and fk_log.c, they are both basic modules
+         */
         fk_log_error("[%d] %s\n", i, symbols[i]); /* always log it */
     }
 }
