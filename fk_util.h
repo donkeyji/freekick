@@ -86,7 +86,7 @@ void fk_util_backtrace(int level);
         /* passing 1 is to exclude the frame of fk_util_backtrace() */      \
         fk_util_backtrace(1);                                               \
         abort();                                                            \
-    }                                                       \
+    }                                                                       \
 } while (0)
 #else
 #define fk_util_assert(exp)
