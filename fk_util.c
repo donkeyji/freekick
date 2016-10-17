@@ -14,6 +14,7 @@
 /* local headers */
 #include <fk_env.h>
 #include <fk_util.h>
+#include <fk_log.h>
 
 /*
  * description: a wrapper of gettimeofday() / clock_gettime()
@@ -213,6 +214,6 @@ fk_util_backtrace(int level)
 
     /* simply display each symbolic description */
     for (i = level; i < nframes; i++) {
-        fprintf(stderr, "[%d] %s\n", i, symbols[i]); /* we don't use fk_log_xxx() here */
+        fk_log_error("[%d] %s\n", i, symbols[i]); /* always log it */
     }
 }
