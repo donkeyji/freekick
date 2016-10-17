@@ -10,15 +10,9 @@
 
 #define FK_LOG_BUFF_SIZE 1024
 
-#define fk_log_loggable(level)  do {                        \
-    /* beyond the current verbosity setting of logger */    \
-    if ((level) > logger.log_level) {                       \
-        return;                                             \
-    }                                                       \
-} while (0)
-
 static void fk_log_output(int level, char *data);
 static void fk_log_exec(int level, char *fmt, va_list ap);
+static inline int fk_log_loggable(int level);
 
 static fk_log_t logger = {
     FK_LOG_DEBUG,
@@ -49,7 +43,9 @@ fk_log_error(char *fmt, ...)
     /* va_list is a pointer, something like (void *) or (char *) */
     va_list ap;
 
-    fk_log_loggable(FK_LOG_ERROR);
+    if (!fk_log_loggable(FK_LOG_ERROR)) {
+        return;
+    }
 
     /*
      * va_start is actually a macro
@@ -70,7 +66,9 @@ fk_log_warn(char *fmt, ...)
 {
     va_list ap;
 
-    fk_log_loggable(FK_LOG_WARN);
+    if (!fk_log_loggable(FK_LOG_WARN)) {
+        return;
+    }
 
     va_start(ap, fmt);
     fk_log_exec(FK_LOG_WARN, fmt, ap);
@@ -82,7 +80,9 @@ fk_log_info(char *fmt, ...)
 {
     va_list ap;
 
-    fk_log_loggable(FK_LOG_INFO);
+    if (!fk_log_loggable(FK_LOG_INFO)) {
+        return;
+    }
 
     va_start(ap, fmt);
     fk_log_exec(FK_LOG_INFO, fmt, ap);
@@ -94,7 +94,9 @@ fk_log_debugx(char *fmt, ...)
 {
     va_list ap;
 
-    fk_log_loggable(FK_LOG_DEBUG);
+    if (!fk_log_loggable(FK_LOG_DEBUG)) {
+        return;
+    }
 
     va_start(ap, fmt);
     fk_log_exec(FK_LOG_DEBUG, fmt, ap);
@@ -170,4 +172,13 @@ fk_log_exec(int level, char *fmt, va_list ap)
     vsnprintf(log_buff, FK_LOG_BUFF_SIZE, fmt, ap);
 
     fk_log_output(level, log_buff);
+}
+
+static inline int
+fk_log_loggable(int level)
+{
+    if (level > logger.log_level) {
+        return 0;
+    }
+    return 1;
 }
