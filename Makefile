@@ -40,7 +40,7 @@ else
 ifeq ($(os), freebsd)
 OS_CFLAGS  := -I /usr/local/include
 OS_LDFLAGS := -L /usr/local/lib
-OS_LDLIBS  := -lm
+OS_LDLIBS  := -lm -lexecinfo
 else
 ifeq ($(os), linux)
 OS_CFLAGS  :=
@@ -90,9 +90,9 @@ ifeq ($(gprof), yes)
 ifeq ($(os), mac)
 $(error gprof is not supported on mac)
 else
-GPROF_CFLAGS  := -g -pg -lc_p
+GPROF_CFLAGS  := -pg
 GPROF_LDFLAGS := -pg
-GPROF_LDLIBS  := -lc_p
+GPROF_LDLIBS  :=
 endif # mac
 else
 ifeq ($(gprof), no)
