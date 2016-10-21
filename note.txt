@@ -372,3 +372,5 @@ fault；
 (4) watch指令监视conn->arg_vtr->len，发现是fk_conn_send_rsp里的fk_vtr_shrink处复原了conn->arg_vtr的长度为初始值4；单步跟踪，发现是fk_conn_parse_req()未解析完整个protocol时跳转到执行fk_conn_send_rsp，这样一来将fk_conn_parse_req()的分配的arg_vtr又复原到初始长度4，导致第解析出第5个argument后存储到了越界内存处，即v2，在后续的处理中，将一个非法内存存入到dict中去了，导致在后续在fk_dict_strech时发现有非法内存，导致segment fault。
 
 132. assert()和fk_log_debug()在非debug编译时都应该为空, assert()通过NDEBUG宏来控制。
+
+133. 用二分法来注释掉不同区域的代码，来找出到底哪部分导致了gmon.out没有出现，发现原来是fk_set_pwd()中调用了chdir()导致gmon.out实际被保存到了/tmp/中去了，因为在freekick.conf中设置了工作目录为/tmp.
