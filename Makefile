@@ -1,11 +1,12 @@
 #--------------------------------------------------------------
 # Usage:
-# [g]make os=xxx debug=xxx jemalloc=xxx gprof=xxx optimize=xxx
+# [g]make os=xxx debug=xxx jemalloc=xxx gprof=xxx optimize=xxx gperf=xxx
 #
 # os       = generic/mac/linux/freebsd
 # debug    = yes/no
 # jemalloc = yes/no
-# gprof    = yes/no
+# gprof    = yes/no    # GNU profile
+# gperf    = yes/no    # google perftool
 # optimize = yes/no
 #--------------------------------------------------------------
 
@@ -24,6 +25,7 @@ debug    := no
 jemalloc := no
 gprof    := no
 optimize := no
+gperf	 := no
 
 $(info [Listing Arguments Used...])
 $(info os:       $(os))
@@ -58,6 +60,18 @@ endif # linux
 endif # freebsd
 endif # generic
 
+ifeq ($(gperf), yes)
+ifeq ($(gprof), yes)
+$(error gperf and gprof cannot be specified as yes at the same time)
+endif
+endif
+
+ifeq ($(gprof), yes)
+ifeq ($(os), mac)
+$(error gprof is not supported on mac)
+endif
+endif
+
 ifeq ($(debug), yes)
 DEBUG_CFLAGS  := -D FK_DEBUG -g
 DEBUG_LDFLAGS := -rdynamic
@@ -87,13 +101,9 @@ endif # no
 endif # yes
 
 ifeq ($(gprof), yes)
-ifeq ($(os), mac)
-$(error gprof is not supported on mac)
-else
 GPROF_CFLAGS  := -pg
 GPROF_LDFLAGS := -pg
 GPROF_LDLIBS  :=
-endif # mac
 else
 ifeq ($(gprof), no)
 GPROF_CFLAGS  :=
@@ -101,6 +111,20 @@ GPROF_LDFLAGS :=
 GPROF_LDLIBS  :=
 else
 $(error illegal value for gprof)
+endif # no
+endif # yes
+
+ifeq ($(gperf), yes)
+GPERF_CFLAGS  :=
+GPERF_LDFLAGS :=
+GPERF_LDLIBS  := -lprofiler
+else
+ifeq ($(gperf), no)
+GPERF_CFLAGS  :=
+GPERF_LDFLAGS :=
+GPERF_LDLIBS  :=
+else
+$(error illegal value for gperf)
 endif # no
 endif # yes
 
@@ -118,9 +142,9 @@ $(error illegal value for optimize)
 endif # no
 endif # yes
 
-CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS) $(OPTIMIZE_CFLAGS)
-LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS) $(OPTIMIZE_LDFLAGS)
-LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS) $(OPTIMIZE_LIBS)
+CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS) $(OPTIMIZE_CFLAGS) $(GPERF_CFLAGS)
+LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS) $(OPTIMIZE_LDFLAGS) $(GPERF_LDFLAGS)
+LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS) $(OPTIMIZE_LIBS) $(GPERF_LDLIBS)
 
 #--------------------------------------------------------------
 # sources && objects && Makefile.dep
