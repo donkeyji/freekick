@@ -15,3 +15,5 @@ v.log
 *.log
 core
 clean.sh
+out
+*.out
