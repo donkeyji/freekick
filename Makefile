@@ -22,17 +22,20 @@ BASIC_LDLIBS  := -llua
 # default value for arguments
 os       := generic
 debug    := no
-jemalloc := no
-gprof    := no
 optimize := no
+jemalloc := no
+tcmalloc := no
+gprof    := no
 gperf	 := no
 
 $(info [Listing Arguments Used...])
 $(info os:       $(os))
 $(info debug:    $(debug))
-$(info jemalloc: $(jemalloc))
-$(info gprof:    $(gprof))
 $(info optimize: $(optimize))
+$(info jemalloc: $(jemalloc))
+$(info tcmalloc: $(tcmalloc))
+$(info gprof:    $(gprof))
+$(info gperf:    $(gperf))
 
 ifeq ($(os), generic)
 OS_CFLAGS  :=
@@ -63,6 +66,12 @@ endif # generic
 ifeq ($(gperf), yes)
 ifeq ($(gprof), yes)
 $(error gperf and gprof cannot be specified as yes at the same time)
+endif
+endif
+
+ifeq ($(jemalloc), yes)
+ifeq ($(tcmalloc), yes)
+$(error jemalloc and tcmalloc cannot be specified as yes at the same time)
 endif
 endif
 
@@ -97,6 +106,20 @@ MALLOC_LDFLAGS :=
 MALLOC_LDLIBS  :=
 else
 $(error illegal value for jemalloc)
+endif # no
+endif # yes
+
+ifeq ($(tcmalloc), yes)
+MALLOC_CFLAGS  :=
+MALLOC_LDFLAGS :=
+MALLOC_LDLIBS  := -ltcmalloc
+else
+ifeq ($(tcmalloc), no)
+MALLOC_CFLAGS  :=
+MALLOC_LDFLAGS :=
+MALLOC_LDLIBS  :=
+else
+$(error illegal value for tcmalloc)
 endif # no
 endif # yes
 
