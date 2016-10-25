@@ -63,18 +63,21 @@ endif # linux
 endif # freebsd
 endif # generic
 
+# only one profile tool could be employed
 ifeq ($(gperf), yes)
 ifeq ($(gprof), yes)
 $(error gperf and gprof cannot be specified as yes at the same time)
 endif
 endif
 
+# only one implementation of malloc could be employed
 ifeq ($(jemalloc), yes)
 ifeq ($(tcmalloc), yes)
 $(error jemalloc and tcmalloc cannot be specified as yes at the same time)
 endif
 endif
 
+# gprof is not supported on mac
 ifeq ($(gprof), yes)
 ifeq ($(os), mac)
 $(error gprof is not supported on mac)
@@ -166,7 +169,9 @@ endif # no
 endif # yes
 
 CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS) $(OPTIMIZE_CFLAGS) $(GPERF_CFLAGS)
+
 LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS) $(OPTIMIZE_LDFLAGS) $(GPERF_LDFLAGS)
+
 LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS) $(OPTIMIZE_LIBS) $(GPERF_LDLIBS)
 
 #--------------------------------------------------------------
