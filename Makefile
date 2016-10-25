@@ -4,10 +4,9 @@
 #
 # os       = generic/mac/linux/freebsd
 # debug    = yes/no
-# jemalloc = yes/no
-# gprof    = yes/no    # GNU profile
-# gperf    = yes/no    # google perftool
 # optimize = yes/no
+# malloc   = libc/jemalloc/tcmalloc
+# profile  = gprof/gperf/none
 #--------------------------------------------------------------
 
 #--------------------------------------------------------------
@@ -23,19 +22,15 @@ BASIC_LDLIBS  := -llua
 os       := generic
 debug    := no
 optimize := no
-jemalloc := no
-tcmalloc := no
-gprof    := no
-gperf	 := no
+malloc   := libc
+profile  := none
 
 $(info [Listing Arguments Used...])
 $(info os:       $(os))
 $(info debug:    $(debug))
 $(info optimize: $(optimize))
-$(info jemalloc: $(jemalloc))
-$(info tcmalloc: $(tcmalloc))
-$(info gprof:    $(gprof))
-$(info gperf:    $(gperf))
+$(info malloc:   $(malloc))
+$(info profile:  $(profile))
 
 ifeq ($(os), generic)
 OS_CFLAGS  :=
@@ -63,26 +58,12 @@ endif # linux
 endif # freebsd
 endif # generic
 
-# only one profile tool could be employed
-ifeq ($(gperf), yes)
-ifeq ($(gprof), yes)
-$(error gperf and gprof cannot be specified as yes at the same time)
-endif
-endif
-
-# only one implementation of malloc could be employed
-ifeq ($(jemalloc), yes)
-ifeq ($(tcmalloc), yes)
-$(error jemalloc and tcmalloc cannot be specified as yes at the same time)
-endif
-endif
-
 # gprof is not supported on mac
-ifeq ($(gprof), yes)
+ifeq ($(profile), gprof)
 ifeq ($(os), mac)
 $(error gprof is not supported on mac)
-endif
-endif
+endif # mac
+endif # gprof
 
 ifeq ($(debug), yes)
 DEBUG_CFLAGS  := -D FK_DEBUG -g
@@ -98,61 +79,45 @@ $(error illegal value for debug)
 endif # no
 endif # yes
 
-ifeq ($(jemalloc), yes)
+ifeq ($(malloc), jemalloc)
 MALLOC_CFLAGS  := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
 MALLOC_LDFLAGS :=
 MALLOC_LDLIBS  := -ljemalloc
 else
-ifeq ($(jemalloc), no)
-MALLOC_CFLAGS  :=
-MALLOC_LDFLAGS :=
-MALLOC_LDLIBS  :=
-else
-$(error illegal value for jemalloc)
-endif # no
-endif # yes
-
-ifeq ($(tcmalloc), yes)
+ifeq ($(malloc), tcmalloc)
 MALLOC_CFLAGS  :=
 MALLOC_LDFLAGS :=
 MALLOC_LDLIBS  := -ltcmalloc
 else
-ifeq ($(tcmalloc), no)
+ifeq ($(malloc), libc)
 MALLOC_CFLAGS  :=
 MALLOC_LDFLAGS :=
 MALLOC_LDLIBS  :=
 else
-$(error illegal value for tcmalloc)
-endif # no
-endif # yes
+$(error illegal value for malloc)
+endif # libc
+endif # tcmalloc
+endif # jemalloc
 
-ifeq ($(gprof), yes)
-GPROF_CFLAGS  := -pg
-GPROF_LDFLAGS := -pg
-GPROF_LDLIBS  :=
+ifeq ($(profile), gprof)
+PROFILE_CFLAGS  := -pg
+PROFILE_LDFLAGS := -pg
+PROFILE_LDLIBS  :=
 else
-ifeq ($(gprof), no)
-GPROF_CFLAGS  :=
-GPROF_LDFLAGS :=
-GPROF_LDLIBS  :=
+ifeq ($(profile), gperf)
+PROFILE_CFLAGS  :=
+PROFILE_LDFLAGS :=
+PROFILE_LDLIBS  := -lprofiler
 else
-$(error illegal value for gprof)
-endif # no
-endif # yes
-
-ifeq ($(gperf), yes)
-GPERF_CFLAGS  :=
-GPERF_LDFLAGS :=
-GPERF_LDLIBS  := -lprofiler
+ifeq ($(profile), none)
+PROFILE_CFLAGS  :=
+PROFILE_LDFLAGS :=
+PROFILE_LDLIBS  :=
 else
-ifeq ($(gperf), no)
-GPERF_CFLAGS  :=
-GPERF_LDFLAGS :=
-GPERF_LDLIBS  :=
-else
-$(error illegal value for gperf)
-endif # no
-endif # yes
+$(error illegal value for profile)
+endif # none
+endif # gperf
+endif # gprof
 
 ifeq ($(optimize), yes)
 OPTIMIZE_CFLAGS  := -O2
@@ -168,11 +133,11 @@ $(error illegal value for optimize)
 endif # no
 endif # yes
 
-CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(GPROF_CFLAGS) $(OPTIMIZE_CFLAGS) $(GPERF_CFLAGS)
+CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(PROFILE_CFLAGS) $(OPTIMIZE_CFLAGS)
 
-LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(GPROF_LDFLAGS) $(OPTIMIZE_LDFLAGS) $(GPERF_LDFLAGS)
+LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(PROFILE_LDFLAGS) $(OPTIMIZE_LDFLAGS)
 
-LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(GPROF_LDLIBS) $(OPTIMIZE_LIBS) $(GPERF_LDLIBS)
+LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(PROFILE_LDLIBS) $(OPTIMIZE_LIBS)
 
 #--------------------------------------------------------------
 # sources && objects && Makefile.dep
