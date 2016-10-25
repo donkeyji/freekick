@@ -1,12 +1,10 @@
 #--------------------------------------------------------------
 # Usage:
-# [g]make os=xxx debug=xxx jemalloc=xxx gprof=xxx optimize=xxx gperf=xxx
-#
-# os       = generic/mac/linux/freebsd
-# debug    = yes/no
-# optimize = yes/no
-# malloc   = libc/jemalloc/tcmalloc
-# profile  = gprof/gperf/none
+# [g]make [os={generic | mac | linux | freebsd}]
+#		  [debug={yes | no}]
+#		  [optimize={yes | no}]
+#		  [malloc={libc | jemalloc | tcmalloc}]
+#		  [profile={gprof | gperf | none}]
 #--------------------------------------------------------------
 
 #--------------------------------------------------------------
