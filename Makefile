@@ -14,17 +14,19 @@
 #--------------------------------------------------------------
 CC := gcc
 
+# basic options
 BASIC_CFLAGS  := -std=c99 -pedantic -Wall -I .
 BASIC_LDFLAGS :=
 BASIC_LDLIBS  := -llua
 
-# default value for arguments
+# default values for all the arguments accepted
 os       := generic
 debug    := no
 optimize := no
 malloc   := libc
 profile  := none
 
+# display all the arguments passed
 $(info [Listing Arguments Used...])
 $(info os:       $(os))
 $(info debug:    $(debug))
@@ -32,6 +34,14 @@ $(info optimize: $(optimize))
 $(info malloc:   $(malloc))
 $(info profile:  $(profile))
 
+# check conflicts of individual arguments
+ifeq ($(profile), gprof)
+ifeq ($(os), mac)
+$(error gprof is not supported on mac)
+endif # mac
+endif # gprof
+
+# check argument os
 ifeq ($(os), generic)
 OS_CFLAGS  :=
 OS_LDFLAGS :=
@@ -58,13 +68,7 @@ endif # linux
 endif # freebsd
 endif # generic
 
-# gprof is not supported on mac
-ifeq ($(profile), gprof)
-ifeq ($(os), mac)
-$(error gprof is not supported on mac)
-endif # mac
-endif # gprof
-
+# check argument debug
 ifeq ($(debug), yes)
 DEBUG_CFLAGS  := -D FK_DEBUG -g
 DEBUG_LDFLAGS := -rdynamic
@@ -79,6 +83,22 @@ $(error illegal value for debug)
 endif # no
 endif # yes
 
+# check argument optimize
+ifeq ($(optimize), yes)
+OPTIMIZE_CFLAGS  := -O2
+OPTIMIZE_LDFLAGS :=
+OPTIMIZE_LIBS    :=
+else
+ifeq ($(optimize), no)
+OPTIMIZE_CFLAGS  := -O0
+OPTIMIZE_LDFLAGS :=
+OPTIMIZE_LIBS    :=
+else
+$(error illegal value for optimize)
+endif # no
+endif # yes
+
+# check argument malloc
 ifeq ($(malloc), jemalloc)
 MALLOC_CFLAGS  := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
 MALLOC_LDFLAGS :=
@@ -99,6 +119,7 @@ endif # libc
 endif # tcmalloc
 endif # jemalloc
 
+# check argument profile
 ifeq ($(profile), gprof)
 PROFILE_CFLAGS  := -pg
 PROFILE_LDFLAGS := -pg
@@ -118,20 +139,6 @@ $(error illegal value for profile)
 endif # none
 endif # gperf
 endif # gprof
-
-ifeq ($(optimize), yes)
-OPTIMIZE_CFLAGS  := -O2
-OPTIMIZE_LDFLAGS :=
-OPTIMIZE_LIBS    :=
-else
-ifeq ($(optimize), no)
-OPTIMIZE_CFLAGS  := -O0
-OPTIMIZE_LDFLAGS :=
-OPTIMIZE_LIBS    :=
-else
-$(error illegal value for optimize)
-endif # no
-endif # yes
 
 CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(PROFILE_CFLAGS) $(OPTIMIZE_CFLAGS)
 
