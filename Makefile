@@ -1,10 +1,10 @@
 #--------------------------------------------------------------
 # Usage:
 # [g]make [os={generic | mac | linux | freebsd}]
-#		  [debug={yes | no}]
-#		  [optimize={yes | no}]
-#		  [malloc={libc | jemalloc | tcmalloc}]
-#		  [profile={gprof | gperf | none}]
+#         [debug={yes | no}]
+#         [optimize={yes | no}]
+#         [malloc={libc | jemalloc | tcmalloc}]
+#         [profile={gprof | gperf | none}]
 # [g]make clean
 #--------------------------------------------------------------
 
