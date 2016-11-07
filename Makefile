@@ -1,7 +1,6 @@
 #--------------------------------------------------------------
 # Usage:
-# [g]make [os={generic | mac | linux | freebsd}]
-#         [debug={yes | no}]
+# [g]make [debug={yes | no}]
 #         [optimize={yes | no}]
 #         [malloc={libc | jemalloc | tcmalloc}]
 #         [profile={gprof | gperf | none}]
@@ -19,7 +18,7 @@ BASIC_LDFLAGS :=
 BASIC_LDLIBS  := -llua
 
 # default values for all the arguments accepted
-os       := generic
+os       := $(shell sh -c 'uname -s 2>/dev/null || echo Generic')
 debug    := no
 optimize := no
 malloc   := libc
@@ -35,37 +34,37 @@ $(info profile:  $(profile))
 
 # check conflicts of individual arguments
 ifeq ($(profile), gprof)
-ifeq ($(os), mac)
-$(error gprof is not supported on mac)
-endif # mac
+ifeq ($(os), Darwin)
+$(error gprof is not supported on Darwin)
+endif # Darwin
 endif # gprof
 
 # check argument os
-ifeq ($(os), generic)
+ifeq ($(os), Generic)
 OS_CFLAGS  :=
 OS_LDFLAGS :=
 OS_LDLIBS  := -ldl -lm
 else
-ifeq ($(os), freebsd)
+ifeq ($(os), FreeBSD)
 OS_CFLAGS  := -I /usr/local/include
 OS_LDFLAGS := -L /usr/local/lib
 OS_LDLIBS  := -lm -lexecinfo
 else
-ifeq ($(os), linux)
+ifeq ($(os), Linux)
 OS_CFLAGS  :=
 OS_LDFLAGS :=
 OS_LDLIBS  := -ldl -lm -lrt
 else
-ifeq ($(os), mac)
+ifeq ($(os), Darwin)
 OS_CFLAGS  :=
 OS_LDFLAGS :=
 OS_LDLIBS  :=
 else
 $(error $(os) not supported at present)
-endif # mac
-endif # linux
-endif # freebsd
-endif # generic
+endif # Darwin
+endif # Linux
+endif # FreeBSD
+endif # Generic
 
 # check argument debug
 ifeq ($(debug), yes)
