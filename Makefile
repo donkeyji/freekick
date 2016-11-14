@@ -11,6 +11,7 @@
 # CC && CFLAGS && LDFLAGS && LDLIBS
 #--------------------------------------------------------------
 CC := gcc
+LD := gcc
 
 # basic options
 BASIC_CFLAGS  := -std=c99 -pedantic -Wall -I .
@@ -163,7 +164,7 @@ all : $(SVRBIN)
 
 $(SVRBIN) : $(SVROBJS) 
 	@echo "[Linking...]"
-	$(CC) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS) $(LDLIBS)
+	$(LD) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS) $(LDLIBS)
 
 -include $(DEPS)
 
