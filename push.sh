@@ -24,7 +24,7 @@ else
 fi
 
 echo -e "Target Branch: ${COLOR_GREEN}$branches${COLOR_END}"
-read -p "Wanna Continue? [y/n]: " choice
+read -p "Proceed? [y/n]: " choice
 if [ $choice != 'y' ]; then
     echo -e "${COLOR_YELLOW}Pushing Canled${COLOR_END}"
     exit 1
