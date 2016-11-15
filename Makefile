@@ -7,9 +7,7 @@
 # [g]make clean
 #--------------------------------------------------------------
 
-#--------------------------------------------------------------
-# CC && CFLAGS && LDFLAGS && LDLIBS
-#--------------------------------------------------------------
+# compiler and linker specification
 CC := gcc
 LD := gcc
 
@@ -139,6 +137,7 @@ endif # none
 endif # gperf
 endif # gprof
 
+# final values for CFLAGS && LDFLAGS && LDLIBS
 CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(PROFILE_CFLAGS)  $(OPTIMIZE_CFLAGS)
 
 LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(PROFILE_LDFLAGS) $(OPTIMIZE_LDFLAGS)
