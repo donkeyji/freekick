@@ -166,10 +166,12 @@ $(SVRBIN) : $(SVROBJS)
 	@echo "[Linking...]"
 	$(LD) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS) $(LDLIBS)
 
+# this statement guarantees that the target $(DEPS) will always be executed,
+# even when typing "make clean" to clear all the garbage generated yet
 -include $(DEPS)
 
 # if Makefile.dep does not exist, this target will be executed
-# this target is always the first part to be executed
+# this target is always the first one to be executed
 $(DEPS) :
 	@echo "[Generating Makefile.dep...]"
 	$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
