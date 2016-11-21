@@ -24,7 +24,7 @@ malloc   := libc
 profile  := none
 
 # display all the arguments passed
-$(info [Listing Arguments Used...])
+$(info [Listing arguments used...])
 $(info os:       $(os))
 $(info debug:    $(debug))
 $(info optimize: $(optimize))
