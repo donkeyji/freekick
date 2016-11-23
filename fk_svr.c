@@ -272,8 +272,10 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
     if (server.save_pid != -1) { /* the save child process has been generated */
     //if (sigchld_flag == 1) {
         /*
-         * only one child, wait for the child with a specified pid
-         * no need to call waitid() in a loop
+         * only one child, wait for the child with a specified pid no need to
+         * call waitid() in a loop. we do no employ SIGCHLD handler any more,
+         * because calling waitpid() in this synchronous manner is preferable
+         * than in a signal handler function.
          */
         cpid = waitpid(server.save_pid, &st, WNOHANG);
         /* error occured */
