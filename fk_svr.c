@@ -37,7 +37,7 @@
  */
 volatile sig_atomic_t sigint_flag = 0;
 volatile sig_atomic_t sigterm_flag = 0;
-volatile sig_atomic_t sigchld_flag = 0;
+//volatile sig_atomic_t sigchld_flag = 0;
 
 static int fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg);
 #ifdef FK_DEBUG
@@ -269,7 +269,8 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 #endif
 
     /* deal with the exit of the child process */
-    if (sigchld_flag == 1) {
+    if (server.save_pid != -1) { /* the save child process has been generated */
+    //if (sigchld_flag == 1) {
         /*
          * only one child, wait for the child with a specified pid
          * no need to call waitid() in a loop
@@ -287,7 +288,7 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
 
         fk_log_debug("db saving done in background process\n");
 
-        sigchld_flag = 0; /* restore the state of sigchld_flag */
+        //sigchld_flag = 0; /* restore the state of sigchld_flag */
     }
 
     /* deal with the shutdown signals */
@@ -475,14 +476,14 @@ fk_svr_signal_exit_handler(int sig)
     //exit(EXIT_SUCCESS);
 }
 
-void
-fk_svr_signal_child_handler(int sig)
-{
+//void
+//fk_svr_signal_child_handler(int sig)
+//{
     /* just mark the sigchld_flag and return */
-    sigchld_flag = 1;
+    //sigchld_flag = 1;
 
-    return;
-}
+    //return;
+//}
 
 int
 fk_svr_sync_with_master(void)

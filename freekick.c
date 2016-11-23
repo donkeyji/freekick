@@ -36,7 +36,7 @@ static void fk_create_pidfile(void);
 
 /* signal handlers */
 static void fk_signal_exit_handler(int sig);
-static void fk_signal_child_handler(int sig);
+//static void fk_signal_child_handler(int sig);
 
 static void fk_main_init(char *conf_path);
 static void fk_main_cycle(void);
@@ -297,16 +297,16 @@ fk_signal_exit_handler(int sig)
     fk_svr_signal_exit_handler(sig);
 }
 
-void
-fk_signal_child_handler(int sig)
-{
+//void
+//fk_signal_child_handler(int sig)
+//{
     /*
      * maybe some other process in other modules, just like:
      * fk_a_signal_child_handler(sig);
      * fk_b_signal_child_handler(sig);
      */
-    fk_svr_signal_child_handler(sig);
-}
+    //fk_svr_signal_child_handler(sig);
+//}
 
 void
 fk_signal_register(void)
@@ -345,14 +345,14 @@ fk_signal_register(void)
     //rt = sigaction(SIGQUIT, &sa, NULL); /* keep the default to get the core dump file */
     //rt = sigaction(SIGKILL, &sa, NULL); /* changing the disposition of SIGKILL is not allowed */
 
-    sa.sa_handler = fk_signal_child_handler;
-    sa.sa_flags = SA_RESTART;
-    sigfillset(&sa.sa_mask); /* block all the signals when this handler is invoked */
-    rt = sigaction(SIGCHLD, &sa, NULL);
-    if (rt < 0) {
-        fk_log_error("sigaction for SIGCHLD failed: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+    //sa.sa_handler = fk_signal_child_handler;
+    //sa.sa_flags = SA_RESTART;
+    //sigfillset(&sa.sa_mask); /* block all the signals when this handler is invoked */
+    //rt = sigaction(SIGCHLD, &sa, NULL);
+    //if (rt < 0) {
+        //fk_log_error("sigaction for SIGCHLD failed: %s\n", strerror(errno));
+        //exit(EXIT_FAILURE);
+    //}
 }
 
 void
