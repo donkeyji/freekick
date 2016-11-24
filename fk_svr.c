@@ -278,13 +278,13 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
          * than calling asynchronously in a signal handler function.
          */
         cpid = waitpid(server.save_pid, &st, WNOHANG);
-        /* error occured */
         if (cpid < 0 && errno != ECHILD) {
+            fk_log_error("waitpid() for save child: %s\n", strerror(errno));
             exit(EXIT_FAILURE);
         }
-        /* the child exit with success */
-        if (st == EXIT_SUCCESS) {
-            server.save_pid = -1; /* the saving child process is terminated */
+        /* the child process terminats via exit() */
+        if (WIFEXITED(st) && WEXITSTATUS(st) == EXIT_SUCCESS) {
+            server.save_pid = -1; /* mark the save child terminated */
             server.last_save = time(NULL);
         }
 
@@ -305,6 +305,8 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
     }
 
     fk_fkdb_bgsave();
+
+    fk_blog_bgrewrite();
 
     fk_svr_sync_with_master();
 
@@ -349,6 +351,7 @@ fk_svr_init(void)
     /* create global environment */
     server.arch = sizeof(uintptr_t) == 4 ? 32 : 64;
     server.save_pid = -1; /* -1 is a invalid pid */
+    server.rewrite_pid = -1; /* -1 is not a legal pid */
     /*
      * here we use time() other than gettimeofday()/clock_gettime(), because
      * the accuracy[precision] of second would satisfy our requirements
@@ -418,22 +421,38 @@ fk_svr_init(void)
 void
 fk_svr_exit(void)
 {
-    int  rt;
+    int    rt, st;
+    pid_t  cpid;
 
     if (setting.dump != 1) {
         return;
     }
 
-    /* the child process is running at present */
+    /*
+     * probably the save child process or the rewrite child process is running
+     * at present, so we first need to wait for both of them
+     */
     if (server.save_pid != -1) {
-        rt = wait(NULL);
-        if (rt < 0) {
-            if (errno == ECHILD) {
-                fk_log_info("no child process running now\n");
-                return;
-            }
-            fk_log_error("call wait() error: %s\n", strerror(errno));
-            exit(EXIT_FAILURE);
+        printf("111111111\n");
+        /* probably blocks here */
+        cpid = waitpid(server.save_pid, &st, 0);
+        /* ECHILD means no existing unwaited-for child process */
+        if (cpid < 0 && errno != ECHILD) {
+            fk_log_error("waitpid() for save child: %s\n", strerror(errno));
+            /*
+             * we don't call exit() here, because we need to execute
+             * fk_fkdb_save() once more to ensure that all data have
+             * been saved successfully.
+             */
+            //exit(EXIT_FAILURE);
+        }
+    }
+
+    if (server.rewrite_pid != -1) {
+        cpid = waitpid(server.rewrite_pid, &st, 0);
+        if (cpid < 0 && errno != ECHILD) {
+            fk_log_error("waitpid() for rewrite child: %s\n", strerror(errno));
+            //exit(EXIT_FAILURE);
         }
     }
 

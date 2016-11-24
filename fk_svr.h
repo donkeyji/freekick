@@ -103,7 +103,8 @@ typedef struct {
     fk_conn_t    **conns_tab;
     uint32_t       dbcnt;
     fk_dict_t    **db;
-    pid_t          save_pid;      /* -1: the save child process ended */
+    pid_t          save_pid;      /* -1: when the save child process ends */
+    pid_t          rewrite_pid;   /* -1: when the rewrite child process ends */
 
     int            last_dbidx;
     int            blog_fd;
@@ -172,6 +173,8 @@ void fk_lua_init(void);
 void fk_blog_init(void);
 void fk_blog_load(void);
 void fk_blog_append(fk_conn_t *conn);
+int fk_blog_rewrite(void);
+void fk_blog_bgrewrite(void);
 
 /* related to protocol */
 void fk_proto_init(void);

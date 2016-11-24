@@ -165,3 +165,47 @@ fk_blog_append(fk_conn_t *conn)
         write(fd, blog_buf, (size_t)plen);
     }
 }
+
+int
+fk_blog_rewrite(void)
+{
+    sleep(6);
+    return FK_SVR_OK;
+}
+
+void
+fk_blog_bgrewrite(void)
+{
+    int    rt;
+    pid_t  pid;
+
+    if (setting.blog_on != 1) {
+        return;
+    }
+
+    if (server.rewrite_pid != -1) {
+        return;
+    }
+
+    fk_log_debug("to rewrite blog\n");
+
+    pid = fork();
+    switch (pid) {
+    case 0:
+        rt = fk_blog_rewrite();
+        if (rt == FK_SVR_ERR) {
+            fk_log_error("blog rewrite failed\n");
+            _exit(EXIT_FAILURE);
+        }
+        _exit(EXIT_SUCCESS);
+
+        break;
+    case -1:
+        /* no need to _exit() here, just return to the caller */
+        fk_log_error("fork() for rewrite: %s\n", strerror(errno));
+        break;
+    default:
+        server.rewrite_pid = pid; /* record this pid */
+        break;
+    }
+}

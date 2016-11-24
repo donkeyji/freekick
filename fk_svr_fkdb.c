@@ -45,7 +45,8 @@ fk_fkdb_init(void)
 void
 fk_fkdb_bgsave(void)
 {
-    int  rt;
+    int    rt;
+    pid_t  pid;
 
     if (setting.dump != 1) {
         return;
@@ -56,16 +57,18 @@ fk_fkdb_bgsave(void)
     }
 
     fk_log_debug("to save db\n");
-    rt = fork();
-    if (rt < 0) { /* should not exit here, just return */
+
+    pid = fork();
+    if (pid < 0) { /* should not exit here, just return */
         fk_log_error("fork: %s\n", strerror(errno));
         return;
-    } else if (rt > 0) { /* mark the save_pid */
-        server.save_pid = rt; /* save the child process ID */
+    } else if (pid > 0) { /* mark the save_pid */
+        server.save_pid = pid; /* save the child process ID */
         return;
     } else {
+        rt = fk_fkdb_save();
         /* execute only in child process */
-        if (fk_fkdb_save() == FK_SVR_ERR) {
+        if (rt == FK_SVR_ERR) {
             fk_log_error("db save failed\n");
             /* use _exit() instead of exit() in child process */
             _exit(EXIT_FAILURE);
