@@ -169,6 +169,7 @@ fk_blog_append(fk_conn_t *conn)
 int
 fk_blog_rewrite(void)
 {
+    /* simulate doing some work by calling sleep() */
     sleep(6);
     return FK_SVR_OK;
 }
