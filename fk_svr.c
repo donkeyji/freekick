@@ -278,19 +278,35 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
          * than calling asynchronously in a signal handler function.
          */
         cpid = waitpid(server.save_pid, &st, WNOHANG);
+        fk_log_debug("cpid: %ld, status: %ld, %ld\n", (long)cpid, WIFEXITED(st), WEXITSTATUS(st));
         if (cpid < 0 && errno != ECHILD) {
             fk_log_error("waitpid() for save child: %s\n", strerror(errno));
             exit(EXIT_FAILURE);
         }
         /* the child process terminats via exit() */
-        if (WIFEXITED(st) && WEXITSTATUS(st) == EXIT_SUCCESS) {
+        if (cpid == server.save_pid && WIFEXITED(st)
+            && WEXITSTATUS(st) == EXIT_SUCCESS)
+        {
             server.save_pid = -1; /* mark the save child terminated */
             server.last_save = time(NULL);
+            fk_log_debug("db saving done in background process\n");
+            //sigchld_flag = 0; /* restore the state of sigchld_flag */
         }
+    }
 
-        fk_log_debug("db saving done in background process\n");
-
-        //sigchld_flag = 0; /* restore the state of sigchld_flag */
+    if (server.rewrite_pid != -1) {
+        cpid = waitpid(server.rewrite_pid, &st, WNOHANG);
+        fk_log_debug("cpid: %ld, status: %ld, %ld\n", (long)cpid, WIFEXITED(st), WEXITSTATUS(st));
+        if (cpid < 0 && errno != ECHILD) {
+            fk_log_error("waitpid() for rewrite child: %s\n", strerror(errno));
+            exit(EXIT_FAILURE);
+        }
+        if (cpid == server.rewrite_pid && WIFEXITED(st)
+            && WEXITSTATUS(st) == EXIT_SUCCESS)
+        {
+            server.rewrite_pid = -1;
+            fk_log_debug("blog rewrite done in background process\n");
+        }
     }
 
     /* deal with the shutdown signals */
@@ -433,7 +449,6 @@ fk_svr_exit(void)
      * at present, so we first need to wait for both of them
      */
     if (server.save_pid != -1) {
-        printf("111111111\n");
         /* probably blocks here */
         cpid = waitpid(server.save_pid, &st, 0);
         /* ECHILD means no existing unwaited-for child process */
