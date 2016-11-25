@@ -198,6 +198,7 @@ fk_blog_bgrewrite(void)
             fk_log_error("blog rewrite failed\n");
             _exit(EXIT_FAILURE);
         }
+        fk_log_debug("rewrite child is exiting\n");
         _exit(EXIT_SUCCESS);
 
         break;
@@ -207,6 +208,7 @@ fk_blog_bgrewrite(void)
         break;
     default:
         server.rewrite_pid = pid; /* record this pid */
+        fk_log_debug("new rewrite_pid: %ld\n", (long)pid);
         break;
     }
 }

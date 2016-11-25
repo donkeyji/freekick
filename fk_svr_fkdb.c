@@ -63,6 +63,7 @@ fk_fkdb_bgsave(void)
         fk_log_error("fork: %s\n", strerror(errno));
         return;
     } else if (pid > 0) { /* mark the save_pid */
+        fk_log_debug("save child pid: %ld\n", (long)pid);
         server.save_pid = pid; /* save the child process ID */
         return;
     } else {

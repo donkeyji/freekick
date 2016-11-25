@@ -268,7 +268,6 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
     fk_ev_stat();
 #endif
 
-    /* deal with the exit of the child process */
     if (server.save_pid != -1) { /* the save child process has been generated */
     //if (sigchld_flag == 1) {
         /*
@@ -278,7 +277,8 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
          * than calling asynchronously in a signal handler function.
          */
         cpid = waitpid(server.save_pid, &st, WNOHANG);
-        fk_log_debug("cpid: %ld, status: %ld, %ld\n", (long)cpid, WIFEXITED(st), WEXITSTATUS(st));
+        fk_log_debug("cpid: %ld, status: %ld, %ld\n", (long)cpid,
+                     (long)WIFEXITED(st), (long)WEXITSTATUS(st));
         if (cpid < 0 && errno != ECHILD) {
             fk_log_error("waitpid() for save child: %s\n", strerror(errno));
             exit(EXIT_FAILURE);
@@ -292,14 +292,15 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
         {
             server.save_pid = -1; /* mark the save child terminated */
             server.last_save = time(NULL);
-            fk_log_debug("db saving done in background process\n");
+            fk_log_debug("db saving done in the background process\n");
             //sigchld_flag = 0; /* restore the state of sigchld_flag */
         }
     }
 
     if (server.rewrite_pid != -1) {
         cpid = waitpid(server.rewrite_pid, &st, WNOHANG);
-        fk_log_debug("cpid: %ld, status: %ld, %ld\n", (long)cpid, WIFEXITED(st), WEXITSTATUS(st));
+        fk_log_debug("cpid: %ld, status: %ld, %ld\n", (long)cpid,
+                     (long)WIFEXITED(st), (long)WEXITSTATUS(st));
         if (cpid < 0 && errno != ECHILD) {
             fk_log_error("waitpid() for rewrite child: %s\n", strerror(errno));
             exit(EXIT_FAILURE);
@@ -308,7 +309,7 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
             && WEXITSTATUS(st) == EXIT_SUCCESS)
         {
             server.rewrite_pid = -1;
-            fk_log_debug("blog rewrite done in background process\n");
+            fk_log_debug("blog rewrite done in the background process\n");
         }
     }
 
