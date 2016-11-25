@@ -283,7 +283,10 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
             fk_log_error("waitpid() for save child: %s\n", strerror(errno));
             exit(EXIT_FAILURE);
         }
-        /* the child process terminats via exit() */
+        /*
+         * we must check the combination of the three predicates here.
+         * in particular, "cpid == server.save_pid" is required.
+         */
         if (cpid == server.save_pid && WIFEXITED(st)
             && WEXITSTATUS(st) == EXIT_SUCCESS)
         {
