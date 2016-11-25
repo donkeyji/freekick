@@ -23,11 +23,10 @@ void fk_util_backtrace(int level);
 
 #define fk_util_tv2millis(tv)   ((tv)->tv_sec * 1000 + (tv)->tv_usec / 1000)
 
-#define fk_util_millis2tv(ms, tv)                               \
-    do {                                                        \
-        (tv)->tv_sec = (time_t)((ms) / 1000);                   \
-        (tv)->tv_usec = (suseconds_t)(((ms) % 1000) * 1000);    \
-    } while (0)
+#define fk_util_millis2tv(ms, tv)    do {                   \
+    (tv)->tv_sec = (time_t)((ms) / 1000);                   \
+    (tv)->tv_usec = (suseconds_t)(((ms) % 1000) * 1000);    \
+} while (0)
 
 #define fk_util_tv2ts(tv, ts)   TIMEVAL_TO_TIMESPEC((tv), (ts))
 
@@ -44,25 +43,23 @@ void fk_util_backtrace(int level);
     (t1)->tv_sec - (t2)->tv_sec         \
 )
 
-#define fk_util_tmval_add(a, b, result)                     \
-    do {                                                    \
-        (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;       \
-        (result)->tv_usec = (a)->tv_usec + (b)->tv_usec;    \
-        if ((result)->tv_usec >= 1000000) {                 \
-            (result)->tv_sec++;                             \
-            (result)->tv_usec -= 1000000;                   \
-        }                                                   \
-    } while (0)
+#define fk_util_tmval_add(a, b, result)    do {         \
+    (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;       \
+    (result)->tv_usec = (a)->tv_usec + (b)->tv_usec;    \
+    if ((result)->tv_usec >= 1000000) {                 \
+        (result)->tv_sec++;                             \
+        (result)->tv_usec -= 1000000;                   \
+    }                                                   \
+} while (0)
 
-#define fk_util_tmval_sub(a, b, result)                     \
-    do {                                                    \
-        (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;       \
-        (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;    \
-        if ((result)->tv_usec < 0) {                        \
-            --(result)->tv_sec;                             \
-            (result)->tv_usec += 1000000;                   \
-        }                                                   \
-    } while (0)
+#define fk_util_tmval_sub(a, b, result)    do {         \
+    (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;       \
+    (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;    \
+    if ((result)->tv_usec < 0) {                        \
+        --(result)->tv_sec;                             \
+        (result)->tv_usec += 1000000;                   \
+    }                                                   \
+} while (0)
 
 
 #define fk_util_conns_to_files(max_conns)       ((max_conns) + 1 + 16)
