@@ -91,7 +91,7 @@ fk_cmd_save(fk_conn_t *conn)
 
     /* saving child process ended */
     if (server.save_pid == -1) {
-        rt = fk_fkdb_save();
+        rt = fk_kdb_save();
         if (rt == FK_SVR_OK) {
             err = 0;
         }

@@ -324,7 +324,7 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
         return 0;
     }
 
-    fk_fkdb_bgsave();
+    fk_kdb_bgsave();
 
     fk_blog_bgrewrite();
 
@@ -416,23 +416,23 @@ fk_svr_init(void)
     }
 
     if (setting.dump == 1) {
-        fk_fkdb_init();
+        fk_kdb_init();
         if (blog_loaded == 0) {
             /*
-             * the time gap between access() and fk_fkdb_load() may yield a race
+             * the time gap between access() and fk_kdb_load() may yield a race
              * condition for the reason that the returned information by
              * access() may be not right at the time of the later operation.
              * here this means maybe the db_file exists when calling access(),
-             * but disappeares when call fk_fkdb_load().
+             * but disappeares when call fk_kdb_load().
              * but in this scenario, even if this race condition occurs, there
              * will be no harm to this program, because some related checking
-             * will be preformed in fk_fkdb_load(), such as the checking of the
+             * will be preformed in fk_kdb_load(), such as the checking of the
              * returned valued of fopen() or the global errno. so we take this
              * access() as a initial checking to avoid further actions when the
              * db_file does not exist.
              */
             if (access(fk_str_raw(setting.db_file), F_OK) == 0) {
-                fk_fkdb_load(setting.db_file);
+                fk_kdb_load(setting.db_file);
             }
         }
     }
@@ -460,7 +460,7 @@ fk_svr_exit(void)
             fk_log_error("waitpid() for save child: %s\n", strerror(errno));
             /*
              * we don't call exit() here, because we need to execute
-             * fk_fkdb_save() once more to ensure that all data have
+             * fk_kdb_save() once more to ensure that all data have
              * been saved successfully.
              */
             //exit(EXIT_FAILURE);
@@ -476,7 +476,7 @@ fk_svr_exit(void)
     }
 
     /* save db once more */
-    rt = fk_fkdb_save();
+    rt = fk_kdb_save();
     if (rt == FK_SVR_ERR) {
         fk_log_error("db save failed\n");
         exit(EXIT_FAILURE);

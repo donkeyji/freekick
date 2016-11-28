@@ -158,10 +158,10 @@ void fk_svr_signal_exit_handler(int sig);
 void fk_svr_signal_child_handler(int sig);
 
 /* related to dump/restore */
-void fk_fkdb_init(void);
-void fk_fkdb_load(fk_str_t *db_path);
-void fk_fkdb_bgsave(void);
-int fk_fkdb_save(void);
+void fk_kdb_init(void);
+void fk_kdb_load(fk_str_t *db_path);
+void fk_kdb_bgsave(void);
+int fk_kdb_save(void);
 
 /* related to replication */
 int fk_svr_sync_with_master(void);
