@@ -48,6 +48,7 @@ fk_kdb_bgsave(void)
     int    rt;
     pid_t  pid;
 
+    /* do some necessary checking here */
     if (setting.dump != 1) {
         return;
     }
