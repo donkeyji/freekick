@@ -25,7 +25,10 @@ fi
 
 echo -e "Target Branch: ${COLOR_GREEN}$branches${COLOR_END}"
 read -p "Proceed? [y/n]: " choice
-if [ $choice != 'y' ]; then
+echo "Your choice: $choice"
+# we should use double quote for $choice here, in case $choice is null when
+# pressing enter without inputting any letter.
+if [ "$choice" != 'y' ]; then
     echo -e "${COLOR_YELLOW}Pushing Canled${COLOR_END}"
     exit 1
 fi
