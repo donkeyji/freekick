@@ -24,21 +24,23 @@ else
 fi
 
 echo -e "Target Branch: ${COLOR_GREEN}$branches${COLOR_END}"
-
-read -p "Proceed? [y/n]: " choice
-echo "Your choice: $choice"
-# we should use double quote for $choice here, in case $choice is null when
-# pressing enter without inputting any letter.
-while [ "$choice" != 'y' -a "$choice" != 'n' ]; do
-    echo "Illegal input, choose again"
+illegal=0
+while [ $illegal -eq 0 ]; do
     read -p "Proceed? [y/n]: " choice
     echo "Your choice: $choice"
+    # we should use double quote for $choice here, in case $choice is null when
+    # pressing enter without inputting any letter.
+    if [ "$choice" = 'y' -o "$choice" = 'n' ]; then
+        illegal=1
+        if [ "$choice" = 'n' ]; then
+            echo -e "${COLOR_YELLOW}Pushing Canled${COLOR_END}"
+            exit 1
+        fi
+    else
+        illegal=0
+        echo "Illegal choice, input again"
+    fi
 done
-
-if [ "$choice" != 'y' ]; then
-    echo -e "${COLOR_YELLOW}Pushing Canled${COLOR_END}"
-    exit 1
-fi
 
 echo -e "Trying to push all branches to the remote repository..."
 for rt in $all_remotes; do
