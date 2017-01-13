@@ -9,7 +9,7 @@
 
 /*
  * Note that epoll could be used on socket/fifo/pipe..., but not regular files
- * directories.
+ * and directories.
  * epoll() performs much better than select()/poll() when monitoring large
  * numbers of file descriptors for the reason that select()/poll() passes a
  * complete list of file descriptors to be monitored to the kernel, and then
