@@ -487,7 +487,7 @@ fk_kdb_restore(FILE *fp, fk_zline_t *buf)
             rt = fk_kdb_restore_dict_elt(fp, db, buf);
             break;
         default:
-            rt = -1;
+            rt = FK_SVR_ERR;
             break;
         }
         if (rt == FK_SVR_ERR) {
