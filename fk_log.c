@@ -57,7 +57,8 @@ fk_log_error(char *fmt, ...)
 
     /*
      * va_end is actually a macro as va_start
-     * at this point, ap is make point to an invalid address */
+     * at this point, ap is make point to an invalid address
+     */
     va_end(ap);
 }
 
