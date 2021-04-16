@@ -16,14 +16,13 @@ all_branches=$(git branch --no-color | sed -e '/^  /s/^  //' -e '/^* /s/^* //g')
 echo -e "All Branches Available:\n${COLOR_PURPLE}${all_branches}${COLOR_END}"
 
 if [ -z $1 ]; then
-    branches=$(git branch --no-color|grep '*'|sed '/^* /s/^* //')
-#elif [ $1 = 'all' ]; then
-#   branches=$all_branches
+    # get the current branch
+    cur_branch=$(git branch --no-color|grep '*'|sed '/^* /s/^* //')
 else
-    branches=$1
+    cur_branch=$1
 fi
 
-echo -e "Target Branch: ${COLOR_GREEN}$branches${COLOR_END}"
+echo -e "Target Branch: ${COLOR_GREEN}$cur_branch${COLOR_END}"
 illegal=0
 while [ $illegal -eq 0 ]; do
     read -p "Proceed? [y/n]: " choice
@@ -42,11 +41,9 @@ while [ $illegal -eq 0 ]; do
     fi
 done
 
-echo -e "Trying to push all branches to the remote repository..."
+echo -e "Trying to push the current branch to the remote repository..."
 for rt in $all_remotes; do
     echo -e "===================Remote Repository: ${COLOR_RED}$rt${COLOR_END}==================="
-    for br in $branches; do
-        echo -e "---------Local Branch: ${COLOR_CYAN}$br${COLOR_END}--------"
-        git push $rt $br
-    done
+    echo -e "---------Local Branch: ${COLOR_CYAN}$cur_branch${COLOR_END}--------"
+    git push $rt $cur_branch
 done
