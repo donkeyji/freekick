@@ -40,6 +40,10 @@ static int fk_select_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_select_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_select_dispatch(void *ev_iompx, struct timeval *timeout);
 
+/*
+ * no need to expose this interface in fk_ev.h
+ * just declare mpx_optr as "extern" here
+ */
 void fk_ev_activate_ioev(int fd, uint8_t type);
 
 fk_mpxop_t mpx_optr = {

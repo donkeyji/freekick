@@ -41,6 +41,10 @@ static void fk_ev_proc_activated_ioev(void);
 static void fk_ev_proc_expired_tmev(void);
 static int fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2);
 
+/*
+ * just declare mpx_optr as "extern" here
+ * global mpx_optr is defined individually in kqueue/epoll/poll/select module
+ */
 extern fk_mpxop_t mpx_optr;
 static fk_mpxop_t *mpxop = &mpx_optr;
 
