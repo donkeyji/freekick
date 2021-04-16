@@ -43,21 +43,25 @@ ifeq ($(os), Generic)
 OS_CFLAGS  :=
 OS_LDFLAGS :=
 OS_LDLIBS  := -ldl -lm
+MPLX_MOD   := fk_ev_poll.c
 else
 ifeq ($(os), FreeBSD)
 OS_CFLAGS  := -I /usr/local/include
 OS_LDFLAGS := -L /usr/local/lib
 OS_LDLIBS  := -lm -lexecinfo
+MPLX_MOD   := fk_ev_kqueue.c
 else
 ifeq ($(os), Linux)
 OS_CFLAGS  :=
 OS_LDFLAGS :=
 OS_LDLIBS  := -ldl -lm -lrt
+MPLX_MOD   := fk_ev_epoll.c
 else
 ifeq ($(os), Darwin)
 OS_CFLAGS  :=
 OS_LDFLAGS :=
 OS_LDLIBS  :=
+MPLX_MOD   := fk_ev_kqueue.c
 else
 $(error $(os) not supported at present)
 endif # Darwin
@@ -154,6 +158,7 @@ SVRSRCS := fk_buf.c fk_conf.c fk_ev.c fk_list.c fk_log.c                        
            fk_skiplist.c fk_svr.c fk_svr_conn.c fk_svr_proto.c fk_svr_lua.c     \
            fk_svr_str.c fk_svr_hash.c fk_svr_list.c fk_svr_zset.c fk_svr_kdb.c  \
            fk_svr_blog.c fk_svr_db.c freekick.c
+SVRSRCS += $(MPLX_MOD)
 SVROBJS := $(patsubst %.c, %.o, $(SVRSRCS))
 DEPS    := Makefile.dep
 

@@ -1,5 +1,18 @@
+/* c standard headers */
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+
 /* unix headers */
 #include <sys/event.h>
+
+/* local headers */
+#include <fk_ev.h>
+#include <fk_str.h>
+#include <fk_mem.h>
+#include <fk_log.h>
+#include <fk_util.h>
 
 /*
  * no need to keep tracking the existing events associated to a fd, which should
@@ -20,7 +33,9 @@ static int fk_kqueue_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_kqueue_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_kqueue_dispatch(void *ev_iompx, struct timeval *timeout);
 
-fk_mpxop_t kqueue_op = {
+void fk_ev_activate_ioev(int fd, uint8_t type);
+
+fk_mpxop_t mpx_optr = {
     "kqueue",
     fk_kqueue_create,
     fk_kqueue_add,

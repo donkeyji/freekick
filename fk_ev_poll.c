@@ -1,5 +1,18 @@
+/* c standard headers */
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+
 /* unix headers */
 #include <poll.h>
+
+/* local headers */
+#include <fk_ev.h>
+#include <fk_str.h>
+#include <fk_mem.h>
+#include <fk_log.h>
+#include <fk_util.h>
 
 /*
  * in practice, the flags of real interests of poll() are the following:
@@ -20,7 +33,9 @@ static int fk_poll_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_poll_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_poll_dispatch(void *ev_iompx, struct timeval *timeout);
 
-fk_mpxop_t poll_op = {
+void fk_ev_activate_ioev(int fd, uint8_t type);
+
+fk_mpxop_t mpx_optr = {
     "poll",
     fk_poll_create,
     fk_poll_add,

@@ -1,5 +1,18 @@
+/* c standard headers */
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+
 /* unix headers */
 #include <sys/epoll.h>
+
+/* local headers */
+#include <fk_ev.h>
+#include <fk_str.h>
+#include <fk_mem.h>
+#include <fk_log.h>
+#include <fk_util.h>
 
 /*
  * here I use emask to track the existing ev associated to fd because of the
@@ -33,7 +46,9 @@ static int fk_epoll_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_epoll_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_epoll_dispatch(void *ev_iompx, struct timeval *timeout);
 
-fk_mpxop_t epoll_op = {
+void fk_ev_activate_ioev(int fd, uint8_t type);
+
+fk_mpxop_t mpx_optr = {
     "epoll",
     fk_epoll_create,
     fk_epoll_add,

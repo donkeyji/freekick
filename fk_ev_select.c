@@ -1,5 +1,18 @@
+/* c standard headers */
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+
 /* unix headers */
 #include <sys/select.h>
+
+/* local headers */
+#include <fk_ev.h>
+#include <fk_str.h>
+#include <fk_mem.h>
+#include <fk_log.h>
+#include <fk_util.h>
 
 /*
  * kernel dosen't record the events to be monitored, so we do this by ourself
@@ -27,7 +40,9 @@ static int fk_select_add(void *ev_iompx, int fd, uint8_t type);
 static int fk_select_remove(void *ev_iompx, int fd, uint8_t type);
 static int fk_select_dispatch(void *ev_iompx, struct timeval *timeout);
 
-fk_mpxop_t select_op = {
+void fk_ev_activate_ioev(int fd, uint8_t type);
+
+fk_mpxop_t mpx_optr = {
     "select",
     fk_select_create,
     fk_select_add,

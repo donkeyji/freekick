@@ -35,23 +35,14 @@
 #define fk_tmev_set_stat(tmev, stat)        (tmev)->expired = (stat)
 #define fk_tmev_get_stat(tmev)              ((tmev)->expired)
 
-static void fk_ev_activate_ioev(int fd, uint8_t type);
 static fk_tmev_t *fk_ev_get_nearest_tmev(void);
 static void fk_ev_update_pending_tmev(void);
 static void fk_ev_proc_activated_ioev(void);
 static void fk_ev_proc_expired_tmev(void);
 static int fk_tmev_cmp(fk_leaf_t *tmev1, fk_leaf_t *tmev2);
 
-#if defined(FK_HAVE_EPOLL)
-#include <fk_ev_epoll.c>
-static fk_mpxop_t *mpxop = &epoll_op;
-#elif defined(FK_HAVE_KQUEUE)
-#include <fk_ev_kqueue.c>
-static fk_mpxop_t *mpxop = &kqueue_op;
-#else
-#include <fk_ev_poll.c>
-static fk_mpxop_t *mpxop = &poll_op;
-#endif
+extern fk_mpxop_t mpx_optr;
+static fk_mpxop_t *mpxop = &mpx_optr;
 
 static fk_evmgr_t evmgr;
 
