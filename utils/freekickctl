@@ -1,13 +1,15 @@
-#!/bin/sh
+#!/bin/bash
 
 ACTION=$1
 if [ -z $ACTION ]; then
     ACTION='start'
 fi
 
+TOP_DIR=..
+
 NAME=freekick
-BIN=./freekick
-CONF=./freekick.conf
+BIN=$TOP_DIR/src/freekick
+CONF=$TOP_DIR/conf/freekick.conf
 PIDFILE=/tmp/freekick.pid
 
 fk_start() {

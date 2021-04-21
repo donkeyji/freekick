@@ -12,9 +12,11 @@ ulimit -c unlimited
 GDB_OPTIONS="--args"
 GDB_BIN=gdb
 
+TOP_DIR=..
+
 CORE_FILE=/tmp/*core*
-FK_CONF=freekick.conf
-FK_BIN=freekick
+FK_CONF=$TOP_DIR/conf/freekick.conf
+FK_BIN=$TOP_DIR/src/freekick
 
 if [ -f $CORE_FILE ]; then
     $GDB_BIN $USE_GUI $GDB_OPTIONS -c $CORE_FILE $FK_BIN $FK_CONF
