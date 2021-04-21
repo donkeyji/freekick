@@ -18,3 +18,7 @@ clean.sh
 out
 *.out
 .DS_Store
+luac
+lua
+*.a
+*.so
