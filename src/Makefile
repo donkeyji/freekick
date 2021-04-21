@@ -11,6 +11,8 @@
 CC := gcc
 LD := gcc
 
+TOP_DIR = ..
+3RD_DIR = $(TOP_DIR)/3rd
 
 # basic options
 BASIC_CFLAGS  := -std=c99 -pedantic -Wall -I .
@@ -147,9 +149,9 @@ endif # none
 endif # gperf
 endif # gprof
 
-3RD_CFLAGS    := -I ../3rd/lua-5.1.5/src
+3RD_CFLAGS    := -I $(3RD_DIR)/lua-5.1.5/src
 3RD_LDFLAGS   :=
-3RD_LDLIBS    := -L ../3rd/lua-5.1.5/src -llua
+3RD_LDLIBS    := -L $(3RD_DIR)/lua-5.1.5/src -llua
 
 # final values for CFLAGS && LDFLAGS && LDLIBS
 CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(PROFILE_CFLAGS)  $(OPTIMIZE_CFLAGS) $(3RD_CFLAGS)
@@ -176,8 +178,8 @@ DEPS    := Makefile.dep
 
 all : 3rd $(SVRBIN)
 
-3rd:
-	(cd ../3rd && $(MAKE))
+3rd :
+	(cd $(3RD_DIR) && $(MAKE))
 
 $(SVRBIN) : $(SVROBJS) 
 	@echo "[Linking...]"
@@ -195,4 +197,4 @@ $(DEPS) :
 
 clean :
 	@echo "[Removing all the objects...]"
-	$(RM) $(SVROBJS) $(SVRBIN) $(DEPS) && (cd ../3rd && $(MAKE) clean)
+	$(RM) $(SVROBJS) $(SVRBIN) $(DEPS) && (cd $(3RD_DIR) && $(MAKE) clean)
