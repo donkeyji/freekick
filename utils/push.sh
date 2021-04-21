@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # color definition
 COLOR_END="\033[0m"
