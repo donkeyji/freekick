@@ -147,7 +147,7 @@ endif # none
 endif # gperf
 endif # gprof
 
-3RD_CFLAGS    :=
+3RD_CFLAGS    := -I ../3rd/lua-5.1.5/src
 3RD_LDFLAGS   :=
 3RD_LDLIBS    := -L ../3rd/lua-5.1.5/src -llua
 
