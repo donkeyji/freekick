@@ -1,7 +1,12 @@
+.PHONY: clean distclean
+
 default: all
 
-all:
+all :
 	cd src && $(MAKE) $@
 
-clean:
+clean :
+	cd src && $(MAKE) $@
+
+distclean :
 	cd src && $(MAKE) $@
