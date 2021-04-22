@@ -174,7 +174,7 @@ SVRSRCS += $(MPLX_MOD)
 SVROBJS := $(patsubst %.c, %.o, $(SVRSRCS))
 DEPS    := Makefile.dep
 
-.PHONY : all clean
+.PHONY : all clean distclean dep
 
 all : 3rd $(SVRBIN)
 
@@ -191,10 +191,14 @@ $(SVRBIN) : $(SVROBJS)
 
 # if Makefile.dep does not exist, this target will be executed
 # this target is always the first one to be executed
-$(DEPS) :
+dep :
 	@echo "[Generating Makefile.dep...]"
 	$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
 
 clean :
 	@echo "[Removing all the objects...]"
-	$(RM) $(SVROBJS) $(SVRBIN) $(DEPS) && (cd $(3RD_DIR) && $(MAKE) clean)
+	$(RM) $(SVROBJS) $(SVRBIN)
+
+distclean :
+	@echo "[Removing all the objects, dependencies included...]"
+	$(RM) $(SVROBJS) $(SVRBIN) && (cd $(3RD_DIR) && $(MAKE) clean)
