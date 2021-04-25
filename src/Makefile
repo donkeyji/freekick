@@ -11,8 +11,11 @@
 CC := gcc
 LD := gcc
 
-TOP_DIR = ..
-3RD_DIR = $(TOP_DIR)/3rd
+TOP_DIR := ..
+3RD_DIR := $(TOP_DIR)/3rd
+LUA_DIR := $(3RD_DIR)/lua-5.1.5
+JEMALLOC_DIR := $(3RD_DIR)/jemalloc-5.2.1
+3RDS    := lua
 
 # basic options
 BASIC_CFLAGS  := -std=c99 -pedantic -Wall -I .
@@ -109,9 +112,10 @@ endif # yes
 
 # check argument malloc
 ifeq ($(malloc), jemalloc)
-MALLOC_CFLAGS  := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE
+MALLOC_CFLAGS  := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE -I $(JEMALLOC_DIR)/include
 MALLOC_LDFLAGS :=
-MALLOC_LDLIBS  := -ljemalloc
+MALLOC_LDLIBS  := -L $(JEMALLOC_DIR)/lib -ljemalloc
+3RDS           += jemalloc
 else
 ifeq ($(malloc), tcmalloc)
 MALLOC_CFLAGS  :=
@@ -149,16 +153,16 @@ endif # none
 endif # gperf
 endif # gprof
 
-3RD_CFLAGS    := -I $(3RD_DIR)/lua-5.1.5/src
-3RD_LDFLAGS   :=
-3RD_LDLIBS    := -L $(3RD_DIR)/lua-5.1.5/src -llua
+LUA_CFLAGS    := -I $(LUA_DIR)/src
+LUA_LDFLAGS   :=
+LUA_LDLIBS    := -L $(LUA_DIR)/src -llua
 
 # final values for CFLAGS && LDFLAGS && LDLIBS
-CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(PROFILE_CFLAGS)  $(OPTIMIZE_CFLAGS) $(3RD_CFLAGS)
+CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(PROFILE_CFLAGS)  $(OPTIMIZE_CFLAGS) $(LUA_CFLAGS)
 
-LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(PROFILE_LDFLAGS) $(OPTIMIZE_LDFLAGS) $(3RD_LDFLAGS)
+LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(PROFILE_LDFLAGS) $(OPTIMIZE_LDFLAGS) $(LUA_LDFLAGS)
 
-LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(PROFILE_LDLIBS)  $(OPTIMIZE_LIBS) $(3RD_LDLIBS)
+LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(PROFILE_LDLIBS)  $(OPTIMIZE_LIBS) $(LUA_LDLIBS)
 
 #--------------------------------------------------------------
 # sources && objects && Makefile.dep
@@ -174,14 +178,15 @@ SVRSRCS += $(MPLX_MOD)
 SVROBJS := $(patsubst %.c, %.o, $(SVRSRCS))
 DEPS    := Makefile.dep
 
-.PHONY : all clean distclean dep
+.PHONY: all clean distclean dep
 
-all : 3rd $(SVRBIN)
+# 3rd must comt first
+all: 3rd $(SVRBIN)
 
-3rd :
-	(cd $(3RD_DIR) && $(MAKE))
+3rd:
+	(cd $(3RD_DIR) && $(MAKE) $(3RDS))
 
-$(SVRBIN) : $(SVROBJS) 
+$(SVRBIN): $(SVROBJS) 
 	@echo "[Linking...]"
 	$(LD) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS) $(LDLIBS)
 
@@ -191,14 +196,14 @@ $(SVRBIN) : $(SVROBJS)
 
 # if Makefile.dep does not exist, this target will be executed
 # this target is always the first one to be executed
-dep :
+dep:
 	@echo "[Generating Makefile.dep...]"
 	$(CC) -MM $(CFLAGS) $(SVRSRCS) > $(DEPS)
 
-clean :
+clean:
 	@echo "[Removing all the objects...]"
 	$(RM) $(SVROBJS) $(SVRBIN)
 
-distclean :
+distclean:
 	@echo "[Removing all the objects, dependencies included...]"
 	$(RM) $(SVROBJS) $(SVRBIN) && (cd $(3RD_DIR) && $(MAKE) clean)
