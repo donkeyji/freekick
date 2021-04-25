@@ -20,7 +20,7 @@ endif
 endif
 
 
-.PHONY: lua jemalloc clean distclean
+.PHONY: lua jemalloc clean distclean install
 
 lua:
 	(cd $(LUA_DIR) && $(MAKE) $(LUA_PLAT) )
@@ -33,5 +33,9 @@ clean:
 	cd $(JEMALLOC_DIR) && $(MAKE) $@
 
 distclean:
+	cd $(LUA_DIR) && $(MAKE) $@
+	cd $(JEMALLOC_DIR) && $(MAKE) $@
+
+install:
 	cd $(LUA_DIR) && $(MAKE) $@
 	cd $(JEMALLOC_DIR) && $(MAKE) $@
