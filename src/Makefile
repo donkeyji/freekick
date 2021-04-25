@@ -114,7 +114,7 @@ endif # yes
 ifeq ($(malloc), jemalloc)
 MALLOC_CFLAGS  := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE -I $(JEMALLOC_DIR)/include
 MALLOC_LDFLAGS :=
-MALLOC_LDLIBS  := -L $(JEMALLOC_DIR)/lib -ljemalloc
+MALLOC_LDLIBS  := -L $(JEMALLOC_DIR)/lib -l libjemalloc.a
 3RDS           += jemalloc
 else
 ifeq ($(malloc), tcmalloc)
