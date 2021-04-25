@@ -11,11 +11,11 @@
 CC := gcc
 LD := gcc
 
-TOP_DIR := ..
-3RD_DIR := $(TOP_DIR)/3rd
-LUA_DIR := $(3RD_DIR)/lua-5.1.5
+TOP_DIR      := ..
+3RD_DIR      := $(TOP_DIR)/3rd
+LUA_DIR      := $(3RD_DIR)/lua-5.1.5
 JEMALLOC_DIR := $(3RD_DIR)/jemalloc-5.2.1
-3RDS    := lua
+3RDS         := lua
 
 # basic options
 BASIC_CFLAGS  := -std=c99 -pedantic -Wall -I .
