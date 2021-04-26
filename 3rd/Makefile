@@ -20,7 +20,7 @@ endif
 endif
 
 
-.PHONY: lua jemalloc clean distclean install
+.PHONY: all lua jemalloc clean distclean install
 
 all: lua jemalloc
 
