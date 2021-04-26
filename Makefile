@@ -1,4 +1,4 @@
-.PHONY: clean distclean
+.PHONY: all clean distclean
 
 all:
 	cd src && $(MAKE) $@
