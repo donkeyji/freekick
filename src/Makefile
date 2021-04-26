@@ -113,8 +113,8 @@ endif # yes
 # check argument malloc
 ifeq ($(malloc), jemalloc)
 MALLOC_CFLAGS  := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE -I $(JEMALLOC_DIR)/include
-MALLOC_LDFLAGS :=
-MALLOC_LDLIBS  := -L $(JEMALLOC_DIR)/lib -l libjemalloc.a
+MALLOC_LDFLAGS := -L $(JEMALLOC_DIR)/lib 
+MALLOC_LDLIBS  := -l libjemalloc.a
 3RDS           += jemalloc
 else
 ifeq ($(malloc), tcmalloc)
@@ -154,15 +154,19 @@ endif # gperf
 endif # gprof
 
 LUA_CFLAGS    := -I $(LUA_DIR)/src
-LUA_LDFLAGS   :=
-LUA_LDLIBS    := -L $(LUA_DIR)/src -llua
+LUA_LDFLAGS   := -L $(LUA_DIR)/src
+LUA_LDLIBS    := -llua
 
 # final values for CFLAGS && LDFLAGS && LDLIBS
-CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(PROFILE_CFLAGS)  $(OPTIMIZE_CFLAGS) $(LUA_CFLAGS)
+SUM_CFLAGS  := $(BASIC_CFLAGS)  $(OS_CFLAGS)  $(DEBUG_CFLAGS)  $(MALLOC_CFLAGS)  $(PROFILE_CFLAGS)  $(OPTIMIZE_CFLAGS) $(LUA_CFLAGS)
 
-LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(PROFILE_LDFLAGS) $(OPTIMIZE_LDFLAGS) $(LUA_LDFLAGS)
+SUM_LDFLAGS := $(BASIC_LDFLAGS) $(OS_LDFLAGS) $(DEBUG_LDFLAGS) $(MALLOC_LDFLAGS) $(PROFILE_LDFLAGS) $(OPTIMIZE_LDFLAGS) $(LUA_LDFLAGS)
 
-LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(PROFILE_LDLIBS)  $(OPTIMIZE_LIBS) $(LUA_LDLIBS)
+SUM_LDLIBS  := $(BASIC_LDLIBS)  $(OS_LDLIBS)  $(DEBUG_LDFLAGS) $(MALLOC_LDLIBS)  $(PROFILE_LDLIBS)  $(OPTIMIZE_LIBS) $(LUA_LDLIBS)
+
+CFLAGS  += $(SUM_CFLAGS)
+LDFLAGS += $(SUM_LDFLAGS)
+LDLIBS  += $(SUM_LDLIBS)
 
 #--------------------------------------------------------------
 # sources && objects && Makefile.dep
@@ -178,7 +182,7 @@ SVRSRCS += $(MPLX_MOD)
 SVROBJS := $(patsubst %.c, %.o, $(SVRSRCS))
 DEPS    := Makefile.dep
 
-.PHONY: all clean distclean dep
+.PHONY: all clean distclean dep 3rd
 
 # 3rd must comt first
 all: 3rd $(SVRBIN)
@@ -206,4 +210,4 @@ clean:
 
 distclean:
 	@echo "[Removing all the objects, dependencies included...]"
-	$(RM) $(SVROBJS) $(SVRBIN) && (cd $(3RD_DIR) && $(MAKE) clean)
+	$(RM) $(SVROBJS) $(SVRBIN) && (cd $(3RD_DIR) && $(MAKE) $@)
