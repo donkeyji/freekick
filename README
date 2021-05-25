@@ -376,3 +376,5 @@ fault；
 133. 用二分法来注释掉不同区域的代码，来找出到底哪部分导致了gmon.out没有出现，发现原来是fk_set_pwd()中调用了chdir()导致gmon.out实际被保存到了/tmp/中去了，因为在freekick.conf中设置了工作目录为/tmp.
 
 134. 用gprof来分析，发现freekick与redis的性能差异并不在自定义函数的消耗上，而应该在库函数和系统调用的消耗。
+
+135. 不同OS上freekick的性能差异巨大, linux下比freebsd/osx下要好得多。基于t/t.py测试，linux下比redis用事更少，但是freebsd/osx下比redis差，redis在不同平台下没有显著差异。这是为啥？
