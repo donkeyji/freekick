@@ -115,7 +115,8 @@ ifeq ($(malloc), jemalloc)
 MALLOC_CFLAGS  := -D FK_USE_JEMALLOC -D JEMALLOC_MANGLE -I $(JEMALLOC_DIR)/include
 MALLOC_LDFLAGS := -L $(JEMALLOC_DIR)/lib 
 # compulsively perform static linking, no argument "-l" here
-MALLOC_LDLIBS  := $(JEMALLOC_DIR)/lib/libjemalloc.a
+# under linux, -lpthread is required when linking to jemalloc
+MALLOC_LDLIBS  := $(JEMALLOC_DIR)/lib/libjemalloc.a -lpthread
 3RDS           += jemalloc
 else
 ifeq ($(malloc), tcmalloc)
