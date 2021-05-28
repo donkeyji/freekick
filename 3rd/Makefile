@@ -28,7 +28,7 @@ lua:
 	(cd $(LUA_DIR) && $(MAKE) $(LUA_PLAT) )
 
 jemalloc:
-	(cd $(JEMALLOC_DIR) && (test -f ./Makefile || ./configure) && $(MAKE))
+	(cd $(JEMALLOC_DIR) && (test -f ./Makefile || (chmod +x ./autogen.sh && ./autogen.sh)) && $(MAKE))
     
 clean:
 	cd $(LUA_DIR) && $(MAKE) $@
