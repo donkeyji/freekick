@@ -48,7 +48,12 @@ fk_kdb_bgsave(void)
     int    rt;
     pid_t  pid;
 
-    /* do some necessary checking here */
+    /*
+     * actually this setting.dump has always been checked where
+     * fk_kdb_bgsave is invoked. for safety, performing the
+     * checking inside this function once more. actually I am not
+     * quite sure whether it's good or bad.
+     */
     if (setting.dump != 1) {
         return;
     }
@@ -409,6 +414,12 @@ fk_kdb_load(fk_str_t *db_file)
     long         tail;
     fk_zline_t  *buf;
 
+    /*
+     * actually this setting.dump has always been checked where
+     * fk_kdb_bgsave is invoked. for safety, performing the
+     * checking inside this function once more. actually I am not
+     * quite sure whether it's good or bad.
+     */
     if (setting.dump != 1) {
         return;
     }

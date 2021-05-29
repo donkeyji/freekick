@@ -324,10 +324,25 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
         return 0;
     }
 
-    fk_kdb_bgsave();
+    /*
+     * perform the checking outside the function to reduce the times of
+     * calling of fk_kdb_bgsave
+     */
+    if (setting.dump == 1) {
+        fk_kdb_bgsave();
+    }
 
-    fk_blog_bgrewrite();
+    /*
+     * perform the checking outside the function to reduce the times of
+     * calling of fk_blog_bgrewrite
+     */
+    if (setting.blog_on == 1) {
+        fk_blog_bgrewrite();
+    }
 
+    /*
+     * TODO: do the similar checking as the above
+     */
     fk_svr_sync_with_master();
 
     return 0;
