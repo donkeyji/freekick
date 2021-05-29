@@ -457,10 +457,11 @@ fk_conn_proc_cmd(fk_conn_t *conn)
      * we place these checking outside fk_blog_append(), attempting to reduce
      * the times of calling to fk_blog_append()
      */
-    if (pto->type != FK_PROTO_READ) {
-        if (conn->type == FK_CONN_REAL) {
-            fk_blog_append(conn);
-        }
+    if (setting.blog_on == 1
+        && pto->type != FK_PROTO_READ
+        && conn->type == FK_CONN_REAL)
+    {
+        fk_blog_append(conn);
     }
 
     /*
