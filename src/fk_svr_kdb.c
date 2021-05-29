@@ -54,9 +54,9 @@ fk_kdb_bgsave(void)
      * checking inside this function once more. actually I am not
      * quite sure whether it's good or bad.
      */
-    if (setting.dump != 1) {
-        return;
-    }
+    //if (setting.dump != 1) {
+    //    return;
+    //}
 
     if (server.save_pid != -1) {
         return;
@@ -420,9 +420,9 @@ fk_kdb_load(fk_str_t *db_file)
      * checking inside this function once more. actually I am not
      * quite sure whether it's good or bad.
      */
-    if (setting.dump != 1) {
-        return;
-    }
+    //if (setting.dump != 1) {
+    //    return;
+    //}
 
     buf = fk_zline_create(4096);
     fp = fopen(fk_str_raw(db_file), "r");

@@ -29,9 +29,9 @@ fk_blog_init(void)
      * checking inside this function once more. actually I am not
      * quite sure whether it's good or bad.
      */
-    if (setting.blog_on != 1) {
-        return;
-    }
+    //if (setting.blog_on != 1) {
+    //    return;
+    //}
 
     /* when O_CREAT is specified, the 3rd argument mode is required */
     fd = open(fk_str_raw(setting.blog_file), O_CREAT | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
@@ -157,9 +157,9 @@ fk_blog_append(fk_conn_t *conn)
      * checking inside this function once more. actually I am not
      * quite sure whether it's good or bad.
      */
-    if (setting.blog_on != 1) {
-        return;
-    }
+    //if (setting.blog_on != 1) {
+    //    return;
+    //}
 
     argc = conn->arg_cnt;
     argv = conn->arg_vtr;
@@ -202,9 +202,9 @@ fk_blog_bgrewrite(void)
      * checking inside this function once more. actually I am not
      * quite sure whether it's good or bad.
      */
-    if (setting.blog_on != 1) {
-        return;
-    }
+    //if (setting.blog_on != 1) {
+    //    return;
+    //}
 
     if (server.rewrite_pid != -1) {
         return;
