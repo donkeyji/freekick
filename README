@@ -377,7 +377,9 @@ bug排查线索:
 
 134. 用gprof来分析，发现freekick与redis的性能差异并不在自定义函数的消耗上，而应该在库函数和系统调用的消耗。
 
-135. 不同OS上freekick的性能差异巨大, 关闭blog和kdb的情况下，基于t.py的测试: linux(2G memory VMWare: 1.5s) > freebsd(2G memory VMWare: 2s) > osx(HOST: 2.9s)。redis在不同os上性能没有差异，基本保持在2s左右。
+135. 不同OS上freekick的性能差异巨大, 关闭blog和kdb的情况下，基于t.py的测试:
+linux(2G memory VMWare: 1.5s) > freebsd(2G memory VMWare: 2s) > osx(HOST:
+2.9s)。同样的配置redis-server: freebsd(1.95s) >linux(2.1s) > osx(2.5s)。
 
 136. 用于开启/关闭blog的标志setting.blog_on的判断，应该放在fk_svr_blog模块之外，由外部逻辑根据setting.blog_on来决定是否调用blog模块的接口，这样更灵活，同一个接口在外部不同的地方可能需要调用或者不调用。
 
