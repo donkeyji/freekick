@@ -25,9 +25,9 @@ fk_blog_init(void)
 
     /*
      * actually this setting.blog_on has always been checked where
-     * fk_blog_bgrewrite is invoked. for safety, performing the
-     * checking inside this function once more. actually I am not
-     * quite sure whether it's good or bad.
+     * fk_blog_bgrewrite is invoked. for flexibility, the blog_on
+     * should be checked outside this module where this interface
+     * is called.
      */
     //if (setting.blog_on != 1) {
     //    return;
@@ -153,9 +153,9 @@ fk_blog_append(fk_conn_t *conn)
 
     /*
      * actually this setting.blog_on has always been checked where
-     * fk_blog_bgrewrite is invoked. for safety, performing the
-     * checking inside this function once more. actually I am not
-     * quite sure whether it's good or bad.
+     * fk_blog_bgrewrite is invoked. for flexibility, the blog_on
+     * should be checked outside this module where this interface
+     * is called.
      */
     //if (setting.blog_on != 1) {
     //    return;
@@ -198,9 +198,9 @@ fk_blog_bgrewrite(void)
 
     /*
      * actually this setting.blog_on has always been checked where
-     * fk_blog_bgrewrite is invoked. for safety, performing the
-     * checking inside this function once more. actually I am not
-     * quite sure whether it's good or bad.
+     * fk_blog_bgrewrite is invoked. for flexibility, the blog_on
+     * should be checked outside this module where this interface
+     * is called.
      */
     //if (setting.blog_on != 1) {
     //    return;

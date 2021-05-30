@@ -50,9 +50,9 @@ fk_kdb_bgsave(void)
 
     /*
      * actually this setting.dump has always been checked where
-     * fk_kdb_bgsave is invoked. for safety, performing the
-     * checking inside this function once more. actually I am not
-     * quite sure whether it's good or bad.
+     * fk_kdb_bgsave is invoked. for flexibility, the dump should
+     * be checked according to the specific logic outside where
+     * this interface is called.
      */
     //if (setting.dump != 1) {
     //    return;
@@ -416,9 +416,9 @@ fk_kdb_load(fk_str_t *db_file)
 
     /*
      * actually this setting.dump has always been checked where
-     * fk_kdb_bgsave is invoked. for safety, performing the
-     * checking inside this function once more. actually I am not
-     * quite sure whether it's good or bad.
+     * fk_kdb_bgsave is invoked. for flexibility, the dump should
+     * be checked according to the specific logic outside where
+     * this interface is called.
      */
     //if (setting.dump != 1) {
     //    return;
