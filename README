@@ -64,6 +64,7 @@
 28. sys/time.h对BSD和linux有不同的macro。
 
 29. -std=c99编译时，linux下使用struct sigaction会提示不知道该结构的size，莫名其妙。。。
+
 30. libevent/libev的kqueue，将event注册和event的poll合并一个kevent调用。可能会产生EINVAL/ENOENT/EBADF错误。而我这里将kqueue用类似epoll_ctl/epoll_wait方式调用，不会产生前述3中错误，因此在kevent返回之后无需去处理这3中错误。
 
 31. epoll的EPOLLERR/EPOLLHUP何时会产生，如何处理呢？
@@ -360,8 +361,7 @@ fk_buf_shrink(conn->rbuf)可以放在fk_conn_rsp_send()里，与fk_conn_recv_dat
 
 bug排查线索:
 在make os=linux debug=yes jemalloc=yes情况下
-(1) python t.py出现segment fault，查出是运行到处理第2条mset指令时出现segment
-fault；
+(1) python t.py出现segment fault，查出是运行到处理第2条mset指令时出现segment fault；
 
 (2) 直接查server，发现是dict的某个fk_elt_t的节点的key为NULL，一头雾水；
 
@@ -377,7 +377,7 @@ fault；
 
 134. 用gprof来分析，发现freekick与redis的性能差异并不在自定义函数的消耗上，而应该在库函数和系统调用的消耗。
 
-135. 不同OS上freekick的性能差异巨大, linux(2G memory VMWare) > freebsd(2G memory VMWare) > osx(HOST)。基于t/t.py测试，linux下比redis用事更少，但是freebsd/osx下比redis差，redis在不同平台下没有显著差异。这是为啥？
+135. 不同OS上freekick的性能差异巨大, 关闭blog和kdb的情况下，基于t.py的测试: linux(2G memory VMWare: 1.5s) > freebsd(2G memory VMWare: 2s) > osx(HOST: 2.9s)。redis在不同os上性能没有差异，基本保持在2s左右。
 
 136. 用于开启/关闭blog的标志setting.blog_on的判断，应该放在fk_svr_blog模块之外，由外部逻辑根据setting.blog_on来决定是否调用blog模块的接口，这样更灵活，同一个接口在外部不同的地方可能需要调用或者不调用。
 
