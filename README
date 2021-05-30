@@ -384,3 +384,6 @@ linux(2G memory VMWare: 1.5s) > freebsd(2G memory VMWare: 2s) > osx(HOST:
 136. 用于开启/关闭blog的标志setting.blog_on的判断，应该放在fk_svr_blog模块之外，由外部逻辑根据setting.blog_on来决定是否调用blog模块的接口，这样更灵活，同一个接口在外部不同的地方可能需要调用或者不调用。
 
 137. 用于开启/关闭kdb的标志setting.dump，也应该采取与setting.blog_on类似的处理逻辑。
+
+138. struct fk_str_t中使用char
+seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这是C99标准所支持的特性，用以代替char seq[0]这种GNU扩展方式。
