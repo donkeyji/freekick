@@ -377,10 +377,8 @@ fault；
 
 134. 用gprof来分析，发现freekick与redis的性能差异并不在自定义函数的消耗上，而应该在库函数和系统调用的消耗。
 
-135. 不同OS上freekick的性能差异巨大, linux下比freebsd/osx下要好得多。基于t/t.py测试，linux下比redis用事更少，但是freebsd/osx下比redis差，redis在不同平台下没有显著差异。这是为啥？
+135. 不同OS上freekick的性能差异巨大, linux(2G memory VMWare) > freebsd(2G memory VMWare) > osx(HOST)。基于t/t.py测试，linux下比redis用事更少，但是freebsd/osx下比redis差，redis在不同平台下没有显著差异。这是为啥？
 
-136.
-用于开启/关闭blog的标志setting.blog_on的判断，应该放在fk_svr_blog模块之外，由外部逻辑根据setting.blog_on来决定是否调用blog模块的接口，这样更灵活，同一个接口在外部不同的地方可能需要调用或者不调用。
+136. 用于开启/关闭blog的标志setting.blog_on的判断，应该放在fk_svr_blog模块之外，由外部逻辑根据setting.blog_on来决定是否调用blog模块的接口，这样更灵活，同一个接口在外部不同的地方可能需要调用或者不调用。
 
-137.
-用于开启/关闭kdb的标志setting.dump，也应该采取与setting.blog_on类似的处理逻辑。
+137. 用于开启/关闭kdb的标志setting.dump，也应该采取与setting.blog_on类似的处理逻辑。
