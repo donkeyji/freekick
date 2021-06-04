@@ -391,3 +391,5 @@ seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这
 139. 去掉了Makefile中对Generic平台的支持，其实根本没有测试过，也不知道所谓的Generic平台是啥。
 
 140. 通过cpp -dM xxx.c来查看不同os下gcc的predefined macros，在fk_env.h里根据特定的macro来区分不同平台以及不同特性，实现跨平台代码。
+
+141. Makefile里的CC可以换成clang来代替gcc，clang兼容gcc的参数。
