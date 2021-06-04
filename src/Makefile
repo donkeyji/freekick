@@ -5,6 +5,7 @@
 #         [malloc={libc | jemalloc | tcmalloc}]
 #         [profile={gprof | gperf | none}]
 # [g]make clean
+# [g]make distclean
 #--------------------------------------------------------------
 
 # compiler and linker specification
