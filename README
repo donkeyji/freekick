@@ -389,3 +389,5 @@ linux(2G memory VMWare: 1.5s) > freebsd(2G memory VMWare: 2s) > osx(HOST:
 seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这是C99标准所支持的特性，用以代替char seq[0]这种GNU扩展方式。
 
 139. 去掉了Makefile中对Generic平台的支持，其实根本没有测试过，也不知道所谓的Generic平台是啥。
+
+140. 通过cpp -dM xxx.c来查看不同os下gcc的predefined macros，在fk_env.h里根据特定的macro来区分不同平台以及不同特性，实现跨平台代码。
