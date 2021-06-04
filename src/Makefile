@@ -23,7 +23,7 @@ BASIC_LDFLAGS :=
 BASIC_LDLIBS  :=
 
 # default values for all the arguments accepted
-os       := $(shell sh -c 'uname -s 2>/dev/null || echo Generic')
+os       := $(shell sh -c 'uname -s 2>/dev/null')
 debug    := no
 optimize := no
 malloc   := libc
@@ -45,13 +45,6 @@ endif # Darwin
 endif # gprof
 
 # check argument os
-ifeq ($(os), Generic)
-OS_CFLAGS  :=
-OS_LDFLAGS :=
-OS_LDLIBS  := -ldl -lm
-MPLX_MOD   := fk_ev_poll.c
-#MAKE       := make
-else
 ifeq ($(os), FreeBSD)
 OS_CFLAGS  := -I /usr/local/include
 OS_LDFLAGS := -L /usr/local/lib
@@ -77,7 +70,6 @@ $(error $(os) not supported at present)
 endif # Darwin
 endif # Linux
 endif # FreeBSD
-endif # Generic
 
 # check argument debug
 ifeq ($(debug), yes)

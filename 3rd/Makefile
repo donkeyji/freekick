@@ -1,11 +1,8 @@
 LUA_DIR=lua-5.1.5
 JEMALLOC_DIR=jemalloc-5.2.1
 
-LUA_PLAT := $(shell sh -c 'uname -s 2>/dev/null || echo Generic')
+LUA_PLAT := $(shell sh -c 'uname -s 2>/dev/null')
 
-ifeq ($(LUA_PLAT), Generic)
-    LUA_PLAT="generic"
-else
 ifeq ($(LUA_PLAT), Linux)
     LUA_PLAT="linux"
 else
@@ -14,10 +11,11 @@ ifeq ($(LUA_PLAT), FreeBSD)
 else
 ifeq ($(LUA_PLAT), Darwin)
     LUA_PLAT="macosx"
-endif
-endif
-endif
-endif
+else
+$(error $(os) not supported at present)
+endif # Darwin
+endif # FreeBSD
+endif # Linux
 
 
 .PHONY: all lua jemalloc clean distclean install
