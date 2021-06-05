@@ -7,8 +7,9 @@
  * I just split the freekick.c into separate .c files,
  * so just #include <fk_svr.h>
  * technically, all functions with the form of fk_cmd_xxx which
- * are meant to handle cmds are methods of fk_conn_t, for a pointer
- * of fk_conn_t *conn is always passed as the first actual argument.
+ * are meant to handle cmds are methods of fk_svr_t, for these
+ * functions maintain/update the state of the global veriable
+ * server.
  */
 int
 fk_cmd_set(fk_conn_t *conn)
