@@ -10,12 +10,10 @@
 
 # compiler and linker specification
 CC := gcc
-LD := gcc
 # actually clang is a perfect alternative for gcc, which is the
 # default compiler on OSX/FreeBSD, but not on Linux.
 # uncomment the following 2 lines to use clang if you like
 #CC := clang
-#LD := clang
 
 TOP_DIR      := ..
 3RD_DIR      := $(TOP_DIR)/3rd
@@ -192,7 +190,7 @@ all: 3rd $(SVRBIN)
 
 $(SVRBIN): $(SVROBJS) 
 	@echo "[Linking...]"
-	$(LD) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS) $(LDLIBS)
+	$(CC) -o $(SVRBIN) $(SVROBJS) $(LDFLAGS) $(LDLIBS)
 
 # this statement guarantees that the target $(DEPS) will always be executed,
 # even when typing "make clean" to clear all the garbage generated yet
