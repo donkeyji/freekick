@@ -6,6 +6,9 @@
  * this fk_svr_str.c is just a part of the original freekick.c
  * I just split the freekick.c into separate .c files,
  * so just #include <fk_svr.h>
+ * technically, all functions with the form of fk_cmd_xxx which
+ * are meant to handle cmds are methods of fk_conn_t, for a pointer
+ * of fk_conn_t *conn is always passed as the first actual argument.
  */
 int
 fk_cmd_set(fk_conn_t *conn)
