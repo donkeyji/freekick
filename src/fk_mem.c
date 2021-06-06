@@ -23,6 +23,9 @@
 #include <stdlib.h>
 #include <malloc_np.h>
 #define fk_mem_malloc_size  malloc_usable_size
+#elif defined(__CYGWIN__)
+#include <malloc.h>
+#define fk_mem_malloc_size  malloc_usable_size
 #endif
 #endif
 

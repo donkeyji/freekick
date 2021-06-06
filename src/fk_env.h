@@ -24,4 +24,8 @@
 #define FK_HAVE_CLOCK_GETTIME
 #endif
 
+#if defined(__linux__) || defined(__FreeBSD__) && defined(__GLIBC__)
+#define FK_HAVE_BACKTRACE
+#endif
+
 #endif

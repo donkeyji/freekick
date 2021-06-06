@@ -1,18 +1,22 @@
 LUA_DIR=lua-5.1.5
 JEMALLOC_DIR=jemalloc-5.2.1
 
-LUA_PLAT := $(shell sh -c 'uname -s 2>/dev/null')
+os := $(shell sh -c 'uname -s 2>/dev/null')
 
-ifeq ($(LUA_PLAT), Linux)
+ifeq ($(os), Linux)
     LUA_PLAT="linux"
 else
-ifeq ($(LUA_PLAT), FreeBSD)
+ifeq ($(os), FreeBSD)
     LUA_PLAT="freebsd"
 else
-ifeq ($(LUA_PLAT), Darwin)
+ifeq ($(os), Darwin)
     LUA_PLAT="macosx"
 else
-$(error $(os) not supported at present)
+ifeq ($(findstring CYGWIN, $(os)), CYGWIN)
+    LUA_PLAT="generic"
+else
+    $(error $(os) is not supported at present)
+endif # CYGWIN
 endif # Darwin
 endif # FreeBSD
 endif # Linux

@@ -9,7 +9,9 @@
 
 /* unix headers */
 #include <sys/time.h>
+#ifdef FK_HAVE_BACKTRACE
 #include <execinfo.h>
+#endif
 
 /* local headers */
 #include <fk_env.h>
@@ -188,6 +190,7 @@ fk_util_decimal_digit(int num)
     return len;
 }
 
+#ifdef FK_HAVE_BACKTRACE
 void
 fk_util_backtrace(int level)
 {
@@ -221,3 +224,4 @@ fk_util_backtrace(int level)
         fk_log_error("[%d] %s\n", i, symbols[i]); /* always log it */
     }
 }
+#endif

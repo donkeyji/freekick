@@ -70,7 +70,15 @@ OS_LDLIBS  :=
 MPLX_MOD   := fk_ev_kqueue.c
 #MAKE       := make
 else
-$(error $(os) not supported at present)
+ifeq ($(findstring CYGWIN, $(os)), CYGWIN)
+OS_CFLAGS  :=
+OS_LDFLAGS :=
+OS_LDLIBS  :=
+MPLX_MOD   := fk_ev_poll.c
+#MAKE       := make
+else
+$(error $(os) is not supported at present)
+endif # CYGWIN
 endif # Darwin
 endif # Linux
 endif # FreeBSD
