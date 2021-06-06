@@ -4,14 +4,26 @@
 /* unix headers */
 #include  <strings.h>
 
+/*
+ * same logic as containers of fk_list/fk_dict/fk_heap
+ */
 typedef struct {
-    size_t    init_len;
-    size_t    len;
-    void    **array;
+    /* method specified */
+    void    *(*data_copy)(void *);
+    void     (*data_free)(void *);
+    int      (*data_cmp)(void *, void *);
+} fk_obj_op_t;
+
+typedef struct {
+    size_t          init_len;
+    size_t          len;
+    void          **array;
+    fk_obj_op_t    *vop;
 } fk_vtr_t;
 
 fk_vtr_t *fk_vtr_create(size_t init_len);
 void fk_vtr_destroy(fk_vtr_t *vtr);
+void fk_vtr_clear(fk_vtr_t *vtr);
 
 #define fk_vtr_len(vtr)             ((vtr)->len)
 
