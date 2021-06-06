@@ -50,7 +50,10 @@ fk_lua_init(void)
     server.gL = gL;
 
     lua_conn = fk_conn_create(FK_CONN_FAKE_FD);
-    fk_conn_set_type(lua_conn, FK_CONN_FAKE);
+    /*
+     * lua_conn->type is set when calling fk_conn_create
+     */
+    //fk_conn_set_type(lua_conn, FK_CONN_FAKE);
     server.lua_conn = lua_conn;
 }
 

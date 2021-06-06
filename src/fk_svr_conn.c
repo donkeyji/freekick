@@ -53,6 +53,10 @@ fk_conn_create(int fd)
 
         conn->timer = fk_tmev_create(5000, FK_TMEV_CYCLE, conn, fk_conn_timer_cb);
         fk_ev_add_tmev(conn->timer);
+
+        conn->type = FK_CONN_REAL;
+    } else {
+        conn->type = FK_CONN_FAKE;
     }
     conn->write_added = 0;
 
@@ -110,7 +114,10 @@ fk_svr_add_conn(int fd)
     fk_conn_t  *conn;
 
     conn = fk_conn_create(fd);
-    fk_conn_set_type(conn, FK_CONN_REAL);
+    /*
+     * conn->type is set in fk_conn_create()
+     */
+    //fk_conn_set_type(conn, FK_CONN_REAL);
 
     /* added to the map */
     server.conns_tab[conn->fd] = conn;

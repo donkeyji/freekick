@@ -131,8 +131,8 @@ typedef struct {
 fk_conn_t *fk_conn_create(int fd);
 void fk_conn_destroy(fk_conn_t *conn);
 void fk_conn_free_args(fk_conn_t *conn);
-#define fk_conn_set_type(conn, t)       ((conn)->type = (t))
-#define fk_conn_get_type(conn)          ((conn)->type)
+//#define fk_conn_set_type(conn, t)       ((conn)->type = (t))
+//#define fk_conn_get_type(conn)          ((conn)->type)
 int fk_conn_add_status_rsp(fk_conn_t *conn, char *stat, size_t stat_len);
 int fk_conn_add_error_rsp(fk_conn_t *conn, char *error, size_t error_len);
 int fk_conn_add_content_rsp(fk_conn_t *conn, char *content, size_t content_len);

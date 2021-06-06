@@ -51,7 +51,10 @@ fk_blog_init(void)
     /* update the global server */
     server.blog_fd = fd;
     server.blog_conn = fk_conn_create(FK_CONN_FAKE_FD);
-    fk_conn_set_type(server.blog_conn, FK_CONN_FAKE); /* cannot be omitted, very important */
+    /*
+     * blog_conn->type is set to FK_CONN_FAKE in fk_conn_create
+     */
+    //fk_conn_set_type(server.blog_conn, FK_CONN_FAKE); /* cannot be omitted, very important */
 }
 
 int
