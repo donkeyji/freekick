@@ -26,8 +26,11 @@ BASIC_CFLAGS  := -std=c99 -pedantic -Wall -I .
 BASIC_LDFLAGS :=
 BASIC_LDLIBS  :=
 
+os := $(shell sh -c 'uname -s 2>/dev/null')
+
 # default values for all the arguments accepted
-os       := $(shell sh -c 'uname -s 2>/dev/null')
+# each of these 4 variables would be overridden by the corresponding
+# one passed to commandline.
 debug    := no
 optimize := no
 malloc   := libc
