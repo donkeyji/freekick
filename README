@@ -247,7 +247,7 @@ b. 解析出一条协议之后，但是此协议不符合预定义，此时不cl
 
 92. 为何现在的gcc对于没有static修饰的inline函数，不要求必须在同一个.c文件中定义，gcc会把这个inline函数当成普通的函数?感觉好confused...
 
-93. TODO:尽量的使用int32_t/int64_t/uint32_t/uint64_t/int8_t/uint8_t来替换掉int/long/char，用来承载一些需要表示一定数值范围的变量。int仅仅用来表示一些状态值，比如0/1/-1等。在处理函数参数时要注意做安全的类型转换。
+93. TODO: 尽量的使用int32_t/int64_t/uint32_t/uint64_t/int8_t/uint8_t来替换掉int/long/char，用来承载一些需要表示一定数值范围的变量。int仅仅用来表示一些状态值，比如0/1/-1等。在处理函数参数时要注意做安全的类型转换。
 
 94. TODO: fk_svr_listen_cb里循环调用accept直到出错，因为有可能有多个新连接到来。
 
@@ -393,3 +393,5 @@ seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这
 140. 通过cpp -dM xxx.c来查看不同os下gcc的predefined macros，在fk_env.h里根据特定的macro来区分不同平台以及不同特性，实现跨平台代码。
 
 141. Makefile里的CC可以换成clang来代替gcc，clang兼容gcc的参数。
+
+142. TODO: 修改一个潜在的bug, fk_vtr_t的fk_vtr_destroy中没有处理数组成员的destroy问题，应该采取和fk_list_t等容器同样的策略，提供一套free/copy/cmp回调函数来处理所存储成员的free/copy/cmp操作。
