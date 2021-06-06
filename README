@@ -394,4 +394,6 @@ seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这
 
 141. Makefile里的CC可以换成clang来代替gcc，clang兼容gcc的参数。
 
-142. TODO: 修改一个潜在的bug, fk_vtr_t的fk_vtr_destroy中没有处理数组成员的destroy问题，应该采取和fk_list_t等容器同样的策略，提供一套free/copy/cmp回调函数来处理所存储成员的free/copy/cmp操作。
+142. TODO: 修改一个潜在的问题, fk_vtr_t的fk_vtr_destroy中没有处理数组成员的destroy问题，应该采取和fk_list_t等容器同样的策略，提供一套free/copy/cmp回调函数来处理所存储成员的free/copy/cmp操作。目前fk_vtr_t唯一永在fk_conn_t中用来存储解析出来的协议参数，虽然用fk_conn_free_args函数处理了前述的问题，但这个方式不是太好。
+
+142. TODO: fk_conn_t中的type成员可以完全去掉，根据fd的值就可以判断出来。
