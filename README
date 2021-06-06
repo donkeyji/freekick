@@ -397,3 +397,5 @@ seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这
 142. TODO: fk_vtr_t的fk_vtr_destroy中没有处理数组成员的destroy问题，应该采取和fk_list_t等容器同样的策略，提供一套free/copy/cmp回调函数来处理所存储的成员的free/copy/cmp操作。目前fk_vtr_t唯一用在fk_conn_t中用来存储解析出来的协议参数，虽然用fk_conn_free_args函数处理了前述释放存储成员的问题，但这个方式不好，应该把这个操作放在fk_vtr_t内部接口来实现。并且考虑在所有容器里加一个fk_xxx_clear接口，使容器恢复成初始的空状态。
 
 142. TODO: fk_conn_t中的type成员可以完全去掉，根据fd的值就可以判断出来。
+
+143. freekick移植到cygwin下，但是不支持jemalloc.
