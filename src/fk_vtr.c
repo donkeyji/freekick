@@ -29,12 +29,3 @@ fk_vtr_destroy(fk_vtr_t *vtr)
     fk_mem_free(vtr->array);
     fk_mem_free(vtr);
 }
-
-void
-fk_vtr_clear(fk_vtr_t *vtr)
-{
-    /*
-     * 1. clear all the data saved
-     * 2. go back to the initial state
-     */
-}
