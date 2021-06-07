@@ -402,4 +402,5 @@ seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这
 
 144. TODO: 对所有用于装载fk_item_t的容器fk_dict_t/fk_list_t/fk_vtr_t/fk_skiplist_t提供统一相同的fk_item_copy/fk_item_free回调，以免写重复的函数。
 
-145. TODO: 将2个参数的data_cmp函数换成data_key函数，只需要接受一个参数，比较两个data只要计算其key值就可以。
+145. TODO: 将2个参数的data_cmp函数换成data_key函数，只需要接受一个参数，比较两个data只要计算其key值就可以。读fluent
+python(page: 62)的启发，python3的list.sort方法。
