@@ -399,3 +399,5 @@ seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这
 142. TODO: fk_conn_t中的type成员可以完全去掉，根据fd的值就可以判断出来。
 
 143. freekick移植到cygwin下，但是不支持jemalloc.
+
+144. 对所有用于装载fk_item_t的容器fk_dict_t/fk_list_t/fk_vtr_t/fk_skiplist_t提供统一相同的fk_item_copy/fk_item_free回调，以免写重复的函数。
