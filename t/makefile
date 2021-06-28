@@ -1,12 +1,41 @@
+SRCDIR   := ../src
+os := $(shell sh -c 'uname -s 2>/dev/null')
+
+# check argument os
+ifeq ($(os), FreeBSD)
+OS_LDLIBS  := -lm -lexecinfo
+MPLX_MOD   := fk_ev_kqueue.c
+#MAKE       := gmake
+else
+ifeq ($(os), Linux)
+OS_LDLIBS  := -ldl -lm -lrt
+MPLX_MOD   := fk_ev_epoll.c
+#MAKE       := make
+else
+ifeq ($(os), Darwin)
+OS_LDLIBS  :=
+MPLX_MOD   := fk_ev_kqueue.c
+#MAKE       := make
+else
+ifeq ($(findstring CYGWIN, $(os)), CYGWIN)
+OS_LDLIBS  :=
+MPLX_MOD   := fk_ev_poll.c
+#MAKE       := make
+else
+$(error $(os) is not supported at present)
+endif # CYGWIN
+endif # Darwin
+endif # Linux
+endif # FreeBSD
 
 # --------------------------------------------------------
 # use jemalloc
 # --------------------------------------------------------
 CC 		:= gcc 
 CFLAGS	:= -std=c99 -Wall -g -D JEMALLOC_MANGLE
-CFLAGS 	+= -I ../
+CFLAGS 	+= -I $(SRCDIR)/
 LDFLAGS := 
-LDFLAGS += -ljemalloc
+LDFLAGS += $(OS_LDLIBS)
 
 
 TMODBIN := t
@@ -14,22 +43,23 @@ TMODBIN := t
 # "freekick.o"  "fk_svr.o" "fk_svr_xxx.o" should not be included here
 # "t.o" should be included here
 # --------------------------------------------------------
-TMODOBJS := ../fk_buf.o ../fk_cache.o ../fk_conf.o ../fk_dict.o ../fk_ev.o ../fk_heap.o ../fk_item.o ../fk_list.o ../fk_log.o ../fk_mem.o ../fk_pool.o ../fk_sock.o ../fk_str.o ../fk_util.o ../fk_vtr.o ../fk_skiplist.o ./t.o
-TMODSRCS := $(patsubst %.o, %.c, $(TMODOBJS))
-
+TMODSRCS := $(SRCDIR)/fk_buf.c $(SRCDIR)/fk_cache.c $(SRCDIR)/fk_conf.c $(SRCDIR)/fk_dict.c $(SRCDIR)/fk_ev.c $(SRCDIR)/fk_heap.c $(SRCDIR)/fk_item.c $(SRCDIR)/fk_list.c $(SRCDIR)/fk_log.c $(SRCDIR)/fk_mem.c $(SRCDIR)/fk_pool.c $(SRCDIR)/fk_sock.c $(SRCDIR)/fk_str.c $(SRCDIR)/fk_util.c $(SRCDIR)/fk_vtr.c $(SRCDIR)/fk_skiplist.c ./t.c
+TMODSRCS += $(SRCDIR)/$(MPLX_MOD)
+TMODOBJS := $(patsubst %.c, %.o, $(TMODSRCS))
 TMODDEPS := makefile.dep
 
-.PHONY : all clean
+
+.PHONY : all clean dep
 
 all : $(TMODBIN)
 
 $(TMODBIN) : $(TMODOBJS) 
 	$(CC) $(LDFLAGS) -o $(TMODBIN) $(TMODOBJS)
 
-$(TMODDEPS): $(TMODSRCS)
-	@$(CC) -MM $(CFLAGS) $(TMODSRCS) > $(TMODDEPS)
-
 -include $(TMODDEPS)
+
+dep:
+	@$(CC) -MM $(CFLAGS) $(TMODSRCS) > $(TMODDEPS)
 
 clean :
 	@$(RM) $(TMODOBJS) $(TMODDEPS) $(TMODBIN)
