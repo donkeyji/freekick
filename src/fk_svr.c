@@ -413,8 +413,10 @@ fk_svr_init(void)
 #endif
 
     server.db = (fk_dict_t **)fk_mem_alloc(sizeof(fk_dict_t *) * server.dbcnt);
+    server.expdb = (fk_dict_t **)fk_mem_alloc(sizeof(fk_dict_t *) * server.dbcnt);
     for (i = 0; i < server.dbcnt; i++) {
         server.db[i] = fk_dict_create(&db_dict_eop);
+        server.expdb[i] = fk_dict_create(&db_dict_eop);
     }
 
     /* lua sub module */

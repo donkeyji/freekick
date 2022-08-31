@@ -103,6 +103,7 @@ typedef struct {
     fk_conn_t    **conns_tab;
     uint32_t       dbcnt;
     fk_dict_t    **db;
+    fk_dict_t    **expdb;           /* expire key */
     pid_t          save_pid;      /* -1: when the save child process ends */
     pid_t          rewrite_pid;   /* -1: when the rewrite child process ends */
 
@@ -186,6 +187,7 @@ fk_proto_t *fk_proto_search(fk_str_t *name);
  */
 int fk_cmd_set(fk_conn_t *conn);
 int fk_cmd_setnx(fk_conn_t *conn);
+int fk_cmd_setex(fk_conn_t *conn);
 int fk_cmd_get(fk_conn_t *conn);
 int fk_cmd_del(fk_conn_t *conn);
 int fk_cmd_flushdb(fk_conn_t *conn);

@@ -9,6 +9,7 @@
 #define FK_ITEM_LIST    2
 #define FK_ITEM_DICT    3
 #define FK_ITEM_SKLIST  4
+#define FK_ITEM_NUM     5
 
 typedef struct {
     uint8_t     type;
