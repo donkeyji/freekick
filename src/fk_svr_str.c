@@ -81,7 +81,7 @@ fk_cmd_setex(fk_conn_t *conn)
     exp_millis = exp_secs * 1000 + fk_util_tv2millis(&now);
     exp_num = fk_num_create(exp_millis);
 
-    /* generate FK_ITEM_NUM object */
+    /* generate a FK_ITEM_NUM object, no need to call fk_item_inc_ref() here */
     exp_item = fk_item_create(FK_ITEM_NUM, exp_num);
 
     /* save key and value to db */

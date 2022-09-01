@@ -7,6 +7,7 @@
 #include <fk_list.h>
 #include <fk_str.h>
 #include <fk_dict.h>
+#include <fk_num.h>
 
 #define FK_FREE_OBJS_MAX 1024
 
@@ -95,6 +96,9 @@ fk_item_dec_ref(fk_item_t *itm)
             break;
         case FK_ITEM_DICT:
             fk_dict_destroy(itm->entity);
+            break;
+        case FK_ITEM_NUM:
+            fk_num_destroy(itm->entity);
             break;
         }
         itm->entity = NULL;

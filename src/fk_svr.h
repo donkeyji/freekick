@@ -166,6 +166,7 @@ int fk_kdb_save(void);
 
 /* related to replication */
 int fk_svr_sync_with_master(void);
+int fk_svr_clear_timeout_keys(void);
 
 /* related to lua scripting */
 void fk_lua_init(void);
