@@ -28,7 +28,6 @@
 #include <fk_cache.h>
 #include <fk_item.h>
 #include <fk_svr.h>
-#include <fk_num.h>
 
 /*
  * signal flags
@@ -346,7 +345,6 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
      */
     fk_svr_sync_with_master();
 
-    fk_svr_clear_timeout_keys();
     return 0;
 }
 
@@ -415,10 +413,8 @@ fk_svr_init(void)
 #endif
 
     server.db = (fk_dict_t **)fk_mem_alloc(sizeof(fk_dict_t *) * server.dbcnt);
-    server.expdb = (fk_dict_t **)fk_mem_alloc(sizeof(fk_dict_t *) * server.dbcnt);
     for (i = 0; i < server.dbcnt; i++) {
         server.db[i] = fk_dict_create(&db_dict_eop);
-        server.expdb[i] = fk_dict_create(&db_dict_eop);
     }
 
     /* lua sub module */
@@ -547,47 +543,5 @@ fk_svr_signal_exit_handler(int sig)
 int
 fk_svr_sync_with_master(void)
 {
-    return FK_SVR_OK;
-}
-
-int
-fk_svr_clear_timeout_keys(void)
-{
-    int              i, len, try_times;
-    fk_elt_t        *elt;
-    fk_dict_t       *expdb, *db;
-    fk_item_t       *key, *value;
-    long long        exp_millis, now_millis;
-    struct timeval   now;
-
-    for (i = 0; i < server.dbcnt; i++) {
-        db = server.db[i];
-        expdb = server.expdb[i];
-
-        len = fk_dict_len(expdb);
-        if (len == 0) {
-            continue;
-        }
-
-        try_times = (int)(0.2 * len);
-        for (i = 0; i < try_times; i++) {
-            elt = fk_dict_random(expdb);
-            key = (fk_item_t *)fk_elt_key(elt);
-            value = (fk_item_t *)fk_elt_value(elt);
-
-            exp_millis = (long long)fk_num_raw((fk_num_t *)fk_item_raw(value));
-            fk_util_get_time(&now);
-            now_millis = fk_util_tv2millis(&now);
-            if (now_millis > exp_millis) {
-                /*
-                 * this key is now pointing to the item in expdb, if it's
-                 * removed from expdb first, then the memory for key may
-                 * be destroyed. for safety, remove key from db first.
-                 */
-                fk_dict_remove(db, key);
-                fk_dict_remove(expdb, key);
-            }
-        }
-    }
     return FK_SVR_OK;
 }

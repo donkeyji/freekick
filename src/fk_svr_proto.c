@@ -12,7 +12,6 @@ static int fk_proto_dict_key_cmp(void *k1, void *k2);
 static fk_proto_t protos[] = {
     { "SET", FK_PROTO_WRITE, 3, fk_cmd_set },
     { "SETNX", FK_PROTO_WRITE, 3, fk_cmd_setnx },
-    { "SETEX", FK_PROTO_WRITE, 4, fk_cmd_setex },
     { "MSET", FK_PROTO_WRITE, -3, fk_cmd_mset },
     { "MGET", FK_PROTO_READ, -2, fk_cmd_mget },
     { "GET", FK_PROTO_READ, 2, fk_cmd_get },
