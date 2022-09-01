@@ -13,6 +13,8 @@
  * functions maintain/update the state of the global veriable
  * server.
  */
+static int fk_handle_expired(fk_conn_t *conn, void *key);
+
 int
 fk_cmd_set(fk_conn_t *conn)
 {
@@ -124,10 +126,42 @@ fk_cmd_mset(fk_conn_t *conn)
     return FK_SVR_OK;
 }
 
+static int
+fk_handle_expired(fk_conn_t *conn, void *key)
+{
+    int             expired;
+    fk_dict_t      *db, *expdb;
+    fk_item_t      *exp;
+    long long       exp_millis, now_millis;
+    struct timeval  now;
+
+    expdb = server.expdb[conn->db_idx];
+
+    expired = 0;
+
+    /* to check whether the key has expired */
+    exp = fk_dict_get(expdb, (fk_item_t *)key);
+    if (exp != NULL) {
+        exp_millis = (long long)fk_num_raw((fk_num_t *)fk_item_raw(exp));
+        fk_util_get_time(&now);
+        now_millis = fk_util_tv2millis(&now);
+        if (exp_millis < now_millis) {
+            expired = 1;
+        }
+    }
+    /* if expired, remove the key */
+    if (expired == 1) {
+        /* remove the key from both db and expdb */
+        fk_dict_remove(server.db[conn->db_idx], (fk_item_t *)key);
+        fk_dict_remove(expdb, (fk_item_t *)key);
+    }
+    return expired;
+}
+
 int
 fk_cmd_mget(fk_conn_t *conn)
 {
-    int         rt, i;
+    int         rt, i, expired;
     fk_str_t   *ss;
     fk_item_t  *value, *key;
 
@@ -137,7 +171,13 @@ fk_cmd_mget(fk_conn_t *conn)
     }
     for (i = 1; i < conn->arg_cnt; i++) {
         key = fk_conn_get_arg(conn, i);
-        value = fk_dict_get(server.db[conn->db_idx], key);
+
+        expired = fk_handle_expired(conn, key);
+        value = NULL;
+        if (expired == 0) {
+            value = fk_dict_get(server.db[conn->db_idx], key);
+        }
+
         if (value == NULL) {
             rt = fk_conn_add_bulk_rsp(conn, FK_RSP_NIL);
             if (rt == FK_SVR_ERR) {
@@ -169,34 +209,14 @@ int
 fk_cmd_get(fk_conn_t *conn)
 {
     int         rt, expired;
-    long long   exp_millis, now_millis;
     fk_str_t   *ss;
-    fk_item_t  *value, *key, *exp;
-    struct timeval  now;
+    fk_item_t  *value, *key;
 
     key = fk_conn_get_arg(conn, 1);
 
-    /* to see whether the key has expired */
-    exp = fk_dict_get(server.expdb[conn->db_idx], key);
-
-    expired = 0;
-    if (exp != NULL) {
-        exp_millis = (long long)fk_num_raw((fk_num_t *)fk_item_raw(exp));
-        fk_util_get_time(&now);
-        now_millis = fk_util_tv2millis(&now);
-        if (exp_millis < now_millis) {
-            expired = 1;
-        }
-    }
-
+    expired = fk_handle_expired(conn, key);
     value = NULL;
-
-    /* remove the expired item */
-    if (expired == 1) {
-        /* remove the key from both db and expdb */
-        fk_dict_remove(server.db[conn->db_idx], key);
-        fk_dict_remove(server.expdb[conn->db_idx], key);
-    } else {
+    if (expired == 0) {
         value = fk_dict_get(server.db[conn->db_idx], key);
     }
 
