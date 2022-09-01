@@ -20,6 +20,7 @@
 #include <fk_ev.h>
 #include <fk_buf.h>
 #include <fk_vtr.h>
+#include <fk_item.h>
 
 /* reply sent to the clients */
 #define FK_RSP_OK               "OK"
@@ -215,4 +216,5 @@ extern fk_elt_op_t db_dict_eop;
 extern fk_node_op_t db_list_op;
 extern fk_skipnode_op_t db_skiplist_op;
 
+int fk_handle_expired_key(fk_dict_t *db, fk_dict_t *expdb, fk_item_t *key);
 #endif

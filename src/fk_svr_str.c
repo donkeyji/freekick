@@ -13,8 +13,6 @@
  * functions maintain/update the state of the global veriable
  * server.
  */
-static int fk_handle_expired(fk_conn_t *conn, void *key);
-
 int
 fk_cmd_set(fk_conn_t *conn)
 {
@@ -126,21 +124,18 @@ fk_cmd_mset(fk_conn_t *conn)
     return FK_SVR_OK;
 }
 
-static int
-fk_handle_expired(fk_conn_t *conn, void *key)
+int
+fk_handle_expired_key(fk_dict_t *db, fk_dict_t *expdb, fk_item_t *key)
 {
     int             expired;
-    fk_dict_t      *db, *expdb;
     fk_item_t      *exp;
     long long       exp_millis, now_millis;
     struct timeval  now;
 
-    expdb = server.expdb[conn->db_idx];
-
     expired = 0;
 
     /* to check whether the key has expired */
-    exp = fk_dict_get(expdb, (fk_item_t *)key);
+    exp = fk_dict_get(expdb, key);
     if (exp != NULL) {
         exp_millis = (long long)fk_num_raw((fk_num_t *)fk_item_raw(exp));
         fk_util_get_time(&now);
@@ -151,9 +146,13 @@ fk_handle_expired(fk_conn_t *conn, void *key)
     }
     /* if expired, remove the key */
     if (expired == 1) {
-        /* remove the key from both db and expdb */
-        fk_dict_remove(server.db[conn->db_idx], (fk_item_t *)key);
-        fk_dict_remove(expdb, (fk_item_t *)key);
+        /*
+         * this key is now pointing to the item in expdb, if it's
+         * removed from expdb first, then the memory for key may
+         * be destroyed. for safety, remove key from db first.
+         */
+        fk_dict_remove(db, key);
+        fk_dict_remove(expdb, key);
     }
     return expired;
 }
@@ -172,7 +171,7 @@ fk_cmd_mget(fk_conn_t *conn)
     for (i = 1; i < conn->arg_cnt; i++) {
         key = fk_conn_get_arg(conn, i);
 
-        expired = fk_handle_expired(conn, key);
+        expired = fk_handle_expired_key(server.db[conn->db_idx], server.expdb[conn->db_idx], key);
         value = NULL;
         if (expired == 0) {
             value = fk_dict_get(server.db[conn->db_idx], key);
@@ -214,7 +213,7 @@ fk_cmd_get(fk_conn_t *conn)
 
     key = fk_conn_get_arg(conn, 1);
 
-    expired = fk_handle_expired(conn, key);
+    expired = fk_handle_expired_key(server.db[conn->db_idx], server.expdb[conn->db_idx], key);
     value = NULL;
     if (expired == 0) {
         value = fk_dict_get(server.db[conn->db_idx], key);
