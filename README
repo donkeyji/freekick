@@ -406,3 +406,5 @@ seq[]来实现变长连续内存，需要在编译时使用-pedantic参数，这
 python(page: 62)的启发，python3的list.sort方法。
 
 146. TODO: 将fk_dict_t/fk_list_t改造成专用于fk_item_t的容器，为不同类型fk_item_t提供free/copy/hash/cmp等方法，供容器操作fk_item_t时调用。
+
+147. TODO: 支持timeout key，get/mget的时候也要添加处理timeout处理。binlog是否要针对timeout做特殊处理？
