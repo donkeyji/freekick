@@ -52,6 +52,7 @@ int fk_dict_replace(fk_dict_t *dct, void *key, void *value);
 int fk_dict_remove(fk_dict_t *dct, void *key);
 void *fk_dict_get(fk_dict_t *dct, void *key);
 void fk_dict_empty(fk_dict_t *dct);
+fk_elt_t *fk_dict_random(fk_dict_t *dct);
 
 #ifdef FK_DEBUG
 void fk_dict_print(fk_dict_t *dct);
