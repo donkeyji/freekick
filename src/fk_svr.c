@@ -553,12 +553,12 @@ fk_svr_sync_with_master(void)
 int
 fk_svr_clear_timeout_keys(void)
 {
-    int         i, len, try_times;
-    fk_elt_t   *elt;
-    fk_dict_t  *expdb, *db;
-    fk_item_t  *key, *value;
-    long long   exp_millis, now_millis;
-    struct timeval  now;
+    int              i, len, try_times;
+    fk_elt_t        *elt;
+    fk_dict_t       *expdb, *db;
+    fk_item_t       *key, *value;
+    long long        exp_millis, now_millis;
+    struct timeval   now;
 
     for (i = 0; i < server.dbcnt; i++) {
         db = server.db[i];
@@ -580,9 +580,9 @@ fk_svr_clear_timeout_keys(void)
             now_millis = fk_util_tv2millis(&now);
             if (now_millis > exp_millis) {
                 /*
-                 * because this key now points to the item in expdb,
-                 * if it's removed from expdb first, then the memory for key
-                 * will be destroyed
+                 * this key is now pointing to the item in expdb, if it's
+                 * removed from expdb first, then the memory for key may
+                 * be destroyed. for safety, remove key from db first.
                  */
                 fk_dict_remove(db, key);
                 fk_dict_remove(expdb, key);

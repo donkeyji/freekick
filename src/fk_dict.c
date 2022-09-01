@@ -409,13 +409,13 @@ fk_dict_iter_end(fk_dict_iter_t *iter)
 fk_elt_t *
 fk_dict_random(fk_dict_t *dct)
 {
-    int              i, cnt;
+    int              i, try_times;
     fk_elt_t        *elt;
     fk_dict_iter_t  *iter;
 
-    cnt = rand() % fk_dict_len(dct) + 1;
+    try_times = rand() % fk_dict_len(dct) + 1;
     iter = fk_dict_iter_begin(dct);
-    for (i = 0; i < cnt; i++) {
+    for (i = 0; i < try_times; i++) {
         elt = fk_dict_iter_next(iter);
     }
     return elt;
