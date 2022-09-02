@@ -15,6 +15,7 @@
 #include <fk_mem.h>
 #include <fk_item.h>
 #include <fk_svr.h>
+#include <fk_num.h>
 
 typedef struct {
     char     *line;
@@ -26,16 +27,18 @@ static void fk_zline_alloc(fk_zline_t *buf, size_t len);
 static void fk_zline_destroy(fk_zline_t *buf);
 
 /* related to dump */
-static int fk_kdb_dump(FILE *fp, uint32_t db_idx);
+static int fk_kdb_dump(FILE *fp, uint32_t db_idx, int isexp);
 static int fk_kdb_dump_str_elt(FILE *fp, fk_elt_t *elt);
 static int fk_kdb_dump_list_elt(FILE *fp, fk_elt_t *elt);
 static int fk_kdb_dump_dict_elt(FILE *fp, fk_elt_t *elt);
+static int fk_kdb_dump_num_elt(FILE *fp, fk_elt_t *elt);
 
 /* related to restore */
 static int fk_kdb_restore(FILE *fp, fk_zline_t *buf);
 static int fk_kdb_restore_str_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf);
 static int fk_kdb_restore_list_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf);
 static int fk_kdb_restore_dict_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf);
+static int fk_kdb_restore_num_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf);
 
 void
 fk_kdb_init(void)
@@ -107,12 +110,21 @@ fk_kdb_save(void)
     }
 
     for (i = 0; i < server.dbcnt; i++) {
-        rt = fk_kdb_dump(fp, i);
+        /* first save db, then expdb */
+        rt = fk_kdb_dump(fp, i, 0);
         if (rt == FK_SVR_ERR) {
             /*
              * no need to flush data to disk, because in this case, the
              * temporary db file with errors will be removed.
              */
+            fk_log_error("save db body failed\n");
+            fclose(fp);
+            remove(temp_db); /* remove this temporary db file */
+            return FK_SVR_ERR;
+        }
+        rt = fk_kdb_dump(fp, i, 1);
+        if (rt == FK_SVR_ERR) {
+            fk_log_error("save expdb body failed\n");
             fclose(fp);
             remove(temp_db); /* remove this temporary db file */
             return FK_SVR_ERR;
@@ -152,7 +164,7 @@ fk_kdb_save(void)
  * error handling
  */
 int
-fk_kdb_dump(FILE *fp, uint32_t db_idx)
+fk_kdb_dump(FILE *fp, uint32_t db_idx, int isexp)
 {
     int              type, rt;
     size_t           len, wz;
@@ -160,13 +172,25 @@ fk_kdb_dump(FILE *fp, uint32_t db_idx)
     fk_dict_t       *dct;
     fk_dict_iter_t  *iter;
 
-    dct = server.db[db_idx];
-    if (fk_dict_len(dct) == 0) {
-        return FK_SVR_OK;
+    if (isexp == 1) {
+        dct = server.expdb[db_idx];
+    } else {
+        dct = server.db[db_idx];
     }
+
+    /* a empty dict will be dumped too */
+    //if (fk_dict_len(dct) == 0) {
+        //return FK_SVR_OK;
+    //}
 
     /* I do not think it's necessary to call htonl() */
     wz = fwrite(&db_idx, sizeof(db_idx), 1, fp);
+    if (wz == 0) {
+        return FK_SVR_ERR;
+    }
+
+    /* save dict type */
+    wz = fwrite(&isexp, sizeof(isexp), 1, fp);
     if (wz == 0) {
         return FK_SVR_ERR;
     }
@@ -196,6 +220,9 @@ fk_kdb_dump(FILE *fp, uint32_t db_idx)
             break;
         case FK_ITEM_DICT:
             rt = fk_kdb_dump_dict_elt(fp, elt);
+            break;
+        case FK_ITEM_NUM:
+            rt = fk_kdb_dump_num_elt(fp, elt);
             break;
         }
         if (rt == FK_SVR_ERR) {
@@ -244,6 +271,49 @@ fk_kdb_dump_str_elt(FILE *fp, fk_elt_t *elt)
     }
     wz = fwrite(fk_str_raw(value), fk_str_len(value), 1, fp);
     if (len > 0 && wz == 0) {
+        return FK_SVR_ERR;
+    }
+
+    return FK_SVR_OK;
+}
+
+int
+fk_kdb_dump_num_elt(FILE *fp, fk_elt_t *elt)
+{
+    size_t      len, wz;
+    fk_str_t   *key;
+    fk_num_t   *value;
+    fk_item_t  *kitm, *vitm;
+
+    kitm = (fk_item_t *)fk_elt_key(elt);
+    vitm = (fk_item_t *)fk_elt_value(elt);
+
+    key = (fk_str_t *)(fk_item_raw(kitm));
+    value = (fk_num_t *)(fk_item_raw(vitm));
+
+    /* key dump */
+    len = fk_str_len(key);
+    wz = fwrite(&len, sizeof(len), 1, fp);
+    if (wz == 0) {
+        return FK_SVR_ERR;
+    }
+    wz = fwrite(fk_str_raw(key), fk_str_len(key), 1, fp);
+    if (wz == 0) {
+        return FK_SVR_ERR;
+    }
+
+    /* value dump */
+    len = fk_num_len(value);
+    wz = fwrite(&len, sizeof(len), 1, fp);
+    /*
+     * when len == 0 ==> wz == 0
+     * when len > 0  ==> wz > 0
+     */
+    if (wz == 0) {
+        return FK_SVR_ERR;
+    }
+    wz = fwrite(&(fk_num_raw(value)), len, 1, fp);
+    if (wz == 0) {
         return FK_SVR_ERR;
     }
 
@@ -454,7 +524,7 @@ fk_kdb_load(fk_str_t *db_file)
 int
 fk_kdb_restore(FILE *fp, fk_zline_t *buf)
 {
-    int         rt;
+    int         rt, isexp;
     size_t      cnt, i, rz;
     uint32_t    idx;
     unsigned    type;
@@ -472,7 +542,15 @@ fk_kdb_restore(FILE *fp, fk_zline_t *buf)
     if (idx >= server.dbcnt) {
         return FK_SVR_ERR;
     }
-    db = server.db[idx];
+
+    /* read the dict type */
+    fread(&isexp, sizeof(isexp), 1, fp);
+
+    if (isexp == 1) {
+        db = server.expdb[idx];
+    } else {
+        db = server.db[idx];
+    }
 
     /* restore len of dictionary */
     rz = fread(&cnt, sizeof(cnt), 1, fp);
@@ -496,6 +574,9 @@ fk_kdb_restore(FILE *fp, fk_zline_t *buf)
             break;
         case FK_ITEM_DICT:
             rt = fk_kdb_restore_dict_elt(fp, db, buf);
+            break;
+        case FK_ITEM_NUM:
+            rt = fk_kdb_restore_num_elt(fp, db, buf);
             break;
         default:
             rt = FK_SVR_ERR;
@@ -557,6 +638,51 @@ fk_kdb_restore_str_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
     return FK_SVR_OK;
 }
 
+int
+fk_kdb_restore_num_elt(FILE *fp, fk_dict_t *db, fk_zline_t *buf)
+{
+    size_t      klen, vlen, rz;
+    fk_str_t   *key;
+    fk_num_t   *value;
+    long long   num;
+    fk_item_t  *kitm, *vitm;
+
+    rz = fread(&klen, sizeof(klen), 1, fp);
+    if (rz == 0) {
+        return FK_SVR_ERR;
+    }
+    if (klen > FK_ARG_HIGHWAT) {
+        return FK_SVR_ERR;
+    }
+
+    fk_zline_alloc(buf, klen);
+    rz = fread(buf->line, klen, 1, fp);
+    if (rz == 0) {
+        return FK_SVR_ERR;
+    }
+    key = fk_str_create(buf->line, klen);
+    kitm = fk_item_create(FK_ITEM_STR, key);
+
+    /* restore num */
+    rz = fread(&vlen, sizeof(vlen), 1, fp);
+    if (rz == 0) {
+        return FK_SVR_ERR;
+    }
+    if (vlen > FK_ARG_HIGHWAT) {
+        return FK_SVR_ERR;
+    }
+    rz = fread(&num, vlen, 1, fp);
+    if (vlen > 0 && rz == 0) {
+        return FK_SVR_ERR;
+    }
+
+    value = fk_num_create(num);
+    vitm = fk_item_create(FK_ITEM_NUM, value);
+
+    fk_dict_add(db, kitm, vitm);
+
+    return FK_SVR_OK;
+}
 /*
  * returned value: -1
  * 1. error occurs when reading
