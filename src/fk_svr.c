@@ -264,7 +264,7 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
     fk_log_info("[timer_cb]conn cnt: %d, timer_cnt: %"PRIu64", last_save: %zu\n, iompx: %s\n", server.conn_cnt, server.timer_cnt, server.last_save, fk_ev_iompx_name());
     for (i = 0; i < server.dbcnt; i++) {
         fk_log_info("[timer_cb] db%d size: %d, used: %d, limit: %d\n", i, server.db[i]->size, server.db[i]->used, server.db[i]->limit);
-        fk_log_info("[timer_cb] expdb%d size: %d, used: %d, limit: %d\n", i, server.expdb[i]->size, server.db[i]->used, server.expdb[i]->limit);
+        fk_log_info("[timer_cb] expdb%d size: %d, used: %d, limit: %d\n", i, server.expdb[i]->size, server.expdb[i]->used, server.expdb[i]->limit);
     }
 #ifdef FK_DEBUG
     fk_ev_stat();
