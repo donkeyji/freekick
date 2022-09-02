@@ -11,13 +11,18 @@
 #define FK_ITEM_SKLIST  4
 #define FK_ITEM_NUM     5
 
-typedef struct {
+typedef struct fk_item_s fk_item_t;
+struct fk_item_s {
     uint8_t     type;
-    uint32_t    ref;       /* reference count */
+    uint32_t    ref;       /* external reference count */
     void       *entity;    /* point to the real data of the itm */
-} fk_item_t;
+
+    fk_item_t  *prev;
+    fk_item_t  *next;
+};
 
 void fk_item_init(void);
+void fk_item_gc(void);
 fk_item_t *fk_item_create(uint8_t type, void *entity);
 void fk_item_dec_ref(fk_item_t *itm);
 void fk_item_inc_ref(fk_item_t *itm);

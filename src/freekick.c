@@ -382,6 +382,8 @@ fk_main_init(char *conf_path)
 
     fk_cache_init();
 
+    fk_item_init();
+
     fk_ev_init(fk_util_conns_to_files(setting.max_conns));
 
     fk_svr_init();

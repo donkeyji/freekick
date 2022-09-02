@@ -8,64 +8,25 @@
 #include <fk_str.h>
 #include <fk_dict.h>
 #include <fk_num.h>
+#include <fk_log.h>
 
-#define FK_FREE_OBJS_MAX 1024
+#define FK_FREE_ITEM_MAX 1024
 
-fk_list_t *free_objs = NULL;
+fk_rawlist_def(fk_item_t, fk_item_list_t);
 
-/*
-static fk_item_t *fk_item_free_obj_get(void);
-static void fk_item_free_obj_put(fk_item_t *itm);
-*/
+/* manage all items in use */
+fk_item_list_t *itm_used = NULL;
+
+/* TODO: add a free item list as cache */
+//fk_item_list_t *itm_free = NULL;
+
 
 void
 fk_item_init(void)
 {
-    /* create a null list for free objs */
-    free_objs = fk_list_create(NULL);
+    itm_used = fk_rawlist_create(fk_item_list_t);
+    fk_rawlist_init(itm_used);
 }
-
-/*
-fk_item_t *
-fk_item_free_obj_get(void)
-{
-    fk_item_t  *itm;
-    fk_node_t  *nd;
-
-    nd = fk_list_head_pop(free_objs);
-    itm = nd->entity;
-    if (itm == NULL) {
-        itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t)); //really malloc memory here
-        itm->type = FK_ITEM_NIL;
-        itm->ref = 0;
-        itm->entity = NULL;
-    }
-    return itm;
-}
-
-void
-fk_item_free_obj_put(fk_item_t *itm)
-{
-    if (free_objs->len < FK_FREE_OBJS_MAX) {
-        fk_list_insert(free_objs, itm);
-    } else {
-        fk_mem_free(itm);//really free memory
-    }
-}
-
-void
-fk_item_put_free(fk_item_t *itm)
-{
-    itm->type = FK_ITEM_NIL;
-    itm->entity = NULL;
-    itm->ref = 0;
-    if (free_objs->len < FK_FREE_OBJS_MAX) {
-        fk_list_insert(free_objs, itm);
-    } else {//beyond the upper limit
-        fk_mem_free(itm);//really free memory
-    }
-}
-*/
 
 fk_item_t *
 fk_item_create(uint8_t type, void *entity)
@@ -74,12 +35,24 @@ fk_item_create(uint8_t type, void *entity)
 
     itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t));
     itm->entity = entity;
-    itm->ref = 0; /* I think the initial value of ref should be 0, not 1 */
+    /*
+     * the initial ref should be 0 rather than 1
+     * coz it's external reference count
+     */
+    itm->ref = 0;
     itm->type = type;
+
+    /* save the itm_used */
+    itm->prev = NULL;
+    itm->next = NULL;
+
+    /* insert the new item to the itm_used */
+    fk_rawlist_insert_head(itm_used, itm);
 
     return itm;
 }
 
+/* decrease external reference count */
 void
 fk_item_dec_ref(fk_item_t *itm)
 {
@@ -89,18 +62,22 @@ fk_item_dec_ref(fk_item_t *itm)
     if (itm->ref == 0) {
         switch (itm->type) {
         case FK_ITEM_STR:
-            fk_str_destroy(itm->entity);
+            fk_str_destroy((fk_str_t *)(itm->entity));
             break;
         case FK_ITEM_LIST:
-            fk_list_destroy(itm->entity);
+            fk_list_destroy((fk_list_t *)(itm->entity));
             break;
         case FK_ITEM_DICT:
-            fk_dict_destroy(itm->entity);
+            fk_dict_destroy((fk_dict_t *)(itm->entity));
             break;
         case FK_ITEM_NUM:
-            fk_num_destroy(itm->entity);
+            fk_num_destroy((fk_num_t *)(itm->entity));
             break;
         }
+
+        /* remove from itm_used */
+        fk_rawlist_remove_anyone(itm_used, itm);
+
         itm->entity = NULL;
         itm->ref = 0;
         itm->type = FK_ITEM_NIL;
@@ -108,8 +85,16 @@ fk_item_dec_ref(fk_item_t *itm)
     }
 }
 
+/* increase external reference count */
 void
 fk_item_inc_ref(fk_item_t *itm)
 {
     itm->ref++;
+}
+
+/* garbage collection */
+void
+fk_item_gc(void)
+{
+    fk_log_info("item count: %zu\n", fk_rawlist_len(itm_used));
 }

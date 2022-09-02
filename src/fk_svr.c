@@ -347,6 +347,9 @@ fk_svr_timer_cb(uint32_t interval, uint8_t type, void *arg)
     fk_svr_sync_with_master();
 
     fk_svr_clear_timeout_keys();
+
+    fk_item_gc();
+
     return 0;
 }
 
