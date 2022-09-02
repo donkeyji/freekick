@@ -1,5 +1,5 @@
 import redis
-import thread
+import _thread
 import time
 
 SVR_IP = '172.16.185.133'
@@ -10,7 +10,7 @@ SVR_PORT = 6379
 
 def pfunc():
     rd = redis.Redis(host=SVR_IP, port=SVR_PORT, db=0)
-    f = file('./src-code.txt', 'r')
+    f = open('./src-code.txt', 'r')
 
     # set
     i = 0;
@@ -106,7 +106,7 @@ def pfunc():
 start = time.time()
 pfunc()
 end = time.time()
-print end - start
+print(end - start)
 
 '''
 for i in range(1, 2):
