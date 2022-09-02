@@ -38,6 +38,7 @@ fk_cmd_flushdb(fk_conn_t *conn)
     int  rt;
 
     fk_dict_empty(server.db[conn->db_idx]);
+    fk_dict_empty(server.expdb[conn->db_idx]);
     rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
     if (rt == FK_SVR_ERR) {
         return FK_SVR_ERR;
@@ -53,6 +54,7 @@ fk_cmd_flushall(fk_conn_t *conn)
 
     for (i = 0; i < server.dbcnt; i++) {
         fk_dict_empty(server.db[i]);
+        fk_dict_empty(server.expdb[i]);
     }
     rt = fk_conn_add_status_rsp(conn, FK_RSP_OK, sizeof(FK_RSP_OK) - 1);
     if (rt == FK_SVR_ERR) {
