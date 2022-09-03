@@ -410,3 +410,5 @@ python(page: 62)的启发，python3的list.sort方法。
 147. TODO: 支持timeout key，get/mget的时候也要添加处理timeout处理。binlog是否要针对timeout做特殊处理？
 
 148. TODO: kdb的dump和restore都加上expdb的处理
+
+149. fk_item_t只用于db和expdb，以及保存在fk_conn_t中的解析出来的协议参数。所有item形成一个链表。有外部引用时ref增加/减小.
