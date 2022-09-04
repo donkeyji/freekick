@@ -42,6 +42,8 @@ fk_item_create(uint8_t type, void *entity)
         fk_rawlist_remove_anyone(items_free, itm);
     } else {
         itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t));
+        itm->prev = NULL;
+        itm->next = NULL;
     }
 
     itm->entity = entity;
@@ -51,10 +53,6 @@ fk_item_create(uint8_t type, void *entity)
      */
     itm->ref = 0;
     itm->type = type;
-
-    /* save the items_used */
-    itm->prev = NULL;
-    itm->next = NULL;
 
     /* insert the new item to the items_used */
     fk_rawlist_insert_head(items_used, itm);
@@ -115,7 +113,7 @@ fk_item_inc_ref(fk_item_t *itm)
 void
 fk_item_gc(void)
 {
-    fk_log_info("item_free: %zu, item_used: %zu, total: %zu\n",
+    fk_log_info("items_free: %zu, items_used: %zu, total: %zu\n",
             fk_rawlist_len(items_free),
             fk_rawlist_len(items_used),
             fk_rawlist_len(items_free) + fk_rawlist_len(items_used)
