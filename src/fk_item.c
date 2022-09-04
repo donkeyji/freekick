@@ -15,20 +15,20 @@
 fk_rawlist_def(fk_item_t, fk_item_list_t);
 
 /* manage all items in use */
-fk_item_list_t *itm_used = NULL;
+fk_item_list_t *items_used = NULL;
 
 /* a free item list as cache */
-fk_item_list_t *itm_free = NULL;
+fk_item_list_t *items_free = NULL;
 
 
 void
 fk_item_init(void)
 {
-    itm_used = fk_rawlist_create(fk_item_list_t);
-    fk_rawlist_init(itm_used);
+    items_used = fk_rawlist_create(fk_item_list_t);
+    fk_rawlist_init(items_used);
 
-    itm_free = fk_rawlist_create(fk_item_list_t);
-    fk_rawlist_init(itm_free);
+    items_free = fk_rawlist_create(fk_item_list_t);
+    fk_rawlist_init(items_free);
 }
 
 fk_item_t *
@@ -36,10 +36,10 @@ fk_item_create(uint8_t type, void *entity)
 {
     fk_item_t  *itm;
 
-    /* frist try to get a free one from itm_free list */
-    if (fk_rawlist_len(itm_free) > 0) {
-        itm = fk_rawlist_head(itm_free);
-        fk_rawlist_remove_anyone(itm_free, itm);
+    /* frist try to get a free one from items_free list */
+    if (fk_rawlist_len(items_free) > 0) {
+        itm = fk_rawlist_head(items_free);
+        fk_rawlist_remove_anyone(items_free, itm);
     } else {
         itm = (fk_item_t *)fk_mem_alloc(sizeof(fk_item_t));
     }
@@ -52,12 +52,12 @@ fk_item_create(uint8_t type, void *entity)
     itm->ref = 0;
     itm->type = type;
 
-    /* save the itm_used */
+    /* save the items_used */
     itm->prev = NULL;
     itm->next = NULL;
 
-    /* insert the new item to the itm_used */
-    fk_rawlist_insert_head(itm_used, itm);
+    /* insert the new item to the items_used */
+    fk_rawlist_insert_head(items_used, itm);
 
     return itm;
 }
@@ -94,13 +94,13 @@ fk_item_dec_ref(fk_item_t *itm)
     itm->ref = 0;
     itm->type = FK_ITEM_NIL;
 
-    /* remove from itm_used */
-    fk_rawlist_remove_anyone(itm_used, itm);
+    /* remove from items_used */
+    fk_rawlist_remove_anyone(items_used, itm);
 
-    if (fk_rawlist_len(itm_free) == FK_FREE_ITEM_MAX) {
+    if (fk_rawlist_len(items_free) == FK_FREE_ITEM_MAX) {
         fk_mem_free(itm);
     } else {
-        fk_rawlist_insert_tail(itm_free, itm);
+        fk_rawlist_insert_tail(items_free, itm);
     }
 }
 
@@ -116,8 +116,8 @@ void
 fk_item_gc(void)
 {
     fk_log_info("item_free: %zu, item_used: %zu, total: %zu\n",
-            fk_rawlist_len(itm_free),
-            fk_rawlist_len(itm_used),
-            fk_rawlist_len(itm_free) + fk_rawlist_len(itm_used)
+            fk_rawlist_len(items_free),
+            fk_rawlist_len(items_used),
+            fk_rawlist_len(items_free) + fk_rawlist_len(items_used)
     );
 }
