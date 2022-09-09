@@ -57,7 +57,10 @@ fk_lua_init(void)
     server.lua_conn = lua_conn;
 }
 
-/* similar to fk_conn_read_cb */
+/*
+ * called when exececuting redis.pcall('set', k, v)/redis.pcall('get', k) in lua
+ * similar to fk_conn_read_cb
+ */
 int
 fk_lua_pcall(lua_State *L)
 {
@@ -87,6 +90,7 @@ fk_lua_pcall(lua_State *L)
             return 1;
         }
         arg = lua_tolstring(L, i + 1, &len);
+        /* copy the string memory from lua stack by fk_str_create() */
         itm = fk_item_create(FK_ITEM_STR, fk_str_create((char *)arg, len));
         fk_conn_set_arg(lua_conn, lua_conn->arg_cnt, itm);
         fk_item_inc_ref(itm);
@@ -107,18 +111,23 @@ fk_lua_pcall(lua_State *L)
     start = fk_buf_payload_start(buf);
     switch (*start) {
     case '+':
+        /* status reply */
         rt = fk_lua_parse_status(L, buf);
         break;
     case '-':
+        /* error reply */
         rt = fk_lua_parse_error(L, buf);
         break;
     case ':':
+        /* integer reply */
         rt = fk_lua_parse_integer(L, buf);
         break;
     case '*':
+        /* multi bulk reply */
         rt = fk_lua_parse_mbulk(L, buf);
         break;
     case '$':
+        /* bulk reply */
         rt = fk_lua_parse_bulk(L, buf);
         break;
     }
@@ -168,6 +177,7 @@ fk_lua_conn_proc_cmd(fk_conn_t *conn)
     return 0;
 }
 
+/* return a table to lua */
 int
 fk_lua_parse_status(lua_State *L, fk_buf_t *buf)
 {
@@ -179,6 +189,7 @@ fk_lua_parse_status(lua_State *L, fk_buf_t *buf)
     s = fk_buf_payload_start(buf);
     lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2); /* value */
 
+    /* T['ok'] = s */
     lua_rawset(L, -3);
 
     fk_buf_low_inc(buf, fk_buf_payload_len(buf));
@@ -186,6 +197,7 @@ fk_lua_parse_status(lua_State *L, fk_buf_t *buf)
     return 1;
 }
 
+/* return a table to lua */
 int
 fk_lua_parse_error(lua_State *L, fk_buf_t *buf)
 {
@@ -197,12 +209,14 @@ fk_lua_parse_error(lua_State *L, fk_buf_t *buf)
     s = fk_buf_payload_start(buf);
     lua_pushlstring(L, s + 1, fk_buf_payload_len(buf) - 1 - 2); /* value */
 
+    /* T['ok'] = s */
     lua_rawset(L, -3);
 
     fk_buf_low_inc(buf, fk_buf_payload_len(buf));
     return 1;
 }
 
+/* return a number to lua */
 int
 fk_lua_parse_integer(lua_State *L, fk_buf_t *buf)
 {
@@ -217,6 +231,7 @@ fk_lua_parse_integer(lua_State *L, fk_buf_t *buf)
     return 1;
 }
 
+/* return a string to lua */
 int
 fk_lua_parse_bulk(lua_State *L, fk_buf_t *buf)
 {
@@ -237,6 +252,7 @@ fk_lua_parse_bulk(lua_State *L, fk_buf_t *buf)
     return 1;
 }
 
+/* return a table to lua */
 int
 fk_lua_parse_mbulk(lua_State *L, fk_buf_t *buf)
 {
@@ -285,10 +301,13 @@ fk_lua_push_paras(char **paras, int npara, int type)
     /* copy pointers from global server */
     gL = server.gL;
 
+    /* create a new table T and push it on the top of the stack */
     lua_newtable(gL);
 
     for (i = 0; i < npara; i++) {
+        /* the memory of string would be copied by lua */
         lua_pushstring(gL, paras[i]);
+        /* T[i+1] = paras[i] */
         lua_rawseti(gL, -2, i + 1);
     }
 
@@ -300,6 +319,7 @@ fk_lua_push_paras(char **paras, int npara, int type)
         name = "ARGV";
         break;
     }
+    /* KEYS = T or ARGV = T */
     lua_setglobal(gL, name);
 
     return 0;
@@ -320,6 +340,7 @@ fk_lua_run_script(fk_conn_t *conn, char *code)
 
     top1 = lua_gettop(gL);
 
+    /* compile */
     rt = luaL_loadstring(gL, code);
     if (rt != 0) { /* error occurs when load a string */
         fk_log_info("load string failed\n");
@@ -332,6 +353,7 @@ fk_lua_run_script(fk_conn_t *conn, char *code)
 
     lua_conn->db_idx = conn->db_idx; /* keep the same db_idx */
 
+    /* run */
     rt = lua_pcall(gL, 0, LUA_MULTRET, 0);
     if (rt != 0) { /* error occurs when run script */
         fk_log_info("run string failed\n");
@@ -388,6 +410,7 @@ fk_lua_run_script(fk_conn_t *conn, char *code)
         break;
     }
 
+    /* restore the top to the index before calling pcall() */
     lua_settop(gL, top1); /* keep the top of the stack */
     lua_gc(gL, LUA_GCSTEP, 1);
 
