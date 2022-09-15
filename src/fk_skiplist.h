@@ -4,7 +4,7 @@
 /* unix headers */
 #include <sys/types.h>
 
-#define FK_SKLIST_MAX_LEVEL     16
+#define FK_SKLIST_MAX_LEVEL     32
 
 typedef struct fk_skipnode_s fk_skipnode_t;
 

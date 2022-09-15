@@ -5,7 +5,7 @@
 #include <fk_mem.h>
 #include <fk_skiplist.h>
 
-#define fk_skipnode_create(level)       fk_mem_alloc(sizeof(fk_skipnode_t) + ((level) - 1) * sizeof(fk_skipnode_t *))
+#define fk_skipnode_create(level)    fk_mem_alloc(sizeof(fk_skipnode_t) + (level) * sizeof(fk_skiplist_level_t))
 
 #define fk_skipnode_destroy(nd) fk_mem_free(nd)
 
