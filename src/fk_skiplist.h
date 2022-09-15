@@ -37,7 +37,7 @@ typedef struct {
 fk_skiplist_t *fk_skiplist_create(fk_skipnode_op_t *skop);
 void fk_skiplist_destroy(fk_skiplist_t *sl);
 void fk_skiplist_insert(fk_skiplist_t *sl, int score, void *data);
-void fk_skiplist_remove(fk_skiplist_t *sl, int score);
+void fk_skiplist_remove(fk_skiplist_t *sl, int score, void *data);
 fk_skipnode_t *fk_skiplist_search(fk_skiplist_t *sl, int score);
 
 #define fk_skiplist_len(sl)     ((sl)->len)

@@ -61,7 +61,7 @@ fk_skiplist_insert(fk_skiplist_t *sl, int score, void *data)
 
 /* remove node by score */
 void
-fk_skiplist_remove(fk_skiplist_t *sl, int score)
+fk_skiplist_remove(fk_skiplist_t *sl, int score, void *data)
 {
 }
 
