@@ -1,6 +1,9 @@
 #ifndef _FK_SkIPLIST_H_
 #define _FK_SkIPLIST_H_
 
+/* c standard headers */
+#include <stdint.h>
+
 /* unix headers */
 #include <sys/types.h>
 
