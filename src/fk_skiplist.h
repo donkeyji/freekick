@@ -11,13 +11,13 @@ typedef struct fk_slnode_s fk_slnode_t;
 typedef struct {
     uint32_t        span;
     fk_slnode_t    *forward;
-} fk_skiplist_level_t;
+} fk_sllevel_t;
 
 struct fk_slnode_s {
     double                score;      /* the value to sort */
     void                 *data;       /* hold the fk_item_t */
     fk_slnode_t          *backward;
-    fk_skiplist_level_t   level[];    /* at least 1 element */
+    fk_sllevel_t   level[];    /* at least 1 element */
 };
 
 typedef struct {
