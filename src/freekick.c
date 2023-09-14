@@ -199,6 +199,15 @@ fk_create_pidfile(void)
 }
 
 void
+fk_remove_pidfile(void)
+{
+    if (setting.daemon == 0) {
+        return;
+    }
+    remove(fk_str_raw(setting.pid_path));
+}
+
+void
 fk_setrlimit(void)
 {
     int            rt;
@@ -398,8 +407,15 @@ fk_main_cycle(void)
 void
 fk_main_exit(void)
 {
-    /* maybe some other fk_xxx_exit() to call here */
+    /*
+     * maybe some other fk_xxx_exit() to call here
+     * fk_xxx_exit() should be invoked in the opposite order of
+     * calling fk_xxx_init() in fk_main_init()
+     */
     fk_svr_exit();
+
+    fk_remove_pidfile();
+
     /* no need to call exit(), because this is the last function called */
     //exit(EXIT_SUCCESS);
 }
