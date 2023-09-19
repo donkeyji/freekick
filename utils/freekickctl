@@ -10,7 +10,10 @@ TOP_DIR=..
 NAME=freekick
 BIN=$TOP_DIR/src/freekick
 CONF=$TOP_DIR/conf/freekick.conf
-PIDFILE=/tmp/freekick.pid
+PIDFILE=$(cat $CONF | grep -Ev '^\s*#' | awk '{if ($1 == "pidpath") print $2 }' | head -n1)
+if [ -z $PIDFILE ]; then
+    PIDFILE=/tmp/freekick.pid
+fi
 
 fk_start() {
     echo "starting freekick..."
